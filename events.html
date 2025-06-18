@@ -1,39 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Events | Rowan ACDA</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    .events-container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 1rem 2rem;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
     }
 
-    .events-container ul {
-      padding-left: 1.5rem;
+    header {
+      text-align: center;
+      background-color: #800000;
+      padding: 1rem;
+      color: white;
     }
 
-    .events-container li {
-      margin-bottom: 1rem;
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      background: #b22222;
+      margin: 0;
     }
 
-    .events-container a {
-      font-weight: bold;
-      color: #800000;
+    nav ul li a {
+      color: white;
       text-decoration: none;
+      padding: 1rem;
+      display: block;
     }
 
-    .events-container a:hover {
-      text-decoration: underline;
+    .event-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 300px;
+      flex: 1 1 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .status {
+      background: #ccc;
+      color: #333;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .status.upcoming {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .status.ended {
+      background-color: #ffc107;
+      color: #333;
+    }
+
+    .card-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #800000;
+    }
+
+    .card-detail {
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    footer {
+      background: #000;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Upcoming Events</h1>
+    <h1>ACDA Events</h1>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
@@ -44,14 +121,33 @@
       </ul>
     </nav>
   </header>
+
   <main>
-    <div class="events-container">
-      <ul>
-        <li><a href="fall-cabaret.html">Fall Cabaret</a> – An evening of student performances and vocal solos.</li>
-        <li><a href="conductors-showcase.html">Spring Conductor’s Showcase</a> – Our annual concert led by student conductors.</li>
-      </ul>
+    <div class="event-grid">
+      <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Curtain_theater_red.jpg/640px-Curtain_theater_red.jpg" alt="Fall Cabaret">
+        <div class="card-body">
+          <span class="status upcoming">Upcoming</span>
+          <div class="card-title">Fall Cabaret</div>
+          <div class="card-detail">📅 October 25, 2025 – 7:00 PM</div>
+          <div class="card-detail">📍 Boyd Recital Hall</div>
+          <div class="card-detail">A night of student performances and vocal solos.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Choral_concert_Cologne.jpg/640px-Choral_concert_Cologne.jpg" alt="Student Conductor Showcase">
+        <div class="card-body">
+          <span class="status ended">Ended</span>
+          <div class="card-title">Student Conductor Showcase</div>
+          <div class="card-detail">📅 March 8, 2024 – 7:30 PM</div>
+          <div class="card-detail">📍 Wilson Hall 153</div>
+          <div class="card-detail">A showcase led by Rowan student conductors.</div>
+        </div>
+      </div>
     </div>
   </main>
+
   <footer>
     <p>&copy; 2025 Rowan ACDA</p>
   </footer>
