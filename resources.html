@@ -1,116 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Resources | Rowan ACDA</title>
-  <link rel="stylesheet" href="style.css"/>
-  <style>
-    .accordion {
-      width: 90%;
-      margin: 2rem auto;
-    }
-
-    .accordion-item {
-      background: #f1f1f1;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .accordion-header {
-      padding: 1rem;
-      background: #800000;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .accordion-body {
-      display: none;
-      padding: 1rem;
-      background: #fff;
-      border-top: 1px solid #ccc;
-    }
-
-    .accordion-body ul {
-      padding-left: 1.2rem;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Resources</h1>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="new-members.html">New Members</a></li>
-        <li><a href="resources.html">Resources</a></li>
-        <li><a href="eboard.html">E-Board</a></li>
-      </ul>
-    </nav>
+    
+<nav>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="members.html">Members</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="eboard.html">E-Board</a></li>
+  </ul>
+</nav>
+
   </header>
   <main>
-    <section class="accordion">
-      <div class="accordion-item">
-        <div class="accordion-header">🎵 Choral Director Tools</div>
-        <div class="accordion-body">
-          <ul>
-            <li><a href="#">PDF: Daily Vocal Warm-Ups</a></li>
-            <li><a href="#">Lesson Plan Template (Google Docs)</a></li>
-            <li><a href="#">Sight-Singing Drill Set</a></li>
-            <li><a href="#">Repertoire List: High School Treble</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <div class="accordion-header">📹 Videos & Recordings</div>
-        <div class="accordion-body">
-          <ul>
-            <li><a href="#">YouTube: Chanticleer Masterclass</a></li>
-            <li><a href="#">ACDA Webinar: Building Tone in the Classroom</a></li>
-            <li><a href="#">Video: Conducting Gesture Techniques</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <div class="accordion-header">🧰 Professional Development</div>
-        <div class="accordion-body">
-          <ul>
-            <li><a href="https://acda.org" target="_blank">ACDA National Website</a></li>
-            <li><a href="#">NJ ACDA Chapter</a></li>
-            <li><a href="#">Graduate Music Ed Programs (PDF)</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <div class="accordion-header">📥 Downloadables</div>
-        <div class="accordion-body">
-          <ul>
-            <li><a href="#">Attendance Sheet (Excel)</a></li>
-            <li><a href="#">Rehearsal Planner (PDF)</a></li>
-            <li><a href="#">Seating Chart Template</a></li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    <h1>Resources</h1><p>Tools and downloads for members.</p>
   </main>
   <footer>
     <p>&copy; 2025 Rowan ACDA</p>
   </footer>
-
-  <script>
-    const headers = document.querySelectorAll('.accordion-header');
-    headers.forEach(header => {
-      header.addEventListener('click', () => {
-        const body = header.nextElementSibling;
-        body.style.display = body.style.display === 'block' ? 'none' : 'block';
-      });
-    });
-  </script>
 </body>
 </html>
