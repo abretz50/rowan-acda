@@ -2,25 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Events | Rowan ACDA</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .events-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem 2rem;
+    }
+
+    .events-container ul {
+      padding-left: 1.5rem;
+    }
+
+    .events-container li {
+      margin-bottom: 1rem;
+    }
+
+    .events-container a {
+      font-weight: bold;
+      color: #800000;
+      text-decoration: none;
+    }
+
+    .events-container a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <header>
-    
-<nav>
-  <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="events.html">Events</a></li>
-    <li><a href="members.html">Members</a></li>
-    <li><a href="resources.html">Resources</a></li>
-    <li><a href="eboard.html">E-Board</a></li>
-  </ul>
-</nav>
-
+    <h1>Upcoming Events</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="members.html">Members</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="eboard.html">E-Board</a></li>
+      </ul>
+    </nav>
   </header>
   <main>
-    <h1>Events</h1><p>Upcoming events and links to showcases.</p>
+    <div class="events-container">
+      <ul>
+        <li><a href="fall-cabaret.html">Fall Cabaret</a> – An evening of student performances and vocal solos.</li>
+        <li><a href="conductors-showcase.html">Spring Conductor’s Showcase</a> – Our annual concert led by student conductors.</li>
+      </ul>
+    </div>
   </main>
   <footer>
     <p>&copy; 2025 Rowan ACDA</p>
