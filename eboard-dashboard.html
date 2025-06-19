@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>E-Board Dashboard | Rowan ACDA</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url('background.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      text-align: center;
+      color: #800000;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .dashboard-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .dashboard-card:hover {
+      transform: scale(1.03);
+    }
+    .dashboard-card h2 {
+      color: #800000;
+    }
+    .dashboard-card p {
+      color: #444;
+    }
+    a.card-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: white;
+      background: #800000;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Executive Board Dashboard</h1>
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h2>🎯 Points Management</h2>
+        <p>Track, add, or reset points for members based on event participation.</p>
+        <a class="card-link" href="#">Open</a>
+      </div>
+      <div class="dashboard-card">
+        <h2>🌐 Website Interactions</h2>
+        <p>Review form submissions and member interest data from across the site.</p>
+        <a class="card-link" href="#">Open</a>
+      </div>
+      <div class="dashboard-card">
+        <h2>📆 Event Management</h2>
+        <p>Create, edit, or remove event pages and update event descriptions.</p>
+        <a class="card-link" href="#">Open</a>
+      </div>
+      <div class="dashboard-card">
+        <h2>🛠️ Site Management</h2>
+        <p>Update site structure, navigation, or upload documents and media.</p>
+        <a class="card-link" href="#">Open</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
