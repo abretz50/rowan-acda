@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,7 +45,7 @@
     .dashboard-card p {
       color: #444;
     }
-    a.card-link {
+    a.card-link, .logout-btn {
       display: inline-block;
       margin-top: 1rem;
       color: white;
@@ -55,7 +54,28 @@
       border-radius: 5px;
       text-decoration: none;
     }
+    .logout-container {
+      text-align: center;
+      margin-top: 3rem;
+    }
   </style>
+  <script>
+    // Basic authentication check (replace with secure backend auth in production)
+    const allowedUsername = 'admin';
+    const allowedPassword = 'acda2025';
+
+    const params = new URLSearchParams(window.location.search);
+    const user = params.get('user');
+    const pass = params.get('pass');
+
+    if (user !== allowedUsername || pass !== allowedPassword) {
+      window.location.href = 'index.html'; // redirect to home if not authenticated
+    }
+
+    function loginRedirect() {
+      window.location.href = 'eboard-dashboard.html?user=' + allowedUsername + '&pass=' + allowedPassword;
+    }
+  </script>
 </head>
 <body>
   <div class="container">
@@ -64,23 +84,26 @@
       <div class="dashboard-card">
         <h2>🎯 Points Management</h2>
         <p>Track, add, or reset points for members based on event participation.</p>
-        <a class="card-link" href="#">Open</a>
+        <a class="card-link" href="#" onclick="loginRedirect()">Open</a>
       </div>
       <div class="dashboard-card">
         <h2>🌐 Website Interactions</h2>
         <p>Review form submissions and member interest data from across the site.</p>
-        <a class="card-link" href="#">Open</a>
+        <a class="card-link" href="#" onclick="loginRedirect()">Open</a>
       </div>
       <div class="dashboard-card">
         <h2>📆 Event Management</h2>
         <p>Create, edit, or remove event pages and update event descriptions.</p>
-        <a class="card-link" href="#">Open</a>
+        <a class="card-link" href="#" onclick="loginRedirect()">Open</a>
       </div>
       <div class="dashboard-card">
         <h2>🛠️ Site Management</h2>
         <p>Update site structure, navigation, or upload documents and media.</p>
-        <a class="card-link" href="#">Open</a>
+        <a class="card-link" href="#" onclick="loginRedirect()">Open</a>
       </div>
+    </div>
+    <div class="logout-container">
+      <a href="index.html" class="logout-btn">🚪 Log Out</a>
     </div>
   </div>
 </body>
