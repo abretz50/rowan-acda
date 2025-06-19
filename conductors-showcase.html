@@ -8,8 +8,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
+      background: #f4f4f4 url('background.png') repeat fixed;
     }
 
     header {
@@ -39,7 +38,7 @@
     .container {
       max-width: 800px;
       margin: 2rem auto;
-      background: white;
+      background: rgba(255, 255, 255, 0.9);
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -79,6 +78,18 @@
       padding: 1rem;
       margin-top: 2rem;
     }
+
+    .interest-button {
+      display: block;
+      width: fit-content;
+      margin: 1rem auto 2rem auto;
+      background-color: #800000;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -94,6 +105,10 @@
       </ul>
     </nav>
   </header>
+
+  <a href="https://forms.gle/your-google-form-link" target="_blank" class="interest-button">
+    Student Conductor Interest Form
+  </a>
 
   <main>
     <div class="container">
@@ -130,3 +145,4 @@
   </footer>
 </body>
 </html>
+
