@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Manager | Rowan ACDA</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+    }
+
+    header {
+      background-color: #800000;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #b22222;
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #800000;
+      margin-bottom: 1rem;
+    }
+
+    .event {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+    }
+
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-info {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .event-buttons button {
+      margin-right: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background-color: #ffa500;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #dc143c;
+      color: white;
+    }
+
+    .add-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: #4caf50;
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      background-color: #800000;
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Event Manager</h1>
+</header>
+
+<nav>
+  <a href="eboard-dashboard.html">← Back to Dashboard</a>
+</nav>
+
+<div class="container">
+  <h2>Posted Events</h2>
+
+  <div class="event">
+    <div class="event-title">Fall Cabaret</div>
+    <div class="event-info">📅 October 25, 2025 – 7:00 PM</div>
+    <div class="event-info">📍 Boyd Recital Hall</div>
+    <div class="event-info">🖼️ cabaret.png</div>
+    <div class="event-buttons">
+      <button class="edit-btn" onclick="alert('Edit feature coming soon')">Edit</button>
+      <button class="delete-btn" onclick="alert('Delete feature coming soon')">Delete</button>
+    </div>
+  </div>
+
+  <a href="#" class="add-btn" onclick="alert('Create Event page coming soon')">+ Create New Event</a>
+  <br>
+  <a href="eboard-dashboard.html" class="back-btn">Return to Dashboard</a>
+</div>
+
+</body>
+</html>
