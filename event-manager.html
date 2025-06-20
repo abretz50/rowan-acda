@@ -105,6 +105,7 @@
     <input type="text" id="title" placeholder="Event Title">
     <input type="datetime-local" id="date">
     <input type="text" id="location" placeholder="Location">
+    <input type="text" id="room" placeholder="Room Number (Optional)">
     <textarea id="description" placeholder="Event Description"></textarea>
     <label for="imageFile">Upload Image:</label>
     <input type="file" id="imageFile" accept="image/*">
@@ -150,7 +151,7 @@
         div.innerHTML = `
           <div class="event-title">${event.title}</div>
           <div class="event-info">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatDateForCalendar(event.date)}&location=${encodeURIComponent(event.location)}" target="_blank">${new Date(event.date).toLocaleString()}</a></div>
-          <div class="event-info">📍 <a href="https://maps.google.com/?q=${encodeURIComponent(event.location)}" target="_blank">${event.location}</a></div>
+          <div class="event-info">📍 <a href="https://maps.google.com/?q=${encodeURIComponent(event.location)}" target="_blank">${event.location}</a>${event.room ? ' - Room ' + event.room : ''}</div>
           ${event.description ? `<div class="event-info">📝 ${event.description}</div>` : ''}
           <div class="event-info">🖼️ <img src="images/${event.image}" alt="${event.title} image" style="max-width: 100px;"></div>
           ${event.tag ? `<div class="tag ${event.tag}">${event.tag.replace(/(^|\s)\S/g, l => l.toUpperCase())}</div>` : ''}
@@ -174,6 +175,7 @@
       const title = document.getElementById('title').value;
       const date = document.getElementById('date').value;
       const location = document.getElementById('location').value;
+      const room = document.getElementById('room').value;
       const description = document.getElementById('description').value;
       const tag = document.getElementById('tag').value;
 
@@ -187,11 +189,11 @@
       }
 
       if (!title || !date || !location || !image) {
-        alert('Please fill out all fields.');
+        alert('Please fill out all required fields.');
         return;
       }
 
-      const newEvent = { title, date, location, description, image, tag };
+      const newEvent = { title, date, location, room, description, image, tag };
       const events = getEvents();
       events.push(newEvent);
       saveEvents(events);
@@ -201,6 +203,7 @@
       document.getElementById('title').value = '';
       document.getElementById('date').value = '';
       document.getElementById('location').value = '';
+      document.getElementById('room').value = '';
       document.getElementById('description').value = '';
       document.getElementById('tag').value = '';
       fileInput.value = '';
