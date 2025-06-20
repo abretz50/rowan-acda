@@ -27,6 +27,8 @@
       display: flex;
       margin-top: 80px;
       width: 100%;
+      padding: 0 1rem;
+      gap: 1rem;
     }
     .left-panel, .right-panel {
       padding: 0.5rem;
@@ -111,6 +113,10 @@
         <h3>Member Management</h3>
         <input type="text" id="newMember" placeholder="Add New Member">
         <button onclick="addMember()">Add Member</button>
+        <input type="text" id="editMember" placeholder="Edit Member Name">
+        <button onclick="editMember()">Edit Member</button>
+        <input type="text" id="deleteMember" placeholder="Delete Member Name">
+        <button onclick="deleteMember()">Delete Member</button>
       </div>
       <div class="panel" id="historyPanel">
         <h3 id="historyTitle">Point History</h3>
@@ -200,6 +206,43 @@
       if (!(name in members)) members[name] = 0;
       saveMembers(members);
       document.getElementById('newMember').value = '';
+      updateUI();
+    }
+
+    function editMember() {
+      const oldName = document.getElementById('editMember').value.trim();
+      const newName = prompt("Enter the new name for " + oldName);
+      if (!oldName || !newName) return;
+      const members = loadMembers();
+      if (oldName in members) {
+        members[newName] = members[oldName];
+        delete members[oldName];
+        saveMembers(members);
+        const history = loadHistory();
+        if (history[oldName]) {
+          history[newName] = history[oldName];
+          delete history[oldName];
+          saveHistory(history);
+        }
+      }
+      document.getElementById('editMember').value = '';
+      updateUI();
+    }
+
+    function deleteMember() {
+      const name = document.getElementById('deleteMember').value.trim();
+      if (!name) return;
+      const members = loadMembers();
+      if (name in members) {
+        delete members[name];
+        saveMembers(members);
+        const history = loadHistory();
+        if (history[name]) {
+          delete history[name];
+          saveHistory(history);
+        }
+      }
+      document.getElementById('deleteMember').value = '';
       updateUI();
     }
 
