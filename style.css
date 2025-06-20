@@ -11,19 +11,19 @@ body {
 }
 
 header {
-  background-color: #800000; /* maroon */
+  background: rgba(128, 0, 0, 0.9);
   color: white;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
 }
 
 nav ul {
   list-style: none;
-  background-color: #b22222; /* red */
-  display: flex;
-  justify-content: center;
   padding: 0;
   margin: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #b22222;
 }
 
 nav ul li {
@@ -38,7 +38,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-  background-color: #333; /* black hover */
+  background-color: #a52a2a;
 }
 
 main {
