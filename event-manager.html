@@ -79,7 +79,7 @@
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .add-form input, .add-form select {
+    .add-form input, .add-form select, .add-form textarea {
       display: block;
       width: 100%;
       margin-bottom: 0.5rem;
@@ -105,6 +105,7 @@
     <input type="text" id="title" placeholder="Event Title">
     <input type="datetime-local" id="date">
     <input type="text" id="location" placeholder="Location">
+    <textarea id="description" placeholder="Event Description"></textarea>
     <label for="imageFile">Upload Image:</label>
     <input type="file" id="imageFile" accept="image/*">
     <label for="imageSelect">Or Select from Library:</label>
@@ -155,6 +156,7 @@
           <div class="event-title">${event.title}</div>
           <div class="event-info">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatDateForCalendar(event.date)}&location=${encodeURIComponent(event.location)}" target="_blank">${new Date(event.date).toLocaleString()}</a></div>
           <div class="event-info">📍 <a href="https://maps.google.com/?q=${encodeURIComponent(event.location)}" target="_blank">${event.location}</a></div>
+          ${event.description ? `<div class="event-info">📝 ${event.description}</div>` : ''}
           <div class="event-info">🖼️ ${event.image}</div>
           ${event.tag ? `<div class="tag ${event.tag}">${event.tag.replace(/(^|\s)\S/g, l => l.toUpperCase())}</div>` : ''}
           <div class="event-buttons">
@@ -177,6 +179,7 @@
       const title = document.getElementById('title').value;
       const date = document.getElementById('date').value;
       const location = document.getElementById('location').value;
+      const description = document.getElementById('description').value;
       const tag = document.getElementById('tag').value;
 
       const fileInput = document.getElementById('imageFile');
@@ -192,7 +195,7 @@
         return;
       }
 
-      const newEvent = { title, date, location, image, tag };
+      const newEvent = { title, date, location, description, image, tag };
       const events = getEvents();
       events.push(newEvent);
       saveEvents(events);
@@ -201,6 +204,7 @@
       document.getElementById('title').value = '';
       document.getElementById('date').value = '';
       document.getElementById('location').value = '';
+      document.getElementById('description').value = '';
       document.getElementById('tag').value = '';
       fileInput.value = '';
       selectInput.value = '';
