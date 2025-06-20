@@ -108,8 +108,8 @@
     <textarea id="description" placeholder="Event Description"></textarea>
     <label for="imageFile">Upload Image:</label>
     <input type="file" id="imageFile" accept="image/*">
-    <label for="imageSelect">Or Enter Image Filename (from /images):</label>
-    <input type="text" id="imageSelect" placeholder="e.g., myevent.png">
+    <label for="imageSelect">Or Select Image from Library:</label>
+    <select id="imageSelect"></select>
     <label for="tag">Select a Tag:</label>
     <select id="tag">
       <option value="">--None--</option>
@@ -178,11 +178,12 @@
       const tag = document.getElementById('tag').value;
 
       const fileInput = document.getElementById('imageFile');
-      const textInput = document.getElementById('imageSelect');
+      const selectInput = document.getElementById('imageSelect');
 
-      let image = textInput.value.trim();
+      let image = selectInput.value.trim();
       if (fileInput.files.length > 0) {
         image = fileInput.files[0].name;
+        addToImageLibrary(image);
       }
 
       if (!title || !date || !location || !image) {
@@ -195,6 +196,7 @@
       events.push(newEvent);
       saveEvents(events);
       renderEvents();
+      populateImageDropdown();
 
       document.getElementById('title').value = '';
       document.getElementById('date').value = '';
@@ -202,7 +204,7 @@
       document.getElementById('description').value = '';
       document.getElementById('tag').value = '';
       fileInput.value = '';
-      textInput.value = '';
+      selectInput.value = '';
     }
 
     function deleteEvent(index) {
@@ -212,7 +214,30 @@
       renderEvents();
     }
 
-    window.onload = renderEvents;
+    function populateImageDropdown() {
+      const imageSelect = document.getElementById('imageSelect');
+      const images = JSON.parse(localStorage.getItem('imageLibrary') || '[]');
+      imageSelect.innerHTML = '<option value="">--Choose an image--</option>';
+      images.forEach(img => {
+        const opt = document.createElement('option');
+        opt.value = img;
+        opt.textContent = img;
+        imageSelect.appendChild(opt);
+      });
+    }
+
+    function addToImageLibrary(filename) {
+      const images = JSON.parse(localStorage.getItem('imageLibrary') || '[]');
+      if (!images.includes(filename)) {
+        images.push(filename);
+        localStorage.setItem('imageLibrary', JSON.stringify(images));
+      }
+    }
+
+    window.onload = function() {
+      renderEvents();
+      populateImageDropdown();
+    };
   </script>
 </body>
 </html>
