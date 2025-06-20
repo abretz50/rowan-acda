@@ -2,258 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Points Manager</title>
+  <title>E-Board Dashboard | Rowan ACDA</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
+      background: url('background.png') no-repeat center center fixed;
+      background-size: cover;
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-      display: flex;
-    }
-    header {
-      width: 100%;
-      background: #800000;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 1000;
     }
     .container {
-      display: flex;
-      margin-top: 80px;
-      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
     }
-    .left-panel, .right-panel {
-      padding: 0.5rem;
-    }
-    .left-panel {
-      flex: 2;
-    }
-    .right-panel {
-      flex: 1;
-      background: #fff;
-      border-left: 1px solid #ccc;
-    }
-    .panel {
-      background: white;
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .panel h3 {
-      margin-top: 0;
+    h1 {
+      text-align: center;
       color: #800000;
     }
-    .member-list li {
-      list-style: none;
-      margin-bottom: 0.5rem;
-      cursor: pointer;
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
     }
-    .member-points {
-      display: flex;
-      justify-content: space-between;
+    .dashboard-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.2s;
     }
-    input, select, button {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 0.5rem;
+    .dashboard-card:hover {
+      transform: scale(1.03);
     }
-    button {
-      background: #800000;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+    .dashboard-card h2 {
+      color: #800000;
     }
-    .tag-badge {
+    .dashboard-card p {
+      color: #444;
+    }
+    a.card-link, .logout-btn {
       display: inline-block;
-      background: #ddd;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: 4px;
-      font-size: 0.8rem;
+      margin-top: 1rem;
+      color: white;
+      background: #800000;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
     }
-    #historyPanel {
-      display: none;
+    .logout-container {
+      text-align: center;
+      margin-top: 3rem;
     }
   </style>
+  <script>
+    const allowedUsername = 'admin';
+    const allowedPassword = 'acda2025';
+    const params = new URLSearchParams(window.location.search);
+    const user = params.get('user');
+    const pass = params.get('pass');
+    if (user !== allowedUsername || pass !== allowedPassword) {
+      window.location.href = 'index.html';
+    }
+    function loginRedirect() {
+      window.location.href = 'eboard-dashboard.html?user=' + allowedUsername + '&pass=' + allowedPassword;
+    }
+  </script>
 </head>
 <body>
-  <header>
-    <h1>Points Manager</h1>
-  </header>
   <div class="container">
-    <div class="left-panel">
-      <div class="panel">
-        <h3>Pending Point Requests</h3>
-        <ul id="pendingList"></ul>
+    <h1>Executive Board Dashboard</h1>
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h2>🎯 Point Manager</h2>
+        <p>Track, add, or reset points for members based on event participation.</p>
+        <a class="card-link" href="point-manager.html">Open</a>
       </div>
-      <div class="panel">
-        <h3>Edit/Add Points</h3>
-        <select id="memberSelect"></select>
-        <input type="number" id="pointChange" placeholder="Points to Add/Subtract">
-        <select id="tagSelect"></select>
-        <button onclick="applyPoints()">Apply Points</button>
+      <div class="dashboard-card">
+        <h2>🌐 Website Interactions</h2>
+        <p>Review form submissions and member interest data from across the site.</p>
+        <a class="card-link" href="#" onclick="loginRedirect()">Open</a>
       </div>
-      <div class="panel">
-        <h3>Create New Tag</h3>
-        <input type="text" id="newTag" placeholder="Tag Name">
-        <input type="number" id="tagPoints" placeholder="Points Value">
-        <button onclick="addTag()">Add Tag</button>
+      <div class="dashboard-card">
+        <h2>📆 Event Management</h2>
+        <p>Create, edit, or remove event pages and update event descriptions.</p>
+        <a class="card-link" href="event-manager.html">Open</a>
       </div>
-      <div class="panel">
-        <h3>Member Management</h3>
-        <input type="text" id="newMember" placeholder="Add New Member">
-        <button onclick="addMember()">Add Member</button>
-      </div>
-      <div class="panel" id="historyPanel">
-        <h3 id="historyTitle">Point History</h3>
-        <ul id="historyList"></ul>
+      <div class="dashboard-card">
+        <h2>🛠️ Site Management</h2>
+        <p>Update site structure, navigation, or upload documents and media.</p>
+        <a class="card-link" href="#" onclick="loginRedirect()">Open</a>
       </div>
     </div>
-    <div class="right-panel">
-      <div class="panel">
-        <h3>Member Points</h3>
-        <ul id="memberList" class="member-list"></ul>
-      </div>
+    <div class="logout-container">
+      <a href="index.html" class="logout-btn">🚪 Log Out</a>
     </div>
   </div>
-
-  <script>
-    const defaultTags = [
-      { name: "Tenor Bass Festival", points: 5 },
-      { name: "Bake Sale", points: 3 },
-      { name: "Choir Concert", points: 5 },
-      { name: "Volunteer", points: 4 },
-      { name: "Trip", points: 6 },
-      { name: "General Meeting Attendance", points: 2 },
-      { name: "Cabaret", points: 4 },
-      { name: "Conductors Concert", points: 4 }
-    ];
-
-    function loadMembers() {
-      return JSON.parse(localStorage.getItem('members') || '{}');
-    }
-
-    function saveMembers(members) {
-      localStorage.setItem('members', JSON.stringify(members));
-    }
-
-    function loadHistory() {
-      return JSON.parse(localStorage.getItem('history') || '{}');
-    }
-
-    function saveHistory(history) {
-      localStorage.setItem('history', JSON.stringify(history));
-    }
-
-    function loadTags() {
-      return JSON.parse(localStorage.getItem('tags') || JSON.stringify(defaultTags));
-    }
-
-    function saveTags(tags) {
-      localStorage.setItem('tags', JSON.stringify(tags));
-    }
-
-    function updateUI() {
-      const memberList = document.getElementById('memberList');
-      const memberSelect = document.getElementById('memberSelect');
-      const tagSelect = document.getElementById('tagSelect');
-
-      const members = loadMembers();
-      const tags = loadTags();
-
-      memberList.innerHTML = '';
-      memberSelect.innerHTML = '';
-      tagSelect.innerHTML = '<option value="">Select a tag</option>';
-
-      for (const name in members) {
-        const li = document.createElement('li');
-        li.className = 'member-points';
-        li.innerHTML = `<span onclick="showHistory('${name}')">${name}</span><span>${members[name]} pts</span>`;
-        memberList.appendChild(li);
-
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = name;
-        memberSelect.appendChild(option);
-      }
-
-      for (const tag of tags) {
-        const option = document.createElement('option');
-        option.value = tag.name;
-        option.textContent = `${tag.name} (${tag.points} pts)`;
-        tagSelect.appendChild(option);
-      }
-    }
-
-    function addMember() {
-      const name = document.getElementById('newMember').value.trim();
-      if (!name) return;
-      const members = loadMembers();
-      if (!(name in members)) members[name] = 0;
-      saveMembers(members);
-      document.getElementById('newMember').value = '';
-      updateUI();
-    }
-
-    function applyPoints() {
-      const name = document.getElementById('memberSelect').value;
-      const pointChange = parseInt(document.getElementById('pointChange').value, 10);
-      const tag = document.getElementById('tagSelect').value;
-      if (!name || isNaN(pointChange)) return;
-      const members = loadMembers();
-      const history = loadHistory();
-
-      members[name] = (members[name] || 0) + pointChange;
-      saveMembers(members);
-
-      if (!history[name]) history[name] = [];
-      history[name].push({ date: new Date().toLocaleString(), change: pointChange, tag });
-      saveHistory(history);
-
-      document.getElementById('pointChange').value = '';
-      document.getElementById('tagSelect').value = '';
-      updateUI();
-    }
-
-    function addTag() {
-      const name = document.getElementById('newTag').value.trim();
-      const points = parseInt(document.getElementById('tagPoints').value, 10);
-      if (!name || isNaN(points)) return;
-      const tags = loadTags();
-      tags.push({ name, points });
-      saveTags(tags);
-      document.getElementById('newTag').value = '';
-      document.getElementById('tagPoints').value = '';
-      updateUI();
-    }
-
-    function showHistory(member) {
-      const historyPanel = document.getElementById('historyPanel');
-      const historyList = document.getElementById('historyList');
-      const historyTitle = document.getElementById('historyTitle');
-      const history = loadHistory();
-
-      historyTitle.textContent = `Point History: ${member}`;
-      historyList.innerHTML = '';
-      if (history[member]) {
-        for (const entry of history[member]) {
-          const li = document.createElement('li');
-          li.textContent = `${entry.date}: ${entry.change > 0 ? '+' : ''}${entry.change} (${entry.tag})`;
-          historyList.appendChild(li);
-        }
-      }
-      historyPanel.style.display = 'block';
-    }
-
-    window.onload = updateUI;
-  </script>
 </body>
 </html>
