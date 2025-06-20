@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      display: flex;
+    }
+    header {
+      width: 100%;
+      background: #800000;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+    .container {
+      display: flex;
+      margin-top: 80px;
+      width: 100%;
+    }
+    .left-panel, .right-panel {
+      padding: 1rem;
+    }
+    .left-panel {
+      flex: 2;
+    }
+    .right-panel {
+      flex: 1;
+      background: #fff;
+      border-left: 1px solid #ccc;
+    }
+    .panel {
+      background: white;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .panel h3 {
+      margin-top: 0;
+      color: #800000;
+    }
+    .member-list li {
+      list-style: none;
+      margin-bottom: 0.5rem;
+    }
+    .member-points {
+      display: flex;
+      justify-content: space-between;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    button {
+      background: #800000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tag-badge {
+      display: inline-block;
+      background: #ddd;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Points Manager</h1>
+  </header>
+  <div class="container">
+    <div class="left-panel">
+      <div class="panel">
+        <h3>Pending Point Requests</h3>
+        <ul id="pendingList"></ul>
+      </div>
+      <div class="panel">
+        <h3>Edit/Add Points</h3>
+        <select id="memberSelect"></select>
+        <input type="number" id="pointChange" placeholder="Points to Add/Subtract">
+        <select id="tagSelect"></select>
+        <button onclick="applyPoints()">Apply Points</button>
+        <input type="text" id="newMember" placeholder="Add New Member">
+        <button onclick="addMember()">Add Member</button>
+      </div>
+      <div class="panel">
+        <h3>Create New Tag</h3>
+        <input type="text" id="newTag" placeholder="Tag Name">
+        <input type="number" id="tagPoints" placeholder="Points Value">
+        <button onclick="addTag()">Add Tag</button>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="panel">
+        <h3>Member Points</h3>
+        <ul id="memberList" class="member-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const defaultTags = [
+      { name: "Tenor Bass Festival", points: 5 },
+      { name: "Bake Sale", points: 3 },
+      { name: "Choir Concert", points: 5 },
+      { name: "Volunteer", points: 4 },
+      { name: "Trip", points: 6 },
+      { name: "General Meeting Attendance", points: 2 },
+      { name: "Cabaret", points: 4 },
+      { name: "Conductors Concert", points: 4 }
+    ];
+
+    function loadMembers() {
+      return JSON.parse(localStorage.getItem('members') || '{}');
+    }
+
+    function saveMembers(members) {
+      localStorage.setItem('members', JSON.stringify(members));
+    }
+
+    function loadTags() {
+      return JSON.parse(localStorage.getItem('tags') || JSON.stringify(defaultTags));
+    }
+
+    function saveTags(tags) {
+      localStorage.setItem('tags', JSON.stringify(tags));
+    }
+
+    function updateUI() {
+      const memberList = document.getElementById('memberList');
+      const memberSelect = document.getElementById('memberSelect');
+      const tagSelect = document.getElementById('tagSelect');
+
+      const members = loadMembers();
+      const tags = loadTags();
+
+      memberList.innerHTML = '';
+      memberSelect.innerHTML = '';
+      tagSelect.innerHTML = '<option value="">Select a tag</option>';
+
+      for (const name in members) {
+        const li = document.createElement('li');
+        li.className = 'member-points';
+        li.innerHTML = `<span>${name}</span><span>${members[name]} pts</span>`;
+        memberList.appendChild(li);
+
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        memberSelect.appendChild(option);
+      }
+
+      for (const tag of tags) {
+        const option = document.createElement('option');
+        option.value = tag.name;
+        option.textContent = `${tag.name} (${tag.points} pts)`;
+        tagSelect.appendChild(option);
+      }
+    }
+
+    function addMember() {
+      const name = document.getElementById('newMember').value.trim();
+      if (!name) return;
+      const members = loadMembers();
+      if (!(name in members)) members[name] = 0;
+      saveMembers(members);
+      document.getElementById('newMember').value = '';
+      updateUI();
+    }
+
+    function applyPoints() {
+      const name = document.getElementById('memberSelect').value;
+      const pointChange = parseInt(document.getElementById('pointChange').value, 10);
+      const tag = document.getElementById('tagSelect').value;
+      if (!name || isNaN(pointChange)) return;
+      const members = loadMembers();
+      members[name] = (members[name] || 0) + pointChange;
+      saveMembers(members);
+      document.getElementById('pointChange').value = '';
+      document.getElementById('tagSelect').value = '';
+      updateUI();
+    }
+
+    function addTag() {
+      const name = document.getElementById('newTag').value.trim();
+      const points = parseInt(document.getElementById('tagPoints').value, 10);
+      if (!name || isNaN(points)) return;
+      const tags = loadTags();
+      tags.push({ name, points });
+      saveTags(tags);
+      document.getElementById('newTag').value = '';
+      document.getElementById('tagPoints').value = '';
+      updateUI();
+    }
+
+    window.onload = updateUI;
+  </script>
+</body>
+</html>
