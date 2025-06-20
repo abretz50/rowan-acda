@@ -44,6 +44,20 @@
     .event-buttons {
       margin-top: 0.5rem;
     }
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      margin: 0.2rem;
+      border-radius: 4px;
+      color: white;
+      font-size: 0.8rem;
+    }
+    .performance { background: yellow; color: black; }
+    .professional { background: purple; }
+    .meeting { background: green; }
+    .volunteer { background: red; }
+    .trip { background: orange; }
+    .service { background: blue; }
     .edit-btn, .delete-btn, .add-btn, .back-btn {
       background-color: #800000;
       color: white;
@@ -100,6 +114,16 @@
       <option value="showcase.png">showcase.png</option>
       <option value="bake-sale.png">bake-sale.png</option>
     </select>
+    <label for="tag">Select a Tag:</label>
+    <select id="tag">
+      <option value="">--None--</option>
+      <option value="performance">Performance</option>
+      <option value="professional">Professional Development</option>
+      <option value="meeting">General Meeting</option>
+      <option value="volunteer">Volunteer</option>
+      <option value="trip">Trip</option>
+      <option value="service">Service</option>
+    </select>
     <button onclick="addEvent()">Add Event</button>
   </div>
 
@@ -131,6 +155,7 @@
           <div class="event-info">📅 ${event.date}</div>
           <div class="event-info">📍 ${event.location}</div>
           <div class="event-info">🖼️ ${event.image}</div>
+          ${event.tag ? `<div class="tag ${event.tag}">${event.tag.replace(/(^|\s)\S/g, l => l.toUpperCase())}</div>` : ''}
           <div class="event-buttons">
             <button class="edit-btn" onclick="alert('Edit feature coming soon')">Edit</button>
             <button class="delete-btn" onclick="deleteEvent(${index})">Delete</button>
@@ -144,6 +169,7 @@
       const title = document.getElementById('title').value;
       const date = document.getElementById('date').value;
       const location = document.getElementById('location').value;
+      const tag = document.getElementById('tag').value;
 
       const fileInput = document.getElementById('imageFile');
       const selectInput = document.getElementById('imageSelect');
@@ -158,7 +184,7 @@
         return;
       }
 
-      const newEvent = { title, date, location, image };
+      const newEvent = { title, date, location, image, tag };
       const events = getEvents();
       events.push(newEvent);
       saveEvents(events);
@@ -167,6 +193,7 @@
       document.getElementById('title').value = '';
       document.getElementById('date').value = '';
       document.getElementById('location').value = '';
+      document.getElementById('tag').value = '';
       fileInput.value = '';
       selectInput.value = '';
     }
@@ -182,4 +209,3 @@
   </script>
 </body>
 </html>
-
