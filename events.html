@@ -2,122 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Events | Rowan ACDA</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resources | Rowan ACDA</title>
+  <link rel="stylesheet" href="style.css"/>
   <style>
-    body {
-      background: url('background.png') no-repeat center center fixed;
-      background-size: cover;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: rgba(128, 0, 0, 0.9);
-      color: white;
-      padding: 1.5rem;
-      text-align: center;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      background-color: #b22222;
-    }
-
-    nav ul li {
-      margin: 0;
-    }
-
-    nav ul li a {
-      display: block;
-      padding: 1rem;
-      color: white;
-      text-decoration: none;
-    }
-
-    nav ul li a:hover {
-      background-color: #a52a2a;
-    }
-
-    .container {
-      max-width: 1200px;
+    .accordion {
+      width: 90%;
+      max-width: 800px;
       margin: 2rem auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
-    h1 {
-      text-align: center;
-      color: #800000;
+    .accordion-item {
+      background: #f1f1f1;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
-    .event-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-
-    .card-body {
+    .accordion-header {
       padding: 1rem;
-    }
-
-    .card-title {
-      display: block;
-      font-size: 1.25rem;
-      font-weight: bold;
-      margin: 0.5rem 0;
-      color: #800000;
-      text-decoration: none;
-    }
-
-    .card-detail {
-      font-size: 0.95rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .status.upcoming {
-      display: inline-block;
       background: #800000;
       color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 5px;
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    footer {
-      text-align: center;
-      color: white;
-      background: #000;
+    .accordion-body {
+      display: none;
       padding: 1rem;
-      margin-top: 2rem;
+      background: #fff;
+      border-top: 1px solid #ccc;
+    }
+
+    .accordion-body ul {
+      padding-left: 1.2rem;
+    }
+
+    .accordion-body ul li {
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Events</h1>
+    <h1>Resources</h1>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
@@ -128,49 +56,65 @@
       </ul>
     </nav>
   </header>
-
   <main>
-    <div class="container">
-      <div class="event-grid">
-        <div class="card">
-          <a href="fall-cabaret.html"><img src="images/cabaret.png" alt="Fall Cabaret"></a>
-          <div class="card-body">
-            <span class="status upcoming">Upcoming</span>
-            <a href="fall-cabaret.html" class="card-title">Fall Cabaret</a>
-            <div class="card-detail">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Fall+Cabaret&dates=20251025T190000Z/20251025T210000Z&details=A+night+of+student+performances+and+vocal+solos&location=Boyd+Recital+Hall" target="_blank">October 25, 2025 – 7:00 PM</a></div>
-            <div class="card-detail">📍 <a href="https://maps.google.com/?q=Boyd+Recital+Hall" target="_blank">Boyd Recital Hall</a></div>
-            <div class="card-detail">A night of student performances and vocal solos.</div>
-          </div>
+    <section class="accordion">
+      <div class="accordion-item">
+        <div class="accordion-header">🎵 Choral Director Tools</div>
+        <div class="accordion-body">
+          <ul>
+            <li><a href="#">PDF: Daily Vocal Warm-Ups</a></li>
+            <li><a href="#">Lesson Plan Template (Google Docs)</a></li>
+            <li><a href="#">Sight-Singing Drill Set</a></li>
+            <li><a href="#">Repertoire List: High School Treble</a></li>
+          </ul>
         </div>
-
-        <div class="card">
-          <a href="conductors-showcase.html"><img src="images/showcase.png" alt="Conductor's Showcase"></a>
-          <div class="card-body">
-            <span class="status upcoming">Upcoming</span>
-            <a href="conductors-showcase.html" class="card-title">Student Conductor Showcase</a>
-            <div class="card-detail">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Student+Conductor+Showcase&dates=20251115T183000Z/20251115T203000Z&details=Featuring+student+conductors+and+the+Concert+Choir&location=Pfleeger+Concert+Hall" target="_blank">November 15, 2025 – 6:30 PM</a></div>
-            <div class="card-detail">📍 <a href="https://maps.google.com/?q=Pfleeger+Concert+Hall" target="_blank">Pfleeger Concert Hall</a></div>
-            <div class="card-detail">Featuring student conductors and the Concert Choir.</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <a href="bake-sale.html"><img src="images/bake-sale.png" alt="Bake Sale Fundraiser"></a>
-          <div class="card-body">
-            <span class="status upcoming">Upcoming</span>
-            <a href="bake-sale.html" class="card-title">Bake Sale Fundraiser</a>
-            <div class="card-detail">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Bake+Sale+Fundraiser&dates=20261003T090000Z/20261003T140000Z&details=Help+raise+funds+by+volunteering+for+a+shift+or+donating+baked+goods&location=Bunce+Hall+Lobby" target="_blank">October 3, 2026 – 9:00 AM to 2:00 PM</a></div>
-            <div class="card-detail">📍 <a href="https://maps.google.com/?q=Bunce+Hall+Lobby" target="_blank">Bunce Hall Lobby</a></div>
-            <div class="card-detail">Help raise funds by volunteering for a shift or donating baked goods.</div>
-          </div>
-        </div>
-
       </div>
-    </div>
-  </main>
 
+      <div class="accordion-item">
+        <div class="accordion-header">📹 Videos & Recordings</div>
+        <div class="accordion-body">
+          <ul>
+            <li><a href="#">YouTube: Chanticleer Masterclass</a></li>
+            <li><a href="#">ACDA Webinar: Building Tone in the Classroom</a></li>
+            <li><a href="#">Video: Conducting Gesture Techniques</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">🧰 Professional Development</div>
+        <div class="accordion-body">
+          <ul>
+            <li><a href="https://acda.org" target="_blank">ACDA National Website</a></li>
+            <li><a href="#">NJ ACDA Chapter</a></li>
+            <li><a href="#">Graduate Music Ed Programs (PDF)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">📥 Downloadables</div>
+        <div class="accordion-body">
+          <ul>
+            <li><a href="#">Attendance Sheet (Excel)</a></li>
+            <li><a href="#">Rehearsal Planner (PDF)</a></li>
+            <li><a href="#">Seating Chart Template</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
   <footer>
     <p>&copy; 2025 Rowan ACDA</p>
   </footer>
+  <script>
+    const headers = document.querySelectorAll('.accordion-header');
+    headers.forEach(header => {
+      header.addEventListener('click', () => {
+        const body = header.nextElementSibling;
+        body.style.display = body.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+  </script>
 </body>
 </html>
