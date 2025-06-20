@@ -138,46 +138,55 @@
 
   <main>
     <div class="container">
-      <div class="event-grid">
-        <div class="card">
-          <a href="fall-cabaret.html"><img src="images/cabaret.png" alt="Fall Cabaret"></a>
-          <div class="card-body">
-            <span class="status upcoming">Upcoming</span>
-            <a href="fall-cabaret.html" class="card-title">Fall Cabaret</a>
-            <div class="card-detail">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Fall+Cabaret&dates=20251025T190000Z/20251025T210000Z&details=A+night+of+student+performances+and+vocal+solos&location=Boyd+Recital+Hall" target="_blank">October 25, 2025 – 7:00 PM</a></div>
-            <div class="card-detail">📍 <a href="https://maps.google.com/?q=Boyd+Recital+Hall" target="_blank">Boyd Recital Hall</a></div>
-            <div class="card-detail">A night of student performances and vocal solos.</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <a href="conductors-showcase.html"><img src="images/showcase.png" alt="Conductor's Showcase"></a>
-          <div class="card-body">
-            <span class="status upcoming">Upcoming</span>
-            <a href="conductors-showcase.html" class="card-title">Student Conductor Showcase</a>
-            <div class="card-detail">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Student+Conductor+Showcase&dates=20251115T183000Z/20251115T203000Z&details=Featuring+student+conductors+and+the+Concert+Choir&location=Pfleeger+Concert+Hall" target="_blank">November 15, 2025 – 6:30 PM</a></div>
-            <div class="card-detail">📍 <a href="https://maps.google.com/?q=Pfleeger+Concert+Hall" target="_blank">Pfleeger Concert Hall</a></div>
-            <div class="card-detail">Featuring student conductors and the Concert Choir.</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <a href="bake-sale.html"><img src="images/bake-sale.png" alt="Bake Sale Fundraiser"></a>
-          <div class="card-body">
-            <span class="status upcoming">Upcoming</span>
-            <a href="bake-sale.html" class="card-title">Bake Sale Fundraiser</a>
-            <div class="card-detail">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Bake+Sale+Fundraiser&dates=20261003T090000Z/20261003T140000Z&details=Help+raise+funds+by+volunteering+for+a+shift+or+donating+baked+goods&location=Bunce+Hall+Lobby" target="_blank">October 3, 2026 – 9:00 AM to 2:00 PM</a></div>
-            <div class="card-detail">📍 <a href="https://maps.google.com/?q=Bunce+Hall+Lobby" target="_blank">Bunce Hall Lobby</a></div>
-            <div class="card-detail">Help raise funds by volunteering for a shift or donating baked goods.</div>
-          </div>
-        </div>
-
-      </div>
+      <div class="event-grid" id="dynamicEvents"></div>
     </div>
   </main>
 
   <footer>
     <p>&copy; 2025 Rowan ACDA</p>
   </footer>
+
+  <script>
+    function getEvents() {
+      return JSON.parse(localStorage.getItem('events') || '[]');
+    }
+
+    function formatDateRange(isoString) {
+      const date = new Date(isoString);
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+      return date.toLocaleDateString(undefined, options);
+    }
+
+    function generateGoogleCalendarLink(title, date, location, details) {
+      const start = new Date(date).toISOString().replace(/-|:|\.\d\d\d/g, "");
+      const end = new Date(new Date(date).getTime() + 2 * 60 * 60 * 1000).toISOString().replace(/-|:|\.\d\d\d/g, "");
+      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+    }
+
+    function createEventCard(event) {
+      const link = generateGoogleCalendarLink(event.title, event.date, event.location, event.description || 'ACDA Event');
+      return `
+        <div class="card">
+          <img src="images/${event.image}" alt="${event.title}">
+          <div class="card-body">
+            <span class="status upcoming">Upcoming</span>
+            <div class="card-title">${event.title}</div>
+            <div class="card-detail">📅 <a href="${link}" target="_blank">${formatDateRange(event.date)}</a></div>
+            <div class="card-detail">📍 <a href="https://maps.google.com/?q=${encodeURIComponent(event.location)}" target="_blank">${event.location}</a></div>
+            <div class="card-detail">${event.description || ''}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDynamicEvents() {
+      const container = document.getElementById("dynamicEvents");
+      let events = getEvents();
+      events.sort((a, b) => new Date(a.date) - new Date(b.date));
+      container.innerHTML = events.map(createEventCard).join('');
+    }
+
+    window.onload = renderDynamicEvents;
+  </script>
 </body>
 </html>
