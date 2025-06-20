@@ -144,7 +144,8 @@
 
     function renderEvents() {
       const eventList = document.getElementById('eventList');
-      const events = getEvents();
+      let events = getEvents();
+      events.sort((a, b) => new Date(a.date) - new Date(b.date));
       eventList.innerHTML = '';
 
       events.forEach((event, index) => {
@@ -152,8 +153,8 @@
         div.className = 'event';
         div.innerHTML = `
           <div class="event-title">${event.title}</div>
-          <div class="event-info">📅 ${event.date}</div>
-          <div class="event-info">📍 ${event.location}</div>
+          <div class="event-info">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatDateForCalendar(event.date)}&location=${encodeURIComponent(event.location)}" target="_blank">${new Date(event.date).toLocaleString()}</a></div>
+          <div class="event-info">📍 <a href="https://maps.google.com/?q=${encodeURIComponent(event.location)}" target="_blank">${event.location}</a></div>
           <div class="event-info">🖼️ ${event.image}</div>
           ${event.tag ? `<div class="tag ${event.tag}">${event.tag.replace(/(^|\s)\S/g, l => l.toUpperCase())}</div>` : ''}
           <div class="event-buttons">
@@ -163,6 +164,13 @@
         `;
         eventList.appendChild(div);
       });
+    }
+
+    function formatDateForCalendar(date) {
+      const start = new Date(date);
+      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+      const format = d => d.toISOString().replace(/[-:]|\.\d{3}/g, '');
+      return `${format(start)}/${format(end)}`;
     }
 
     function addEvent() {
