@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Points Manager</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -30,7 +29,7 @@
       width: 100%;
     }
     .left-panel, .right-panel {
-      padding: 1rem;
+      padding: 0.5rem;
     }
     .left-panel {
       flex: 2;
@@ -42,8 +41,8 @@
     }
     .panel {
       background: white;
-      margin-bottom: 1rem;
-      padding: 1rem;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
@@ -54,6 +53,7 @@
     .member-list li {
       list-style: none;
       margin-bottom: 0.5rem;
+      cursor: pointer;
     }
     .member-points {
       display: flex;
@@ -79,6 +79,9 @@
       margin-left: 4px;
       font-size: 0.8rem;
     }
+    #historyPanel {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -97,14 +100,21 @@
         <input type="number" id="pointChange" placeholder="Points to Add/Subtract">
         <select id="tagSelect"></select>
         <button onclick="applyPoints()">Apply Points</button>
-        <input type="text" id="newMember" placeholder="Add New Member">
-        <button onclick="addMember()">Add Member</button>
       </div>
       <div class="panel">
         <h3>Create New Tag</h3>
         <input type="text" id="newTag" placeholder="Tag Name">
         <input type="number" id="tagPoints" placeholder="Points Value">
         <button onclick="addTag()">Add Tag</button>
+      </div>
+      <div class="panel">
+        <h3>Member Management</h3>
+        <input type="text" id="newMember" placeholder="Add New Member">
+        <button onclick="addMember()">Add Member</button>
+      </div>
+      <div class="panel" id="historyPanel">
+        <h3 id="historyTitle">Point History</h3>
+        <ul id="historyList"></ul>
       </div>
     </div>
     <div class="right-panel">
@@ -135,6 +145,14 @@
       localStorage.setItem('members', JSON.stringify(members));
     }
 
+    function loadHistory() {
+      return JSON.parse(localStorage.getItem('history') || '{}');
+    }
+
+    function saveHistory(history) {
+      localStorage.setItem('history', JSON.stringify(history));
+    }
+
     function loadTags() {
       return JSON.parse(localStorage.getItem('tags') || JSON.stringify(defaultTags));
     }
@@ -158,7 +176,7 @@
       for (const name in members) {
         const li = document.createElement('li');
         li.className = 'member-points';
-        li.innerHTML = `<span>${name}</span><span>${members[name]} pts</span>`;
+        li.innerHTML = `<span onclick="showHistory('${name}')">${name}</span><span>${members[name]} pts</span>`;
         memberList.appendChild(li);
 
         const option = document.createElement('option');
@@ -191,8 +209,15 @@
       const tag = document.getElementById('tagSelect').value;
       if (!name || isNaN(pointChange)) return;
       const members = loadMembers();
+      const history = loadHistory();
+
       members[name] = (members[name] || 0) + pointChange;
       saveMembers(members);
+
+      if (!history[name]) history[name] = [];
+      history[name].push({ date: new Date().toLocaleString(), change: pointChange, tag });
+      saveHistory(history);
+
       document.getElementById('pointChange').value = '';
       document.getElementById('tagSelect').value = '';
       updateUI();
@@ -208,6 +233,24 @@
       document.getElementById('newTag').value = '';
       document.getElementById('tagPoints').value = '';
       updateUI();
+    }
+
+    function showHistory(member) {
+      const historyPanel = document.getElementById('historyPanel');
+      const historyList = document.getElementById('historyList');
+      const historyTitle = document.getElementById('historyTitle');
+      const history = loadHistory();
+
+      historyTitle.textContent = `Point History: ${member}`;
+      historyList.innerHTML = '';
+      if (history[member]) {
+        for (const entry of history[member]) {
+          const li = document.createElement('li');
+          li.textContent = `${entry.date}: ${entry.change > 0 ? '+' : ''}${entry.change} (${entry.tag})`;
+          historyList.appendChild(li);
+        }
+      }
+      historyPanel.style.display = 'block';
     }
 
     window.onload = updateUI;
