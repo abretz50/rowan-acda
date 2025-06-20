@@ -108,13 +108,8 @@
     <textarea id="description" placeholder="Event Description"></textarea>
     <label for="imageFile">Upload Image:</label>
     <input type="file" id="imageFile" accept="image/*">
-    <label for="imageSelect">Or Select from Library:</label>
-    <select id="imageSelect">
-      <option value="">--Choose an image--</option>
-      <option value="cabaret.png">cabaret.png</option>
-      <option value="showcase.png">showcase.png</option>
-      <option value="bake-sale.png">bake-sale.png</option>
-    </select>
+    <label for="imageSelect">Or Enter Image Filename (from /images):</label>
+    <input type="text" id="imageSelect" placeholder="e.g., myevent.png">
     <label for="tag">Select a Tag:</label>
     <select id="tag">
       <option value="">--None--</option>
@@ -157,7 +152,7 @@
           <div class="event-info">📅 <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatDateForCalendar(event.date)}&location=${encodeURIComponent(event.location)}" target="_blank">${new Date(event.date).toLocaleString()}</a></div>
           <div class="event-info">📍 <a href="https://maps.google.com/?q=${encodeURIComponent(event.location)}" target="_blank">${event.location}</a></div>
           ${event.description ? `<div class="event-info">📝 ${event.description}</div>` : ''}
-          <div class="event-info">🖼️ ${event.image}</div>
+          <div class="event-info">🖼️ <img src="images/${event.image}" alt="${event.title} image" style="max-width: 100px;"></div>
           ${event.tag ? `<div class="tag ${event.tag}">${event.tag.replace(/(^|\s)\S/g, l => l.toUpperCase())}</div>` : ''}
           <div class="event-buttons">
             <button class="edit-btn" onclick="alert('Edit feature coming soon')">Edit</button>
@@ -183,9 +178,9 @@
       const tag = document.getElementById('tag').value;
 
       const fileInput = document.getElementById('imageFile');
-      const selectInput = document.getElementById('imageSelect');
+      const textInput = document.getElementById('imageSelect');
 
-      let image = selectInput.value;
+      let image = textInput.value.trim();
       if (fileInput.files.length > 0) {
         image = fileInput.files[0].name;
       }
@@ -207,7 +202,7 @@
       document.getElementById('description').value = '';
       document.getElementById('tag').value = '';
       fileInput.value = '';
-      selectInput.value = '';
+      textInput.value = '';
     }
 
     function deleteEvent(index) {
