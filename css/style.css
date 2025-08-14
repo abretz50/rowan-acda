@@ -56,3 +56,12 @@ p{margin:0 0 12px 0;color:var(--muted)}
   .nav-links{position:absolute;top:60px;left:0;right:0;background:rgba(20,20,28,.98);border-bottom:1px solid var(--border);padding:12px;display:none;flex-direction:column}
   .nav-links.open{display:flex}
 }
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f7f8fc;
+    --card:#ffffff;
+    --text:#1c2333;
+    --muted:#59607a;
+    --border:#e7e9f3;
+  }
+}
