@@ -1,4 +1,3 @@
-// Shared loader: injects navbar, login modal behavior, and active link
 (async function initLayout(){
   const navbarHost = document.getElementById('navbar');
   if(navbarHost){
@@ -19,7 +18,6 @@ function wireNav(){
     const open = links.classList.toggle('open');
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
-  // close on link tap (mobile)
   links?.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>links.classList.remove('open')));
 }
 
@@ -33,7 +31,16 @@ function markActive(){
   };
   const path = (location.pathname.split('/').pop() || 'index.html');
   const key = map[path] || 'home';
-  document.querySelectorAll(`.nav-links a[data-page="${key}"]`).forEach(a=>a.classList.add('active'));
+  document.querySelectorAll(`.nav-links a[data-page="${key}"]`).forEach(a=>{
+    a.classList.add('active');
+    a.setAttribute('aria-current','page');
+  });
+}
+
+// Modal helpers
+function lockScroll(lock){
+  document.documentElement.style.overflow = lock ? 'hidden' : '';
+  document.body.style.overflow = lock ? 'hidden' : '';
 }
 
 // Demo "auth" with localStorage
@@ -52,11 +59,13 @@ function hydrateLogin(){
       localStorage.removeItem('demo_user');
       updateLoginUI(null);
     }else{
-      modal?.setAttribute('aria-hidden','false');
+      modal?.setAttribute('aria-hidden','false'); 
+      lockScroll(true);
+      setTimeout(()=> document.getElementById('email')?.focus(), 0);
     }
   });
-  closeBtn?.addEventListener('click', ()=> modal?.setAttribute('aria-hidden','true'));
-  modal?.addEventListener('click', (e)=>{ if(e.target === modal) modal.setAttribute('aria-hidden','true'); });
+  closeBtn?.addEventListener('click', ()=>{ modal?.setAttribute('aria-hidden','true'); lockScroll(false);} );
+  modal?.addEventListener('click', (e)=>{ if(e.target === modal){ modal.setAttribute('aria-hidden','true'); lockScroll(false);} });
 
   form?.addEventListener('submit', (e)=>{
     e.preventDefault();
@@ -64,7 +73,8 @@ function hydrateLogin(){
     const user = { email, name: email.split('@')[0] };
     localStorage.setItem('demo_user', JSON.stringify(user));
     updateLoginUI(user);
-    modal?.setAttribute('aria-hidden','true');
+    modal?.setAttribute('aria-hidden','true'); 
+    lockScroll(false);
   });
 }
 
