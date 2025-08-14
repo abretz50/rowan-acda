@@ -1,19 +1,30 @@
-# Rowan NAfME Static Site (GitHub Pages Ready)
+# Rowan ACDA Static Site (GitHub Pages Ready)
 
-**Folders you asked for:** `images/`, `css/`, and a `java/` file (optional) are included. Real site logic uses `js/app.js`.
+- Shared navbar (`partials/nav.html`) is injected on every page via `js/app.js`.
+- Login button opens a demo modal (no real auth); state is stored in `localStorage`.
+- Responsive cards grid, mobile navbar, accessible colors, and `aria-current` included.
+- Fonts: Google **Outfit** for UI/Body.
 
 ## Structure
 ```
 images/
-  └─ logo.svg
+  ├── logo.svg
+  ├── social-card.png
+  ├── event-placeholder.png
+  ├── eboard-president.png
+  ├── eboard-vice.png
+  ├── eboard-secretary.png
+  ├── eboard-treasurer.png
+  ├── eboard-events.png
+  └── eboard-web.png
 css/
-  └─ style.css
+  └── style.css
 js/
-  └─ app.js
+  └── app.js
 partials/
-  └─ nav.html    ← shared navbar + login modal loaded on every page
+  └── nav.html
 java/
-  └─ LoginDemo.java  ← not used by the site (optional example)
+  └── LoginDemo.java  (optional example file, not used by the site)
 index.html
 events.html
 chapter.html
@@ -21,13 +32,7 @@ eboard.html
 resources.html
 ```
 
-## How it works
-- Every page has a `<div id="navbar"></div>`. `js/app.js` fetches `partials/nav.html` and injects it, so the same navbar & login appear site‑wide.
-- The **Login** button opens a demo modal and stores a fake user in `localStorage` (toggle changes to **Log out**). Swap this later with real auth if needed.
-
-## Deploy on GitHub Pages
-1. Create a repo and upload this whole folder (or unzip into it).
-2. GitHub → **Settings → Pages** → Source: `main` (or `master`), Root (`/`).
-3. Visit the Pages URL shown.
-
-— Generated 2025-08-14T20:58:44
+## Deploy (GitHub Pages)
+1. Create a repo and upload everything in this folder.
+2. In GitHub → **Settings → Pages** → set Source to your default branch, root (`/`).
+3. Open your Pages URL.
