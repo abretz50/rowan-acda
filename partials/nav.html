@@ -1,1 +1,35 @@
-
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="images/logo.svg" alt="Site logo" class="logo"/>
+      <span class="brand-text">Rowan NAfME</span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="home">Home</a></li>
+      <li><a href="events.html" data-page="events">Events</a></li>
+      <li><a href="chapter.html" data-page="chapter">Chapter</a></li>
+      <li><a href="eboard.html" data-page="eboard">E-Board</a></li>
+      <li><a href="resources.html" data-page="resources">Resources</a></li>
+    </ul>
+    <button id="loginBtn" class="btn btn-primary">Log in</button>
+  </div>
+</nav>
+<div id="loginModal" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <button class="modal-close" aria-label="Close modal">&times;</button>
+    <h2>Log in</h2>
+    <form id="loginForm">
+      <label>
+        Email
+        <input type="email" id="email" required placeholder="you@example.com"/>
+      </label>
+      <label>
+        Password
+        <input type="password" id="password" required placeholder="••••••••"/>
+      </label>
+      <button type="submit" class="btn btn-primary">Continue</button>
+      <p class="muted small">Demo only: no real authentication. Saved locally in your browser.</p>
+    </form>
+  </div>
+</div>
