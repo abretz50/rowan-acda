@@ -69,21 +69,6 @@ function initIdentity(){
 }
 
 
-  function render(){
-    const user = netlifyIdentity.currentUser();
-    if(user){
-      loginBtn.style.display='none';
-      logoutBtn.style.display='inline-flex';
-      profile.style.display='inline-flex';
-      username.textContent = user.user_metadata?.full_name || user.email;
-      avatar.src = user.user_metadata?.avatar_url || 'https://www.gravatar.com/avatar/?d=mp';
-      avatar.alt = username.textContent;
-    }else{
-      loginBtn.style.display='inline-flex';
-      logoutBtn.style.display='none';
-      profile.style.display='none';
-    }
-  }
   loginBtn?.addEventListener('click', ()=> netlifyIdentity.open());
   logoutBtn?.addEventListener('click', ()=> netlifyIdentity.logout());
   netlifyIdentity.on('init', render);
