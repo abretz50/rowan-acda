@@ -18,19 +18,7 @@
 }
 
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#1a0d0d;
-    --card:#241414;
-    --text:#f5f5f5;
-    --muted:#bbbbbb;
-    --border:#3a1a1a;
 
-    --accent:#c94d4d;
-    --accent-2:#e6a4a4;
-    --accent-3:#2a1a1a;
-  }
-}
 
 
 
