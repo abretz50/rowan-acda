@@ -1,14 +1,15 @@
-:root{
-  --bg:#1a0000;        /* deep Rowan red */
-  --card:#2a0000;      /* darker card surface */
-  --text:#ffffff;      /* main text */
-  --muted:#d9d9d9;
-  --border:#3d0c0c;
+:root {
+  --bg:#ffffff;        /* page background */
+  --card:#f5f5f5;      /* light gray card surface */
+  --text:#111111;      /* dark text */
+  --muted:#666666;     /* muted gray text */
+  --border:#dddddd;    /* subtle card borders */
 
-  --accent:#b30000;    /* strong Rowan red */
-  --accent-2:#ffcc66;  /* beige/gold accent */
+  --accent:#b30000;    /* Rowan red */
+  --accent-2:#000000;  /* black secondary */
 
-  --shadow: 0 12px 32px rgba(0,0,0,.35);
+
+  --shadow:0 12px 32px rgba(0,0,0,.15);
   --radius:16px;
 
   --radius-sm:12px;
