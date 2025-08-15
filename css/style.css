@@ -43,7 +43,15 @@ img{max-width:100%;display:block}
 .logo{width: clamp(28px, 4vw, 36px); height:auto}
 .nav-links{list-style:none;display:flex;gap:14px;margin:0;padding:0}
 .nav-links a{padding:8px 10px;border-radius:10px;border:1px solid transparent}
-.nav-links a.active, .nav-links a:hover{background:var(--card);border:1px solid var(--border)}
+.nav-links a.active::after{
+  content:"";
+  position:absolute;
+  left:10px; right:10px; bottom:-8px;
+  height:2px;
+  border-radius:2px;
+  background: var(--accent);   /* was gradient */
+}
+
 .nav-toggle{display:none;background:none;border:none;font-size:26px;color:var(--text)}
 .navbar {background: var(--accent-3); box-shadow: 0 2px 6px rgba(0,0,0,.08);}
 
@@ -51,8 +59,19 @@ img{max-width:100%;display:block}
 
 /* Buttons */
 .btn{border:none;border-radius:var(--radius);padding:10px 14px;cursor:pointer;min-height:var(--tap);min-width:var(--tap)}
-.btn-primary {background: linear-gradient(90deg, var(--accent), var(--accent-2));color:#fff;font-weight:600;border:none;transition: transform .08s ease, box-shadow .2s ease;}
-.btn-primary:hover {transform: translateY(-2px);box-shadow: 0 8px 24px rgba(214,69,69,.35);}
+.btn-primary {
+  background: var(--accent);   /* was gradient */
+  color:#fff;
+  font-weight:600;
+  border:none;
+  transition: transform .08s ease, box-shadow .2s ease;
+}
+.btn-primary:hover {
+  background:#a83232; /* darker shade of red for hover */
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+}
+
 
 .btn-ghost {border:2px solid var(--accent);color:var(--accent);background: transparent;}
 .btn-ghost:hover {background: var(--accent-2);border-color: var(--accent-2);color:#111;}
@@ -72,10 +91,9 @@ img{max-width:100%;display:block}
   border-color: var(--accent-2);
 }
 .card h3 {
-  background: linear-gradient(90deg, var(--accent-2), transparent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent);   /* instead of gradient text */
 }
+
 .hero{display:flex;flex-wrap:wrap;align-items:center;gap: clamp(18px,3vw,24px)}
 .hero .hero-text{flex:1 1 420px}
 .hero .hero-art{flex:1 1 320px}
