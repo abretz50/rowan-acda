@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>My Account | Rowan ACDA</title>
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <script defer src="js/app.js"></script>
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <!-- Navbar (injected from partials/nav.html) -->
+  <div id="navbar"></div>
+
+  <main class="container" style="margin-top:2rem">
+    <section class="card">
+      <h1>My Account</h1>
+      <div id="accountDetails" class="stack" style="margin-top:1rem">
+        <p><strong>Email:</strong> <span id="userEmail">—</span></p>
+        <p><strong>Name:</strong> <span id="userName">—</span></p>
+        <p><strong>Roles:</strong> <span id="userRoles">—</span></p>
+      </div>
+
+      <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap">
+        <a href="index.html" class="btn btn-ghost">Back to Home</a>
+        <button id="logoutBtn" class="btn btn-primary">Log out</button>
+        <!-- Only visible for eboard/admin -->
+        <a id="dashLink" href="eboard-dash.html" class="btn btn-ghost" style="display:none">E-Board Dashboard</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
+  </footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+  <script>
+    // Init Netlify Identity
+    netlifyIdentity.on('init', (user) => {
+      if (!user) {
+        // If no user, bounce back to home or login
+        window.location.replace('index.html');
+        return;
+      }
+
+      // Show account info
+      document.getElementById('userEmail').textContent = user.email || '—';
+      document.getElementById('userName').textContent = user.user_metadata?.full_name || '—';
+      const roles = user.app_metadata?.roles || [];
+      document.getElementById('userRoles').textContent = roles.length ? roles.join(', ') : 'member';
+
+      // Show dashboard link if admin/eboard
+      if (roles.includes('admin') || roles.includes('eboard')) {
+        document.getElementById('dashLink').style.display = 'inline-flex';
+      }
+    });
+
+    // Hook logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      netlifyIdentity.logout();
+    });
+
+    // Start identity
+    netlifyIdentity.init();
+  </script>
+</body>
+</html>
