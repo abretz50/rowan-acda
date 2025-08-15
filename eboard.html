@@ -5,66 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Eboard | Rowan ACDA</title>
   <link rel="icon" type="image/svg+xml" href="images/logo.svg"/>
-  <meta name="theme-color" content="#0f0f14">
-  <meta name="description" content="Rowan ACDA — concerts, workshops, resources, and community for choral musicians.">
-  <meta property="og:title" content="Rowan ACDA">
-  <meta property="og:description" content="Concerts, workshops, resources, and community.">
-  <meta property="og:image" content="images/social-card.png">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css"/>
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script defer src="js/app.js"></script>
 </head>
 <body>
   <div id="navbar"></div>
   <main class="container">
 <section class="card">
   <h1>Executive Board</h1>
-  <div class="cards" style="margin-top:var(--space)">
-    <div class="card">
-      <div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-president.png" alt="Jordan Smith, President"></div>
-      <h3>President</h3>
-      <p class="muted">Jordan Smith</p>
-      <p>Leads meetings and represents the chapter.</p>
-    </div>
-    <div class="card">
-      <div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-vice.png" alt="Taylor Nguyen, Vice President"></div>
-      <h3>Vice President</h3>
-      <p class="muted">Taylor Nguyen</p>
-      <p>Programming and outreach.</p>
-    </div>
-    <div class="card">
-      <div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-secretary.png" alt="Alex Rivera, Secretary"></div>
-      <h3>Secretary</h3>
-      <p class="muted">Alex Rivera</p>
-      <p>Minutes, comms, and records.</p>
-    </div>
-    <div class="card">
-      <div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-treasurer.png" alt="Sam Patel, Treasurer"></div>
-      <h3>Treasurer</h3>
-      <p class="muted">Sam Patel</p>
-      <p>Budgeting and reimbursements.</p>
-    </div>
-    <div class="card">
-      <div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-events.png" alt="Riley Chen, Events Chair"></div>
-      <h3>Events Chair</h3>
-      <p class="muted">Riley Chen</p>
-      <p>Coordinates workshops and socials.</p>
-    </div>
-    <div class="card">
-      <div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-web.png" alt="Webmaster"></div>
-      <h3>Webmaster</h3>
-      <p class="muted">You?</p>
-      <p>Helps keep this site 🔥</p>
-    </div>
+  <div class="cards" style="margin-top:16px">
+    <div class="card"><div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-president.png" alt="Jordan Smith, President"></div><h3>President</h3><p class="muted">Jordan Smith</p><p>Leads meetings and represents the chapter.</p></div>
+    <div class="card"><div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-vice.png" alt="Taylor Nguyen, Vice President"></div><h3>Vice President</h3><p class="muted">Taylor Nguyen</p><p>Programming and outreach.</p></div>
+    <div class="card"><div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-secretary.png" alt="Alex Rivera, Secretary"></div><h3>Secretary</h3><p class="muted">Alex Rivera</p><p>Minutes, comms, and records.</p></div>
+    <div class="card"><div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-treasurer.png" alt="Sam Patel, Treasurer"></div><h3>Treasurer</h3><p class="muted">Sam Patel</p><p>Budgeting and reimbursements.</p></div>
+    <div class="card"><div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-events.png" alt="Riley Chen, Events Chair"></div><h3>Events Chair</h3><p class="muted">Riley Chen</p><p>Coordinates workshops and socials.</p></div>
+    <div class="card"><div class="aspect" style="aspect-ratio:1/1"><img src="images/eboard-web.png" alt="Webmaster"></div><h3>Webmaster</h3><p class="muted">You?</p><p>Helps keep this site 🔥</p></div>
   </div>
 </section>
+
   </main>
   <footer class="site-footer">
     &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
   </footer>
-  <script src="js/app.js" defer></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>

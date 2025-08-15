@@ -12,24 +12,13 @@
       <li><a href="eboard.html" data-page="eboard">E-Board</a></li>
       <li><a href="resources.html" data-page="resources">Resources</a></li>
     </ul>
-    <button id="loginBtn" class="btn btn-primary">Log in</button>
+    <div class="auth-area">
+      <div id="profile">
+        <img id="avatar" src="" alt="" />
+        <span class="name" id="username"></span>
+      </div>
+      <button id="loginBtn" class="btn btn-primary">Log in</button>
+      <button id="logoutBtn" class="btn btn-ghost" style="display:none">Log out</button>
+    </div>
   </div>
 </nav>
-<div id="loginModal" class="modal" aria-hidden="true">
-  <div class="modal-content">
-    <button class="modal-close" aria-label="Close modal">&times;</button>
-    <h2>Log in</h2>
-    <form id="loginForm">
-      <label>
-        Email
-        <input type="email" id="email" required placeholder="you@example.com"/>
-      </label>
-      <label>
-        Password
-        <input type="password" id="password" required placeholder="••••••••"/>
-      </label>
-      <button type="submit" class="btn btn-primary">Continue</button>
-      <p class="muted small">Demo only: no real authentication. Saved locally in your browser.</p>
-    </form>
-  </div>
-</div>

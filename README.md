@@ -1,38 +1,60 @@
-# Rowan ACDA Static Site (GitHub Pages Ready)
+# Rowan ACDA — Netlify + Neon (DB + Auth)
 
-- Shared navbar (`partials/nav.html`) is injected on every page via `js/app.js`.
-- Login button opens a demo modal (no real auth); state is stored in `localStorage`.
-- Responsive cards grid, mobile navbar, accessible colors, and `aria-current` included.
-- Fonts: Google **Outfit** for UI/Body.
+This version adds a **Neon Postgres** database and **Netlify Identity** user authentication.
 
-## Structure
+## 1) Create a Neon project
+- Create DB and get your connection string (use pooled string or add `?sslmode=require`).
+- Set Netlify env var: **NEON_DATABASE_URL**
+
+Run this SQL once (Neon SQL editor) to create tables:
 ```
-images/
-  ├── logo.svg
-  ├── social-card.png
-  ├── event-placeholder.png
-  ├── eboard-president.png
-  ├── eboard-vice.png
-  ├── eboard-secretary.png
-  ├── eboard-treasurer.png
-  ├── eboard-events.png
-  └── eboard-web.png
-css/
-  └── style.css
-js/
-  └── app.js
-partials/
-  └── nav.html
-java/
-  └── LoginDemo.java  (optional example file, not used by the site)
-index.html
-events.html
-chapter.html
-eboard.html
-resources.html
+-- db/schema.sql
+create table if not exists users (
+  id uuid primary key default gen_random_uuid(),
+  email text unique not null,
+  full_name text,
+  avatar_url text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists events (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  summary text,
+  starts_at timestamptz not null,
+  created_by uuid references users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
 ```
 
-## Deploy (GitHub Pages)
-1. Create a repo and upload everything in this folder.
-2. In GitHub → **Settings → Pages** → set Source to your default branch, root (`/`).
-3. Open your Pages URL.
+## 2) Enable Netlify Identity
+- Netlify Dashboard → **Identity** → Enable.
+- **Emails**: enable magic links if you want.
+- **External providers** optional.
+- (Optional) Go to **Identity → Settings → Webhooks** and add:
+  - `/.netlify/functions/identity-signup` (trigger: Signup)
+
+## 3) Deploy
+- Push to GitHub, connect the repo to Netlify, deploy.
+- Set **Environment variables** in Netlify:
+  - `NEON_DATABASE_URL=postgresql://USER:PASSWORD@...neon.tech/DB_NAME?sslmode=require`
+
+## 4) Use the API
+- Public GET events: `/.netlify/functions/events-get`
+- Authenticated POST event: `/.netlify/functions/events-post` with JSON body:
+```json
+{ "title":"General Meeting", "summary":"Kickoff", "starts_at":"2025-09-10T23:00:00Z" }
+```
+Netlify Identity JWT is passed automatically to functions via `event.clientContext.user` when the user is logged in on your site domain.
+
+## Frontend
+- Login/Logout handled by the Netlify Identity widget (already included).
+- On **Events** page, items load from Neon via the GET function.
+
+---
+
+**Tip:** For local dev, install Netlify CLI (`npm i -g netlify-cli`), then:
+```
+npm install
+netlify dev
+```

@@ -5,55 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Events | Rowan ACDA</title>
   <link rel="icon" type="image/svg+xml" href="images/logo.svg"/>
-  <meta name="theme-color" content="#0f0f14">
-  <meta name="description" content="Rowan ACDA — concerts, workshops, resources, and community for choral musicians.">
-  <meta property="og:title" content="Rowan ACDA">
-  <meta property="og:description" content="Concerts, workshops, resources, and community.">
-  <meta property="og:image" content="images/social-card.png">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css"/>
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script defer src="js/app.js"></script>
 </head>
 <body>
   <div id="navbar"></div>
   <main class="container">
 <section class="card">
   <h1>Events</h1>
-  <p>Replace these with your real schedule. Poster-style image slots included.</p>
-  <div class="cards" style="margin-top:var(--space)">
-    <div class="card">
-      <div class="aspect"><img src="images/event-placeholder.png" alt="Event poster"></div>
-      <h3>General Meeting</h3>
-      <p class="muted">Sept 10 • 7:00 PM • Wilson Hall 104</p>
-      <p>Kickoff meeting with icebreakers and fall plans.</p>
-    </div>
-    <div class="card">
-      <div class="aspect"><img src="images/event-placeholder.png" alt="Event poster"></div>
-      <h3>Pro Dev: Repertoire Reading</h3>
-      <p class="muted">Sept 17 • 6:00 PM • Boyd Recital Hall</p>
-      <p>Explore diverse repertoire together.</p>
-    </div>
-    <div class="card">
-      <div class="aspect"><img src="images/event-placeholder.png" alt="Event poster"></div>
-      <h3>Service: Instrument Drive</h3>
-      <p class="muted">Sept 24 • 12:00 PM • Student Center</p>
-      <p>Donate instruments and supplies for local schools.</p>
-    </div>
-    <div class="card">
-      <div class="aspect"><img src="images/event-placeholder.png" alt="Event poster"></div>
-      <h3>Social: Movie Night</h3>
-      <p class="muted">Oct 1 • 8:30 PM • Pit Theater</p>
-      <p>Snacks provided.</p>
-    </div>
-  </div>
+  <p>Authenticated members can add events. Public can view.</p>
+  <div class="cards" style="margin-top:16px" id="eventsList"></div>
+  <script>
+  // basic fetch of events
+  fetch('/.netlify/functions/events-get').then(r=>r.json()).then(items=>{
+    const wrap = document.getElementById('eventsList');
+    wrap.innerHTML = items.map(e => `
+      <div class="card">
+        <div class="aspect"><img src="images/event-placeholder.png" alt="Event poster"></div>
+        <h3>${e.title}</h3>
+        <p class="muted">${new Date(e.starts_at).toLocaleString()}</p>
+        <p>${e.summary || ''}</p>
+      </div>`).join('');
+  }).catch(console.error);
+  </script>
 </section>
+
   </main>
   <footer class="site-footer">
     &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
   </footer>
-  <script src="js/app.js" defer></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
