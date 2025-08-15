@@ -28,12 +28,18 @@ img{max-width:100%;display:block}
 .nav-links a{padding:8px 10px;border-radius:10px;border:1px solid transparent;color:#111}
 .nav-links a:hover{border:1px solid var(--accent)}
 .nav-toggle{display:none;background:none;border:none;font-size:26px;color:#111}
-#profile .name{ cursor:pointer; text-decoration: underline; text-underline-offset: 3px; }
-#profile .name:focus{ outline: 2px solid var(--accent); outline-offset: 2px; }
+#profile .name{
+  cursor:pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color:#111; /* or var(--text) on dark */
+}
+#profile .name:focus{ outline:2px solid var(--accent); outline-offset:2px; }
+
 .auth-area{display:flex;align-items:center;gap:10px}
 #profile{display:none; align-items:center; gap:10px}
 #profile img{width:28px;height:28px;border-radius:50%;border:1px solid #00000022}
-#profile .name{font-size:.95rem;color:#111}
+
 .btn{border:none;border-radius:var(--radius);padding:10px 14px;cursor:pointer;min-height:var(--tap);min-width:var(--tap)}
 .btn-primary{ background: var(--accent); color:#fff; font-weight:600; transition: transform .08s ease, box-shadow .2s ease; }
 .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
