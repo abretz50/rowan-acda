@@ -28,11 +28,46 @@ function markActive(){
 // Netlify Identity UI glue
 function initIdentity(){
   if(!window.netlifyIdentity){ return; }
+
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
-  const profile = document.getElementById('profile');
-  const avatar = document.getElementById('avatar');
+  const profile  = document.getElementById('profile');
+  const avatar   = document.getElementById('avatar');
   const username = document.getElementById('username');
+
+  function render(){
+    const user = netlifyIdentity.currentUser();
+    if(user){
+      profile.style.display = 'inline-flex';
+      logoutBtn.style.display = 'inline-flex';
+      loginBtn.style.display  = 'none';
+
+      username.textContent = user.user_metadata?.full_name || user.email;
+      avatar.src = user.user_metadata?.avatar_url || 'https://www.gravatar.com/avatar/?d=mp';
+      avatar.alt = username.textContent;
+    }else{
+      profile.style.display = 'none';
+      logoutBtn.style.display = 'none';
+      loginBtn.style.display  = 'inline-flex';
+    }
+  }
+
+  // open account page when clicking the name
+  function goAccount(){ window.location.href = 'account.html'; }
+  username?.addEventListener('click', goAccount);
+  username?.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goAccount(); }
+  });
+
+  loginBtn?.addEventListener('click', ()=> netlifyIdentity.open());
+  logoutBtn?.addEventListener('click', ()=> netlifyIdentity.logout());
+
+  netlifyIdentity.on('init', render);
+  netlifyIdentity.on('login', ()=>{ render(); netlifyIdentity.close(); });
+  netlifyIdentity.on('logout', render);
+  netlifyIdentity.init();
+}
+
 
   function render(){
     const user = netlifyIdentity.currentUser();
@@ -56,3 +91,5 @@ function initIdentity(){
   netlifyIdentity.on('logout', render);
   netlifyIdentity.init();
 }
+
+

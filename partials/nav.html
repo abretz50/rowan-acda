@@ -15,10 +15,13 @@
     <div class="auth-area">
       <div id="profile">
         <img id="avatar" src="" alt="" />
-        <span class="name" id="username"></span>
+        <!-- make the name clickable -->
+        <span class="name" id="username" role="link" tabindex="0" aria-label="Open My Account"></span>
       </div>
-      <button id="loginBtn" class="btn btn-primary">Log in</button>
+    
       <button id="logoutBtn" class="btn btn-ghost" style="display:none">Log out</button>
+      <button id="loginBtn" class="btn btn-primary">Log in</button>
     </div>
+    
   </div>
 </nav>
