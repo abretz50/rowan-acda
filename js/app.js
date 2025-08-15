@@ -69,12 +69,4 @@ function initIdentity(){
 }
 
 
-  loginBtn?.addEventListener('click', ()=> netlifyIdentity.open());
-  logoutBtn?.addEventListener('click', ()=> netlifyIdentity.logout());
-  netlifyIdentity.on('init', render);
-  netlifyIdentity.on('login', ()=>{ render(); netlifyIdentity.close(); });
-  netlifyIdentity.on('logout', render);
-  netlifyIdentity.init();
-}
-
 
