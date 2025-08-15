@@ -1,30 +1,38 @@
 :root {
-  --bg:#ffffff;        /* page background */
-  --card:#f5f5f5;      /* light gray card surface */
-  --text:#111111;      /* dark text */
-  --muted:#666666;     /* muted gray text */
-  --border:#dddddd;    /* subtle card borders */
+  --bg:#ffffff;         /* overall background = white */
+  --card:#f9f9f9;       /* very light gray cards */
+  --text:#111111;       /* dark text */
+  --muted:#666666;      /* muted gray text */
+  --border:#e0e0e0;     /* light card borders */
 
-  --accent:#b30000;    /* Rowan red */
-  --accent-2:#000000;  /* black secondary */
+  /* Softer ACDA-inspired accents */
+  --accent:#d64545;     /* soft red (not firetruck) */
+  --accent-2:#f5b7b1;   /* blush / pink highlight */
+  --accent-3:#fdf3e3;   /* light tan for navbar/bg */
 
-
-  --shadow:0 12px 32px rgba(0,0,0,.15);
+  --shadow:0 8px 20px rgba(0,0,0,.12);
   --radius:16px;
 
   --radius-sm:12px;
   --tap:44px;
 }
 
-@media (prefers-color-scheme: light){
+
+@media (prefers-color-scheme: dark){
   :root{
-    --bg:#fff8f8;
-    --card:#ffffff;
-    --text:#1a0000;
-    --muted:#5b5b5b;
-    --border:#e3d6d6;
+    --bg:#1a0d0d;
+    --card:#241414;
+    --text:#f5f5f5;
+    --muted:#bbbbbb;
+    --border:#3a1a1a;
+
+    --accent:#c94d4d;
+    --accent-2:#e6a4a4;
+    --accent-3:#2a1a1a;
   }
 }
+
+
 
 *{box-sizing:border-box}
 html,body{
@@ -49,23 +57,37 @@ img{max-width:100%;display:block}
 .nav-links a{padding:8px 10px;border-radius:10px;border:1px solid transparent}
 .nav-links a.active, .nav-links a:hover{background:var(--card);border:1px solid var(--border)}
 .nav-toggle{display:none;background:none;border:none;font-size:26px;color:var(--text)}
+.navbar {background: var(--accent-3); box-shadow: 0 2px 6px rgba(0,0,0,.08);}
+
+
 
 /* Buttons */
 .btn{border:none;border-radius:var(--radius);padding:10px 14px;cursor:pointer;min-height:var(--tap);min-width:var(--tap)}
-.btn-primary{
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color:#0b0f12;
-  font-weight:700;
-  transition: transform .08s ease, box-shadow .2s ease;
-}
-.btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 36px rgba(0,0,0,.35); }
-.btn-ghost{background:transparent;border:2px solid var(--accent);color:var(--accent)}
-.btn-ghost:hover{ border-color: var(--accent); background:var(--accent); color:#fff }
+.btn-primary {background: linear-gradient(90deg, var(--accent), var(--accent-2));color:#fff;font-weight:600;border:none;transition: transform .08s ease, box-shadow .2s ease;}
+.btn-primary:hover {transform: translateY(-2px);box-shadow: 0 8px 24px rgba(214,69,69,.35);}
+
+.btn-ghost {border:2px solid var(--accent);color:var(--accent);background: transparent;}
+.btn-ghost:hover {background: var(--accent-2);border-color: var(--accent-2);color:#111;}
+
 
 /* Layout utilities */
 .cards{ display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(14px, 2vw, 20px); }
-.card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding: clamp(14px,2vw,18px); box-shadow:var(--shadow); transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease; }
-.card:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,.32); border-color: var(--accent); }
+.card {
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  transition: transform .12s ease, box-shadow .2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.15);
+  border-color: var(--accent-2);
+}
+.card h3 {
+  background: linear-gradient(90deg, var(--accent-2), transparent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .hero{display:flex;flex-wrap:wrap;align-items:center;gap: clamp(18px,3vw,24px)}
 .hero .hero-text{flex:1 1 420px}
 .hero .hero-art{flex:1 1 320px}
