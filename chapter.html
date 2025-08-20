@@ -8,56 +8,98 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css"/>
-  
+  <style>
+    /* Extra spacing between stacked cards */
+    main.container section.card {
+      margin-bottom: 2rem; /* adjust to taste */
+    }
+  </style>
   <script defer src="js/app.js"></script>
 </head>
 <body>
   <div id="navbar"></div>
+
   <main class="container">
+
+    <!-- About Section -->
     <section class="card">
       <h1>About the Chapter</h1>
       <p>Rowan ACDA supports choral music through education, performance, and service.</p>
-      <h3 style="margin-top:10px">Mission</h3>
+    </section>
+
+    <!-- Mission -->
+    <section class="card">
+      <h2>Mission</h2>
       <p>To inspire teaching, performance, and leadership through inclusive programming.</p>
-      <h3 style="margin-top:10px">Membership</h3>
-      <p>Membership in the Rowan University chapter of ACDA is free for all Rowan University students and faculty. To become a member, please register on <a href="https://rowan.campuslabs.com/engage/organization/acda">Proflink</a>.</p>
-      <h3 style="margin-top:10px">Chapter Events and Activities</h3>
-      <p>Our chapter is proud to host several events and activities throughout the year, including:
-        <ul>
-          <li>Tenor Bass Festival, hosted by Dr. Thomas each fall</li>
-          <li>High School ACDA Festival in the spring</li>
-          <li>Student Cabaret</li>
-          <li>Spring Student Conducting Concert</li>
-        </ul>
-      </p>
-      <h3 style="margin-top:10px">Upcoming Events</h3>
-      <p>This year, our chapter plans to attend the ACDA Summer Conference, where we will have the opportunity to learn from renowned clinicians and network with other choral professionals.</p>
-      <h3 style="margin-top:10px">ACDA National Membership</h3>
-      <p>To access the full benefits of ACDA membership, you need to register on the <a href="https://www.acda.org">ACDA national website</a> and pay the membership dues.</p>
-      <h3 style="margin-top:10px">ACDA Membership Categories</h3>
-      <p>The following membership categories are available:
-        <ul>
-          <li>Active (choral professionals and composers in the U.S. or Canada): $125</li>
-          <li>Retired (retired from all paid choral positions): $45</li>
-          <li>Student: $15</li>
-          <li>Associate (online membership for people not in conducting, composition, education, or administration): $45</li>
-          <li>International (live outside the United States and Canada): $45</li>
-        </ul>
-      </p>
-      <h3 style="margin-top:10px">Benefits of ACDA Membership</h3>
-      <p>As a member of ACDA, you'll have access to:
-        <ul>
-          <li>Connection to choral colleagues and professionals</li>
-          <li>Access to tools and resources to help you and your choirs</li>
-          <li>Support for your professional development as a conductor and educator</li>
-          <li>Opportunities to attend national, regional, and state conferences and workshops</li>
-          <li>Subscription to the Choral Journal and other online publications</li>
-          <li>Access to the ACDA online community, ChoralNet</li>
-          <li>And more!</li>
-        </ul>
+    </section>
+
+    <!-- Membership -->
+    <section class="card">
+      <h2>Membership</h2>
+      <p>
+        Membership in the Rowan University chapter of ACDA is free for all Rowan University students and faculty.
+        To become a member, please register on
+        <a href="https://rowan.campuslabs.com/engage/organization/acda" target="_blank" rel="noopener">Proflink</a>.
       </p>
     </section>
+
+    <!-- Activities -->
+    <section class="card">
+      <h2>Chapter Events & Activities</h2>
+      <ul>
+        <li>Tenor–Bass Festival, hosted by Dr. Thomas each fall</li>
+        <li>High School ACDA Festival in the spring</li>
+        <li>Student Cabaret</li>
+        <li>Spring Student Conducting Concert</li>
+      </ul>
+    </section>
+
+    <!-- Upcoming -->
+    <section class="card">
+      <h2>Upcoming Events</h2>
+      <p>
+        This year, our chapter plans to attend the ACDA Summer Conference, with opportunities to learn from renowned
+        clinicians and network with other choral professionals.
+      </p>
+    </section>
+
+    <!-- National Membership -->
+    <section class="card">
+      <h2>ACDA National Membership</h2>
+      <p>
+        To access the full benefits of ACDA membership, register on the
+        <a href="https://www.acda.org" target="_blank" rel="noopener">ACDA national website</a>
+        and pay the membership dues.
+      </p>
+    </section>
+
+    <!-- Membership Categories -->
+    <section class="card">
+      <h2>Membership Categories</h2>
+      <ul>
+        <li><h3>Active</h3> Choral professionals and composers in the U.S. or Canada — $125</li>
+        <li><h3>Retired</h3> Retired from all paid choral positions — $45</li>
+        <li><h3>Student</h3> Enrolled students — $15</li>
+        <li><h3>Associate</h3> Online membership for people not in conducting, composition, education, or administration — $45</li>
+        <li><h3>International</h3> Members living outside the United States and Canada — $45</li>
+      </ul>
+    </section>
+
+    <!-- Benefits -->
+    <section class="card">
+      <h2>Benefits of Membership</h2>
+      <ul>
+        <li>Connection to choral colleagues and professionals</li>
+        <li>Tools and resources to support you and your choirs</li>
+        <li>Professional development for conductors and educators</li>
+        <li>Access to national, regional, and state conferences and workshops</li>
+        <li>Subscription to <em>Choral Journal</em> and other publications</li>
+        <li>Access to ACDA’s online community, ChoralNet</li>
+      </ul>
+    </section>
+
   </main>
+
   <footer class="site-footer">
     &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
   </footer>
