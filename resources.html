@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Resources | Rowan ACDA</title>
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <div id="navbar"></div>
+  <main class="container">
+    <section class="card">
+      <h1>Resources</h1>
+      <div class="accordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">Rowan ACDA</h2>
+          <div class="accordion-content">
+            <ul>
+              <li><a href="https://cpa.rowan.edu/music/ensembles/choral.html#tbfest">Tenor Bass Festival</a></li>
+              <li><a href="https://cpa.rowan.edu/music/ensembles/choral.html">Rowan Choirs</a></li>
+              <li><a href="https://www.youtube.com/watch?v=hq9yZ_P2z98&list=RDhq9yZ_P2z98&start_radio=1">Most Recent Appearance</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">Sight Singing Resources</h2>
+          <div class="accordion-content">
+            <ul>
+              <li><a href="https://www.sightreadingfactory.com/">Sight Reading Factory</a></li>
+              <li><a href="https://learnmusictheory.net/singing/index.html">Learn Music Theory</a></li>
+              <li><a href="http://choir.rigbytrojans.org/uploads/2/1/5/4/21541204/sight-singing-exercises.pdf">Sight Singing Exercises (PDF)</a></li>
+              <li><a href="https://www.lightandmatter.com/sight/sight.pdf">Sight Singing Guide (PDF)</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">NJ ACDA</h2>
+          <div class="accordion-content">
+            <ul>
+              <li><a href="https://www.njacda.org/summerconference2024">Summer Conference 2024</a></li>
+              <li><a href="https://www.njacda.org/hs-choral-festival">High School Choral Festival (Volunteer Opportunity)</a></li>
+              <li><a href="https://www.njacda.org/team-1">Repertoire & Resource Chairs</a></li>
+              <li><a href="https://sites.google.com/view/njacdacpcrr">Community and Professional Choirs</a></li>
+              <li><a href="https://docs.google.com/presentation/d/e/2PACX-1vQDK4zOfWQW7TImu6s6iTXc5zoS0OV6P9KMb2MVz1Bqvyht7Iu-WaLv3PBaB6yC72z9hm4gDnazdJcg/pub?start=false&loop=false&delayms=10000&slide=id.g211288b17b8_0_48">Advocacy in Music Education</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">East Region ACDA</h2>
+          <div class="accordion-content">
+            <ul>
+              <li><a href="https://acdaeast.org/conferences/scholarships/">Scholarships</a></li>
+              <li><a href="https://choralnet.org/acda-news">ACDA News</a></li>
+              <li><a href="https://acdaeast.org/about_us/membership/">Membership</a></li>
+              <li><a href="https://acdaeast.org/about_us/r-r-chairs/">Repertoire & Resource Chairs</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">National ACDA</h2>
+          <div class="accordion-content">
+            <ul>
+              <li><a href="https://acda.org/repertoire">Repertoire</a></li>
+              <li><a href="https://acda.org/membership/membership/">Membership</a></li>
+              <li><a href="https://acda.org/publications/choral-journal">Choral Journal</a></li>
+              <li><a href="https://acda.org/conferences/national-webinars">National Webinars</a></li>
+              <li><a href="https://acda.org/archives/category/chorteach">Choral Teaching Resources</a></li>
+              <li><a href="https://acda.careerwebsite.com/">Career Center</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
+  </footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    accordionItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+  <style>
+    .accordion {
+      max-width: 800px;
+      margin: 40px auto;
+    }
+    .accordion-item {
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .accordion-header {
+      padding: 20px;
+      background-color: #f0f0f0;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .accordion-content {
+      padding: 20px;
+      display: none;
+    }
+    .accordion-item.active .accordion-content {
+      display: block;
+    }
+    .accordion-content ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .accordion-content li {
+      margin-bottom: 10px;
+    }
+    .accordion-content a {
+      text-decoration: none;
+      color: #337ab7;
+      transition: color 0.2s ease;
+    }
+    .accordion-content a:hover {
+      color: #23527c;
+    }
+    .accordion-content a:active {
+      color: #1a3d6e;
+    }
+  </style>
+</body>
+</html>

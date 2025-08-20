@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Index | Rowan ACDA</title>
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <div id="navbar"></div>
+  <main class="container">
+<section class="hero card">
+  <div class="hero-text">
+    <h1>Welcome to Rowan ACDA</h1>
+    <p>Concerts, workshops, and community for choral musicians at Rowan.</p>
+    <div style="display:flex;gap:10px;margin-top:12px">
+      <a class="btn btn-primary" href="events.html">See upcoming events</a>
+      <a class="btn btn-ghost" href="resources.html">Explore resources</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <img src="images/logo.svg" alt="Rowan ACDA logo"/>
+  </div>
+</section>
+<section class="cards" style="margin-top:16px">
+  <div class="card"><h3>Workshops</h3><p>Hands-on sessions—conducting, repertoire, classroom tech, and more.</p></div>
+  <div class="card"><h3>Community</h3><p>Meet peers, collaborate, and grow in an inclusive space.</p></div>
+  <div class="card"><h3>Opportunities</h3><p>Reading sessions, service projects, and conferences.</p></div>
+</section>
+
+  </main>
+  <footer class="site-footer">
+    &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
+  </footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
