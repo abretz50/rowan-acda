@@ -1,13 +1,15 @@
-
 [build]
-  command = "npm run build || echo 'no build'"
   publish = "."
+  functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
-  included_files = ["netlify/functions/*"]
+  external_node_modules = ["@neondatabase/serverless", "@netlify/blobs"]
+  included_files = ["db/**"]
 
-[[scheduled.functions]]
-  name = "sync-events"
-  # every 3 hours
-  cron = "0 */3 * * *"
+# Enable Identity (toggle in Netlify UI as well)
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
