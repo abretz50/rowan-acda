@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -7,10 +6,14 @@
 <title>Events | Rowan ACDA</title>
 <link href="images/logo.png" rel="icon" type="image/svg+xml"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet"/>
 <link href="css/style.css" rel="stylesheet"/>
-<script defer="" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script defer="" src="js/app.js"></script>
+<script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script defer src="js/app.js"></script>
+
+<!-- PapaParse for CSV parsing -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <style>
 /* Popup modal like eboard, with overlay and scroll lock */
 #modal-overlay{
@@ -38,41 +41,52 @@
   border-radius:14px;
 }
 body.modal-open{overflow:hidden;}
-</style></head>
+/* Grid + cards (works with your existing .card/.cards classes) */
+.cards{
+  display:grid;
+  gap:16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.card .aspect{
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border-radius:12px;
+  background:#f3f4f6;
+}
+.card .aspect img{ width:100%; height:100%; object-fit:cover; display:block; }
+.card h3{ margin:.5rem 0 .25rem; }
+.card p.muted{ opacity:.8; margin:.25rem 0 .5rem; }
+</style>
+</head>
+
 <body>
 <div id="navbar"></div>
+
 <main class="container">
-<section class="card">
-<h1>Events</h1>
-<p>Authenticated members can add events. Public can view.</p>
-<div class="cards" style="margin-top:16px"><div class="card" onclick="showCard(1)"><div class="aspect"><img alt="Sight Singing &amp; Cabaret rehearsal" src="https://loving-newyork.com/wp-content/uploads/2018/12/musicals-broadway-shows-new-york.jpg"/></div><h3>Sight Singing Musical Theatre &amp; Cabaret Rehearsal</h3><p class="muted">Fri, Sep 12, 2025</p><p>Sight sing your favorite musical theatre harmonies, then rehearse for our Cabaret!</p></div><div class="card" onclick="showCard(2)"><div class="aspect"><img alt="PD #1" src="images/event-placeholder.png"/></div><h3>PD #1</h3><p class="muted">Fri, Sep 19, 2025</p><p></p></div><div class="card" onclick="showCard(3)"><div class="aspect"><img alt="Cabaret auditions" src="https://www.wilmingtoncityschools.com/media/site/wilmington-high-school-news/auditions-669.jpeg"/></div><h3>Cabaret Auditions</h3><p class="muted">Fri, Sep 26, 2025</p><p>Audition for our annual Cabaret—any style, any act, all are welcome!</p></div><div class="card" onclick="showCard(4)"><div class="aspect"><img alt="Church Gig 101" src="https://www.encirclephotos.com/wp-content/uploads/Sweden-Malmo-Sankt-Petri-Church-Choir-Sing-1440x961.jpg"/></div><h3>Church Gig 101 &amp; Cabaret Rehearsal #2</h3><p class="muted">Fri, Oct 3, 2025</p><p>Learn the ins and outs of preparing for a church gig, then rehearse for our Cabaret!</p></div><div class="card" onclick="showCard(5)"><div class="aspect"><img alt="Cabaret dress rehearsal" src="https://i.ytimg.com/vi/4EHbp1ohHuo/maxresdefault.jpg"/></div><h3>Cabaret Dress Rehearsal</h3><p class="muted">Fri, Oct 10, 2025</p><p></p></div><div class="card" onclick="showCard(6)"><div class="aspect"><img alt="Cabaret performance" src="https://rowantrumpetprof.com/wp-content/uploads/2014/05/boyd-recital-hall.jpg"/></div><h3>Cabaret Performance</h3><p class="muted">Fri, Oct 10, 2025</p><p></p></div><div class="card" onclick="showCard(7)"><div class="aspect"><img alt="PD #2" src="images/event-placeholder.png"/></div><h3>PD #2</h3><p class="muted">Fri, Oct 17, 2025</p><p></p></div><div class="card" onclick="showCard(8)"><div class="aspect"><img alt="Emily Dickinson in Art Song" src="https://th.bing.com/th/id/OIP.TXzDVyGdtrISTjnZyc9poAHaJo?o=7rm=3&amp;rs=1&amp;pid=ImgDetMain&amp;rm=3"/></div><h3>Emily Dickinson in Art Song</h3><p class="muted">Thu, Oct 23, 2025</p><p></p></div><div class="card" onclick="showCard(9)"><div class="aspect"><img alt="Concert Choir" src="https://i.ytimg.com/vi/N61VWGXr2VA/maxresdefault.jpg"/></div><h3>Concert Choir Concert</h3><p class="muted">Sat, Oct 25, 2025</p><p></p></div><div class="card" onclick="showCard(10)"><div class="aspect"><img alt="Pumpkin Painting &amp; Root Beer Floats" src="https://th.bing.com/th/id/R.303fd54a12878999d756a35dd4e13d8d?rik=ZowkRkIR1HAx6w&amp;pid=ImgRaw&amp;r=0"/></div><h3>Pumpkin Painting &amp; Root Beer Floats</h3><p class="muted">Fri, Oct 31, 2025</p><p></p></div><div class="card" onclick="showCard(11)"><div class="aspect"><img alt="Learn Latin American Music" src="https://images.squarespace-cdn.com/content/v1/631d1798c001211985a44cce/4ea306eb-a830-4747-b6d7-c21a62801034/7a3db0_5f0d2463952d46468ceefa48b82690b2-2.jpg"/></div><h3>Learn Latin American Music</h3><p class="muted">Fri, Nov 7, 2025</p><p></p></div><div class="card" onclick="showCard(12)"><div class="aspect"><img alt="Choral Conducting 101" src="https://bostonconservatory.berklee.edu/sites/default/files/styles/scale_and_crop_16_9_large/public/d7/bcm/program_images/BCB-conducting.jpg"/></div><h3>Choral Conducting 101 (with Dr. Christopher Thomas)</h3><p class="muted">Fri, Nov 14, 2025</p><p></p></div><div class="card" onclick="showCard(13)"><div class="aspect"><img alt="Rowan Opera Company" src="https://today.rowan.edu/news/2025/01/images/cpa-springarts-2025.jpg"/></div><h3>Rowan Opera Company: Fall Opera Collage</h3><p class="muted">Fri, Nov 21, 2025</p><p></p></div><div class="card" onclick="showCard(14)"><div class="aspect"><img alt="University Chorus &amp; Voces Chamber Ensemble" src="https://web.ovationtix.com/trs/api/rest/ClientFile(584589)"/></div><h3>Rowan University Chorus &amp; Voces Chamber Ensemble</h3><p class="muted">Tue, Nov 25, 2025</p><p></p></div><div class="card" onclick="showCard(15)"><div class="aspect"><img alt="Mozart’s Requiem" src="https://web.ovationtix.com/trs/api/rest/ClientFile(584591)"/></div><h3>Mozart’s Requiem: Concert Choir &amp; Symphony Orchestra</h3><p class="muted">Sat, Dec 6, 2025</p><p></p></div></div>
-<script>
-  // basic fetch of events
-  fetch('/.netlify/functions/events-get').then(r=>r.json()).then(items=>{
-    const wrap = document.getElementById('eventsList');
-    wrap.innerHTML = items.map(e => `
-      <div class="card">
-        <div class="aspect"><img src="images/event-placeholder.png" alt="Event poster"></div>
-        <h3>${e.title}</h3>
-        <p class="muted">${new Date(e.starts_at).toLocaleString()}</p>
-        <p>${e.summary || ''}</p>
-      </div>`).join('');
-  }).catch(console.error);
-  </script>
-</section><div class="card-content" id="card-15"><h2>Mozart’s Requiem: Concert Choir &amp; Symphony Orchestra</h2><p>Type: Performance | Date: Sat, Dec 6, 2025 | Time: 7:30pm - 9:30pm</p><p>The Rowan University Concert Choir and Symphony Orchestra come together for a performance of one of the most celebrated works in classical music: Mozart’s Requiem. This masterpiece, filled with drama, beauty, and emotional depth, remains one of Mozart’s most enduring legacies. Under the direction of Dr. Christopher Thomas, this collaboration promises to be a moving and unforgettable evening of music.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-14"><h2>Rowan University Chorus &amp; Voces Chamber Ensemble</h2><p>Type: Performance | Date: Tue, Nov 25, 2025 | Time: 7:30pm - 9:30pm</p><p>This concert highlights two of Rowan’s vibrant choral ensembles in one program. The Rowan University Chorus will present a selection of larger choral works, while the Voces Chamber Ensemble will showcase more intimate repertoire written for smaller groups. Each ensemble brings its own unique sound and artistry, making for a dynamic and varied evening of music.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-13"><h2>Rowan Opera Company: Fall Opera Collage</h2><p>Type: Performance | Date: Fri, Nov 21, 2025 &amp; Sat, Nov 22, 2025 | Time: 7:30pm both nights</p><p>The Rowan Opera Company presents its annual Fall Opera Collage, a program filled with scenes and arias from across the operatic repertoire. Students will bring a wide variety of characters and stories to life in this dynamic and engaging performance. With two opportunities to attend, this is a perfect chance to experience the drama and beauty of opera in an intimate setting.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-12"><h2>Choral Conducting 101 (with Dr. Christopher Thomas)</h2><p>Type: PD | Date: Fri, Nov 14, 2025 | Time: 3:00pm - 4:00pm</p><p>Ever wondered what it takes to lead a choir? Rowan’s own Dr. Christopher Thomas will guide us through the fundamentals of choral conducting, from gestures and communication to rehearsal strategies. You’ll gain insight into what makes a conductor effective and even have the chance to try it yourself. Whether you see conducting in your future or just want to experience music from a new angle, this is a session you won’t want to miss.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-11"><h2>Learn Latin American Music</h2><p>Type: General Meeting | Date: Fri, Nov 7, 2025 | Time: 3:00pm - 4:00pm</p><p>This session is all about exploring the rich traditions of Latin American music. Together, we’ll learn about the composer and cultural background before bringing the music to life through singing. It’s a wonderful chance to broaden your repertoire, connect with new styles, and celebrate the diversity of choral traditions.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-10"><h2>Pumpkin Painting &amp; Root Beer Floats</h2><p>Type: Collab | Date: Fri, Oct 31, 2025 | Time: 3:00pm - 4:00pm</p><p>Celebrate the season with our NAfME x ACDA collaboration! Come relax, paint your own festive pumpkin, and sip on a classic root beer float while spending time with friends. It’s a cozy, creative way to get into the autumn spirit and take home something fun to brighten your space.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-9"><h2>Concert Choir Concert</h2><p>Type: Performance | Date: Sat, Oct 25, 2025 | Time: 7:30pm - 9:30pm</p><p>The Rowan University Concert Choir presents an evening of choral music that highlights both classic repertoire and exciting newer works. Known for their artistry and musical precision, the ensemble will showcase a diverse program under the direction of Dr. Christopher Thomas. Join us for a night of inspiring choral performance.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-8"><h2>Emily Dickinson in Art Song</h2><p>Type: Performance | Date: Thu, Oct 23, 2025 | Time: 7:30pm - 9:30pm</p><p>Rowan students join renowned Lyric Fest artists for an evening of Emily Dickinson–inspired art song.</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-7"><h2>PD #2</h2><p>Type: PD | Date: Fri, Oct 17, 2025 | Time: 3:00pm - 4:00pm</p><p></p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-6"><h2>Cabaret Performance</h2><p>Type: Performance | Date: Fri, Oct 10, 2025 | Time: 7:00pm - 9:00pm</p><p>The Cabaret is one of our most anticipated events of the year, featuring performances from Rowan students. With a wide variety of music and styles, there’s something for everyone to enjoy. It’s an evening full of talent, energy, and community—come cheer on your peers and experience the magic of live performance!</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-5"><h2>Cabaret Dress Rehearsal</h2><p>Type: Dress Rehearsal | Date: Fri, Oct 10, 2025 | Time: 3:00pm - 5:00pm</p><p>Our Cabaret Dress Rehearsal is the last opportunity for performers to run through their acts in full before the show. This rehearsal is designed to help you feel comfortable on stage, practice transitions, and receive any last-minute feedback. We’ll also take time to rehearse our group song together so everyone feels confident and performance-ready. It’s a supportive environment to fine-tune your work and make those final adjustments that will bring our annual Cabaret to life!</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-4"><h2>Church Gig 101 &amp; Cabaret Rehearsal #2</h2><p>Type: General Meeting | Date: Fri, Oct 3, 2025 | Time: 3:00pm - 4:00pm</p><p>If you’ve ever wondered how church gigs work, this session is for you! We’ll cover the basics of sight singing, service structure, and professional etiquette, plus tips for success from those who’ve done it before. Whether you’re interested in picking up church jobs or want to strengthen your skills for future opportunities, you’ll leave with practical knowledge and confidence. Afterward, we’ll rehearse our group piece for the upcoming Cabaret!</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-3"><h2>Cabaret Auditions</h2><p>Type: Auditions | Date: Fri, Sep 26, 2025 | Time: 3:00pm - 4:00pm</p><p>Do you have a talent you’re ready to share? Our Cabaret auditions are open to all kinds of performances—vocal, instrumental, solo, duet, or group. This is your chance to shine on stage at our annual Cabaret on October 10th, one of the most exciting events of the semester!</p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-2"><h2>PD #1</h2><p>Type: PD | Date: Fri, Sep 19, 2025 | Time: 3:00pm - 4:00pm</p><p></p><button onclick="hideCard()">Close</button></div><div class="card-content" id="card-1"><h2>Sight Singing Musical Theatre &amp; Cabaret Rehearsal</h2><p>Type: General Meeting | Date: Fri, Sep 12, 2025 | Time: 3:00pm - 4:00pm</p><p>Join us for a fun session of sight singing where we’ll explore ensemble harmonies from well-loved musical theatre repertoire. Whether you’re new to sight singing or just want more practice, this is a great way to build confidence in a relaxed setting. Afterward, we’ll rehearse our group piece for the upcoming Cabaret, so come ready to sing, learn, and connect with others!</p><button onclick="hideCard()">Close</button></div>
+  <section class="card">
+    <h1>Events</h1>
+    <p>Authenticated members can add events. Public can view.</p>
+
+    <!-- Cards get injected here -->
+    <div id="events-grid" class="cards" style="margin-top:16px"></div>
+  </section>
 </main>
+
 <footer class="site-footer">
-    © <span id="year"></span> Rowan ACDA. All rights reserved.
-  </footer>
+  © <span id="year"></span> Rowan ACDA. All rights reserved.
+</footer>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-<div id="modal-overlay"></div><script>
+
+<div id="modal-overlay"></div>
+
+<script>
+// ===== Modal controls (kept from your original) =====
 function closeAll(){
   document.querySelectorAll('.card-content').forEach(c=>c.style.display='none');
   const ov = document.getElementById('modal-overlay');
   if (ov) ov.style.display = 'none';
   document.body.classList.remove('modal-open');
 }
-
 function showCard(id){
   closeAll();
   const card = document.getElementById(`card-${id}`);
@@ -83,14 +97,135 @@ function showCard(id){
     document.body.classList.add('modal-open');
   }
 }
-
 function hideCard(){ closeAll(); }
-
-// Close on overlay click or ESC
 document.addEventListener('click', (e)=>{
   if (e.target && e.target.id === 'modal-overlay') hideCard();
 });
 document.addEventListener('keydown', (e)=>{
   if (e.key === 'Escape') hideCard();
 });
-</script></body></html>
+
+// ===== Events: fetch from your Google Sheet CSV and render =====
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSESaEnsqhseKRcrAkMj0Gu-gEAzHjYYdfTlpkAxaUVyUl6MERihQkWTMVlzk7nbWA3xE9g1orMChUo/pub?gid=0&single=true&output=csv";
+const IMG_FALLBACK = "images/event-placeholder.png";
+
+// Normalize CSV headers to snake_case
+function normalizeRow(row) {
+  const out = {};
+  for (const k in row) {
+    const key = String(k || "").trim().toLowerCase().replace(/\s+/g, "_");
+    out[key] = row[k];
+  }
+  return out;
+}
+
+// Format "9/12/2025" as "Fri, Sep 12, 2025"
+function formatDatePretty(mdy) {
+  const d = new Date(mdy);
+  if (isNaN(d)) return mdy;
+  return d.toLocaleDateString(undefined, { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+}
+
+// Sort by start datetime (uses first time in the range)
+function startDateFrom(item){
+  const dateStr = (item.date||"").trim();
+  const startTime = (item.time||"").split("-")[0]?.trim() || "";
+  const dt = new Date(`${dateStr} ${startTime}`);
+  return isNaN(dt) ? new Date(dateStr) : dt;
+}
+
+async function fetchEventsFromSheet() {
+  const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+  const csv = await res.text();
+  return new Promise((resolve, reject) => {
+    Papa.parse(csv, {
+      header: true,
+      skipEmptyLines: true,
+      complete: ({ data }) => {
+        const items = data
+          .map(normalizeRow)
+          .filter(r => r.event_title || r.title) // allow either header
+          .map(r => ({
+            title: (r.event_title || r.title || "").trim(),
+            type: (r.type || "").trim(),
+            date: (r.date || "").trim(),                 // e.g., "9/12/2025"
+            time: (r.time || "").trim(),                 // e.g., "3:00pm - 4:00pm"
+            short: (r.short_description || r.short || "").trim(),
+            long: (r.long_description || r.long || "").trim(),
+            image: (r.image || "").trim()
+          }))
+          .sort((a,b)=> startDateFrom(a) - startDateFrom(b));
+        resolve(items);
+      },
+      error: reject
+    });
+  });
+}
+
+function renderEvents(events){
+  const grid = document.getElementById("events-grid");
+  grid.innerHTML = "";
+
+  if (!events.length){
+    grid.innerHTML = `<p>No events found.</p>`;
+    return;
+  }
+
+  // Build cards and popups
+  const frag = document.createDocumentFragment();
+  const modalFrag = document.createDocumentFragment();
+
+  events.forEach((e, idx) => {
+    const id = idx + 1;
+    const imgSrc = e.image || IMG_FALLBACK;
+
+    // Card
+    const card = document.createElement("div");
+    card.className = "card";
+    card.setAttribute("tabindex", "0"); // focusable
+    card.addEventListener("click", ()=>showCard(id));
+    card.addEventListener("keypress", (ev)=>{ if(ev.key==='Enter' || ev.key===' ') showCard(id); });
+
+    card.innerHTML = `
+      <div class="aspect">
+        <img src="${imgSrc}" alt="${e.title.replace(/"/g,'&quot;')}">
+      </div>
+      <h3>${e.title}</h3>
+      <p class="muted">${formatDatePretty(e.date)}${e.time ? "" : ""}</p>
+      ${e.short ? `<p>${e.short}</p>` : ""}
+    `;
+    frag.appendChild(card);
+
+    // Modal content
+    const modal = document.createElement("div");
+    modal.className = "card-content";
+    modal.id = `card-${id}`;
+    const typeLabel = e.type ? `Type: ${e.type} | ` : "";
+    const timeLabel = e.time ? ` | Time: ${e.time}` : "";
+    modal.innerHTML = `
+      <h2>${e.title}</h2>
+      <p>${typeLabel}Date: ${formatDatePretty(e.date)}${timeLabel}</p>
+      ${e.long ? `<p>${e.long}</p>` : (e.short ? `<p>${e.short}</p>` : "")}
+      <button onclick="hideCard()">Close</button>
+    `;
+    modalFrag.appendChild(modal);
+  });
+
+  grid.appendChild(frag);
+  document.body.appendChild(modalFrag);
+}
+
+// Bootstrap
+(async () => {
+  try{
+    const events = await fetchEventsFromSheet();
+    renderEvents(events);
+  } catch(err){
+    console.error(err);
+    document.getElementById("events-grid").innerHTML = `<p>There was a problem loading events.</p>`;
+  }
+})();
+</script>
+
+</body>
+</html>
