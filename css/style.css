@@ -66,3 +66,62 @@ p{margin:0 0 12px 0;color:var(--muted)}
   .nav-links a.active::after{ display:none; }
 }
 .site-footer{border-top:1px solid var(--border);padding:24px 16px;margin-top:24px;color:var(--muted);text-align:center}
+
+
+/* --- Gallery --- */
+.section{margin-top:24px}
+.section-head{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.section-head h2{margin:0;font-size:clamp(20px,2.4vw,28px)}
+.muted{color:var(--muted)}
+.gallery-grid{
+  columns: 1;
+  column-gap: 12px;
+}
+@media (min-width: 600px){ .gallery-grid{ columns: 2; }}
+@media (min-width: 900px){ .gallery-grid{ columns: 3; }}
+.gallery-grid--tight{ column-gap: 10px; }
+.gallery-item{
+  break-inside: avoid;
+  margin: 0 0 12px 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--card);
+}
+.gallery-item img{ width:100%; height:auto; display:block; transition: transform .25s ease }
+.gallery-item:hover img{ transform: scale(1.02) }
+.footer{padding:24px 0 40px 0}
+
+
+/* --- Visual makeover (banners & callouts) --- */
+.hero-banner{
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  min-height: clamp(200px, 36vw, 360px);
+  display: grid;
+  align-items: end;
+  padding: clamp(16px,3vw,24px);
+  color: #fff;
+  box-shadow: var(--shadow);
+  background-size: cover;
+  background-position: center;
+}
+.hero-banner::before{
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.45) 100%);
+}
+.hero-banner > *{ position:relative; z-index:1 }
+
+.callout{
+  display:grid; grid-template-columns: 1.2fr .8fr; gap:16px;
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: clamp(14px,2.6vw,18px); align-items:center;
+}
+@media (max-width: 720px){ .callout{ grid-template-columns: 1fr; } }
+.callout img{ border-radius: calc(var(--radius) - 6px); width:100%; height:auto; display:block }
+.callout h3{ margin:.2rem 0 .3rem 0 }
+.banner-kicker{font-weight:600; letter-spacing:.02em; opacity:.9}
+.banner-title{font-size: clamp(22px, 3.2vw, 36px); margin:.2rem 0}
+.banner-sub{opacity:.95; max-width: 70ch}
