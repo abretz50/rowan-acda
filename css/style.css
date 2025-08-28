@@ -181,3 +181,67 @@ img.side-photo{width:100%;height:auto;border-radius:var(--radius);box-shadow:var
   background: var(--accent);
   border-bottom: 2px solid color-mix(in oklab, var(--accent) 70%, black 20%);
 }
+
+
+/* === Rowan ACDA Logo-Matched Theme (auto-generated) ===================== */
+:root{
+  --bg:#fbf8f3;
+  --surface: color-mix(in oklab, #fbf8f3 92%, #000 0%);
+  --card:#ffffff;
+  --text:#111111;
+  --muted:#636b74;
+  --border:#e6e9ee;
+  --accent:#a52120; /* logo red */
+  --accent-2:#111111;    /* black from logo mic */
+  --radius:16px;
+  --shadow:0 10px 26px rgba(0,0,0,.08);
+  --tap:44px;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b0d10;
+    --surface:#101318;
+    --card:#12161c;
+    --text:#e9edf1;
+    --muted:#9aa4b2;
+    --border:#1b2027;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+}
+
+html,body{ background:var(--bg); color:var(--text);}
+.card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);}
+.btn{ border-radius:12px; border:1px solid var(--border);}
+.btn-primary{ background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 92%, #fff 10%), var(--accent)); color:#fff; border:none;}
+.btn-ghost{ background:transparent; color:var(--text);}
+.btn-primary:hover{ transform: translateY(-1px);}
+
+.site-nav{ 
+  background: var(--accent); 
+  border-bottom:2px solid color-mix(in oklab, var(--accent) 70%, black 20%);
+  color:#fff; 
+}
+.nav-links a{ color: #fff; }
+.nav-links a.active{ background: color-mix(in oklab, #ffffff 16%, transparent); border-radius:10px; }
+.brand-text{ color:#fff; }
+.logo{ filter: drop-shadow(0 1px 0 rgba(0,0,0,.18)); }
+
+.hero-banner{
+  position:relative; border-radius: var(--radius); overflow:hidden;
+  min-height: clamp(220px, 36vw, 380px); display:grid; align-items:end;
+  padding: clamp(16px,3vw,24px); color:#fff; box-shadow:var(--shadow);
+  background-size:cover; background-position:center; margin: clamp(8px,2.2vw,16px) 0;
+  border:1px solid var(--border);
+}
+.hero-banner::before{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.08) 0%, rgba(0,0,0,.60) 100%);
+}
+.hero-banner > *{ position:relative; z-index:1 }
+.banner-kicker{ color: #fff; text-transform: uppercase; font-size:.85em; letter-spacing:.02em }
+.banner-title{ letter-spacing:.2px }
+.banner-sub{ color: #f1f5f9 }
+
+.section{ margin-top: clamp(18px,2.8vw,28px); }
+.muted{ color: var(--muted); }
