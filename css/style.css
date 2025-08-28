@@ -174,3 +174,10 @@ img.side-photo{width:100%;height:auto;border-radius:var(--radius);box-shadow:var
 .aspect{overflow:hidden;border-radius:12px;border:1px solid var(--border);background:var(--surface)}
 .aspect img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .22s ease}
 .card:hover .aspect img{transform:scale(1.02)}
+
+
+/* --- Custom: Navbar in NAfME/ACDA red --- */
+.site-nav{
+  background: var(--accent);
+  border-bottom: 2px solid color-mix(in oklab, var(--accent) 70%, black 20%);
+}
