@@ -8,11 +8,11 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet"/>
 <link href="css/style.css" rel="stylesheet"/>
-<script defer src="images/gallery/44668902_1278021742341093_304953527103389696_n.jpg"></script>
-<script defer src="images/gallery/44668902_1278021742341093_304953527103389696_n.jpg"></script>
+<script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script defer src="js/app.js"></script>
 
 <!-- PapaParse for CSV parsing -->
-<script src="images/gallery/44668902_1278021742341093_304953527103389696_n.jpg"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
 /* Popup modal like eboard, with overlay and scroll lock */
@@ -63,25 +63,6 @@ body.modal-open{overflow:hidden;}
 <div id="navbar"></div>
 
 <main class="container">
-    <section class="hero-banner" style="background-image: url('images/gallery/495404074_1503033427680094_4412305961444217353_n.jpg');">
-      <div>
-        <div class="banner-kicker">Rowan ACDA</div>
-        <h1 class="banner-title">Events</h1>
-        <p class="banner-sub">Workshops, meetings, performances, and service opportunities throughout the year.</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="callout">
-        <div>
-          <h3>Bring a friend</h3>
-          <p>Most events welcome guests—share the sign‑in link to help us track attendance.</p>
-        </div>
-        <img src="images/gallery/44668902_1278021742341093_304953527103389696_n.jpg" alt="Bring a friend">
-      </div>
-    </section>
-    
-    
   <section class="card">
     <h1>Events</h1>
     <p>View our Upcoming Events here! Click on any event card to learn more, access resources, and sign in or sign up!</p>
@@ -207,7 +188,7 @@ function renderEvents(events){
 
     card.innerHTML = `
       <div class="aspect">
-        <img src="images/gallery/44668902_1278021742341093_304953527103389696_n.jpg" alt="${e.title.replace(/"/g,'&quot;')}">
+        <img src="${imgSrc}" alt="${e.title.replace(/"/g,'&quot;')}">
       </div>
       <h3>${e.title}</h3>
       <p class="muted">${formatDatePretty(e.date)}${e.time ? "" : ""}</p>
