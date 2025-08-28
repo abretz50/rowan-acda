@@ -20,7 +20,7 @@ function wireNav(){
   links?.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>links.classList.remove('open')));
 }
 function markActive(){
-  const map = {'index.html':'home','events.html':'events','chapter.html':'chapter','eboard.html':'eboard','resources.html':'resources'};
+  const map = {'index.html':'home','events.html':'events','chapter.html':'chapter','eboard.html':'eboard','resources.html':'resources','gallery.html':'gallery'};
   const path = (location.pathname.split('/').pop() || 'index.html');
   const key = map[path] || 'home';
   document.querySelectorAll(`.nav-links a[data-page="${key}"]`).forEach(a=>{ a.classList.add('active'); a.setAttribute('aria-current','page'); });
