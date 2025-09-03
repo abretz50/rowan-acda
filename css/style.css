@@ -144,4 +144,50 @@ p{margin:0 0 12px 0;color:var(--muted)}
     color: var(--navbar-text);
   }
 }
+:root {
+  --btn-primary-bg: #d64545;   /* same as --accent */
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover-bg: #b73838;
+
+  --btn-ghost-border: #d64545;
+  --btn-ghost-text: #d64545;
+  --btn-ghost-hover-bg: #f5b7b1;  /* same as navbar active blush */
+  --btn-ghost-hover-text: #111111;
+}
+/* Primary button */
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  cursor: pointer;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+}
+.btn-primary:hover {
+  background: var(--btn-primary-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+}
+
+/* Ghost button */
+.btn-ghost {
+  background: transparent;
+  border: 2px solid var(--btn-ghost-border);
+  color: var(--btn-ghost-text);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  cursor: pointer;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn-ghost:hover {
+  background: var(--btn-ghost-hover-bg);
+  border-color: var(--btn-ghost-hover-bg);
+  color: var(--btn-ghost-hover-text);
+}
 
