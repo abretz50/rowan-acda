@@ -66,3 +66,31 @@ p{margin:0 0 12px 0;color:var(--muted)}
   .nav-links a.active::after{ display:none; }
 }
 .site-footer{border-top:1px solid var(--border);padding:24px 16px;margin-top:24px;color:var(--muted);text-align:center}
+
+.brand-text {
+  color: #fff; /* was #111 */
+  letter-spacing: .4px;
+}
+
+.nav-links a {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: #fff; /* was #111 */
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #fff; /* was #111 */
+}
+
+#profile 
+.name {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: #fff; /* was #111 */
+}
