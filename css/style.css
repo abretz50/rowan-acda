@@ -190,4 +190,48 @@ p{margin:0 0 12px 0;color:var(--muted)}
   border-color: var(--btn-ghost-hover-bg);
   color: var(--btn-ghost-hover-text);
 }
+:root {
+  --btn-radius: 9999px;             /* fully rounded pill look */
+  
+  --btn-primary-bg: #d64545;        /* strong red */
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover-bg: #b73838;  /* deeper red on hover */
+
+  --btn-ghost-border: #d64545;
+  --btn-ghost-text: #d64545;
+  --btn-ghost-hover-bg: #f5b7b1;    /* blush fill */
+  --btn-ghost-hover-text: #111111;  /* dark text for contrast */
+}
+/* Primary button (solid) */
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background .2s ease, transform .08s ease, box-shadow .2s ease;
+}
+.btn-primary:hover {
+  background: var(--btn-primary-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+}
+
+/* Ghost button (outlined) */
+.btn-ghost {
+  background: transparent;
+  border: 2px solid var(--btn-ghost-border);
+  color: var(--btn-ghost-text);
+  border-radius: var(--btn-radius);
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn-ghost:hover {
+  background: var(--btn-ghost-hover-bg);
+  border-color: var(--btn-ghost-hover-bg);
+  color: var(--btn-ghost-hover-text);
+}
 
