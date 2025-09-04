@@ -422,3 +422,15 @@ a:not(.nav-link):not(.button):not(.btn):hover{
   background: #7a0a0a !important;
 }
 
+
+
+/* === Nav contrast fix === */
+.navbar a, nav a, .menu a, .nav-link, .nav-item > a {
+  color: #111 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.navbar a:hover, nav a:hover, .menu a:hover, .nav-link:hover {
+  color: #7a0a0a !important;
+}
+
