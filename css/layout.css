@@ -72,3 +72,43 @@
   .nav-toggle{display:flex}
   .footer-inner{grid-template-columns:1fr}
 }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--brand);       /* deep red background */
+  border-bottom: 1px solid var(--brand-ink);
+}
+
+.nav-link, 
+.menu-trigger {
+  color: #fff;                   /* white nav links */
+}
+
+.nav-link:hover,
+.nav-link[aria-current="page"] {
+  background: rgba(255,255,255,0.15);  /* subtle highlight */
+  color: #fff;
+}
+
+.menu-panel {
+  background: var(--brand);       /* dropdown also red */
+  border-color: var(--brand-ink);
+}
+.menu-panel a {
+  color: #fff;
+}
+.menu-panel a:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.nav-actions .btn-primary {
+  background: #fff;               /* white button */
+  color: var(--brand);            /* red text */
+}
+.nav-actions .btn-ghost {
+  color: #fff;                    /* white ghost button */
+  border-color: #fff;
+}
+
