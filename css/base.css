@@ -54,3 +54,10 @@ img{max-width:100%;display:block}
 .person{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px}
 .avatar{width:100%;max-width:100%;aspect-ratio:1/1;border-radius:999px}
 .hidden{display:none !important}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+h1, h2, h3, h4 {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
