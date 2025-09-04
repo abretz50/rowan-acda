@@ -33,7 +33,12 @@ img{max-width:100%;display:block}
   height:var(--tap);padding:0 16px;border-radius:999px;border:1px solid transparent;
   cursor:pointer;gap:8px;
 }
-.btn-primary{background:var(--brand);color:#fff;box-shadow:var(--shadow)}
+.btn-primary{ 
+  background-image: linear-gradient(135deg, #7A0A0A, #9b1c1c);
+  color:#fff;
+  border:0;
+  transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+}
 .btn-ghost{background:transparent;border-color:var(--border)}
 .btn-outline{background:#fff;border-color:var(--border)}
 .btn-link{background:transparent;padding:0;height:auto;color:var(--brand);}
@@ -59,10 +64,14 @@ img{max-width:100%;display:block}
 body{font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans','Liberation Sans',sans-serif}
 
 /* --- Theming upgrades: buttons --- */
-.btn-primary{
-  background-image: linear-gradient(135deg, #9b1c1c, #b91c1c);
-  border: 0;
+.btn-primary{ 
+  background-image: linear-gradient(135deg, #7A0A0A, #9b1c1c);
+  color:#fff;
+  border:0;
   transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
 }
+.btn-primary:hover{ filter: brightness(1.05) }
+.btn-primary:active{ transform: translateY(1px) }
+
 .btn-primary:hover{ filter: brightness(1.05) }
 .btn-primary:active{ transform: translateY(1px) }
