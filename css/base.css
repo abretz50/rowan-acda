@@ -11,14 +11,14 @@
   --tap:44px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--text)}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text) font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
 html{scroll-behavior:smooth}
 body{
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
   line-height:1.5;
   font-size: clamp(15px, 1.1vw + 0.5rem, 18px);
 }
-h1,h2,h3,h4{font-family: Outfit, Inter, system-ui, sans-serif; line-height:1.15; margin: 0 0 .5em}
+h1,h2,h3,h4{font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height:1.15; margin: 0 0 .5em}
 h1{font-size:clamp(1.8rem,4vw,3rem)}
 h2{font-size:clamp(1.4rem,2.4vw,2rem)}
 h3{font-size:clamp(1.1rem,1.6vw,1.3rem)}
@@ -48,9 +48,63 @@ img{max-width:100%;display:block}
 .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
 .card-media{aspect-ratio: 16/9; overflow:hidden}
 .card-media img{width:100%;height:100%;object-fit:cover}
-.card-body{padding:18px}
+.card-body{padding:18px font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
 .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .people-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .person{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px}
 .avatar{width:100%;max-width:100%;aspect-ratio:1/1;border-radius:999px}
 .hidden{display:none !important}
+
+
+/* === ACDA Nav Uniform Buttons === */
+:root{
+  --acda-red:#7a0a0a;
+  --acda-red-dark:#5a0000;
+  --acda-white:#ffffff;
+}
+.navbar a, .navbar button, .nav a, nav a, .menu a, .nav-link, .nav-item > a, .site-nav a {
+  background: var(--acda-red);
+  color: var(--acda-white) !important;
+  border: 0;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  text-decoration: none;
+  line-height: 1;
+}
+.navbar a:hover, .nav a:hover, nav a:hover, .menu a:hover, .nav-link:hover, .nav-item > a:hover, .site-nav a:hover {
+  background: var(--acda-red-dark);
+}
+/* Keep dropdown caret/menus styling while inheriting button look */
+.navbar .dropdown, .menu .dropdown, nav .dropdown {
+  position: relative;
+  display: inline-block;
+}
+.navbar .dropdown > a, .menu .dropdown > a, nav .dropdown > a {
+  padding-right: 1.8rem;
+}
+.navbar .dropdown-menu, .menu .dropdown-menu, nav .dropdown-menu, .dropdown ul, .dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  color: #111;
+  border-radius: 12px;
+  padding: .4rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  min-width: 220px;
+  z-index: 50;
+}
+.navbar .dropdown-menu a, .menu .dropdown-menu a, nav .dropdown-menu a, .dropdown ul a, .dropdown-content a {
+  background: transparent;
+  color: #111 !important;
+  border-radius: 8px;
+  display: block;
+  padding: .5rem .7rem;
+}
+.navbar .dropdown-menu a:hover, .menu .dropdown-menu a:hover, nav .dropdown-menu a:hover, .dropdown ul a:hover, .dropdown-content a:hover {
+  background: #f3f3f3;
+}
+

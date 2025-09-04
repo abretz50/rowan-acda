@@ -6,3 +6,5 @@
 .note{margin-top:.5rem}
 /* Header menu open state */
 .menu.open .menu-panel{display:block}
+
+body{font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}

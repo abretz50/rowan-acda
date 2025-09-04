@@ -30,7 +30,7 @@
   }
 
   // Theme toggle (simple class)
-  const themeBtn = document.querySelector('.theme-toggle');
+  const themeBtn = document.
   themeBtn?.addEventListener('click', () => document.documentElement.classList.toggle('theme-deep'));
 
   // Spotlight modals from homepage (data-modal-open)
