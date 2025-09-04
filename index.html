@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rowan ACDA</title>
+  <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="icon" href="/assets/icons/acda.svg">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/index.html" aria-label="Rowan ACDA home">
+      <img src="/assets/icons/acda.svg" alt="" class="brand-mark" />
+      <span class="brand-name">Rowan ACDA</span>
+    </a>
+
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li><a href="/index.html" class="nav-link">Home</a></li>
+        <li><a href="/events.html" class="nav-link">Events</a></li>
+        <li><a href="/members.html" class="nav-link">Members</a></li>
+        <li><a href="/eboard.html" class="nav-link">E-Board</a></li>
+        <li class="menu">
+          <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Resources</button>
+          <div class="menu-panel" role="menu">
+            <a role="menuitem" href="/resources-sightsinging.html">Sight-Singing Vault</a>
+            <a role="menuitem" href="/resources.html#repertoire">Repertoire Lists</a>
+            <a role="menuitem" href="/resources.html#handouts">Clinic Handouts</a>
+            <a role="menuitem" href="/resources.html#bylaws">Bylaws</a>
+          </div>
+        </li>
+      </ul>
+      <div class="nav-actions">
+        <button class="btn btn-primary" onclick="location.href='#contact'">Join / Contact</button>
+        <button class="btn btn-ghost theme-toggle" aria-label="Toggle theme">Theme</button>
+      </div>
+    </nav>
+  </div>
+</header>
+<main class="main">
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <h1 class="mega">Sing. Lead. Inspire.</h1>
+      <p class="lead">Rowan ACDA empowers student conductors, educators, and singers through concerts, clinics, and community.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="/events.html">View Events</a>
+        <a class="btn btn-ghost" href="/members.html">Join Us</a>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img src="/assets/img/hero.svg" alt="Rowan ACDA choir rehearsal" />
+    </div>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="container grid3">
+    <article class="card">
+      <div class="card-media"><img src="/assets/events/fall-kickoff.svg" alt=""></div>
+      <div class="card-body">
+        <h3>Next Event</h3>
+        <p class="muted">Fall Kickoff & Reading Session — Friday, Sept 12</p>
+        <a class="btn btn-link" href="/events.html">See details</a>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-media"><img src="/assets/img/about.svg" alt=""></div>
+      <div class="card-body">
+        <h3>About ACDA</h3>
+        <p class="muted">We connect choral leaders with opportunities to grow, perform, and serve.</p>
+        <a class="btn btn-link" href="/members.html">Learn more</a>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-media"><img src="/assets/img/resources.svg" alt=""></div>
+      <div class="card-body">
+        <h3>Resources</h3>
+        <p class="muted">Sight-singing packets, repertoire lists, and clinic materials.</p>
+        <a class="btn btn-link" href="/resources.html">Explore resources</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="news">
+  <div class="container">
+    <div class="section-head">
+      <h2>Spotlight</h2>
+      <a class="btn btn-ghost" href="/events.html">All events</a>
+    </div>
+    <div class="grid2">
+      <article class="card">
+        <div class="card-media"><img src="/assets/img/spotlight1.svg" alt=""></div>
+        <div class="card-body">
+          <h3>Clinic: Score Study Crash Course</h3>
+          <p class="muted">Hands‑on strategies for faster, deeper prep.</p>
+          <button class="btn btn-outline" data-modal-open="spot1">Read more</button>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-media"><img src="/assets/img/spotlight2.svg" alt=""></div>
+        <div class="card-body">
+          <h3>Voces Chamber Auditions</h3>
+          <p class="muted">Chamber ensemble placements open next week.</p>
+          <button class="btn btn-outline" data-modal-open="spot2">Details</button>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- Spotlight Modals -->
+  <div class="modal" id="modal-spot1" aria-hidden="true" aria-labelledby="modal-spot1-title" role="dialog">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-window" role="document">
+      <button class="modal-close" aria-label="Close" data-modal-close>&times;</button>
+      <h3 id="modal-spot1-title">Score Study Crash Course</h3>
+      <p>Bring a score; we’ll move from macro to micro: form, harmony, diction, gesture.</p>
+    </div>
+  </div>
+  <div class="modal" id="modal-spot2" aria-hidden="true" aria-labelledby="modal-spot2-title" role="dialog">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-window" role="document">
+      <button class="modal-close" aria-label="Close" data-modal-close>&times;</button>
+      <h3 id="modal-spot2-title">Voces Chamber Auditions</h3>
+      <p>Prepare 16 bars and a short sight‑reading excerpt. Callbacks posted on the site.</p>
+    </div>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="container gallery-inner">
+    <div class="marquee" aria-label="Photo gallery">
+      <img src="/assets/img/gallery1.svg" alt="Concert photo 1">
+      <img src="/assets/img/gallery2.svg" alt="Concert photo 2">
+      <img src="/assets/img/gallery3.svg" alt="Concert photo 3">
+      <img src="/assets/img/gallery4.svg" alt="Concert photo 4">
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="container">
+    <h2>Contact & Join</h2>
+    <p>Email us at <a href="mailto:rowanacda@example.edu">rowanacda@example.edu</a> or come to our next event.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img src="/assets/icons/acda.svg" alt="" class="brand-mark sm" />
+      <strong>Rowan ACDA</strong>
+      <p class="muted">American Choral Directors Association — Rowan University</p>
+    </div>
+    <div class="footer-links">
+      <a href="/events.html">Events</a>
+      <a href="/members.html">Members</a>
+      <a href="/eboard.html">E-Board</a>
+      <a href="/resources.html">Resources</a>
+    </div>
+    <div class="footer-meta">
+      <p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/core.js" defer></script>
+</body>
+</html>
+
