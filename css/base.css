@@ -248,3 +248,161 @@ p{color: var(--acda-muted);}
   *{ transition: none !important; animation: none !important; }
 }
 
+
+
+/* === Elegant Connected Theme (Light) ===
+   Intent: lighter canvas, refined type, connected nav with underline indicator,
+   hairline borders, subtle motion, red accent as thread across components.
+*/
+:root{
+  --acda-red:#7a0a0a;
+  --acda-red-600:#5a0000;
+  --ink:#111111;
+  --muted:#555555;
+  --paper:#ffffff;
+  --panel:#fafafa;
+  --hairline:#e8e8e8;
+  --radius:14px;
+  --tap:44px;
+}
+
+/* Canvas & type */
+html,body{
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
+body{
+  font-feature-settings: "ss01" on, "liga" on, "kern" on;
+  line-height: 1.6;
+}
+h1,h2,h3{ color: var(--ink); letter-spacing:-0.015em; }
+p,li{ color: var(--muted); }
+
+/* Connected header/nav */
+.navbar, header nav, nav.site-nav{
+  position: sticky; top:0; z-index:100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--hairline);
+}
+.navbar .brand, .site-brand{ font-weight:700; letter-spacing:.01em; }
+
+/* Make nav feel connected with underline "rail" and active indicator */
+.navbar .nav, nav .nav, .site-nav .nav, .menu{
+  display:flex; gap:.6rem; align-items:center;
+  position: relative;
+  padding-bottom: .25rem;
+}
+.navbar .nav::after, nav .nav::after, .site-nav .nav::after, .menu::after{
+  content:""; position:absolute; left:0; right:0; bottom:0;
+  height: 2px; background: var(--hairline);
+}
+.navbar a, nav a, .menu a, .nav-link, .nav-item > a{
+  background: transparent !important;
+  color: var(--ink) !important;
+  border-radius: 10px;
+  padding: .6rem .8rem;
+  position: relative;
+  transition: color .2s ease;
+}
+/* underline grows on hover/focus to suggest connection */
+.navbar a::after, nav a::after, .menu a::after, .nav-link::after{
+  content:""; position:absolute; left:.6rem; right: calc(100% - .6rem);
+  bottom:-2px; height:2px; background: var(--acda-red);
+  transform-origin:left center; transition: right .25s ease;
+}
+.navbar a:hover::after, nav a:hover::after, .menu a:hover::after, .nav-link:hover::after{
+  right:.6rem;
+}
+/* Active page (if markup has .active, but also infer by [aria-current]) */
+.navbar a.active::after, .nav a[aria-current="page"]::after{ right:.6rem; }
+.navbar a:hover, nav a:hover{ color: var(--acda-red-600) !important; }
+
+/* Resources dropdown maintains elegance */
+.dropdown-menu, .dropdown ul, .dropdown-content{
+  background: var(--panel) !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08) !important;
+}
+.dropdown-menu a, .dropdown ul a, .dropdown-content a{
+  color: var(--ink) !important;
+  border-radius: 8px;
+}
+.dropdown-menu a:hover{ background:#f3f3f3; }
+
+/* Cards & sections feel connected via soft dividers */
+.section, .content, .container{ max-width: 1100px; margin:0 auto; padding: clamp(16px, 3vw, 32px); }
+.rule{ height:1px; background:var(--hairline); width:100%; }
+.card, .panel, .feature, .event-card, .member-card{
+  background: var(--panel) !important;
+  border:1px solid var(--hairline) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.05);
+}
+/* Card headers with subtle connector */
+.card h3, .event-card h3, .feature h3{
+  position:relative; padding-top:.2rem; margin-top:0;
+}
+.card h3::before, .event-card h3::before, .feature h3::before{
+  content:""; position:absolute; top:-.6rem; left:0; width:56px; height:2px; background: var(--acda-red);
+  border-radius: 2px;
+}
+
+/* Buttons — quiet, elegant, red accent */
+.btn, button, .button, .cta{
+  background: var(--acda-red);
+  color:#fff;
+  border: 1px solid #7a0a0a;
+  padding:.6rem .95rem;
+  border-radius: 12px;
+  transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+  box-shadow: 0 6px 14px rgba(122,10,10,.18);
+}
+.btn:hover, button:hover{ background: var(--acda-red-600); transform: translateY(-1px); }
+
+/* Tables (members/eboard) refined */
+.table{
+  width:100%;
+  border:1px solid var(--hairline);
+  border-radius: 12px;
+  overflow:hidden;
+  background: var(--panel);
+}
+.table th, .table td{ padding:.8rem 1rem; border-bottom:1px solid var(--hairline); }
+.table thead th{ background:#f7f7f7; color:var(--ink); }
+.table tr:hover td{ background:#f3f3f3; }
+
+/* Links in body copy with elegant underline */
+a:not(.nav-link):not(.button):not(.btn){
+  text-decoration: none;
+  background: linear-gradient(transparent 85%, rgba(122,10,10,.35) 85%);
+  transition: background-size .2s ease;
+}
+a:not(.nav-link):not(.button):not(.btn):hover{
+  background: linear-gradient(transparent 80%, rgba(122,10,10,.55) 80%);
+}
+
+/* Modals */
+.modal, .popup{
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.12);
+}
+.modal-backdrop{ background: rgba(0,0,0,.35); backdrop-filter: blur(2px); }
+
+/* Media and figures */
+.figure, .image-inline{
+  border-radius: 12px; border:1px solid var(--hairline);
+}
+
+/* Spacing rhythm */
+:where(h1,h2,h3,h4,h5,h6){ margin-top: 1.2em; margin-bottom: .5em; }
+:where(p,ul,ol){ margin: .6em 0; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none!important; animation:none!important; }
+}
+
