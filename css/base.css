@@ -54,3 +54,15 @@ img{max-width:100%;display:block}
 .person{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px}
 .avatar{width:100%;max-width:100%;aspect-ratio:1/1;border-radius:999px}
 .hidden{display:none !important}
+
+/* Sans-serif body font */
+body{font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans','Liberation Sans',sans-serif}
+
+/* --- Theming upgrades: buttons --- */
+.btn-primary{
+  background-image: linear-gradient(135deg, #9b1c1c, #b91c1c);
+  border: 0;
+  transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+}
+.btn-primary:hover{ filter: brightness(1.05) }
+.btn-primary:active{ transform: translateY(1px) }

@@ -1,4 +1,10 @@
-.site-header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.2) blur(6px);border-bottom:1px solid var(--border)}
+.site-header{
+  position: sticky; top: 0; z-index: 1000;
+  background: linear-gradient(180deg, rgba(153,16,24,0.98), rgba(153,16,24,0.94));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: none;
+}
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
 .brand-mark{width:28px;height:28px}
@@ -17,7 +23,7 @@
 .menu-panel a{display:block;padding:10px 12px;border-radius:10px}
 .menu-panel a:hover{background:var(--surface)}
 
-.hero{background:linear-gradient(180deg,#fff,#FAF7F7)}
+.hero{background:linear-gradient(180deg,#ffffff,#fff5f5)}
 .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
 .mega{font-size:clamp(2rem,5vw,3.5rem); letter-spacing:.2px}
 .lead{font-size:clamp(1rem,1.6vw,1.25rem);color:var(--brand-ink)}
@@ -33,7 +39,7 @@
   0%{transform:translateX(0)} 100%{transform:translateX(-50%)}
 }
 
-.page-head{background:linear-gradient(180deg,#fff,#FAF7F7);border-bottom:1px solid var(--border)}
+.page-head{background:linear-gradient(180deg,#ffffff,#fff5f5);border-bottom:1px solid var(--border)}
 .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{height:var(--tap);padding:0 12px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer}
@@ -72,3 +78,20 @@
   .nav-toggle{display:flex}
   .footer-inner{grid-template-columns:1fr}
 }
+
+/* --- Theming upgrades: navbar --- */
+.site-nav .nav-link,
+.site-nav .menu-trigger{
+  color:#fff;
+}
+.site-nav .nav-link[aria-current="page"],
+.site-nav .nav-link:hover{
+  background: rgba(255,255,255,0.14);
+  color:#fff;
+}
+.site-nav .menu-panel{
+  background:#fff;
+  color:var(--text);
+}
+.site-nav .menu-panel a{ color:var(--text); }
+.site-nav .menu-panel a:hover{ background: var(--surface); color:var(--text); }
