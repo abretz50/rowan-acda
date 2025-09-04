@@ -406,3 +406,19 @@ a:not(.nav-link):not(.button):not(.btn):hover{
   *{ transition:none!important; animation:none!important; }
 }
 
+
+
+/* === Final nav refinement: connected & elegant (no white pills) === */
+.navbar a, nav a, .menu a, .nav-link, .nav-item > a {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: #111 !important;
+}
+.navbar .nav::after, nav .nav::after, .site-nav .nav::after, .menu::after {
+  background: #e8e8e8 !important;
+}
+.navbar a::after, nav a::after, .menu a::after, .nav-link::after {
+  background: #7a0a0a !important;
+}
+
