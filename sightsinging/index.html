@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rowan ACDA — Sight-Singing PDFs (Protected)</title>
+  <meta name="description" content="Password-protected sight-singing PDFs for Rowan ACDA members." />
 
+  <!-- Reuse your fonts and styles if desired -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/assets/icons/acda.png" />
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #111a2b;
+      --muted: #97a3b6;
+      --text: #eaf0ff;
+      --accent: #ffcc33; /* NAfME-esque gold */
+      --danger: #ff6b6b;
+      --radius: 16px;
+    }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #0b1220, #0e1a32);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+    }
+    .wrap { min-height: 100%; display: grid; place-items: center; padding: 32px; }
+    .card {
+      width: 100%; max-width: 840px; background: rgba(17,26,43,0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+    .head {
+      display: grid; gap: 6px; padding: 28px 28px 0 28px;
+    }
+    .title {
+      font-family: Outfit, Inter, ui-sans-serif;
+      font-weight: 800; letter-spacing: 0.2px; font-size: clamp(24px,3.4vw,36px);
+    }
+    .subtitle { color: var(--muted); font-size: 14px; }
+    .divider { height: 1px; background: rgba(255,255,255,0.08); margin: 18px 0 0; }
+    .content { padding: 24px 28px 28px; }
+
+    /* Gate */
+    .gate {
+      display: grid; gap: 14px; padding: 24px; background: rgba(8,12,22,0.55);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+    }
+    .label { font-size: 14px; color: var(--muted); }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    input[type="password"]{
+      width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+      background: #0c1527; color: var(--text); font-size: 16px; outline: none;
+    }
+    button {
+      border: none; outline: none; padding: 12px 16px; border-radius: 10px;
+      background: var(--accent); color: #222; font-weight: 700; font-family: Outfit, Inter;
+      cursor: pointer;
+    }
+    .err { color: var(--danger); font-size: 13px; min-height: 18px; }
+
+    /* List */
+    .grid {
+      display: grid; gap: 12px; margin-top: 10px;
+    }
+    .pdf {
+      display: grid; grid-template-columns: 1fr auto; gap: 12px;
+      align-items: center; padding: 14px 16px; border-radius: 12px;
+      background: #0c1527; border: 1px solid rgba(255,255,255,0.06);
+    }
+    .pdf b { font-weight: 600; }
+    .pdf small { color: var(--muted); }
+    .btn-row { display: flex; gap: 8px; }
+    .a-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 12px; border-radius: 8px; background: #16223c; color: var(--text);
+      text-decoration: none; font-size: 14px; border: 1px solid rgba(255,255,255,0.08);
+    }
+    .a-btn:hover { background: #1a294a; }
+    .hint { color: var(--muted); font-size: 13px; margin-top: 10px; }
+    .hidden { display: none !important; }
+    .footnote { color: var(--muted); font-size: 12px; margin-top: 18px; }
+
+    @media (max-width: 560px) {
+      .row { grid-template-columns: 1fr; }
+      .pdf { grid-template-columns: 1fr; }
+      .btn-row { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main">
+      <header class="head">
+        <div class="title">Sight-Singing PDFs</div>
+        <div class="subtitle">Rowan ACDA · Members-only materials</div>
+        <div class="divider"></div>
+      </header>
+
+      <section class="content">
+
+        <!-- Password gate -->
+        <div id="gate" class="gate" aria-live="polite">
+          <div class="label">Enter the password to view the PDFs:</div>
+          <div class="row">
+            <input id="pw" type="password" inputmode="text" autocomplete="current-password" placeholder="Password" />
+            <button id="unlock">Unlock</button>
+          </div>
+          <div id="err" class="err"></div>
+          <div class="hint">Having trouble? Contact the ACDA E-Board for access.</div>
+        </div>
+
+        <!-- Protected content -->
+        <div id="docs" class="hidden" aria-hidden="true">
+          <p class="hint">Click a title to open in your browser, or choose <em>Download</em>.</p>
+
+          <div id="pdfGrid" class="grid"></div>
+
+          <p class="footnote">Note: This gate is client-side and intended for light protection, not confidentiality of sensitive data.</p>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    /**
+     * EDIT THESE:
+     * 1) Set the password string below
+     * 2) Add your PDFs to the manifest with {title, file}
+     *    Files live in /assets/pdf/
+     */
+    const PASSWORD = "acda2025"; // <-- change this
+    const PDF_MANIFEST = [
+      // Example entries — replace with your actual files/titles
+      // { title: "Interval Practice – Set A", file: "interval-practice-A.pdf" },
+      // { title: "Do–Mi–Sol Warmups",       file: "do-mi-sol-warmups.pdf" },
+      // { title: "Sight-Singing Packet 1",  file: "sight-singing-packet-1.pdf" },
+    ];
+
+    // UI elements
+    const gate = document.getElementById("gate");
+    const docs = document.getElementById("docs");
+    const pwInput = document.getElementById("pw");
+    const unlockBtn = document.getElementById("unlock");
+    const err = document.getElementById("err");
+    const pdfGrid = document.getElementById("pdfGrid");
+
+    // Render list
+    function renderList() {
+      if (!PDF_MANIFEST.length) {
+        pdfGrid.innerHTML = `
+          <div class="pdf">
+            <div>
+              <b>No PDFs found yet</b><br/>
+              <small>Add items to <code>PDF_MANIFEST</code> in <em>/sightsinging/index.html</em> using file names from <code>/assets/pdf/</code>.</small>
+            </div>
+          </div>`;
+        return;
+      }
+      pdfGrid.innerHTML = "";
+      PDF_MANIFEST.forEach(item => {
+        const url = `/assets/pdf/${encodeURIComponent(item.file)}`;
+        const row = document.createElement("div");
+        row.className = "pdf";
+        row.innerHTML = `
+          <div>
+            <a class="a-btn" href="${url}" target="_blank" rel="noopener">
+              <span>🔗</span><span><b>${item.title}</b></span>
+            </a><br/>
+            <small>${item.file}</small>
+          </div>
+          <div class="btn-row">
+            <a class="a-btn" href="${url}" target="_blank" rel="noopener">Open</a>
+            <a class="a-btn" href="${url}" download>Download</a>
+          </div>
+        `;
+        pdfGrid.appendChild(row);
+      });
+    }
+
+    // Simple client-side gate
+    function unlock() {
+      const entered = pwInput.value.trim();
+      if (!entered) {
+        err.textContent = "Please enter the password.";
+        return;
+      }
+      if (entered === PASSWORD) {
+        err.textContent = "";
+        gate.classList.add("hidden");
+        docs.classList.remove("hidden");
+        docs.setAttribute("aria-hidden", "false");
+        renderList();
+        // remember for this session
+        try { sessionStorage.setItem("acda_sightsinging_ok", "1"); } catch {}
+      } else {
+        err.textContent = "Incorrect password. Please try again.";
+      }
+    }
+
+    unlockBtn.addEventListener("click", unlock);
+    pwInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") unlock();
+    });
+
+    // Auto-unlock if already validated this session
+    try {
+      if (sessionStorage.getItem("acda_sightsinging_ok") === "1") {
+        gate.classList.add("hidden");
+        docs.classList.remove("hidden");
+        docs.setAttribute("aria-hidden", "false");
+        renderList();
+      }
+    } catch {}
+  </script>
+</body>
+</html>
