@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css"/>
-  
   <script defer src="js/app.js"></script>
 </head>
 <body>
@@ -27,10 +26,14 @@
             </ul>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">Sight Singing Resources</h2>
           <div class="accordion-content">
             <ul>
+              <!-- NEW: link to the protected PDFs page -->
+              <li><a href="/sightsinging/">🔒 Sight-Singing PDFs (Members)</a></li>
+
               <li><a href="https://www.sightreadingfactory.com/">Sight Reading Factory</a></li>
               <li><a href="https://learnmusictheory.net/singing/index.html">Learn Music Theory</a></li>
               <li><a href="http://choir.rigbytrojans.org/uploads/2/1/5/4/21541204/sight-singing-exercises.pdf">Sight Singing Exercises (PDF)</a></li>
@@ -38,6 +41,7 @@
             </ul>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">NJ ACDA</h2>
           <div class="accordion-content">
@@ -50,6 +54,7 @@
             </ul>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">East Region ACDA</h2>
           <div class="accordion-content">
@@ -61,6 +66,7 @@
             </ul>
           </div>
         </div>
+
         <div class="accordion-item">
           <h2 class="accordion-header">National ACDA</h2>
           <div class="accordion-content">
@@ -77,9 +83,11 @@
       </div>
     </section>
   </main>
+
   <footer class="site-footer">
     &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
   </footer>
+
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script>
     const accordionItems = document.querySelectorAll('.accordion-item');
@@ -89,49 +97,18 @@
       });
     });
   </script>
+
   <style>
-    .accordion {
-      max-width: 800px;
-      margin: 40px auto;
-    }
-    .accordion-item {
-      border: 1px solid #ddd;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .accordion-header {
-      padding: 20px;
-      background-color: #f0f0f0;
-      border-bottom: 1px solid #ddd;
-      cursor: pointer;
-    }
-    .accordion-content {
-      padding: 20px;
-      display: none;
-    }
-    .accordion-item.active .accordion-content {
-      display: block;
-    }
-    .accordion-content ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .accordion-content li {
-      margin-bottom: 10px;
-    }
-    .accordion-content a {
-      text-decoration: none;
-      color: #337ab7;
-      transition: color 0.2s ease;
-    }
-    .accordion-content a:hover {
-      color: #23527c;
-    }
-    .accordion-content a:active {
-      color: #1a3d6e;
-    }
+    .accordion { max-width: 800px; margin: 40px auto; }
+    .accordion-item { border: 1px solid #ddd; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .accordion-header { padding: 20px; background-color: #f0f0f0; border-bottom: 1px solid #ddd; cursor: pointer; }
+    .accordion-content { padding: 20px; display: none; }
+    .accordion-item.active .accordion-content { display: block; }
+    .accordion-content ul { list-style: none; padding: 0; margin: 0; }
+    .accordion-content li { margin-bottom: 10px; }
+    .accordion-content a { text-decoration: none; color: #337ab7; transition: color 0.2s ease; }
+    .accordion-content a:hover { color: #23527c; }
+    .accordion-content a:active { color: #1a3d6e; }
   </style>
 </body>
 </html>
