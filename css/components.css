@@ -15,3 +15,7 @@ input[type="search"],input[type="text"],select{padding:.6rem .75rem;border:1px s
 .file-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
 .file-tabs a{padding:.4rem .7rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;text-decoration:none}
 .hidden{display:none!important}
+.chip{transition:transform .1s ease, background .2s ease, border-color .2s ease}
+.chip:hover{transform:translateY(-1px)}
+.file-tabs a{transition:background .15s ease, transform .1s ease}
+.file-tabs a:hover{transform:translateY(-1px)}

@@ -17,7 +17,7 @@ function renderEvents(list){
   for (const ev of list){
     const card = document.createElement('div');
     card.className = 'card event-card';
-    const img = document.createElement('img');
+    const img = document.createElement('img'); img.loading = 'lazy';
     img.src = ev.image || '/assets/img/event-fallback.png';
     img.alt = ev.title;
     const h3 = document.createElement('h3'); h3.textContent = ev.title;

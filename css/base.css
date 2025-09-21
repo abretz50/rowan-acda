@@ -33,3 +33,22 @@ kbd{padding:.1rem .3rem;border:1px solid var(--border);border-bottom-width:2px;b
 @media (prefers-reduced-motion:reduce){
   .fade-rotator img{animation:none!important;opacity:1!important}
 }
+/* Modern refresh */
+:root{
+  --radius: 1.2rem;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.06), 0 1px 1px rgba(0,0,0,.04);
+  --shadow-md: 0 8px 20px rgba(0,0,0,.12);
+  --shadow-lg: 0 18px 40px rgba(0,0,0,.18);
+}
+html{scroll-behavior:smooth}
+.card{border-radius:var(--radius); box-shadow:var(--shadow-sm); transition:transform .18s ease, box-shadow .18s ease}
+.card:hover{transform:translateY(-2px); box-shadow:var(--shadow-md)}
+.btn{border-radius:calc(var(--radius) - .3rem); transition:transform .12s ease, filter .12s ease}
+.btn:active{transform:translateY(1px)}
+/* Dark mode */
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0b0c10; --surface:#121318; --text:#f5f6f8; --muted:#a6acb8; --border:#20232b; }
+  .nav a,.nav button{color:var(--text)}
+  .site-header{background:rgba(18,19,24,.7); backdrop-filter:saturate(1.2) blur(8px)}
+  .site-footer{color:var(--muted)}
+}

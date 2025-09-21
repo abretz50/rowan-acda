@@ -6,7 +6,7 @@
     "tags": [
       "General"
     ],
-    "image": "/assets/img/spotlight1.png",
+    "image": "/assets/img/event1.png",
     "description": "Kick off the year with introductions, goals, and free pizza."
   },
   {
@@ -16,7 +16,7 @@
     "tags": [
       "Professional"
     ],
-    "image": "/assets/img/spotlight2.png",
+    "image": "/assets/img/event2.png",
     "description": "Techniques for K\u20138 music, barbershop harmony insights, and Q&A."
   },
   {
@@ -26,7 +26,7 @@
     "tags": [
       "Volunteer"
     ],
-    "image": "/assets/img/event-fallback.png",
+    "image": "/assets/img/event3.png",
     "description": "Support the Head Start in Harmony elementary festival throughout the day."
   }
 ]

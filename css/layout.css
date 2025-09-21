@@ -32,3 +32,8 @@
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
 .modal.open{display:flex}
 .modal .dialog{background:#fff;border-radius:1rem;max-width:720px;width:min(92vw,720px);max-height:90vh;overflow:auto;padding:1rem;border:1px solid var(--border)}
+.site-header{backdrop-filter:saturate(1.2) blur(10px); background:rgba(255,255,255,.75)}
+.hero .overlay{background:radial-gradient(1200px 400px at 50% -10%, rgba(255,255,255,.08), rgba(0,0,0,.55))}
+.hero .content{backdrop-filter: blur(6px); padding:2.2rem 2rem; border-radius:var(--radius); box-shadow:var(--shadow-lg); background:linear-gradient(180deg,rgba(122,10,10,.6),rgba(76,6,6,.6))}
+.nav a,.nav button{border-radius:999px}
+.loop-gallery img{box-shadow:var(--shadow-sm)}
