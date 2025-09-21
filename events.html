@@ -1,67 +1,626 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Events — Rowan ACDA</title>
-<meta name="description" content="Find upcoming Rowan ACDA events, workshops, and volunteer opportunities."/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
-<link rel="icon" href="/assets/icons/favicon-32.png"/>
-<meta name="theme-color" content="#7A0A0A"/>
-<link rel="stylesheet" href="/css/base.css"/>
-<link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rowan NAfME — Events</title>
+  <meta name="color-scheme" content="light">
+  <link rel="preload" as="image" href="/images/background.png">
+  <link rel="icon" href="/images/logo.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
 
+  <style>
+    /* Events page ONLY: use convention .btn styling for filter chips */
+    .filters .chips{ display:flex; flex-wrap:wrap; gap:.5rem; }
+    .filters .chips .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      height: var(--tap);
+      padding: 0 18px;
+      border:1.6px solid var(--border);
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight:700;
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      transition: transform .06s ease, background .2s ease, border-color .2s ease, filter .2s ease;
+    }
+    .filters .chips .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+    .filters .chips .btn:focus-visible{ outline: 2px solid var(--brand-cyan); outline-offset: 2px; }
+
+    /* Toggle state driven by aria-pressed */
+    .filters .chips .btn[aria-pressed="true"]{
+      background: var(--brand-gold, #f5c518);
+      color: #111;
+      border-color: transparent;
+      filter: brightness(0.98);
+    }
+
+    /* Make in-page buttons gold (exclude nav) */
+    #eventsList .button,
+    #eventsList .btn{
+      background: var(--brand-gold, #f5c518);
+      color: #111;
+      border-color: transparent;
+      box-shadow: var(--shadow);
+    }
+    #eventsList .button:hover,
+    #eventsList .btn:hover{ transform: translateY(-1px); filter: brightness(.95); }
+
+    .filters .chips .btn[aria-pressed="true"]{ filter: brightness(.92); }
+
+    /* Neutral filter chips (not gold) */
+    .filters .chips .button,
+    .filters .chips .btn{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border:1.6px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .filters .chips .button:hover,
+    .filters .chips .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+    .filters .chips .button[aria-pressed="true"],
+    .filters .chips .btn[aria-pressed="true"]{
+      background: rgba(255,255,255,.14);
+      color: var(--text);
+      border-color: var(--border);
+      filter: none;
+    }
+
+    /* Filters layout: chips left, toggle right */
+    .filters .filters-bar{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    .filters .filters-right{ display:flex; align-items:center; }
+
+    /* Neutral filter chips (ensure not gold) */
+    .filters .chip{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border:1.6px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 999px;
+      padding: 0 18px;
+      height: var(--tap);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .06s ease, background .2s ease;
+    }
+    .filters .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+    .filters .chip[aria-pressed="true"]{ background: rgba(255,255,255,.14); }
+
+    /* Keep card buttons gold (scope to events list only) */
+    #eventsList .button, #eventsList .btn{
+      background: var(--brand-gold, #f5c518); color:#111; border-color:transparent; box-shadow: var(--shadow);
+    }
+    #eventsList .button:hover, #eventsList .btn:hover{ transform: translateY(-1px); filter: brightness(.95); }
+
+    /* Distinct look for "Past events" switch */
+    .filters .switch{
+      position: relative;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding-right: 52px; /* room for knob */
+      background: transparent;
+      color: var(--text);
+      border: 1.6px solid var(--border);
+      border-radius: 999px;
+      height: var(--tap);
+      font-weight: 800;
+    }
+    .filters .switch svg{ width: 18px; height: 18px; }
+    .filters .switch .knob{
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      width: 34px; height: 18px; border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid var(--border);
+      transition: background .2s ease;
+    }
+    .filters .switch .knob::after{
+      content:""; position:absolute; top:2px; left:2px;
+      width: 12px; height: 12px; border-radius: 999px;
+      background: var(--muted);
+      transition: transform .2s ease, background .2s ease;
+    }
+    .filters .switch:hover{ transform: translateY(-1px); background: rgba(255,255,255,.05); }
+    .filters .switch[aria-pressed="true"]{
+      background: rgba(255,255,255,.14);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .filters .switch[aria-pressed="true"] .knob{ background: rgba(255,255,255,.18); border-color: var(--border); }
+    .filters .switch[aria-pressed="true"] .knob::after{ transform: translateX(14px); background: var(--brand-cyan); }
+
+    /* Events page: normalize button text sizes (cards, chips, switch) */
+    #eventsList .button,
+    .filters .chip,
+    .filters .switch{
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    /* Ensure card buttons have consistent height & alignment */
+    #eventsList .button{
+      display:inline-flex; align-items:center; justify-content:center;
+      height: var(--tap); padding: 0 18px;
+    }
+
+    /* Card images: fixed ratio + rounded corners */
+    #eventsList .event-photo{
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      border-radius: 14px;
+      background: rgba(0,0,0,.2);
+    }
+
+    /* Modal (events popups): center every element */
+    .modal .modal-header{
+      display:flex; align-items:center; justify-content:center; position:relative;
+      text-align:center;
+    }
+    .modal .modal-header .close-btn{ position:absolute; right:10px; top:10px; }
+    .modal .modal-content section{
+      text-align:center;
+    }
+    .modal .modal-content section > img.convention-thumb{
+      width: clamp(240px, 60vw, 560px);
+      aspect-ratio: 16 / 9;
+      height: auto;
+      display:block;
+      margin: 0 auto 12px auto;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+    /* Center the buttons row inside the modal section */
+    .modal .modal-content section > div{
+      display:flex; gap:.5rem; flex-wrap:wrap; justify-content:center;
+    }
+
+    /* Multi-select pressed emphasize */
+    .filters .chip[aria-pressed="true"]{ border-width:2px; }
+    /* Center content inside event cards */
+#eventsList .event-card .card-body{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Keep the action buttons side-by-side and centered */
+#eventsList .event-actions{
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+/* Left-align meta (date • location) and tags inside centered cards */
+#eventsList .event-card .event-meta,
+#eventsList .event-card .event-badges{
+  align-self: stretch;   /* take full card width */
+  text-align: left;      /* left-align text */
+}
+
+/* (Optional) match this behavior in the popup too */
+.modal .event-meta,
+.modal .event-badges{
+  text-align: left;
+  align-self: stretch;
+}
+
+/* Add more breathing room above the buttons row */
+#eventsList .event-actions {
+  margin-top: 1rem; /* was .5rem → now doubled */
+}
+
+.modal .modal-content section > div {
+  margin-top: 1rem; /* was .5rem inline → override */
+}
+/* Left-align everything inside event cards */
+#eventsList .event-card .card-body{
+  text-align: left;
+  align-items: flex-start;   /* was center */
+}
+
+/* Keep buttons side-by-side (left-aligned) */
+#eventsList .event-actions{
+  justify-content: flex-start;   /* was center */
+}
+
+/* Force-wrap helper for chips */
+.filters .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.filters .chips .chip-break{
+  flex-basis: 100%;   /* take full width => next items go to new row */
+  height: 0;          /* no visible height */
+}
+
+/* On small screens, let chips flow naturally (remove the forced break) */
+@media (max-width: 640px){
+  .filters .chips .chip-break{ display: none; }
+}
+
+  </style>
 </head>
 <body>
+  <nav class="site-nav"></nav>
 
-<header class="site-header" role="banner">
-  <div class="container header-inner">
-    <a class="brand" href="/" aria-label="Rowan ACDA Home">
-      <img src="/assets/icons/acda.png" alt="ACDA logo">
-      <span>Rowan ACDA</span>
-    </a>
-    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
-    <nav id="site-nav" class="nav" role="navigation">
-      <a class="nav-link" data-nav href="/">Home</a>
-      <a class="nav-link" data-nav href="/events.html">Events</a>
-      <a class="nav-link" data-nav href="/members.html">Members</a>
-      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
-      <a class="nav-link" data-nav href="/resources.html">Resources</a>
-    </nav>
-  </div>
-</header>
+  <header class="hero">
+    <div class="hero-inner container">
+      <div>
+        <h1>Events</h1>
+        <p>Workshops, meetings, volunteering, and convention prep. Filters below help you explore.</p>
+      </div>
+    </div>
+  </header>
 
-<main class="container" role="main" style="padding:1.25rem 0 2rem">
-
-<header style="margin-bottom:1rem">
-  <h1>Events</h1>
-  <p class="small">Search and filter to find meetings, PDs, performances, and volunteer opportunities.</p>
-</header>
-<div class="search-row">
-  <input id="event-search" type="search" placeholder="Search events (title, location, details)" aria-label="Search events">
-  <div class="chips" id="tag-chips" aria-label="Filter by tag">
-    <span class="chip" data-tag="General">General</span>
-    <span class="chip" data-tag="Professional">Professional</span>
-    <span class="chip" data-tag="Volunteer">Volunteer</span>
-    <span class="chip" data-tag="Performance">Performance</span>
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="filters">
+          <div class="filters-bar">
+            <div class="chips" role="toolbar" aria-label="Filter events by category">
+              <button class="button chip" data-filter="all" aria-pressed="true">All</button>
+              <button class="button chip" data-filter="events" aria-pressed="false">Events</button>
+              <button class="button chip" data-filter="meeting" aria-pressed="false">Meetings</button>
+              <button class="button chip" data-filter="professional-development" aria-pressed="false">Professional Developments</button>
+	      
+              <button class="button chip" data-filter="workshop" aria-pressed="false">Workshop</button>
+              <!-- force next chips onto a new row -->
+              <span class="chip-break" aria-hidden="true"></span>
+              <button class="button chip" data-filter="volunteer" aria-pressed="false">Volunteer</button>
+	      <button class="button chip" data-filter="performance" aria-pressed="false">Performances</button>
+            </div>
+            <div class="filters-right">
+              <button id="togglePast" class="button switch" aria-pressed="false" title="Show past events">
+                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21Zm0 1.8a8.7 8.7 0 1 1 0 17.4 8.7 8.7 0 0 1 0-17.4Zm-.9 3.9a.9.9 0 0 1 1.8 0v4.56l3.22 1.86a.9.9 0 1 1-.9 1.56l-3.6-2.07a.9.9 0 0 1-.46-.78V7.2Z"/></svg>
+                <span>Past events</span>
+                <span class="knob" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="grid" id="eventsList" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+<!-- Simple notice modal for missing RSVP links -->
+<div class="modal" id="notice-modal" role="dialog" aria-modal="true" aria-labelledby="notice-title" hidden>
+  <div class="modal-overlay" data-close="True"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="notice-title">Heads up</h3>
+      <button class="close-btn" data-close="True" aria-label="Close">✕</button>
+    </div>
+    <section>
+      <p>This form is not open yet. Check back closer to the event.</p>
+    </section>
   </div>
 </div>
-<div id="events-grid" class="grid cols-3" style="margin-top:1rem"></div>
-<script src="/js/events.js" defer></script>
 
-</main>
+  <footer class="site-footer"></footer>
+  <script src="/assets/js/nav.js" defer></script>
 
-<footer class="site-footer" role="contentinfo">
-  <div class="container" style="display:flex;align-items:center;gap:.75rem">
-    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
-    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
-  </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-</footer>
-<script src="/js/core.js" defer></script>
+  <!-- Removed the small "past events" script block -->
 
+  <script>
+  (function(){
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQcgOeW0i-7EiDTkN_9rr6hXJSE0nFUsnpKXGSHyPUUudWnja7FQJ0vjvt9x7ktQciDGcZa8OD3VXip/pub?output=csv";
+    const listEl = document.getElementById('eventsList');
+    const chipsBar = document.querySelector('.filters .chips');
+    const chipAll = chipsBar?.querySelector('button[data-filter="all"]');
+    const chipButtons = Array.from(chipsBar?.querySelectorAll('button[data-filter]') || []);
+    const pastToggle = document.getElementById('togglePast');
+    const activeFilters = new Set(); // empty means 'all'
+
+    function parseCSV(text){
+      const rows = [];
+      let i=0, field='', row=[], inQuotes=false;
+      while(i < text.length){
+        const c = text[i];
+        if(inQuotes){
+          if(c === '"'){
+            if(text[i+1] === '"'){ field += '"'; i++; }
+            else { inQuotes = false; }
+          } else { field += c; }
+        } else {
+          if(c === '"') inQuotes = true;
+          else if(c === ','){ row.push(field); field=''; }
+          else if(c === '\n'){ row.push(field); field=''; rows.push(row); row=[]; }
+          else if(c === '\r'){ /* ignore */ }
+          else { field += c; }
+        }
+        i++;
+      }
+      if(field.length || row.length){ row.push(field); rows.push(row); }
+      return rows;
+    }
+
+    function toRecords(rows){
+      const header = rows.shift().map(h => h.trim().toLowerCase());
+      return rows.map(r => {
+        const obj = { };
+        header.forEach((h, idx) => obj[h] = (r[idx] ?? '').trim());
+        return obj;
+      });
+    }
+
+    function parseDate(dStr){
+      if(!dStr) return null;
+      const parts = dStr.split(/[\/.-]/).map(s => s.trim());
+      if(parts.length < 3) return null;
+      let [m,d,y] = parts;
+      m = parseInt(m,10); d = parseInt(d,10);
+      y = parseInt(y,10);
+      if(y < 100) y = 2000 + y;
+      return new Date(y, m-1, d);
+    }
+
+    function parseTime(tStr){
+      if(!tStr) return {h:0,m:0};
+      tStr = tStr.trim();
+      let m = tStr.match(/^(\d{1,2}):(\d{2})\s*([AP]M)?$/i);
+      if(!m) return {h:0,m:0};
+      let h = parseInt(m[1],10), mm = parseInt(m[2],10);
+      const ampm = (m[3]||'').toUpperCase();
+      if(ampm === 'PM' && h<12) h += 12;
+      if(ampm === 'AM' && h===12) h = 0;
+      return {h, m:mm};
+    }
+
+    function combineDateTime(d, t){ const dt = new Date(d); dt.setHours(t.h, t.m, 0, 0); return dt; }
+
+    function formatDateRange(start, end){
+      const optsDate = { month:'long', day:'numeric', year:'numeric' };
+      const optsTime = { hour:'numeric', minute:'2-digit' };
+      const sameDay = start.toDateString() === end.toDateString();
+      if(sameDay) return new Intl.DateTimeFormat('en-US', optsDate).format(start) + ' • ' +
+                       new Intl.DateTimeFormat('en-US', optsTime).format(start) + '–' +
+                       new Intl.DateTimeFormat('en-US', optsTime).format(end);
+      return new Intl.DateTimeFormat('en-US', optsDate).format(start) + ' ' +
+             new Intl.DateTimeFormat('en-US', optsTime).format(start) + ' → ' +
+             new Intl.DateTimeFormat('en-US', optsDate).format(end) + ' ' +
+             new Intl.DateTimeFormat('en-US', optsTime).format(end);
+    }
+
+    function gcalLink(ev){
+      const text = encodeURIComponent(ev.title || 'NAfME Event');
+      const details = encodeURIComponent((ev.details || ev.description || '') + (ev.signin_link ? '\n\nSign-in: ' + ev.signin_link : ''));
+      const location = encodeURIComponent(ev.location || '');
+      const tz = 'America/New_York';
+      const start = ev.startDateTime;
+      const end = ev.endDateTime;
+      const dates = start.getFullYear() + String(start.getMonth()+1).padStart(2,'0') + String(start.getDate()).padStart(2,'0') + 'T' +
+                    String(start.getHours()).padStart(2,'0') + String(start.getMinutes()).padStart(2,'0') + '00/' +
+                    end.getFullYear() + String(end.getMonth()+1).padStart(2,'0') + String(end.getDate()).padStart(2,'0') + 'T' +
+                    String(end.getHours()).padStart(2,'0') + String(end.getMinutes()).padStart(2,'0') + '00';
+      return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + text +
+             '&dates=' + dates + '&ctz=' + tz + '&details=' + details + '&location=' + location;
+    }
+
+    function tagSlug(s){ return (s||'').toLowerCase().replace(/\s+/g,'-'); }
+    function normalizeTags(s){
+      if(!s) return [];
+      return s.split(/[,;/]+/).map(v => v.trim()).filter(Boolean);
+    }
+
+    /* === NEW: unified RSVP label helper === */
+    function getBtnLabel(ev){
+      const tags = new Set((ev.tagSlugs || []).map(String));
+      if (tags.has('volunteer')) return 'Sign up';
+       if (tags.has('performance') || tags.has('performances')) return 'Tickets';
+      if (tags.has('event') || tags.has('events') || tags.has('professional-development')) return 'Check in';
+      return 'Attendance';
+    }
+
+   function cardHTML(ev){
+  const badges = ev.tags.map(t => '<span class="badge" data-tag="'+tagSlug(t)+'">'+t+'</span>').join(' ');
+  const btnLabel = getBtnLabel(ev);
+  const hasLink = Boolean(ev.signin_link);
+  const signinHref = hasLink ? ev.signin_link : '#';
+
+  return (
+    '<article class="card event-card" data-tags="' + ev.tagSlugs.join(' ') + '" data-when="' + ev.when + '">' +
+      '<img src="' + (ev.image_url||'') + '" alt="' + (ev.title||'') + ' photo" class="event-photo convention-thumb" onerror="this.onerror=null;this.src=\'/images/placeholder.png\'">' +
+      '<div class="card-body">' +                                                    // ← class for centering
+        '<h3>' + (ev.title||'') + '</h3>' +
+        '<p class="kicker event-meta"><strong>' + (ev.datePretty||'') + '</strong>' + (ev.location ? ' • ' + ev.location : '') + '</p>' +
+        (badges ? '<div class="event-badges" style="margin:6px 0 8px 0">' + badges + '</div>' : '') +
+        (ev.description ? '<p>' + ev.description + '</p>' : '') +
+        '<div class="event-actions">' +                                               // ← keep buttons inline
+          '<button class="button" data-modal="modal-' + ev.id + '">Details</button>' +
+          '<a class="button" data-action="signin" data-has-link="' + (hasLink ? '1':'0') + '" href="' + signinHref + '" target="_blank" rel="noopener">' + btnLabel + '</a>' +
+        '</div>' +
+      '</div>' +
+    '</article>'
+  );
+}
+
+
+
+    function modalHTML(ev){
+  const btnLabel = getBtnLabel(ev);
+  const hasLink = Boolean(ev.signin_link);
+  const signinHref = hasLink ? ev.signin_link : '#';
+
+  return (
+    '<div class="modal" id="modal-' + ev.id + '" role="dialog" aria-modal="true" aria-labelledby="modal-' + ev.id + '-title" hidden>' +
+      '<div class="modal-overlay" data-close="True"></div>' +
+      '<div class="modal-content">' +
+        '<div class="modal-header">' +
+          '<h3 class="modal-title" id="modal-' + ev.id + '-title">' + (ev.title||'') + '</h3>' +
+          '<button class="close-btn" data-close="True" aria-label="Close">✕</button>' +
+        '</div>' +
+        '<section>' +
+          '<img src="' + (ev.image_url||'') + '" alt="' + (ev.title||'') + ' photo" class="convention-thumb" onerror="this.onerror=null;this.src=\'/images/placeholder.png\'">' +
+          '<p class="kicker"><strong>' + (ev.datePretty||'') + '</strong>' + (ev.location ? ' • ' + ev.location : '') + '</p>' +
+          (ev.details ? ('<p>' + ev.details + '</p>') : '') +
+          '<div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem">' +
+            '<a class="button" href="' + gcalLink(ev) + '" target="_blank" rel="noopener">Add to Calendar</a>' +
+            '<a class="button" data-action="signin" data-has-link="' + (hasLink ? '1':'0') + '" href="' + signinHref + '" target="_blank" rel="noopener">' + btnLabel + '</a>' +
+          '</div>' +
+        '</section>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+    function openModal(m){ m?.classList.add('open'); m?.removeAttribute('hidden'); }
+    function closeModal(m){ m?.classList.remove('open'); m?.setAttribute('hidden',''); }
+
+    function attachModalHandlers(){
+      document.querySelectorAll('[data-modal]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-modal');
+          const m = document.getElementById(id);
+          openModal(m);
+        });
+      });
+      document.querySelectorAll('.modal').forEach(m => {
+        m.addEventListener('click', (e) => { if (e.target.classList.contains('modal-overlay')) closeModal(m); });
+        m.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(m)));
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(closeModal); });
+    }
+
+function showNotice(){
+  const m = document.getElementById('notice-modal');
+  openModal(m);
+}
+
+// Intercept clicks on RSVP/Sign in/Sign up/Attendance buttons when link is missing
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a.button[data-action="signin"]');
+  if (!a) return;
+  const hasLink = a.getAttribute('data-has-link') === '1';
+  const href = a.getAttribute('href');
+  if (!hasLink || !href || href === '#') {
+    e.preventDefault();
+    showNotice();
+  }
+});
+
+
+    function render(events){
+      events.sort((a,b) => a.startDateTime - b.startDateTime);
+      const cards = events.map(cardHTML).join('\n');
+      listEl.innerHTML = cards + '\n' + events.map(modalHTML).join('\n');
+      attachModalHandlers();
+      applyPastVisibility();
+      applyFilters();
+    }
+
+    function applyPastVisibility(){
+      const showPast = pastToggle?.getAttribute('aria-pressed') === 'true';
+      listEl.querySelectorAll('[data-when="past"]').forEach(el => el.style.display = showPast ? '' : 'none');
+    }
+
+    function matchesFilters(card){
+  if (activeFilters.size === 0) return true;
+
+  const tags = (card.getAttribute('data-tags') || '').split(/\s+/);
+
+  function tagMatches(filter){
+    if (filter === 'events') {
+      return (
+        tags.includes('workshop') ||
+        tags.includes('convention') ||
+        tags.includes('event') ||
+        tags.includes('events')
+      );
+    }
+    if (filter === 'performance') {
+      return tags.includes('performance') || tags.includes('performances');
+    }
+    return tags.includes(filter);
+  }
+
+  for (const f of activeFilters) {
+    if (tagMatches(f)) return true;
+  }
+  return false;
+}
+
+
+    function applyFilters(){
+      const cards = Array.from(listEl.querySelectorAll('.card'));
+      cards.forEach(card => {
+        const match = matchesFilters(card);
+        const pastOk = pastToggle?.getAttribute('aria-pressed') === 'true' || card.getAttribute('data-when') !== 'past';
+        card.style.display = (match && pastOk) ? '' : 'none';
+      });
+    }
+
+    function updatePressedStates(){
+      chipButtons.forEach(b => b.setAttribute('aria-pressed', activeFilters.size === 0 ? (b.dataset.filter==='all') : activeFilters.has(b.dataset.filter)));
+    }
+
+    function onChipClick(e){
+      const f = e.currentTarget.dataset.filter;
+      if(f === 'all'){
+        activeFilters.clear();
+      } else {
+        if(activeFilters.has(f)) activeFilters.delete(f); else activeFilters.add(f);
+      }
+      updatePressedStates();
+      applyFilters();
+    }
+
+    chipButtons.forEach(b => b.addEventListener('click', onChipClick));
+
+    pastToggle?.addEventListener('click', () => {
+      const pressed = pastToggle.getAttribute('aria-pressed') === 'true';
+      pastToggle.setAttribute('aria-pressed', String(!pressed));
+      applyPastVisibility();
+      applyFilters();
+    });
+
+    fetch(CSV_URL, {cache:'no-store'}).then(r => r.text()).then(t => {
+      const rows = parseCSV(t);
+      const recs = toRecords(rows);
+
+      const events = recs.map(r => {
+        const date = parseDate(r.date);
+        const st = parseTime(r.start_time);
+        const et = parseTime(r.end_time);
+        const start = date ? combineDateTime(date, st) : new Date();
+        const end = date ? combineDateTime(date, et.h ? et : st) : new Date(start.getTime()+60*60*1000);
+        const now = new Date();
+        const when = end < now ? 'past' : 'upcoming';
+        const tags = normalizeTags(r.tags);
+        const slugs = tags.map(tagSlug);
+        return {
+          id: Math.random().toString(36).slice(2),
+          title: r.title,
+          date: r.date,
+          start_time: r.start_time,
+          end_time: r.end_time,
+          startDateTime: start,
+          endDateTime: end,
+          datePretty: formatDateRange(start, end),
+          location: r.location,
+          tags,
+          tagSlugs: slugs,
+          primaryTag: tagSlug(tags[0]||''),
+          description: r.description,
+          details: r.details,
+          signin_link: r.signin_link,
+          image_url: r.image_url || '/images/placeholder.png',
+          when
+        };
+      });
+      render(events);
+    }).catch(err => {
+      console.error('CSV load failed', err);
+      listEl.innerHTML = '<p class="kicker">Could not load events. Please try again later.</p>';
+    });
+
+
+
+  })();
+  </script>
 </body>
 </html>
