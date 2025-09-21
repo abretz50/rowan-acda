@@ -34,33 +34,21 @@
   </div>
 </header>
 
-<div id="welcome-banner" class="announce container" role="region" aria-label="Welcome" style="margin:.8rem auto 0">
-  <div class="thumb">
-    <img src="/assets/icons/acda.png" alt="Rowan ACDA logo">
-  </div>
-  <div class="body">
-    <div class="title">Rowan ACDA</div>
-    <div class="meta">Sing. Lead. Inspire.</div>
-  </div>
-  <div class="actions">
-    <a class="btn" href="/members.html">Join Us</a>
-    <button class="close" aria-label="Dismiss welcome">Dismiss</button>
+<div id="welcome-band" class="welcome-band container" role="region" aria-label="Welcome to Rowan ACDA" style="--welcome-bg:url('/assets/img/hero1.png')">
+  <div class="inner">
+    <div class="logo"><img src="/assets/icons/acda.png" alt="Rowan ACDA logo"></div>
+    <div class="copy">
+      <div class="title">Rowan ACDA</div>
+      <div class="tagline">Sing. Lead. Inspire.</div>
+    </div>
+    <div class="actions">
+      <a class="btn alt" href="/members.html">Join Us</a>
+      <a class="btn btn-outline" href="/events.html">See Events</a>
+      <button class="close" aria-label="Dismiss welcome">Dismiss</button>
+    </div>
   </div>
 </div>
-<script>
-  // Persist dismissal per browser
-  window.addEventListener('DOMContentLoaded', ()=>{
-    try{
-      const wrap = document.getElementById('welcome-banner');
-      if(!wrap) return;
-      if(localStorage.getItem('welcomeBannerDismissed')==='1'){ wrap.classList.add('hidden'); }
-      wrap.querySelector('.close')?.addEventListener('click', ()=>{
-        wrap.classList.add('hidden');
-        try{ localStorage.setItem('welcomeBannerDismissed','1'); }catch(e){}
-      });
-    }catch(e){}
-  });
-</script>
+<script src="/js/welcome-banner.js" defer></script>
 
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
