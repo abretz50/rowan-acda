@@ -171,3 +171,13 @@ section+section{margin-top:2rem}
 .welcome-band .inner{
   padding-block: clamp(56px, 9.6vw, 88px); /* doubled from the prior 28..44 range */
 }
+
+/* === Welcome band: taller container with flush background image === */
+.welcome-band .inner{
+  /* Give the section real vertical presence without over-padding the text */
+  min-height: clamp(220px, 24vw, 360px);
+  padding-block: clamp(16px, 2.2vw, 28px);
+  /* Ensure the background photo always sits flush, covering rounded corners */
+  background-size: cover;
+  background-position: center;
+}
