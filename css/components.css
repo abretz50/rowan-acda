@@ -1,0 +1,8 @@
+/* Extra component styles */
+.input:focus, select:focus, .btn:focus, .nav-link:focus, .menu-trigger:focus {outline:2px solid var(--brand); outline-offset:2px}
+.card .btn{margin-top:8px}
+.person-card{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
+.person-card .avatar{width:100px;height:100px;object-fit:cover}
+.note{margin-top:.5rem}
+/* Header menu open state */
+.menu.open .menu-panel{display:block}

@@ -48,59 +48,36 @@
 
 <section class="page-head">
   <div class="container">
-    <h1>Resources</h1>
-    <p class="muted">Sight-singing materials, repertoire lists, clinic handouts, and chapter bylaws.</p>
-    <div class="toolbar">
-      <a class="btn btn-primary" href="/resources-sightsinging.html">Go to Sight‑Singing Vault</a>
+    <h1>Sight‑Singing Vault</h1>
+    <p class="muted">Choose a group and enter the shared password to view PDFs. (Client‑side gate using SHA‑256.)</p>
+  </div>
+</section>
+
+<section class="container vault">
+  <div class="gate card">
+    <div class="card-body">
+      <label for="group" class="label">Group</label>
+      <select id="group" class="input"></select>
+
+      <label for="password" class="label">Password</label>
+      <input id="password" class="input" type="password" placeholder="Enter password" aria-label="Group password">
+      <button id="enter" class="btn btn-primary">Enter</button>
+      <p id="gate-msg" class="muted small" role="status"></p>
+
+      <p class="note muted">Heads up: This shared password gate deters casual access but is not bulletproof. For true protection, connect Auth0 or a Netlify function later.</p>
+    </div>
+  </div>
+
+  <div class="viewer card hidden" id="viewer">
+    <div class="filelist" id="filelist" role="tablist" aria-label="PDF list"></div>
+    <div class="embed">
+      <embed id="pdf-embed" src="" type="application/pdf" aria-label="PDF viewer"/>
     </div>
   </div>
 </section>
 
-<section id="repertoire" class="container">
-  <h2>Repertoire Lists</h2>
-  <div class="cards-grid">
-    <article class="card">
-      <div class="card-body">
-        <h3>Warm‑ups & Canons</h3>
-        <p class="muted">Quick starters for any rehearsal.</p>
-        <a class="btn btn-outline" href="#">View</a>
-      </div>
-    </article>
-    <article class="card">
-      <div class="card-body">
-        <h3>Concert Program Ideas</h3>
-        <p class="muted">Themes, voicings, and durations.</p>
-        <a class="btn btn-outline" href="#">Download</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<section id="handouts" class="container">
-  <h2>Clinic Handouts</h2>
-  <div class="cards-grid">
-    <article class="card">
-      <div class="card-body">
-        <h3>Vocal Health Basics</h3>
-        <p class="muted">Hydration, warm‑ups, hygiene.</p>
-        <a class="btn btn-outline" href="#">View</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<section id="bylaws" class="container">
-  <h2>Bylaws</h2>
-  <div class="cards-grid">
-    <article class="card">
-      <div class="card-body">
-        <h3>Chapter Bylaws</h3>
-        <p class="muted">Roles, elections, and procedures.</p>
-        <a class="btn btn-outline" href="#">Download PDF</a>
-      </div>
-    </article>
-  </div>
-</section>
+<script src="/js/utils/hash.js" defer></script>
+<script src="/js/pdf-vault.js" defer></script>
 
 </main>
 

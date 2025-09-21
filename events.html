@@ -1,231 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Events | Rowan ACDA</title>
-<link href="images/logo.png" rel="icon" type="image/svg+xml"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet"/>
-<link href="css/style.css" rel="stylesheet"/>
-<script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script defer src="js/app.js"></script>
-
-<!-- PapaParse for CSV parsing -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
-<style>
-/* Popup modal like eboard, with overlay and scroll lock */
-#modal-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  z-index:999;
-}
-.card-content{
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#fff;
-  padding:24px;
-  border:1px solid #ddd;
-  box-shadow:0 10px 30px rgba(0,0,0,.2);
-  z-index:1000;
-  max-width:680px;
-  width:92%;
-  max-height:85vh;
-  overflow:auto;
-  border-radius:14px;
-}
-body.modal-open{overflow:hidden;}
-/* Grid + cards (works with your existing .card/.cards classes) */
-.cards{
-  display:grid;
-  gap:16px;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-}
-.card .aspect{
-  aspect-ratio:16/9;
-  overflow:hidden;
-  border-radius:12px;
-  background:#f3f4f6;
-}
-.card .aspect img{ width:100%; height:100%; object-fit:cover; display:block; }
-.card h3{ margin:.5rem 0 .25rem; }
-.card p.muted{ opacity:.8; margin:.25rem 0 .5rem; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rowan ACDA</title>
+  <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="icon" href="/assets/icons/acda.png">
 </head>
-
 <body>
-<div id="navbar"></div>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/index.html" aria-label="Rowan ACDA home">
+      <img src="/assets/icons/acda.png" alt="" class="brand-mark" />
+      <span class="brand-name">Rowan ACDA</span>
+    </a>
 
-<main class="container">
-  <section class="card">
-    <h1>Events</h1>
-    <p>View our Upcoming Events here! Click on any event card to learn more, access resources, and sign in or sign up!</p>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
 
-    <!-- Cards get injected here -->
-    <div id="events-grid" class="cards" style="margin-top:16px"></div>
+    <nav id="site-nav" class="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li><a href="/index.html" class="nav-link">Home</a></li>
+        <li><a href="/events.html" class="nav-link">Events</a></li>
+        <li><a href="/members.html" class="nav-link">Members</a></li>
+        <li><a href="/eboard.html" class="nav-link">E-Board</a></li>
+        <li class="menu">
+          <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Resources</button>
+          <div class="menu-panel" role="menu">
+            <a role="menuitem" href="/resources-sightsinging.html">Sight-Singing Vault</a>
+            <a role="menuitem" href="/resources.html#repertoire">Repertoire Lists</a>
+            <a role="menuitem" href="/resources.html#handouts">Clinic Handouts</a>
+            <a role="menuitem" href="/resources.html#bylaws">Bylaws</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+  <section class="page-head">
+    <div class="container">
+      <h1>Events</h1>
+      <p class="muted">Search, filter by tag, and click a card to view full details.</p>
+      <div class="toolbar">
+        <input id="event-search" class="input" type="search" placeholder="Search events… (title, tags)" aria-label="Search events">
+        <div class="chips" id="tag-chips">
+          <button class="chip" data-tag="All" aria-pressed="true">All</button>
+          <button class="chip" data-tag="General">General</button>
+          <button class="chip" data-tag="Professional">Professional</button>
+          <button class="chip" data-tag="Volunteer">Volunteer</button>
+          <button class="chip" data-tag="Performance">Performance</button>
+        </div>
+      </div>
+    </div>
   </section>
+
+  <section class="container">
+    <div id="events-grid" class="cards-grid"></div>
+  </section>
+
+  <!-- Event modal container -->
+  <div id="event-modals"></div>
+  <!-- Backdrop -->
+  <div id="modal-overlay" style="display:none;"></div>
 </main>
 
 <footer class="site-footer">
-  © <span id="year"></span> Rowan ACDA. All rights reserved.
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img src="/assets/icons/acda.png" alt="" class="brand-mark sm" />
+      <strong>Rowan ACDA</strong>
+      <p class="muted">American Choral Directors Association — Rowan University</p>
+    </div>
+    <div class="footer-links">
+      <a href="/events.html">Events</a>
+      <a href="/members.html">Members</a>
+      <a href="/eboard.html">E-Board</a>
+      <a href="/resources.html">Resources</a>
+    </div>
+    <div class="footer-meta">
+      <p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
+    </div>
+  </div>
 </footer>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
-<div id="modal-overlay"></div>
-
-<script>
-// ===== Modal controls (kept from your original) =====
-function closeAll(){
-  document.querySelectorAll('.card-content').forEach(c=>c.style.display='none');
-  const ov = document.getElementById('modal-overlay');
-  if (ov) ov.style.display = 'none';
-  document.body.classList.remove('modal-open');
-}
-function showCard(id){
-  closeAll();
-  const card = document.getElementById(`card-${id}`);
-  if(card){
-    card.style.display='block';
-    const ov = document.getElementById('modal-overlay');
-    if (ov) ov.style.display = 'block';
-    document.body.classList.add('modal-open');
-  }
-}
-function hideCard(){ closeAll(); }
-document.addEventListener('click', (e)=>{
-  if (e.target && e.target.id === 'modal-overlay') hideCard();
-});
-document.addEventListener('keydown', (e)=>{
-  if (e.key === 'Escape') hideCard();
-});
-
-// ===== Events: fetch from your Google Sheet CSV and render =====
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSESaEnsqhseKRcrAkMj0Gu-gEAzHjYYdfTlpkAxaUVyUl6MERihQkWTMVlzk7nbWA3xE9g1orMChUo/pub?gid=0&single=true&output=csv";
-const IMG_FALLBACK = "images/event-placeholder.png";
-
-// Normalize CSV headers to snake_case
-function normalizeRow(row) {
-  const out = {};
-  for (const k in row) {
-    const key = String(k || "").trim().toLowerCase().replace(/\s+/g, "_");
-    out[key] = row[k];
-  }
-  return out;
-}
-
-// Format "9/12/2025" as "Fri, Sep 12, 2025"
-function formatDatePretty(mdy) {
-  const d = new Date(mdy);
-  if (isNaN(d)) return mdy;
-  return d.toLocaleDateString(undefined, { weekday:'short', year:'numeric', month:'short', day:'numeric' });
-}
-
-// Sort by start datetime (uses first time in the range)
-function startDateFrom(item){
-  const dateStr = (item.date||"").trim();
-  const startTime = (item.time||"").split("-")[0]?.trim() || "";
-  const dt = new Date(`${dateStr} ${startTime}`);
-  return isNaN(dt) ? new Date(dateStr) : dt;
-}
-
-async function fetchEventsFromSheet() {
-  const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
-  const csv = await res.text();
-  return new Promise((resolve, reject) => {
-    Papa.parse(csv, {
-      header: true,
-      skipEmptyLines: true,
-      complete: ({ data }) => {
-        const items = data
-          .map(normalizeRow)
-          .filter(r => r.event_title || r.title) // allow either header
-          .map(r => ({
-            title: (r.event_title || r.title || "").trim(),
-            type: (r.type || "").trim(),
-            date: (r.date || "").trim(),                 // e.g., "9/12/2025"
-            time: (r.time || "").trim(),                 // e.g., "3:00pm - 4:00pm"
-            short: (r.short_description || r.short || "").trim(),
-            long: (r.long_description || r.long || "").trim(),
-            image: (r.image || "").trim()
-          }))
-          .sort((a,b)=> startDateFrom(a) - startDateFrom(b));
-        resolve(items);
-      },
-      error: reject
-    });
-  });
-}
-
-function renderEvents(events){
-  const grid = document.getElementById("events-grid");
-  grid.innerHTML = "";
-
-  if (!events.length){
-    grid.innerHTML = `<p>No events found.</p>`;
-    return;
-  }
-
-  // Build cards and popups
-  const frag = document.createDocumentFragment();
-  const modalFrag = document.createDocumentFragment();
-
-  events.forEach((e, idx) => {
-    const id = idx + 1;
-    const imgSrc = e.image || IMG_FALLBACK;
-
-    // Card
-    const card = document.createElement("div");
-    card.className = "card";
-    card.setAttribute("tabindex", "0"); // focusable
-    card.addEventListener("click", ()=>showCard(id));
-    card.addEventListener("keypress", (ev)=>{ if(ev.key==='Enter' || ev.key===' ') showCard(id); });
-
-    card.innerHTML = `
-      <div class="aspect">
-        <img src="${imgSrc}" alt="${e.title.replace(/"/g,'&quot;')}">
-      </div>
-      <h3>${e.title}</h3>
-      <p class="muted">${formatDatePretty(e.date)}${e.time ? "" : ""}</p>
-      ${e.short ? `<p>${e.short}</p>` : ""}
-    `;
-    frag.appendChild(card);
-
-    // Modal content
-    const modal = document.createElement("div");
-    modal.className = "card-content";
-    modal.id = `card-${id}`;
-    const typeLabel = e.type ? `Type: ${e.type} | ` : "";
-    const timeLabel = e.time ? ` | Time: ${e.time}` : "";
-    modal.innerHTML = `
-      <h2>${e.title}</h2>
-      <p>${typeLabel}Date: ${formatDatePretty(e.date)}${timeLabel}</p>
-      ${e.long ? `<p>${e.long}</p>` : (e.short ? `<p>${e.short}</p>` : "")}
-      <button onclick="hideCard()">Close</button>
-    `;
-    modalFrag.appendChild(modal);
-  });
-
-  grid.appendChild(frag);
-  document.body.appendChild(modalFrag);
-}
-
-// Bootstrap
-(async () => {
-  try{
-    const events = await fetchEventsFromSheet();
-    renderEvents(events);
-  } catch(err){
-    console.error(err);
-    document.getElementById("events-grid").innerHTML = `<p>There was a problem loading events.</p>`;
-  }
-})();
-</script>
+<!-- PapaParse (CSV) MUST load before events.js -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
+<script src="/js/events.js" defer></script>
+<script src="/js/core.js" defer></script>
 
 </body>
 </html>

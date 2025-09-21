@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Rowan ACDA</title>
+<meta content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/css/base.css" rel="stylesheet"/>
+<link href="/css/layout.css" rel="stylesheet"/>
+<link href="/css/components.css" rel="stylesheet"/>
+<link href="/assets/icons/acda.png" rel="icon"/>
+<style>
+.flow-image{ margin: var(--space-4) 0; }
+.flow-image img{ width: 100%; height: auto; border-radius: var(--radius-md, 12px); object-fit: cover; }
+@media (min-width: 900px){
+  .flow-image{ display: grid; grid-template-columns: 1.2fr .8fr; gap: var(--space-4); align-items: center; }
+  .flow-image:nth-of-type(even){ grid-template-columns: .8fr 1.2fr; }
+}
+</style></head>
+<body>
+<header class="site-header">
+<div class="container header-inner">
+<a aria-label="Rowan ACDA home" class="brand" href="/index.html">
+<img alt="" class="brand-mark" src="/assets/icons/acda.png"/>
+<span class="brand-name">Rowan ACDA</span>
+</a>
+<button aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation" class="nav-toggle">
+<span class="bar"></span><span class="bar"></span><span class="bar"></span>
+</button>
+<nav aria-label="Primary" class="site-nav" id="site-nav">
+<ul class="nav-list">
+<li><a class="nav-link" href="/index.html">Home</a></li>
+<li><a class="nav-link" href="/events.html">Events</a></li>
+<li><a class="nav-link" href="/members.html">Members</a></li>
+<li><a class="nav-link" href="/eboard.html">E-Board</a></li>
+<li class="menu">
+<button aria-expanded="false" aria-haspopup="true" class="menu-trigger">Resources</button>
+<div class="menu-panel" role="menu">
+<a href="/resources-sightsinging.html" role="menuitem">Sight-Singing Vault</a>
+<a href="/resources.html#repertoire" role="menuitem">Repertoire Lists</a>
+<a href="/resources.html#handouts" role="menuitem">Clinic Handouts</a>
+<a href="/resources.html#bylaws" role="menuitem">Bylaws</a>
+</div>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<main class="main">
+<section class="page-head">
+<div class="container">
+<h1>Members</h1>
+<p class="muted">Membership is open to all Rowan students. No audition required for the chapter—just enthusiasm for choral music.</p>
+</div>
+</section>
+<section class="container grid2">
+<article class="card">
+<div class="card-body">
+<h3>How to Join</h3>
+<ol>
+<li>Fill out the interest form.</li>
+<li>Come to an event or meeting.</li>
+<li>Pay dues (if applicable).</li>
+</ol>
+<a class="btn btn-primary" href="#join">Join Now</a>
+<figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/jessenia-zavala.jpg"/></figure><figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/makayli-matias.jpg"/></figure></div>
+<figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/emma-seidel.jpg"/></figure><figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/cameron-hyson.jpg"/></figure></article>
+<article class="card">
+<div class="card-body">
+<h3>Benefits</h3>
+<ul>
+<li>Leadership &amp; conducting workshops</li>
+<li>Reading sessions &amp; repertoire swaps</li>
+<li>Conference travel &amp; networking</li>
+</ul>
+<figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/vocalcamp20192.jpg"/></figure><figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/506047153_10235311168936420_6729702158962901355_n.jpg"/></figure></div>
+<figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/52854526795_0c57dd3603_o-1170x500.jpg"/></figure><figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/52848310914_2abe6f0220_o-scaled.jpg"/></figure></article>
+<figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/hanna-shein.jpg"/></figure><figure class="flow-image"><img alt="ACDA member activity" loading="lazy" src="assets/img/adam-bretz.jpg"/></figure></section>
+<section class="container">
+<h2>Roster (optional)</h2>
+<div class="people-grid">
+<div class="person">
+<img alt="Member headshot" src="/assets/img/avatar.png"/>
+<div>
+<strong>Jordan Taylor</strong>
+<p class="muted">Soprano</p>
+</div>
+</div>
+<div class="person">
+<img alt="Member headshot" src="/assets/img/avatar.png"/>
+<div>
+<strong>Alex Kim</strong>
+<p class="muted">Bass</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="site-footer">
+<div class="container footer-inner">
+<div class="footer-brand">
+<img alt="" class="brand-mark sm" src="/assets/icons/acda.png">
+<strong>Rowan ACDA</strong>
+<p class="muted">American Choral Directors Association — Rowan University</p>
+</img></div>
+<div class="footer-links">
+<a href="/events.html">Events</a>
+<a href="/members.html">Members</a>
+<a href="/eboard.html">E-Board</a>
+<a href="/resources.html">Resources</a>
+</div>
+<div class="footer-meta">
+<p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
+</div>
+</div>
+</footer>
+<script defer="" src="/js/core.js"></script>
+</body>
+</html>

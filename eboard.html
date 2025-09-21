@@ -1,123 +1,286 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Eboard | Rowan ACDA</title>
-  <link rel="icon" type="image/svg+xml" href="images/logo.png"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rowan ACDA — E-Board</title>
+  <meta name="description" content="Rowan ACDA — Executive Board">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css"/>
-  
-  <script defer src="js/app.js"></script>
-  <style>
-.card-content {
-  display: none;
-  position: fixed; /* Changed from absolute to fixed */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 1; /* Add a z-index to ensure the popup appears on top of other elements */
-}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="icon" href="/assets/icons/acda.png">
 
+  <style>
+    /* Small page-local tweaks that match site's design language */
+    .cards-grid { --min: 260px; grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr)); gap: var(--space-4); }
+    .person-card { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+    .person-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .person-card .avatar { aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-md); }
+    .person-card h3 { margin-bottom: .25rem; font-weight: 700; font-size: 1rem; letter-spacing: .01em; text-transform: uppercase; color: var(--text-muted); }
+    .person-card .muted { margin-bottom: .75rem; }
+
+    /* Minimal modal system that inherits site tokens */
+    .modal { position: fixed; inset: 0; display: none; }
+    .modal.open { display: block; }
+    .modal[hidden] { display: none !important; }
+    .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+    .modal-content {
+      position: relative; z-index: 10; max-width: 640px; margin: 6vh auto;
+      background: var(--surface); border-radius: var(--radius-lg);
+      padding: var(--space-5); box-shadow: 0 24px 60px rgba(0,0,0,.25);
+      text-align: center; display: flex; flex-direction: column; align-items: center;
+    }
+    .modal .close-btn { position: absolute; right: .75rem; top: .75rem; background: transparent; border: 0; font-size: 1.25rem; cursor: pointer; }
+    .modal .title-row { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+    .modal .contact-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
+    .modal .meta-line { color: var(--text-muted); margin: 0 0 .5rem; }
   </style>
 </head>
 <body>
-  <div id="navbar"></div>
-  <main class="container">
-    <section class="card">
-      <h1>Executive Board</h1>
-      <div class="cards" style="margin-top:16px">
-        <div class="card" onclick="showCard(1)">
-          <div class="aspect" style="aspect-ratio:1/1"><img src="images/hanna-shein.jpg" alt="Hanna Shein, President"></div>
-          <h3>President</h3>
-          <p class="muted">Hanna Shein</p>
-          <p>Leads meetings and represents the chapter.</p>
-        </div>
-        <div class="card" onclick="showCard(2)">
-          <div class="aspect" style="aspect-ratio:1/1"><img src="images/adam-bretz.jpg" alt="Adam Bretz, Vice President"></div>
-          <h3>Vice President</h3>
-          <p class="muted">Adam Bretz</p>
-          <p>Supports the president and helps with club activities.</p>
-        </div>
-        <div class="card" onclick="showCard(3)">
-          <div class="aspect" style="aspect-ratio:1/1"><img src="images/jessenia-zavala.jpg" alt="Jessenia Zavala, Treasurer"></div>
-          <h3>Treasurer</h3>
-          <p class="muted">Jessenia Zavala</p>
-          <p>Oversees the club's finances and plans fundraisers.</p>
-        </div>
-        <div class="card" onclick="showCard(4)">
-          <div class="aspect" style="aspect-ratio:1/1"><img src="images/makayli-matias.jpg" alt="Makayli Matias, Secretary"></div>
-          <h3>Secretary</h3>
-          <p class="muted">Makayli Matias</p>
-          <p>Manages communication and tracks point totals for NAfME and ACDA.</p>
-        </div>
-        <div class="card" onclick="showCard(5)">
-          <div class="aspect" style="aspect-ratio:1/1"><img src="images/emma-seidel.jpg" alt="Emma Seidel, Social Media Coordinator"></div>
-          <h3>Social Media Coordinator</h3>
-          <p class="muted">Emma Seidel</p>
-          <p>Keeps the Rowan NAfME social media platforms updated with news and events.</p>
-        </div>
-        <div class="card" onclick="showCard(6)">
-          <div class="aspect" style="aspect-ratio:1/1"><img src="images/cameron-hyson.jpg" alt="Cameron Hyson, Senator"></div>
-          <h3>Senator</h3>
-          <p class="muted">Cameron Hyson</p>
-          <p>Represents the club's interests to the school.</p>
-        </div>
-      </div>
-    </section>
-    <div class="card-content" id="card-1">
-      <h2>President - Hanna Shein</h2>
-      <p>Hanna Shein is a junior Vocal Performance and Music Education double major who can always be found singing! She is incredibly passionate about the world of choral arts, and is so happy to have found a home in Rowan’s ACDA chapter. She has performed in a number of different choral ensembles, including: NJ All State Mixed Choir, NAfME All Eastern Treble Choir, Honors Performance Series @ Carnegie Hall and many more. Some of her favorite memories with the Rowan Concert Choir include performing at Carnegie Hall and also performing with the fabulous Chanticleer. Hanna lives on the stage, and recently performed as Hansel in Rowan Opera Company’s production of Engelbert Humperdinck’s Hansel and Gretel. When she isn’t singing, she enjoys curling up with a book or obsessing over her cat Luna.  </p>
-      <button onclick="hideCard()">Close</button>
-    </div>
-    <div class="card-content" id="card-2">
-      <h2>Vice President - Adam Bretz</h2>
-      <p>Adam Bretz is an Electrical & Computer Engineering Major with a minor in music (Organ Performance). He supports the president and helps with club activities, and also maintains the chapter's website.</p>
-      <button onclick="hideCard()">Close</button>
-    </div>
-    <div class="card-content" id="card-3">
-      <h2>Treasurer - Jessenia Zavala</h2>
-      <p>Jessenia Zavala is a junior Vocal Music Education major who oversees the club's finances, plans fundraisers, and leads engaging meetings. She's also involved in ACDA, Tri Alpha, and sings with the Concert Choir.</p>
-      <button onclick="hideCard()">Close</button>
-    </div>
-    <div class="card-content" id="card-4">
-      <h2>Secretary - Makayli Matias</h2>
-      <p>Makayli Matias is a sophomore studying Vocal Music Education. She manages communication and tracks point totals for NAfME and ACDA. She sings with the Concert Choir and Voces ensemble and is a member of the Opera Company.</p>
-      <button onclick="hideCard()">Close</button>
-    </div>
-    <div class="card-content" id="card-5">
-      <h2>Social Media Coordinator - Emma Seidel</h2>
-      <p>Emma Seidel is a music education major who keeps the Rowan NAfME social media platforms updated with news and events. She co-manages the chapter's website and communicates with neighboring collegiate chapters.</p>
-      <button onclick="hideCard()">Close</button>
-    </div>
-    <div class="card-content" id="card-6">
-      <h2>Senator - Cameron Hyson</h2>
-      <p>Cameron Hyson is a Music Education major who represents the club's interests to the school. He's involved in the Rowan Concert Choir and the American Choral Directors Association, and is available to discuss questions or concerns about events, professional development, or general meetings.</p>
-      <button onclick="hideCard()">Close</button>
-    </div>
-  </main>
-  <footer class="site-footer">
-    &copy; <span id="year"></span> Rowan ACDA. All rights reserved.
-  </footer>
-  <script>
-    function showCard(id) {
-      const card = document.getElementById(`card-${id}`);
-      card.style.display = 'block';
-    }
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/index.html" aria-label="Rowan ACDA home">
+      <img src="/assets/icons/acda.png" alt="" class="brand-mark" />
+      <span class="brand-name">Rowan ACDA</span>
+    </a>
 
-    function hideCard() {
-      const cards = document.querySelectorAll('.card-content');
-      cards.forEach((card) => {
-        card.style.display = 'none';
-      });
-    }
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
 
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+    <nav id="site-nav" class="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li><a href="/index.html" class="nav-link">Home</a></li>
+        <li><a href="/events.html" class="nav-link">Events</a></li>
+        <li><a href="/members.html" class="nav-link">Members</a></li>
+        <li><a href="/eboard.html" class="nav-link is-active">E-Board</a></li>
+        <li class="menu">
+          <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Resources</button>
+          <div class="menu-panel" role="menu">
+            <a role="menuitem" href="/resources-sightsinging.html">Sight-Singing Vault</a>
+            <a role="menuitem" href="/resources.html#repertoire">Repertoire Lists</a>
+            <a role="menuitem" href="/resources.html#handouts">Clinic Handouts</a>
+            <a role="menuitem" href="/resources.html#bylaws">Bylaws</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+
+<section class="page-head">
+  <div class="container">
+    <h1>E-Board</h1>
+    <p class="muted">Meet the 2025–26 executive board.</p>
+  </div>
+</section>
+
+<section class="container cards-grid">
+  <!-- President -->
+  <article class="card person-card" data-modal="modal-hanna-shein">
+    <img class="avatar" src="/assets/img/hanna-shein.jpg" alt="Headshot of Hanna Shein">
+    <div class="card-body">
+      <h3>President</h3>
+      <p class="muted">Hanna Shein</p>
+      <a class="btn btn-outline" href="mailto:hanna@example.edu">Email</a>
+    </div>
+  </article>
+
+  <!-- Vice President -->
+  <article class="card person-card" data-modal="modal-adam-bretz">
+    <img class="avatar" src="/assets/img/adam-bretz.jpg" alt="Headshot of Adam Bretz">
+    <div class="card-body">
+      <h3>Vice President</h3>
+      <p class="muted">Adam Bretz</p>
+      <a class="btn btn-outline" href="mailto:adam@example.edu">Email</a>
+    </div>
+  </article>
+
+  <!-- Treasurer -->
+  <article class="card person-card" data-modal="modal-jessenia-zavala">
+    <img class="avatar" src="/assets/img/jessenia-zavala.jpg" alt="Headshot of Jessenia Zavala">
+    <div class="card-body">
+      <h3>Treasurer</h3>
+      <p class="muted">Jessenia Zavala</p>
+      <a class="btn btn-outline" href="mailto:jessenia@example.edu">Email</a>
+    </div>
+  </article>
+
+  <!-- Secretary -->
+  <article class="card person-card" data-modal="modal-makayli-matias">
+    <img class="avatar" src="/assets/img/makayli-matias.jpg" alt="Headshot of Makayli Matias">
+    <div class="card-body">
+      <h3>Secretary</h3>
+      <p class="muted">Makayli Matias</p>
+      <a class="btn btn-outline" href="mailto:makayli@example.edu">Email</a>
+    </div>
+  </article>
+
+  <!-- Social Media Coordinator -->
+  <article class="card person-card" data-modal="modal-emma-seidel">
+    <img class="avatar" src="/assets/img/emma-seidel.jpg" alt="Headshot of Emma Seidel">
+    <div class="card-body">
+      <h3>Social Media Coordinator</h3>
+      <p class="muted">Emma Seidel</p>
+      <a class="btn btn-outline" href="mailto:emma@example.edu">Email</a>
+    </div>
+  </article>
+
+  <!-- Senator -->
+  <article class="card person-card" data-modal="modal-cameron-hyson">
+    <img class="avatar" src="/assets/img/cameron-hyson.jpg" alt="Headshot of Cameron Hyson">
+    <div class="card-body">
+      <h3>Senator</h3>
+      <p class="muted">Cameron Hyson</p>
+      <a class="btn btn-outline" href="mailto:cameron@example.edu">Email</a>
+    </div>
+  </article>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img src="/assets/icons/acda.png" alt="" class="brand-mark sm" />
+      <strong>Rowan ACDA</strong>
+      <p class="muted">American Choral Directors Association — Rowan University</p>
+    </div>
+    <div class="footer-links">
+      <a href="/events.html">Events</a>
+      <a href="/members.html">Members</a>
+      <a href="/eboard.html">E-Board</a>
+      <a href="/resources.html">Resources</a>
+    </div>
+    <div class="footer-meta">
+      <p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Person Modals -->
+<div class="modal" id="modal-hanna-shein" role="dialog" aria-modal="true" aria-labelledby="modal-hanna-shein-title" hidden>
+  <div class="modal-overlay" data-close="true"></div>
+  <div class="modal-content">
+    <button class="close-btn" data-close="true" aria-label="Close">✕</button>
+    <div class="title-row">
+      <img class="contact-photo" src="/assets/img/hanna-shein.jpg" alt="Headshot of Hanna Shein" />
+      <h2 class="modal-title" id="modal-hanna-shein-title">Hanna Shein</h2>
+    </div>
+    <p class="meta-line">President</p>
+    <p>Bio coming soon.</p>
+  </div>
+</div>
+
+<div class="modal" id="modal-adam-bretz" role="dialog" aria-modal="true" aria-labelledby="modal-adam-bretz-title" hidden>
+  <div class="modal-overlay" data-close="true"></div>
+  <div class="modal-content">
+    <button class="close-btn" data-close="true" aria-label="Close">✕</button>
+    <div class="title-row">
+      <img class="contact-photo" src="/assets/img/adam-bretz.jpg" alt="Headshot of Adam Bretz" />
+      <h2 class="modal-title" id="modal-adam-bretz-title">Adam Bretz</h2>
+    </div>
+    <p class="meta-line">Vice President</p>
+    <p>Bio coming soon.</p>
+  </div>
+</div>
+
+<div class="modal" id="modal-jessenia-zavala" role="dialog" aria-modal="true" aria-labelledby="modal-jessenia-zavala-title" hidden>
+  <div class="modal-overlay" data-close="true"></div>
+  <div class="modal-content">
+    <button class="close-btn" data-close="true" aria-label="Close">✕</button>
+    <div class="title-row">
+      <img class="contact-photo" src="/assets/img/jessenia-zavala.jpg" alt="Headshot of Jessenia Zavala" />
+      <h2 class="modal-title" id="modal-jessenia-zavala-title">Jessenia Zavala</h2>
+    </div>
+    <p class="meta-line">Treasurer</p>
+    <p>Bio coming soon.</p>
+  </div>
+</div>
+
+<div class="modal" id="modal-makayli-matias" role="dialog" aria-modal="true" aria-labelledby="modal-makayli-matias-title" hidden>
+  <div class="modal-overlay" data-close="true"></div>
+  <div class="modal-content">
+    <button class="close-btn" data-close="true" aria-label="Close">✕</button>
+    <div class="title-row">
+      <img class="contact-photo" src="/assets/img/makayli-matias.jpg" alt="Headshot of Makayli Matias" />
+      <h2 class="modal-title" id="modal-makayli-matias-title">Makayli Matias</h2>
+    </div>
+    <p class="meta-line">Secretary</p>
+    <p>Bio coming soon.</p>
+  </div>
+</div>
+
+<div class="modal" id="modal-emma-seidel" role="dialog" aria-modal="true" aria-labelledby="modal-emma-seidel-title" hidden>
+  <div class="modal-overlay" data-close="true"></div>
+  <div class="modal-content">
+    <button class="close-btn" data-close="true" aria-label="Close">✕</button>
+    <div class="title-row">
+      <img class="contact-photo" src="/assets/img/emma-seidel.jpg" alt="Headshot of Emma Seidel" />
+      <h2 class="modal-title" id="modal-emma-seidel-title">Emma Seidel</h2>
+    </div>
+    <p class="meta-line">Social Media Coordinator</p>
+    <p>Bio coming soon.</p>
+  </div>
+</div>
+
+<div class="modal" id="modal-cameron-hyson" role="dialog" aria-modal="true" aria-labelledby="modal-cameron-hyson-title" hidden>
+  <div class="modal-overlay" data-close="true"></div>
+  <div class="modal-content">
+    <button class="close-btn" data-close="true" aria-label="Close">✕</button>
+    <div class="title-row">
+      <img class="contact-photo" src="/assets/img/cameron-hyson.jpg" alt="Headshot of Cameron Hyson" />
+      <h2 class="modal-title" id="modal-cameron-hyson-title">Cameron Hyson</h2>
+    </div>
+    <p class="meta-line">Senator</p>
+    <p>Bio coming soon.</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const body = document.body;
+  const openById = (id) => {
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.hidden = false;
+    m.classList.add('open');
+    body.style.overflow = 'hidden';
+    const firstClose = m.querySelector('[data-close]');
+    if (firstClose) firstClose.focus();
+  };
+  const closeModal = (m) => {
+    m.classList.remove('open');
+    m.hidden = true;
+    body.style.overflow = '';
+  };
+  // Open on card click (ignore inner links like Email button)
+  document.querySelectorAll('.person-card[data-modal]').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('a')) return;
+      openById(card.getAttribute('data-modal'));
+    });
+    card.querySelectorAll('a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
+  });
+  // Close on overlay or ✕
+  document.querySelectorAll('.modal').forEach(m => {
+    m.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) closeModal(m);
+    });
+    m.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(m)));
+  });
+  // ESC to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(closeModal);
+  });
+})();
+</script>
+
+<script src="/js/core.js" defer></script>
 </body>
 </html>

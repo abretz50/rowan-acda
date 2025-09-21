@@ -1,0 +1,47 @@
+[
+  {
+    "id": "fall-kickoff-2025",
+    "title": "Fall Kickoff & Reading Session",
+    "date": "2025-09-12T18:30:00-04:00",
+    "location": "Wilson Hall 123",
+    "tags": [
+      "General"
+    ],
+    "image": "/assets/events/fall-kickoff.svg",
+    "excerpt": "Start the semester with scores & snacks!",
+    "description": "<p>Bring a pencil, your ACDA card, and a friend. We\\u2019ll read new literature and outline the semester.</p>",
+    "links": [
+      {
+        "label": "Add to Calendar",
+        "href": "/ics/fall-kickoff-2025.ics"
+      }
+    ]
+  },
+  {
+    "id": "vocal-health-2025",
+    "title": "Vocal Health Clinic",
+    "date": "2025-10-03T16:00:00-04:00",
+    "location": "Wilson Hall Choir Room",
+    "tags": [
+      "Professional"
+    ],
+    "image": "/assets/img/spotlight1.svg",
+    "excerpt": "Hydration, warm-ups, and care with a guest SLP.",
+    "description": "<p>Practical tips from a speech-language pathologist. Q&A at the end.</p>",
+    "links": []
+  },
+  {
+    "id": "service-sing-2025",
+    "title": "Community Service Sing",
+    "date": "2025-10-20T17:00:00-04:00",
+    "location": "Glassboro Commons",
+    "tags": [
+      "Volunteer",
+      "Performance"
+    ],
+    "image": "/assets/img/spotlight2.svg",
+    "excerpt": "Pop-up performance and outreach.",
+    "description": "<p>We\\u2019ll share short pieces in the community and invite passersby to join a round.</p>",
+    "links": []
+  }
+]

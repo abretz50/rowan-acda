@@ -1,0 +1,15 @@
+/* === Looping Gallery (drop into css/style.css or include as separate file) === */
+.loop-gallery-wrap{ overflow:hidden; }
+.loop-gallery{ display:flex; gap:16px; align-items:center; will-change: transform; }
+.loop-gallery img, .loop-gallery figure{ flex:0 0 auto; width: min(420px, 85vw); border-radius: 12px; object-fit: cover; }
+@keyframes scrollLoop { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.loop-animate{ animation: scrollLoop 40s linear infinite; }
+@media (prefers-reduced-motion: reduce){ .loop-animate{ animation: none; } }
+
+/* === Members inline images === */
+.flow-image{ margin: 1.25rem 0; }
+.flow-image img{ width: 100%; height: auto; border-radius: 12px; object-fit: cover; }
+@media (min-width: 900px){
+  .flow-image{ display: grid; grid-template-columns: 1.2fr .8fr; gap: 1.25rem; align-items: center; }
+  .flow-image:nth-of-type(even){ grid-template-columns: .8fr 1.2fr; }
+}
