@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Rowan ACDA</title>
 <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University."/>
+
+<!-- Brand / theme / social -->
+<meta name="theme-color" content="#17324A">
+<meta property="og:title" content="Rowan ACDA — Sing. Lead. Inspire.">
+<meta property="og:description" content="Rowan ACDA empowers student conductors, educators, and singers through concerts, clinics, and community.">
+<meta property="og:image" content="/assets/img/hero.png">
+<meta property="og:type" content="website">
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
@@ -14,112 +22,69 @@
 <link rel="icon" href="/assets/icons/acda.png"/>
 
 <style>
-  /* === Inline marquee gallery used in Highlights === */
-  .loop-gallery-wrap{ overflow:hidden; }
-  .loop-gallery{ display:flex; gap:16px; align-items:center; will-change: transform; }
-  .loop-gallery img, .loop-gallery figure{ flex:0 0 auto; width: min(420px, 85vw); border-radius: var(--radius-md, 12px); object-fit: cover; }
-  @keyframes scrollLoop { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  .loop-animate{ animation: scrollLoop 18s linear infinite; }
-  @media (prefers-reduced-motion: reduce){ .loop-animate{ animation: none; } }
+  :root{
+    --brand:#17324A;
+    --accent:#E3B23C;
+    --radius:16px;
+  }
 
-  /* === Hero: fading background + glass cards === */
+  /* Hero */
   .hero.hero-with-bg{ position:relative; overflow:hidden; }
   .hero-bg{ position:absolute; inset:0; z-index:0; }
   .hero-bg::after{
     content:""; position:absolute; inset:0; z-index:2;
-    /* darker at top for nav, softer below */
-    background: linear-gradient(180deg, rgba(0,0,0,.42) 0%, rgba(0,0,0,.28) 35%, rgba(0,0,0,.18) 70%, rgba(0,0,0,.10) 100%);
+    background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.1) 60%, rgba(0,0,0,0) 100%);
+    pointer-events:none;
   }
   .hero-bg img{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; opacity:0; z-index:1;
-    will-change: opacity;
-    animation: heroFadeCycle var(--heroCycle,80s) ease-in-out infinite;
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; will-change:opacity; z-index:1;
+    animation: heroFade var(--heroCycle, 48s) ease-in-out infinite;
   }
-  @keyframes heroFadeCycle{
-    0%{opacity:0} 10%{opacity:1} 40%{opacity:1} 50%{opacity:0} 100%{opacity:0}
-  }
+  @keyframes heroFade{ 0%{opacity:0} 10%{opacity:1} 45%{opacity:1} 55%{opacity:0} 100%{opacity:0} }
+  @media (prefers-reduced-motion: reduce){ .hero-bg img{ animation:none; opacity:1; } }
 
-  .hero-inner{
-    position:relative; z-index:3;
-    display:grid; align-items:center;
-    grid-template-columns: 1.1fr .9fr; gap: clamp(20px, 4vw, 40px);
-    min-height: clamp(420px, 56vh, 720px);
-  }
+  .hero-inner{ display:flex; align-items:center; justify-content:center;
+    min-height: clamp(420px, 56vh, 720px); }
 
-  /* Glassy text card */
-  .hero-copy{
-    max-width: 720px;
-    background: rgba(255,255,255,0.78);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    padding: clamp(16px, 2.5vw, 28px) clamp(18px, 3vw, 32px);
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,.12);
-  }
-  .hero-copy .mega{ margin-bottom:.35em; }
-  .hero-copy .lead{ color:#2b2b2b; }
-  .hero-cta .btn{ margin-right:.6rem; }
-
-  /* Logo tile */
-  .hero-media{ margin-left:auto; }
-  .logo-card{
-    background:#fff; border-radius:20px;
-    padding: clamp(16px, 2.2vw, 24px);
-    box-shadow:0 14px 36px rgba(0,0,0,.14);
-    display:inline-block;
-  }
-  .logo-card img{
-    width: clamp(180px, 26vw, 360px);
-    height:auto; display:block;
-  }
-
-  /* Mobile */
-  @media (max-width: 860px){
-    .hero-inner{
-      grid-template-columns:1fr;
-      justify-items:center;
-      text-align:center;
-      min-height: clamp(480px, 64vh, 760px);
-    }
-    .hero-copy{ order:1; }
-    .hero-media{ order:2; margin-left:0; }
-    .logo-card img{ width: clamp(160px, 44vw, 280px); }
-  }
-</style>
-
-<style>
-  /* === ONE-CONTAINER HERO OVERRIDES === */
-  .hero-inner{ display:flex; align-items:center; justify-content:center; min-height: clamp(420px, 56vh, 720px); }
   .hero-card{
     display:grid; grid-template-columns: 1.15fr .85fr; align-items:center; gap: clamp(20px, 3vw, 40px);
-    background: rgba(255,255,255,0.85);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    padding: clamp(20px, 3vw, 40px);
-    border-radius: 18px;
-    box-shadow: 0 12px 30px rgba(0,0,0,.15);
-    max-width: 1100px; width: 100%;
+    background: rgba(255,255,255,0.82); backdrop-filter: blur(5px);
+    padding: clamp(22px, 3.2vw, 44px); border-radius: var(--radius);
+    box-shadow: 0 10px 28px rgba(0,0,0,.12);
+    max-width: 1080px; width: 100%;
   }
-  /* Remove inner boxes so it's truly one container */
-  .hero-copy{
-    background: transparent !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    max-width: none;
-  }
-  .hero-logo img{
-    width: clamp(160px, 24vw, 300px);
-    height: auto; display:block; border-radius: 12px;
-  }
+  .hero-copy .mega{ margin: 0 0 .3em 0; }
+  .hero-copy .lead{ color:#2b2b2b; }
+  .hero-logo img{ width: clamp(160px, 24vw, 300px); height:auto; display:block; border-radius: 12px; }
   @media (max-width: 860px){
-    .hero-card{ grid-template-columns: 1fr; text-align: center; }
-    .hero-logo{ justify-self: center; }
-    .hero-logo img{ width: clamp(140px, 40vw, 220px); }
+    .hero-card{ grid-template-columns:1fr; text-align:center; }
+    .hero-logo{ justify-self:center; }
   }
-</style>
 
+  /* Buttons */
+  .btn{ border-radius:10px; }
+  .btn-primary{ background: var(--brand); border-color: var(--brand); }
+  .btn-primary:hover{ filter:brightness(1.08); }
+  .btn-ghost{ border:1px solid rgba(0,0,0,.12); }
+  .btn:focus-visible{ outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  /* Sections */
+  .section-head{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom: .75rem; }
+  .strip{ background: #f8fafc; padding: clamp(16px,2vw,24px) 0; }
+  .grid3, .grid2{ gap: clamp(16px, 2vw, 24px); }
+
+  /* Highlights gallery */
+  .loop-gallery-wrap{ overflow:hidden; -webkit-mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%); }
+  .loop-gallery{ display:flex; gap:16px; align-items:center; }
+  .loop-gallery img, .loop-gallery figure{
+    flex:0 0 auto; width: min(420px, 85vw); border-radius: 12px; object-fit: cover;
+    box-shadow: 0 6px 16px rgba(0,0,0,.08);
+  }
+  @keyframes scrollLoop { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .loop-animate{ animation: scrollLoop 36s linear infinite; }
+  @media (prefers-reduced-motion: reduce){ .loop-animate{ animation:none; } }
+</style>
 </head>
 
 <body>
@@ -134,7 +99,7 @@
     </button>
     <nav id="site-nav" class="site-nav" aria-label="Primary">
       <ul class="nav-list">
-        <li><a href="/index.html" class="nav-link">Home</a></li>
+        <li><a href="/index.html" class="nav-link" aria-current="page">Home</a></li>
         <li><a href="/events.html" class="nav-link">Events</a></li>
         <li><a href="/members.html" class="nav-link">Members</a></li>
         <li><a href="/eboard.html" class="nav-link">E-Board</a></li>
@@ -153,30 +118,42 @@
 </header>
 
 <main class="main">
-  <!-- HERO with gallery behind it -->
-  
-<section class="hero hero-with-bg">
-  <div class="hero-bg" id="hero-gallery"></div>
-  <div class="container hero-inner">
-    <div class="hero-card">
-      <div class="hero-copy">
-        <h1 class="mega">Sing. Lead. Inspire.</h1>
-        <p class="lead">Rowan ACDA empowers student conductors, educators, and singers through concerts, clinics, and community.</p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="/events.html">View Events</a>
-          <a class="btn btn-ghost" href="/members.html">Join Us</a>
+  <!-- HERO with background -->
+  <section class="hero hero-with-bg">
+    <div class="hero-bg" id="hero-gallery"></div>
+    <div class="container hero-inner">
+      <div class="hero-card">
+        <div class="hero-copy">
+          <h1 class="mega">Sing. Lead. Inspire.</h1>
+          <p class="lead">Rowan ACDA empowers student conductors, educators, and singers through concerts, clinics, and community.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/events.html">View Events</a>
+            <a class="btn btn-ghost" href="/members.html">Join Us</a>
+          </div>
+        </div>
+        <div class="hero-logo">
+          <img src="/assets/img/hero.png" alt="Rowan ACDA logo"/>
         </div>
       </div>
-      <div class="hero-logo">
-        <img src="/assets/img/hero.png" alt="Rowan ACDA logo"/>
+    </div>
+  </section>
+
+  <!-- CTA strip -->
+  <section class="strip">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+      <div>
+        <h2 style="margin:0 0 .25rem 0;">Join Rowan ACDA</h2>
+        <p class="muted" style="margin:0;">Open to all Rowan students—no audition required for chapter membership.</p>
+      </div>
+      <div>
+        <a class="btn btn-primary" href="https://rowan.campuslabs.com/engage/organization/acda" target="_blank" rel="noopener">Join on ProfLink</a>
+        <a class="btn btn-ghost" href="/members.html">What we do</a>
       </div>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <!-- ABOUT US -->
-  <section class="strip">
+  <section class="strip" style="background:#fff;">
     <div class="container">
       <div class="section-head">
         <h2>About Us</h2>
@@ -250,7 +227,7 @@
   <section class="contact" id="contact">
     <div class="container">
       <h2>Contact &amp; Join</h2>
-      <p>Email us at <a href="mailto:rowanacda@example.edu">rowanacda@example.edu</a> or come to our next event.</p>
+      <p>Email us at <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a> or come to our next event.</p>
     </div>
   </section>
 </main>
@@ -278,45 +255,45 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
 <script src="/js/home-upcoming.js" defer></script>
 
-<!-- Build the inline gallery in Highlights -->
+<!-- Highlights gallery (12 images, cloned once) -->
 <script>
-  (function(){
-    const wrap = document.getElementById('loop-gallery');
-    if (!wrap) return;
-    for (let i = 1; i <= 100; i++) {
-      const fig = document.createElement('figure');
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.alt = 'Concert photo ' + i;
-      img.src = '/assets/img/gallery' + i + '.png';
-      fig.appendChild(img);
-      wrap.appendChild(fig);
-    }
-    const original = Array.from(wrap.querySelectorAll('figure'));
-    original.forEach(f => wrap.appendChild(f.cloneNode(true)));
-  })();
+(function(){
+  const wrap = document.getElementById('loop-gallery');
+  if (!wrap) return;
+  const ids = [1,2,3,4,5,6,7,8,9,10,11,12];
+  ids.forEach(i=>{
+    const fig = document.createElement('figure');
+    const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.alt = `Concert photo ${i}`;
+    img.src = `/assets/img/gallery${i}.png`;
+    fig.appendChild(img);
+    wrap.appendChild(fig);
+  });
+  wrap.querySelectorAll('figure').forEach(f=> wrap.appendChild(f.cloneNode(true)));
+})();
 </script>
 
-<!-- Build hero background fade from gallery1.png ... gallery100.png -->
+<!-- Hero background (8 images, staggered) -->
 <script>
-  (function(){
-    const container = document.getElementById('hero-gallery');
-    if (!container) return;
-    const START = 1, END = 100, MAX = 20, PER = 4;
-    const COUNT = Math.min(MAX, END - START + 1);
-    const TOTAL = PER * COUNT;
-    for (let i = 0; i < COUNT; i++){
-      const n = START + i;
-      const img = document.createElement('img');
-      img.src = '/assets/img/gallery' + n + '.png';
-      img.alt = 'Background ' + n;
-      img.decoding = 'async';
-      img.loading = 'lazy';
-      img.style.animationDuration = TOTAL + 's';
-      img.style.animationDelay = (i * PER) + 's';
-      container.appendChild(img);
-    }
-  })();
+(function(){
+  const container = document.getElementById('hero-gallery');
+  if (!container) return;
+  const picks = [1,2,3,4,5,6,7,8];
+  const DUR = 48;
+  const STAGGER = DUR / picks.length;
+  picks.forEach((n,i)=>{
+    const img = document.createElement('img');
+    img.src = `/assets/img/gallery${n}.png`;
+    img.alt = `Background ${n}`;
+    img.decoding = 'async';
+    img.loading = 'eager';
+    img.style.animationDuration = DUR + 's';
+    img.style.animationDelay = (i * STAGGER) + 's';
+    container.appendChild(img);
+  });
+})();
 </script>
 
 <script src="/js/core.js" defer></script>

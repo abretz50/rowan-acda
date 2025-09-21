@@ -13,12 +13,18 @@
   <link rel="stylesheet" href="/css/layout.css"/>
   <link rel="stylesheet" href="/css/components.css"/>
   <style>
-    /* Page-specific polish */
     .cta-row { display:flex; flex-wrap:wrap; gap: var(--space-3); margin-top: var(--space-3); }
     .notice { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); }
     .list-grid { display:grid; gap: var(--space-3); }
     @media (min-width: 900px){ .list-grid { grid-template-columns: 1fr 1fr; } }
     .muted small { font-size: .9em; }
+    .faq details{border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-3);background:var(--surface-1)}
+    .faq details+details{margin-top:var(--space-3)}
+    .faq summary{font-weight:600;cursor:pointer;list-style:none}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq .muted{margin-top:.35rem}
+    .cta-banner{background:var(--brand-tint, #f1f6ff); border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--space-4); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--space-3)}
+    .cta-banner .actions .btn{margin-right:.5rem}
   </style>
 </head>
 <body>
@@ -52,7 +58,6 @@
 </header>
 
 <main class="main">
-  <!-- Page Head -->
   <section class="page-head">
     <div class="container">
       <h1>Membership</h1>
@@ -73,11 +78,29 @@
     </div>
   </section>
 
+  <section class="container">
+    <div class="cta-banner">
+      <div>
+        <h2 style="margin:0 0 .25rem 0;">Ready to join?</h2>
+        <p class="muted" style="margin:0;">Register on ProfLink to be added to Rowan’s official roster—perfect for résumés and campus involvement tracking.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://rowan.campuslabs.com/engage/organization/acda" target="_blank" rel="noopener">Join on ProfLink</a>
+        <a class="btn" href="/events.html">See upcoming events</a>
+      </div>
+    </div>
+  </section>
+
   <section id="about" class="container grid2">
     <article class="card">
       <div class="card-body">
         <h2>About the Chapter</h2>
         <p>Rowan ACDA supports choral music on campus and in the community through inclusive programming, hands‑on learning, and service.</p>
+        <ul class="list-grid">
+          <li>Student-led concerts and community performances</li>
+          <li>Guest clinicians and professional development</li>
+          <li>Leadership and conducting labs</li>
+        </ul>
       </div>
     </article>
 
@@ -85,6 +108,7 @@
       <div class="card-body">
         <h2>Mission</h2>
         <p>To inspire teaching, performance, and leadership through welcoming, student‑led activities that develop real‑world choral skills.</p>
+        <p class="muted"><small>All majors welcome—no audition required for chapter membership.</small></p>
       </div>
     </article>
   </section>
@@ -97,6 +121,26 @@
         <p>For access to full national benefits (publications, conferences, and more), consider joining ACDA National as a <em>Collegiate</em> member at <a href="https://www.acda.org" target="_blank" rel="noopener">acda.org</a>.</p>
       </div>
     </article>
+  </section>
+
+  <section class="container faq">
+    <h2>Membership FAQ</h2>
+    <details>
+      <summary>Do I need to be a music major?</summary>
+      <p class="muted">No. All Rowan students are welcome. Many members are education, performance, engineering, or other majors who love choral music.</p>
+    </details>
+    <details>
+      <summary>Are there dues?</summary>
+      <p class="muted">Chapter membership is free. National ACDA membership is optional but recommended for conference access and publications.</p>
+    </details>
+    <details>
+      <summary>What’s the time commitment?</summary>
+      <p class="muted">Flexible. Come to meetings, help at events, and participate as your schedule allows. We post opportunities on the Events page.</p>
+    </details>
+    <details>
+      <summary>How do I add ACDA to my résumé?</summary>
+      <p class="muted">After joining on ProfLink, list “Rowan ACDA — Member” under Activities. Conference attendance and officer roles can be listed as separate entries.</p>
+    </details>
   </section>
 
   <section class="container">
