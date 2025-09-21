@@ -40,10 +40,12 @@
 <div class="grid cols-2">
   <div class="card">
     <h2>Repertoire</h2>
+<p><button class="btn btn-outline" data-modal="rep-modal">Open Repertoire Ideas</button></p>
     <p>Programming ideas for mixed, treble, and tenor‑bass ensembles.</p>
   </div>
   <div class="card">
     <h2>Clinic Handouts</h2>
+<p><button class="btn btn-outline" data-modal="clinic-modal">Preview Handouts</button></p>
     <p>Slides and one‑pagers from our professional development sessions.</p>
   </div>
 </div>
@@ -60,6 +62,31 @@
   <p>Looking for graded patterns and PDF packets? Access the vault:</p>
   <p><a class="btn" href="/resources-sightsinging.html">Open the Vault</a></p>
 </section>
+
+
+<div class="modal" id="rep-modal"><div class="dialog" tabindex="-1">
+  <h3>Repertoire Starters</h3>
+  <p class="small">Quick ideas to spark programming (filler examples)</p>
+  <ul>
+    <li>Mixed: Gjeilo — <em>Northern Lights</em></li>
+    <li>Treble: Szymko — <em>It Takes a Village</em></li>
+    <li>TB: Perry — <em>Answers</em></li>
+    <li>Seasonal: Lauridsen — <em>O Magnum Mysterium</em></li>
+  </ul>
+  <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
+</div></div>
+
+
+<div class="modal" id="clinic-modal"><div class="dialog" tabindex="-1">
+  <h3>Clinic Handouts (Sampler)</h3>
+  <ul>
+    <li>Warm‑ups that build tone + vowel alignment</li>
+    <li>Quick rhythm games for middle schoolers</li>
+    <li>Beginning conducting: 3 patterns to master</li>
+    <li>Voice care 101 for busy weeks</li>
+  </ul>
+  <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
+</div></div>
 
 </main>
 

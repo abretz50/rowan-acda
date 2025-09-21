@@ -28,5 +28,65 @@
     ],
     "image": "/assets/img/event3.png",
     "description": "Support the Head Start in Harmony elementary festival throughout the day."
+  },
+  {
+    "title": "Workshop 1: Choir Skills Lab",
+    "date": "2025-10-03 15:30",
+    "location": "Wilson Hall 107",
+    "tags": [
+      "General"
+    ],
+    "image": "/assets/img/event6.png",
+    "description": "Hands-on session covering warm-ups, rhythm games, and quick blend tips. Pop-up Q&A included."
+  },
+  {
+    "title": "Workshop 2: Choir Skills Lab",
+    "date": "2025-10-10 15:30",
+    "location": "Wilson Hall 107",
+    "tags": [
+      "Professional"
+    ],
+    "image": "/assets/img/event7.png",
+    "description": "Hands-on session covering warm-ups, rhythm games, and quick blend tips. Pop-up Q&A included."
+  },
+  {
+    "title": "Workshop 3: Choir Skills Lab",
+    "date": "2025-10-17 15:30",
+    "location": "Wilson Hall 107",
+    "tags": [
+      "Volunteer"
+    ],
+    "image": "/assets/img/event8.png",
+    "description": "Hands-on session covering warm-ups, rhythm games, and quick blend tips. Pop-up Q&A included."
+  },
+  {
+    "title": "Workshop 4: Choir Skills Lab",
+    "date": "2025-10-24 15:30",
+    "location": "Wilson Hall 107",
+    "tags": [
+      "Performance"
+    ],
+    "image": "/assets/img/event9.png",
+    "description": "Hands-on session covering warm-ups, rhythm games, and quick blend tips. Pop-up Q&A included."
+  },
+  {
+    "title": "Workshop 5: Choir Skills Lab",
+    "date": "2025-10-31 15:30",
+    "location": "Wilson Hall 107",
+    "tags": [
+      "General"
+    ],
+    "image": "/assets/img/event10.png",
+    "description": "Hands-on session covering warm-ups, rhythm games, and quick blend tips. Pop-up Q&A included."
+  },
+  {
+    "title": "Workshop 6: Choir Skills Lab",
+    "date": "2025-11-07 15:30",
+    "location": "Wilson Hall 107",
+    "tags": [
+      "Professional"
+    ],
+    "image": "/assets/img/event11.png",
+    "description": "Hands-on session covering warm-ups, rhythm games, and quick blend tips. Pop-up Q&A included."
   }
 ]

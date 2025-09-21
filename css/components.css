@@ -19,3 +19,14 @@ input[type="search"],input[type="text"],select{padding:.6rem .75rem;border:1px s
 .chip:hover{transform:translateY(-1px)}
 .file-tabs a{transition:background .15s ease, transform .1s ease}
 .file-tabs a:hover{transform:translateY(-1px)}
+
+
+/* Slideshow spacing */
+.loop-gallery-wrap{padding: .25rem 0}
+.loop-gallery img{background:#fff}
+
+/* Modal dialog max width for readability */
+.modal .dialog{box-shadow:var(--shadow-lg)}
+
+/* Utility spacing cleanup */
+section+section{margin-top:2rem}

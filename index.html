@@ -181,53 +181,47 @@
 </section>
 
 
-<section style="margin-top:2rem" aria-labelledby="wall-h">
-  <h2 id="wall-h">Photo Wall</h2>
-  <div class="grid cols-3">
-    <div class="card"><img src="/assets/img/gallery1.png" alt="Gallery 1" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery2.png" alt="Gallery 2" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery3.png" alt="Gallery 3" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery4.png" alt="Gallery 4" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery5.png" alt="Gallery 5" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery6.png" alt="Gallery 6" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery7.png" alt="Gallery 7" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery8.png" alt="Gallery 8" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery9.png" alt="Gallery 9" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery10.png" alt="Gallery 10" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery11.png" alt="Gallery 11" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery12.png" alt="Gallery 12" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery13.png" alt="Gallery 13" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery14.png" alt="Gallery 14" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery15.png" alt="Gallery 15" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery16.png" alt="Gallery 16" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery17.png" alt="Gallery 17" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery18.png" alt="Gallery 18" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery19.png" alt="Gallery 19" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery20.png" alt="Gallery 20" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery21.png" alt="Gallery 21" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery22.png" alt="Gallery 22" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery23.png" alt="Gallery 23" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery24.png" alt="Gallery 24" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery25.png" alt="Gallery 25" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery26.png" alt="Gallery 26" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery27.png" alt="Gallery 27" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery28.png" alt="Gallery 28" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery29.png" alt="Gallery 29" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery30.png" alt="Gallery 30" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery31.png" alt="Gallery 31" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery32.png" alt="Gallery 32" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery33.png" alt="Gallery 33" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery34.png" alt="Gallery 34" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery35.png" alt="Gallery 35" loading="lazy" width="1200" height="675"></div>
-    <div class="card"><img src="/assets/img/gallery36.png" alt="Gallery 36" loading="lazy" width="1200" height="675"></div>
-  </div>
+
+
+<section style="margin-top:2rem">
+  <h2>More About Rowan ACDA</h2>
+  <p>Founded with the mission of connecting students through music, Rowan ACDA fosters leadership and artistry. 
+  We offer masterclasses, socials, and community outreach events throughout the year. 
+  Whether you want to learn about conducting, network with peers, or just sing—this is the place for you.</p>
+  <p><button class="btn btn-outline" data-modal="about-popup">Read More</button></p>
 </section>
+
+<div class="modal" id="about-popup"><div class="dialog" tabindex="-1">
+  <h3>About Rowan ACDA</h3>
+  <p>Rowan ACDA is one of the most active collegiate ACDA chapters in the region. 
+  We participate in conferences, host our own Cabaret, and bring in guest clinicians. 
+  Membership provides both community and professional growth.</p>
+  <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
+</div></div>
 <section style="margin-top:2rem" aria-labelledby="contact-h">
   <h2 id="contact-h">Contact & Join</h2>
   <p>Have questions? Email <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>. Ready to get started?</p>
   <p><a class="btn" href="/members.html">Become a Member</a></p>
 </section>
 <script src="/js/home-upcoming.js" defer></script>
+
+
+<div class="modal" id="welcome-modal"><div class="dialog" tabindex="-1">
+  <h3>Welcome to Rowan ACDA</h3>
+  <p>We’re a light‑hearted, light‑themed club focused on choral artistry, education, and service. Explore events, meet the E‑Board, and grab resources.</p>
+  <div class="grid"><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button> <a class="btn" href="/members.html">Join Us</a></div>
+</div></div>
+<script>
+  // Open once per session (simple sessionStorage gate)
+  window.addEventListener('DOMContentLoaded', ()=>{
+    try{
+      if(!sessionStorage.getItem('welcomeShown')){
+        document.getElementById('welcome-modal').classList.add('open');
+        sessionStorage.setItem('welcomeShown','1');
+      }
+    }catch(e){/* ignore */}
+  });
+</script>
 
 </main>
 
