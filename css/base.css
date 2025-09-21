@@ -65,11 +65,3 @@ html{scroll-behavior:smooth}
   .site-header{background:rgba(255,255,255,.85); color:var(--text)}
   .site-footer{color:var(--muted)}
 }
-
-/* ===== Site-wide desktop scale ===== */
-:root{ --scale-desktop: 2.5; }
-@media (min-width: 1024px){
-  html{ font-size: calc(16px * var(--scale-desktop)); } /* ~2.5x typographic scale */
-  :root{ --tap: calc(44px * var(--scale-desktop)); }
-  .container{ max-width: 1400px; }
-}

@@ -142,12 +142,3 @@ section+section{margin-top:2rem}
 
 /* Static spacing tweak for permanent welcome band */
 .welcome-band{margin: clamp(.6rem, 1.8vw, 1rem) auto 0}
-
-/* ===== Components desktop tune-ups ===== */
-@media (min-width: 1024px){
-  .quick-links, .events-feature{ gap: calc(16px * var(--scale-desktop)/2.5); }
-  .card{ padding: calc(1rem * var(--scale-desktop)/2.5); border-radius: calc(1.1rem * var(--scale-desktop)/2.5); }
-}
-/* Button style harmony */
-.btn{ border:1px solid rgba(0,0,0,.06); box-shadow: var(--shadow-sm); }
-.btn.btn-outline{ background:#fff; color:var(--brand); border-color: var(--brand); }
