@@ -5,31 +5,114 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Rowan ACDA</title>
 <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University."/>
+
+<!-- Brand / theme / social -->
+<meta name="theme-color" content="#7A0A0A">
+<meta property="og:title" content="Rowan ACDA — Sing. Lead. Inspire.">
+<meta property="og:description" content="Rowan ACDA empowers student conductors, educators, and singers through concerts, clinics, and community.">
+<meta property="og:image" content="/assets/icons/acda.png">
+<meta property="og:type" content="website">
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
-<link rel="icon" href="/assets/icons/favicon-32.png"/>
-<meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css"/>
+<link rel="icon" href="/assets/icons/acda.png"/>
 
+<style>
+  :root{
+    --brand:#7A0A0A;
+    --accent:#E3B23C;
+    --radius:16px;
+  }
+
+  /* Hero */
+  .hero.hero-with-bg{ position:relative; overflow:hidden; }
+  .hero-bg{ position:absolute; inset:0; z-index:0; }
+  .hero-bg::after{
+    content:""; position:absolute; inset:0; z-index:2;
+    background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.1) 60%, rgba(0,0,0,0) 100%);
+    pointer-events:none;
+  }
+  .hero-bg img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; will-change:opacity; z-index:1;
+    animation: heroFade var(--heroCycle, 48s) ease-in-out infinite;
+  }
+  @keyframes heroFade{ 0%{opacity:0} 10%{opacity:1} 45%{opacity:1} 55%{opacity:0} 100%{opacity:0} }
+  @media (prefers-reduced-motion: reduce){ .hero-bg img{ animation:none; opacity:1; } }
+
+  .hero-inner{ display:flex; align-items:center; justify-content:center;
+    min-height: clamp(420px, 56vh, 720px); }
+
+  .hero-card{
+    display:grid; grid-template-columns: 1.15fr .85fr; align-items:center; gap: clamp(20px, 3vw, 40px);
+    background: rgba(255,255,255,0.82); backdrop-filter: blur(5px);
+    padding: clamp(22px, 3.2vw, 44px); border-radius: var(--radius);
+    box-shadow: 0 10px 28px rgba(0,0,0,.12);
+    max-width: 1080px; width: 100%;
+  }
+  .hero-copy .mega{ margin: 0 0 .3em 0; }
+  .hero-copy .lead{ color:#2b2b2b; }
+  .hero-logo img{ width: clamp(160px, 24vw, 300px); height:auto; display:block; border-radius: 12px; }
+  @media (max-width: 860px){
+    .hero-card{ grid-template-columns:1fr; text-align:center; }
+    .hero-logo{ justify-self:center; }
+  }
+
+  /* Buttons */
+  .btn{ border-radius:10px; }
+  .btn-primary{ background: var(--brand); border-color: var(--brand); }
+  .btn-primary:hover{ filter:brightness(1.08); }
+  .btn-ghost{ border:1px solid rgba(0,0,0,.12); }
+  .btn:focus-visible{ outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  /* Sections */
+  .section-head{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom: .75rem; }
+  .strip{ background: #f8fafc; padding: clamp(16px,2vw,24px) 0; }
+  .grid3, .grid2{ gap: clamp(16px, 2vw, 24px); }
+
+  /* Highlights gallery */
+  .loop-gallery-wrap{ overflow:hidden; -webkit-mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%); }
+  .loop-gallery{ display:flex; gap:16px; align-items:center; }
+  .loop-gallery img, .loop-gallery figure{
+    flex:0 0 auto; width: min(420px, 85vw); border-radius: 12px; object-fit: cover;
+    box-shadow: 0 6px 16px rgba(0,0,0,.08);
+  }
+  @keyframes scrollLoop { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .loop-animate{ animation: scrollLoop 36s linear infinite; }
+  @media (prefers-reduced-motion: reduce){ .loop-animate{ animation:none; } }
+</style>
 </head>
-<body>
 
-<header class="site-header" role="banner">
+<body>
+<header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="Rowan ACDA Home">
-      <img src="/assets/icons/acda.png" alt="ACDA logo">
-      <span>Rowan ACDA</span>
+    <a class="brand" href="/index.html" aria-label="Rowan ACDA home">
+      <img src="/assets/icons/acda.png" alt="" class="brand-mark"/>
+      <span class="brand-name">Rowan ACDA</span>
     </a>
-    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
-    <nav id="site-nav" class="nav" role="navigation">
-      <a class="nav-link" data-nav href="/">Home</a>
-      <a class="nav-link" data-nav href="/events.html">Events</a>
-      <a class="nav-link" data-nav href="/members.html">Members</a>
-      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
-      <a class="nav-link" data-nav href="/resources.html">Resources</a>
+    <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li><a href="/index.html" class="nav-link" aria-current="page">Home</a></li>
+        <li><a href="/events.html" class="nav-link">Events</a></li>
+        <li><a href="/members.html" class="nav-link">Members</a></li>
+        <li><a href="/eboard.html" class="nav-link">E-Board</a></li>
+        <li class="menu">
+          <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Resources</button>
+          <div class="menu-panel" role="menu">
+            <a role="menuitem" href="/resources-sightsinging.html">Sight-Singing Vault</a>
+            <a role="menuitem" href="/resources.html#repertoire">Repertoire Lists</a>
+            <a role="menuitem" href="/resources.html#handouts">Clinic Handouts</a>
+            <a role="menuitem" href="/resources.html#bylaws">Bylaws</a>
+          </div>
+        </li>
+      </ul>
     </nav>
   </div>
 </header>
@@ -48,92 +131,214 @@
   </div>
 </div>
 <script>
-  // Persist dismissal per browser
   window.addEventListener('DOMContentLoaded', ()=>{
     try{
       const wrap = document.getElementById('welcome-banner');
-      if(!wrap) return;
       if(localStorage.getItem('welcomeBannerDismissed')==='1'){ wrap.classList.add('hidden'); }
       wrap.querySelector('.close')?.addEventListener('click', ()=>{
-        wrap.classList.add('hidden');
-        try{ localStorage.setItem('welcomeBannerDismissed','1'); }catch(e){}
+        wrap.classList.add('hidden'); localStorage.setItem('welcomeBannerDismissed','1');
       });
     }catch(e){}
   });
 </script>
 
 
-<main class="container" role="main" style="padding:1.25rem 0 2rem">
-
-
-
-
-<section style="margin-top:2rem" aria-labelledby="highlights-h">
-  <h2 id="highlights-h">Highlights</h2>
-  <div class="loop-gallery-wrap">
-    <div class="loop-gallery">
-      <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/52848310914_2abe6f0220_o-scaled.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Highlight photo" loading="lazy">
+<main class="main">
+  <!-- HERO with background -->
+  <section class="hero hero-with-bg">
+    <div class="hero-bg" id="hero-gallery"></div>
+    <div class="container hero-inner">
+      <div class="hero-card">
+        <div class="hero-copy">
+          <h1 class="mega">Sing. Lead. Inspire.</h1>
+          <p class="lead">Rowan ACDA empowers student conductors, educators, and singers through concerts, clinics, and community.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="/events.html">View Events</a>
+            <a class="btn btn-ghost" href="/members.html">Join Us</a>
+          </div>
+        </div>
+        <div class="hero-logo">
+          <img src="/assets/icons/acda.png" alt="Rowan ACDA logo"/>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- CTA strip -->
+  <section class="strip">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+      <div>
+        <h2 style="margin:0 0 .25rem 0;">Join Rowan ACDA</h2>
+        <p class="muted" style="margin:0;">Open to all Rowan students—no audition required for chapter membership.</p>
+      </div>
+      <div>
+        <a class="btn btn-primary" href="https://rowan.campuslabs.com/engage/organization/acda" target="_blank" rel="noopener">Join on ProfLink</a>
+        <a class="btn btn-ghost" href="/members.html">What we do</a>
+      </div>
+    </div>
+  </section>
 
+  <!-- ABOUT US -->
+  <section class="strip" style="background:#fff;">
+    <div class="container">
+      <div class="section-head">
+        <h2>About Us</h2>
+        <a class="btn btn-ghost" href="/members.html">Get Involved</a>
+      </div>
 
+      <div class="grid3">
+        <article class="card" id="home-upcoming" data-fallback>
+          <div class="card-media"><img src="/assets/img/event-fallback.png" alt=""></div>
+          <div class="card-body">
+            <h3>Next Event</h3>
+            <p class="muted">Loading upcoming event…</p>
+            <a class="btn btn-link" href="/events.html">See details</a>
+          </div>
+        </article>
 
-<section style="margin-top:2rem">
-  <h2>More About Rowan ACDA</h2>
-  <p>Founded with the mission of connecting students through music, Rowan ACDA fosters leadership and artistry. 
-  We offer masterclasses, socials, and community outreach events throughout the year. 
-  Whether you want to learn about conducting, network with peers, or just sing—this is the place for you.</p>
-  <p><button class="btn btn-outline" data-modal="about-popup">Read More</button></p>
-</section>
+        <article class="card">
+          <div class="card-media"><img src="/assets/img/about.png" alt=""></div>
+          <div class="card-body">
+            <h3>About ACDA</h3>
+            <p class="muted">We connect choral leaders with opportunities to grow, perform, and serve.</p>
+            <a class="btn btn-link" href="/members.html">Learn more</a>
+          </div>
+        </article>
 
-<div class="modal" id="about-popup"><div class="dialog" tabindex="-1">
-  <h3>About Rowan ACDA</h3>
-  <p>Rowan ACDA is one of the most active collegiate ACDA chapters in the region. 
-  We participate in conferences, host our own Cabaret, and bring in guest clinicians. 
-  Membership provides both community and professional growth.</p>
-  <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
-</div></div>
-<section style="margin-top:2rem" aria-labelledby="contact-h">
-  <h2 id="contact-h">Contact & Join</h2>
-  <p>Have questions? Email <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>. Ready to get started?</p>
-  <p><a class="btn" href="/members.html">Become a Member</a></p>
-</section>
-<script src="/js/home-upcoming.js" defer></script>
+        <article class="card">
+          <div class="card-media"><img src="/assets/img/spotlight1.png" alt=""></div>
+          <div class="card-body">
+            <h3>Resources</h3>
+            <p class="muted">Sight-singing packets, repertoire lists, and clinic materials.</p>
+            <a class="btn btn-link" href="/resources.html">Explore resources</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 
+  <!-- HIGHLIGHTS -->
+  <section class="news">
+    <div class="container">
+      <div class="section-head">
+        <h2>Highlights</h2>
+        <a class="btn btn-ghost" href="/events.html">All events</a>
+      </div>
 
-<div class="modal" id="welcome-modal"><div class="dialog" tabindex="-1">
-  <h3>Welcome to Rowan ACDA</h3>
-  <p>We’re a light‑hearted, light‑themed club focused on choral artistry, education, and service. Explore events, meet the E‑Board, and grab resources.</p>
-  <div class="grid"><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button> <a class="btn" href="/members.html">Join Us</a></div>
-</div></div>
-<script>
-  // Open once per session (simple sessionStorage gate)
-  window.addEventListener('DOMContentLoaded', ()=>{
-    try{
-      if(!sessionStorage.getItem('welcomeShown')){
-        document.getElementById('welcome-modal').classList.add('open');
-        sessionStorage.setItem('welcomeShown','1');
-      }
-    }catch(e){/* ignore */}
-  });
-</script>
+      <div class="grid2">
+        <article class="card">
+          <div class="card-media"><img alt="" src="/assets/img/spotlight2.png"/></div>
+          <div class="card-body">
+            <h3>Perform With Us</h3>
+            <p class="muted">Learn about upcoming events and get involved in our Fall Cabaret & Spring Student Conducting Showcase!</p>
+            <a class="btn btn-outline" href="/events.html">Read more</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-media"><img alt="" src="/assets/img/spotlight1.png"/></div>
+          <div class="card-body">
+            <h3>Grow Together</h3>
+            <p class="muted">Build your sightreading skills, attend professional developments, and volunteer for your community!</p>
+            <a class="btn btn-outline" href="/events.html">Details</a>
+          </div>
+        </article>
+      </div>
 
+      <div class="loop-gallery-wrap" style="margin-top:24px;">
+        <div class="loop-gallery loop-animate" id="loop-gallery" aria-label="Photo gallery (auto-scrolling)"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="container">
+      <h2>Contact &amp; Join</h2>
+      <p>Email us at <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a> or come to our next event.</p>
+    </div>
+  </section>
 </main>
 
-<footer class="site-footer" role="contentinfo">
-  <div class="container" style="display:flex;align-items:center;gap:.75rem">
-    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
-    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img src="/assets/icons/acda.png" alt="" class="brand-mark sm">
+      <strong>Rowan ACDA</strong>
+      <p class="muted">American Choral Directors Association — Rowan University</p>
+    </div>
+    <div class="footer-links">
+      <a href="/events.html">Events</a>
+      <a href="/members.html">Members</a>
+      <a href="/eboard.html">E-Board</a>
+      <a href="/resources.html">Resources</a>
+    </div>
+    <div class="footer-meta">
+      <p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
+    </div>
   </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
+<script src="/js/home-upcoming.js" defer></script>
+
+<!-- Highlights gallery (12 images, cloned once) -->
+<script>
+(function(){
+  const wrap = document.getElementById('loop-gallery');
+  if (!wrap) return;
+  const ids = [1,2,3,4,5,6,7,8,9,10,11,12];
+  ids.forEach(i=>{
+    const fig = document.createElement('figure');
+    const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.alt = `Concert photo ${i}`;
+    img.src = `/assets/img/gallery${i}.png`;
+    fig.appendChild(img);
+    wrap.appendChild(fig);
+  });
+  wrap.querySelectorAll('figure').forEach(f=> wrap.appendChild(f.cloneNode(true)));
+})();
+</script>
+
+<!-- Hero background (8 images, staggered) -->
+<script>
+(function(){
+  const container = document.getElementById('hero-gallery');
+  if (!container) return;
+  const picks = [1,2,3,4,5,6,7,8];
+  const DUR = 48;
+  const STAGGER = DUR / picks.length;
+  picks.forEach((n,i)=>{
+    const img = document.createElement('img');
+    img.src = `/assets/img/gallery${n}.png`;
+    img.alt = `Background ${n}`;
+    img.decoding = 'async';
+    img.loading = 'eager';
+    img.style.animationDuration = DUR + 's';
+    img.style.animationDelay = (i * STAGGER) + 's';
+    container.appendChild(img);
+  });
+})();
+</script>
+
 <script src="/js/core.js" defer></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var here = location.pathname.replace(/\/$/, '');
+  document.querySelectorAll('#site-nav a.nav-link').forEach(function(a){
+    try{
+      var link = new URL(a.getAttribute('href'), location.origin).pathname.replace(/\/$/, '');
+      if (link === here || (link !== '/' && here.startsWith(link))) {
+        a.setAttribute('aria-current','page');
+      } else {
+        a.removeAttribute('aria-current');
+      }
+    }catch(e){}
+  });
+});
+</script>
 
 </body>
 </html>
