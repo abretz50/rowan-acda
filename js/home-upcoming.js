@@ -7,14 +7,18 @@ async function injectUpcoming(){
     if (!next) return;
     const el = document.getElementById('upcoming');
     
-el.innerHTML = `<div class="card">
-  ${next.image ? `<img src="${next.image}" alt="${next.title}" loading="lazy" style="border-radius:.75rem;aspect-ratio:16/9;object-fit:cover;margin-bottom:.5rem;border:1px solid var(--border)">` : ``}
-  <h3>Next Up: ${next.title}</h3>
-  <p class="small">${next.dateObj.toLocaleString()} — ${next.location||''}</p>
-  <div class="tags">${(next.tags||[]).map(t=>`<span class="tag">${t}</span>`).join(' ')}</div>
-  <p style="margin:.5rem 0 0">${next.description||''}</p>
-  <p style="margin-top:.75rem"><a class="btn" href="/events.html">See all events</a></p>
+
+el.innerHTML = `<div class="card media-card">
+  ${next.image ? `<div class="thumb"><img class="img-fit" src="${next.image}" alt="${next.title}" loading="lazy" decoding="async"></div>` : ``}
+  <div class="body">
+    <h3>Next Up: ${next.title}</h3>
+    <p class="small">${next.dateObj.toLocaleString()} — ${next.location||''}</p>
+    <div class="tags">${(next.tags||[]).map(t=>`<span class="tag">${t}</span>`).join(' ')}</div>
+    <p style="margin:.5rem 0 0">${next.description||''}</p>
+    <p style="margin-top:.75rem"><a class="btn" href="/events.html">See all events</a></p>
+  </div>
 </div>`;
+
 
   }catch(e){ /* no-op */ }
 }
