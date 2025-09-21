@@ -166,3 +166,8 @@ section+section{margin-top:2rem}
 }
 /* Comfortable spacing for actions */
 .welcome-band .actions{ gap:.6rem; flex-wrap:wrap }
+
+/* === Welcome band background: 2x taller === */
+.welcome-band .inner{
+  padding-block: clamp(56px, 9.6vw, 88px); /* doubled from the prior 28..44 range */
+}
