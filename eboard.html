@@ -282,5 +282,22 @@
 </script>
 
 <script src="/js/core.js" defer></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var here = location.pathname.replace(/\/$/, '');
+  document.querySelectorAll('#site-nav a.nav-link').forEach(function(a){
+    try{
+      var link = new URL(a.getAttribute('href'), location.origin).pathname.replace(/\/$/, '');
+      if (link === here || (link !== '/' && here.startsWith(link))) {
+        a.setAttribute('aria-current','page');
+      } else {
+        a.removeAttribute('aria-current');
+      }
+    }catch(e){}
+  });
+});
+</script>
+
 </body>
 </html>

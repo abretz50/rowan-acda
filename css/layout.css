@@ -9,7 +9,7 @@
 .brand-name{font-family:Outfit, Inter, sans-serif; font-weight:800}
 .site-nav{display:flex;align-items:center;gap:16px}
 .nav-list{display:flex;align-items:center;gap:12px;list-style:none;margin:0;padding:0}
-.nav-link{padding:10px 12px;border-radius:12px}
+.nav-link{padding:10px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface-weak)}
 .nav-link[aria-current="page"], .nav-link:hover{background:var(--surface)}
 .nav-actions{display:flex;gap:10px;align-items:center}
 .nav-toggle{display:none;height:40px;width:44px;align-items:center;justify-content:center;border:1px solid var(--border);background:#fff;border-radius:10px}
@@ -100,4 +100,14 @@
 .site-nav .nav-link:hover{
   background:rgba(255,255,255,0.15);
   color:#fff;
+}
+
+
+/* Nav button clarity */
+.nav-link:hover{background:var(--surface);border-color:var(--border-strong)}
+.nav-link[aria-current="page"]{
+  background:var(--brand);
+  color:#fff;
+  border-color:var(--brand);
+  font-weight:600;
 }
