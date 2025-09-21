@@ -142,3 +142,8 @@ section+section{margin-top:2rem}
 
 /* Static spacing tweak for permanent welcome band */
 .welcome-band{margin: clamp(.6rem, 1.8vw, 1rem) auto 0}
+
+/* === Taller welcome band (2.5x vertical) === */
+.welcome-band .inner{
+  padding-block: clamp(35px, 6vw, 55px); /* ~2.5x of previous 14px..22px range */
+}
