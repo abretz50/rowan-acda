@@ -143,7 +143,26 @@ section+section{margin-top:2rem}
 /* Static spacing tweak for permanent welcome band */
 .welcome-band{margin: clamp(.6rem, 1.8vw, 1rem) auto 0}
 
-/* === Taller welcome band (2.5x vertical) === */
+/* === Welcome band: 2x taller + content formatting === */
 .welcome-band .inner{
-  padding-block: clamp(35px, 6vw, 55px); /* ~2.5x of previous 14px..22px range */
+  padding-block: clamp(28px, 4.8vw, 44px); /* ~2x of original 14px..22px */
 }
+/* Slightly larger logo in the band */
+.welcome-band .logo{
+  width: clamp(64px, 9vw, 104px);
+  height: clamp(64px, 9vw, 104px);
+}
+/* Tidy text sizes and spacing inside the band only */
+.welcome-band .copy{
+  display:flex; flex-direction:column; gap:.2rem; min-width:0;
+}
+.welcome-band .copy .title{
+  font-weight:800; line-height:1.05; letter-spacing:-.01em;
+  font-size: clamp(1.75rem, 3.6vw, 2.6rem);
+}
+.welcome-band .copy .tagline{
+  font-weight:700; opacity:.98;
+  font-size: clamp(1.15rem, 2.6vw, 1.8rem);
+}
+/* Comfortable spacing for actions */
+.welcome-band .actions{ gap:.6rem; flex-wrap:wrap }
