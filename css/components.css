@@ -206,3 +206,41 @@ section+section{margin-top:2rem}
 /* === Ensure banner logo stays perfectly square === */
 .welcome-band .logo{ aspect-ratio: 1 / 1; }
 .welcome-band .logo img{ width:100%; height:100%; object-fit: cover; display:block; }
+
+/* === Banner: two-column layout, logo on right above CTAs === */
+.welcome-band .inner{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:center;
+  gap: clamp(14px, 2vw, 22px);
+}
+.welcome-band .banner-right{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap: clamp(10px, 1.4vw, 14px);
+}
+/* Square logo box on the right */
+.welcome-band .logo{
+  width: clamp(72px, 9vw, 112px);
+  height: clamp(72px, 9vw, 112px);
+  aspect-ratio: 1/1;
+  border-radius: .9rem;
+  border: 1px solid rgba(255,255,255,.35);
+  overflow: hidden;
+  background: #fff;
+}
+.welcome-band .logo img{ width:100%; height:100%; object-fit: cover; display:block; }
+
+/* Bigger tagline on the left */
+.welcome-band .copy .tagline{
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem); /* larger than before */
+  line-height: 1.1;
+}
+
+/* Mobile: stack right column below copy and center it */
+@media (max-width: 780px){
+  .welcome-band .inner{ grid-template-columns: 1fr; }
+  .welcome-band .banner-right{ align-items:flex-start; }
+}
