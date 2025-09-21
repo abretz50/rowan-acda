@@ -195,3 +195,6 @@ section+section{margin-top:2rem}
   background: none; /* ensure no secondary background layer */
   margin: 0;
 }
+
+/* Ensure banner image is flush & clipped to rounded corners */
+.welcome-band{overflow:hidden; border-radius:1.1rem;}
