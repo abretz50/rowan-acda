@@ -198,3 +198,7 @@ section+section{margin-top:2rem}
 
 /* Ensure banner image is flush & clipped to rounded corners */
 .welcome-band{overflow:hidden; border-radius:1.1rem;}
+
+/* Banner image flush to rounded edges */
+.welcome-band{overflow:hidden; border-radius:1.1rem; background-size:cover; background-position:center;}
+.welcome-band .inner{background:none; margin:0;}
