@@ -1,123 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rowan ACDA</title>
-  <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
-  <link rel="icon" href="/assets/icons/acda.png">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sight‑Singing Vault — Rowan ACDA</title>
+<meta name="description" content="Password‑protected PDF vault for sight‑singing resources."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/acda.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
+
 </head>
 <body>
-<header class="site-header">
+
+<header class="site-header" role="banner">
   <div class="container header-inner">
-    <a class="brand" href="/index.html" aria-label="Rowan ACDA home">
-      <img src="/assets/icons/acda.png" alt="" class="brand-mark" />
-      <span class="brand-name">Rowan ACDA</span>
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/acda.png" alt="ACDA logo">
+      <span>Rowan ACDA</span>
     </a>
-
-    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
-      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-    </button>
-
-    <nav id="site-nav" class="site-nav" aria-label="Primary">
-      <ul class="nav-list">
-        <li><a href="/index.html" class="nav-link">Home</a></li>
-        <li><a href="/events.html" class="nav-link">Events</a></li>
-        <li><a href="/members.html" class="nav-link">Members</a></li>
-        <li><a href="/eboard.html" class="nav-link">E-Board</a></li>
-        <li class="menu">
-          <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Resources</button>
-          <div class="menu-panel" role="menu">
-            <a role="menuitem" href="/resources-sightsinging.html">Sight-Singing Vault</a>
-            <a role="menuitem" href="/resources.html#repertoire">Repertoire Lists</a>
-            <a role="menuitem" href="/resources.html#handouts">Clinic Handouts</a>
-            <a role="menuitem" href="/resources.html#bylaws">Bylaws</a>
-          </div>
-        </li>
-      </ul>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
     </nav>
   </div>
 </header>
-<main class="main">
 
-<section class="page-head">
-  <div class="container">
-    <h1>Sight‑Singing Vault</h1>
-    <p class="muted">Choose a group and enter the shared password to view PDFs. (Client‑side gate using SHA‑256.)</p>
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
+
+<h1>Sight‑Singing Vault</h1>
+<p class="small">Enter your group and password to unlock PDFs. (Demo password: <code>choral2025</code>)</p>
+<div class="grid cols-2">
+  <div class="card">
+    <label>Group<br><select id="group"><option>Sight‑Singing Group A</option></select></label>
+    <label style="display:block;margin-top:.5rem">Password<br><input id="pw" type="password" placeholder="Enter password"></label>
+    <p style="margin-top:.75rem"><button class="btn" id="vault-open">Unlock</button></p>
+    <p id="vault-status" class="small" role="status" aria-live="polite"></p>
+    <div id="vault-tabs" class="file-tabs"></div>
   </div>
-</section>
-
-<section class="container vault">
-  <div class="gate card">
-    <div class="card-body">
-      <label for="group" class="label">Group</label>
-      <select id="group" class="input"></select>
-
-      <label for="password" class="label">Password</label>
-      <input id="password" class="input" type="password" placeholder="Enter password" aria-label="Group password">
-      <button id="enter" class="btn btn-primary">Enter</button>
-      <p id="gate-msg" class="muted small" role="status"></p>
-
-      <p class="note muted">Heads up: This shared password gate deters casual access but is not bulletproof. For true protection, connect Auth0 or a Netlify function later.</p>
-    </div>
+  <div class="card">
+    <h3>Viewer</h3>
+    <embed id="vault-viewer" class="hidden" type="application/pdf" style="width:100%;height:70vh;border:1px solid var(--border);border-radius:.5rem"/>
   </div>
-
-  <div class="viewer card hidden" id="viewer">
-    <div class="filelist" id="filelist" role="tablist" aria-label="PDF list"></div>
-    <div class="embed">
-      <embed id="pdf-embed" src="" type="application/pdf" aria-label="PDF viewer"/>
-    </div>
-  </div>
-</section>
-
-<script src="/js/utils/hash.js" defer></script>
+</div>
 <script src="/js/pdf-vault.js" defer></script>
 
 </main>
 
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <img src="/assets/icons/acda.png" alt="" class="brand-mark sm" />
-      <strong>Rowan ACDA</strong>
-      <p class="muted">American Choral Directors Association — Rowan University</p>
-    </div>
-    <div class="footer-links">
-      <a href="/events.html">Events</a>
-      <a href="/members.html">Members</a>
-      <a href="/eboard.html">E-Board</a>
-      <a href="/resources.html">Resources</a>
-    </div>
-    <div class="footer-meta">
-      <p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
-    </div>
+<footer class="site-footer" role="contentinfo">
+  <div class="container" style="display:flex;align-items:center;gap:.75rem">
+    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
+    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
   </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
-
 <script src="/js/core.js" defer></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var here = location.pathname.replace(/\/$/, '');
-  document.querySelectorAll('#site-nav a.nav-link').forEach(function(a){
-    try{
-      var link = new URL(a.getAttribute('href'), location.origin).pathname.replace(/\/$/, '');
-      if (link === here || (link !== '/' && here.startsWith(link))) {
-        a.setAttribute('aria-current','page');
-      } else {
-        a.removeAttribute('aria-current');
-      }
-    }catch(e){}
-  });
-});
-</script>
 
 </body>
 </html>
-

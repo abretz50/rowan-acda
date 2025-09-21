@@ -1,239 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Membership | Rowan ACDA</title>
-  <meta name="description" content="How to join Rowan ACDA, member benefits, activities, and links to official Rowan ProfLink."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
-  <link rel="icon" href="/assets/icons/acda.png"/>
-  <link rel="stylesheet" href="/css/base.css"/>
-  <link rel="stylesheet" href="/css/layout.css"/>
-  <link rel="stylesheet" href="/css/components.css"/>
-  <style>
-    .cta-row { display:flex; flex-wrap:wrap; gap: var(--space-3); margin-top: var(--space-3); }
-    .notice { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); }
-    .list-grid { display:grid; gap: var(--space-3); }
-    @media (min-width: 900px){ .list-grid { grid-template-columns: 1fr 1fr; } }
-    .muted small { font-size: .9em; }
-    .faq details{border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-3);background:var(--surface-1)}
-    .faq details+details{margin-top:var(--space-3)}
-    .faq summary{font-weight:600;cursor:pointer;list-style:none}
-    .faq summary::-webkit-details-marker{display:none}
-    .faq .muted{margin-top:.35rem}
-    .cta-banner{background:var(--brand-tint, #f1f6ff); border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--space-4); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--space-3)}
-    .cta-banner .actions .btn{margin-right:.5rem}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Members — Rowan ACDA</title>
+<meta name="description" content="Membership information for Rowan ACDA."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/acda.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
+
 </head>
 <body>
-<header class="site-header">
+
+<header class="site-header" role="banner">
   <div class="container header-inner">
-    <a class="brand" aria-label="Rowan ACDA home" href="/index.html">
-      <img class="brand-mark" src="/assets/icons/acda.png" alt=""/>
-      <span class="brand-name">Rowan ACDA</span>
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/acda.png" alt="ACDA logo">
+      <span>Rowan ACDA</span>
     </a>
-    <button class="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-    </button>
-    <nav id="site-nav" class="site-nav" aria-label="Primary">
-      <ul class="nav-list">
-        <li><a class="nav-link" href="/index.html">Home</a></li>
-        <li><a class="nav-link" href="/events.html">Events</a></li>
-        <li><a class="nav-link is-active" href="/members.html" aria-current="page">Members</a></li>
-        <li><a class="nav-link" href="/eboard.html">E-Board</a></li>
-        <li class="menu">
-          <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Resources</button>
-          <div class="menu-panel" role="menu">
-            <a role="menuitem" href="/resources-sightsinging.html">Sight-Singing Vault</a>
-            <a role="menuitem" href="/resources.html#repertoire">Repertoire Lists</a>
-            <a role="menuitem" href="/resources.html#handouts">Clinic Handouts</a>
-            <a role="menuitem" href="/resources.html#bylaws">Bylaws</a>
-          </div>
-        </li>
-      </ul>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
     </nav>
   </div>
 </header>
 
-<main class="main">
-  <section class="page-head">
-    <div class="container">
-      <h1>Membership</h1>
-      <p class="muted">Open to all Rowan students—no audition required for the chapter. Get involved in a welcoming community that supports choral music through education, performance, and service.</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="https://rowan.campuslabs.com/engage/organization/acda" target="_blank" rel="noopener" aria-describedby="proflink-note">Join on ProfLink</a>
-        <a class="btn" href="#about">What we do</a>
-        <a class="btn" href="#benefits">Benefits</a>
-      </div>
-      <p id="proflink-note" class="muted"><small>ProfLink is Rowan’s official roster—joining there lets you list Rowan ACDA on your résumé and unlocks campus participation tracking.</small></p>
-    </div>
-  </section>
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
 
-  <section class="container">
-    <div class="notice" role="note">
-      <strong>Looking for a member roster?</strong>
-      <p class="muted">We do not list headshots here. Our official roster is maintained on ProfLink. Use the button above to join the chapter.</p>
-    </div>
-  </section>
+<h1>Members</h1>
+<div class="grid cols-2">
+  <div class="card">
+    <h2>Ready to join?</h2>
+    <p>Membership is open to all Rowan students who love choral music. Join via ProfLink and come to our next meeting!</p>
+    <p><a class="btn" href="https://rowan.campuslabs.com/engage/" target="_blank" rel="noopener">Join on ProfLink</a></p>
+    <p class="small">Need help? Email <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>.</p>
+  </div>
+  <div>
+    <h2>About the Chapter</h2>
+    <p>We build musicianship and leadership through rehearsals, workshops, and service projects. Whether you’re a singer, conductor, educator, or just curious—there’s a place for you.</p>
+  </div>
+</div>
 
-  <section class="container">
-    <div class="cta-banner">
-      <div>
-        <h2 style="margin:0 0 .25rem 0;">Ready to join?</h2>
-        <p class="muted" style="margin:0;">Register on ProfLink to be added to Rowan’s official roster—perfect for résumés and campus involvement tracking.</p>
-      </div>
-      <div class="actions">
-        <a class="btn btn-primary" href="https://rowan.campuslabs.com/engage/organization/acda" target="_blank" rel="noopener">Join on ProfLink</a>
-        <a class="btn" href="/events.html">See upcoming events</a>
-      </div>
-    </div>
-  </section>
+<section style="margin-top:1.5rem">
+  <h2>Mission</h2>
+  <p>To support the growth of choral musicians and educators at Rowan through community, artistry, and service.</p>
+</section>
 
-  <section id="about" class="container grid2">
-    <article class="card">
-      <div class="card-body">
-        <h2>About the Chapter</h2>
-        <p>Rowan ACDA supports choral music on campus and in the community through inclusive programming, hands‑on learning, and service.</p>
-        <ul class="list-grid">
-          <li>Student-led concerts and community performances</li>
-          <li>Guest clinicians and professional development</li>
-          <li>Leadership and conducting labs</li>
-        </ul>
-      </div>
-    </article>
+<section style="margin-top:1.5rem">
+  <h2>Membership at Rowan</h2>
+  <p>Attend meetings, participate in events, and get involved with committees that match your interests.</p>
+</section>
 
-    <article class="card">
-      <div class="card-body">
-        <h2>Mission</h2>
-        <p>To inspire teaching, performance, and leadership through welcoming, student‑led activities that develop real‑world choral skills.</p>
-        <p class="muted"><small>All majors welcome—no audition required for chapter membership.</small></p>
-      </div>
-    </article>
-  </section>
+<section style="margin-top:1.5rem">
+  <h2>FAQ</h2>
+  <ul>
+    <li><strong>Do I have to be a music major?</strong> No—everyone is welcome.</li>
+    <li><strong>Do I have to audition?</strong> No audition for membership; some performances may audition.</li>
+  </ul>
+</section>
 
-  <section class="container">
-    <article class="card">
-      <div class="card-body">
-        <h2>Membership at Rowan</h2>
-        <p>Membership in the Rowan University chapter of ACDA is <strong>free</strong> for all Rowan students and faculty. To become a chapter member, register on <a href="https://rowan.campuslabs.com/engage/organization/acda" target="_blank" rel="noopener">ProfLink</a>.</p>
-        <p>For access to full national benefits (publications, conferences, and more), consider joining ACDA National as a <em>Collegiate</em> member at <a href="https://www.acda.org" target="_blank" rel="noopener">acda.org</a>.</p>
-      </div>
-    </article>
-  </section>
+<section style="margin-top:1.5rem">
+  <h2>Events & Activities</h2>
+  <p>We host professional developments, socials, volunteering, and collaborative projects across campus.</p>
+</section>
 
-  <section class="container faq">
-    <h2>Membership FAQ</h2>
-    <details>
-      <summary>Do I need to be a music major?</summary>
-      <p class="muted">No. All Rowan students are welcome. Many members are education, performance, engineering, or other majors who love choral music.</p>
-    </details>
-    <details>
-      <summary>Are there dues?</summary>
-      <p class="muted">Chapter membership is free. National ACDA membership is optional but recommended for conference access and publications.</p>
-    </details>
-    <details>
-      <summary>What’s the time commitment?</summary>
-      <p class="muted">Flexible. Come to meetings, help at events, and participate as your schedule allows. We post opportunities on the Events page.</p>
-    </details>
-    <details>
-      <summary>How do I add ACDA to my résumé?</summary>
-      <p class="muted">After joining on ProfLink, list “Rowan ACDA — Member” under Activities. Conference attendance and officer roles can be listed as separate entries.</p>
-    </details>
-  </section>
+<section style="margin-top:1.5rem">
+  <h2>Benefits</h2>
+  <ul>
+    <li>Leadership and conducting opportunities</li>
+    <li>Access to clinics and repertoire ideas</li>
+    <li>Service experiences and networking</li>
+  </ul>
+</section>
 
-  <section class="container">
-    <article class="card">
-      <div class="card-body">
-        <h2>Chapter Events & Activities</h2>
-        <ul class="list-grid">
-          <li>Tenor–Bass Festival (fall), hosted by Dr. Thomas</li>
-          <li>High School ACDA Festival (spring)</li>
-          <li>Student Cabaret & community performances</li>
-          <li>Reading sessions & repertoire swaps</li>
-          <li>Leadership and conducting workshops</li>
-          <li>Professional development with guest clinicians</li>
-        </ul>
-      </div>
-    </article>
-  </section>
+<section style="margin-top:1.5rem">
+  <h2>ACDA National Membership Categories</h2>
+  <p>Student, active, and associate memberships are available through ACDA National.</p>
+</section>
 
-  <section id="benefits" class="container grid2">
-    <article class="card">
-      <div class="card-body">
-        <h2>Benefits of Chapter Participation</h2>
-        <ul>
-          <li>Connect with choral peers and professionals</li>
-          <li>Hands‑on leadership and conducting opportunities</li>
-          <li>Tools and resources to support your choirs</li>
-          <li>Conference travel and networking</li>
-          <li>Access to ACDA’s online community (ChoralNet) and publications</li>
-        </ul>
-      </div>
-    </article>
+<section style="margin-top:1.5rem">
+  <h2>Questions?</h2>
+  <p>Email us at <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>.</p>
+</section>
 
-    <article class="card">
-      <div class="card-body">
-        <h2>ACDA National Membership Categories</h2>
-        <ul>
-          <li><strong>Active</strong> — $125</li>
-          <li><strong>Retired</strong> — $45</li>
-          <li><strong>Collegiate</strong> — $15</li>
-          <li><strong>Associate</strong> — $45</li>
-          <li><strong>International</strong> — $45</li>
-        </ul>
-        <p class="muted">Pricing shown for convenience; refer to <a href="https://www.acda.org" target="_blank" rel="noopener">acda.org</a> for current rates.</p>
-      </div>
-    </article>
-  </section>
-
-  <section class="container">
-    <article class="card">
-      <div class="card-body">
-        <h2>Questions?</h2>
-        <p>Email us at <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>. We’re happy to help you get involved.</p>
-      </div>
-    </article>
-  </section>
 </main>
 
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <img class="brand-mark sm" src="/assets/icons/acda.png" alt=""/>
-      <strong>Rowan ACDA</strong>
-      <p class="muted">American Choral Directors Association — Rowan University</p>
-    </div>
-    <div class="footer-links">
-      <a href="/events.html">Events</a>
-      <a aria-current="page" href="/members.html">Members</a>
-      <a href="/eboard.html">E-Board</a>
-      <a href="/resources.html">Resources</a>
-    </div>
-    <div class="footer-meta">
-      <p class="muted">© <span id="year"></span> Rowan ACDA. Designed for accessibility and performance.</p>
-    </div>
+<footer class="site-footer" role="contentinfo">
+  <div class="container" style="display:flex;align-items:center;gap:.75rem">
+    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
+    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
   </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
-<script defer src="/js/core.js"></script>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var here = location.pathname.replace(/\/$/, '');
-  document.querySelectorAll('#site-nav a.nav-link').forEach(function(a){
-    try{
-      var link = new URL(a.getAttribute('href'), location.origin).pathname.replace(/\/$/, '');
-      if (link === here || (link !== '/' && here.startsWith(link))) {
-        a.setAttribute('aria-current','page');
-      } else {
-        a.removeAttribute('aria-current');
-      }
-    }catch(e){}
-  });
-});
-</script>
+<script src="/js/core.js" defer></script>
 
 </body>
 </html>

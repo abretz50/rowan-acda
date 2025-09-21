@@ -1,30 +1,16 @@
 {
   "groups": [
     {
-      "id": "level-1",
-      "name": "Level 1",
-      "passwordHash": "sha256:OijxQHsW2BeAZDnpJuWlCqR/48jfW8IPY2CjvrILVrc=",
-      "description": "Fundamentals & stepwise motion",
+      "name": "Sight\u2011Singing Group A",
+      "password_sha256": "f50b9592456576d9df2add315e2319dc8c588fd1adc19bc12dc8cccd09f79513",
       "files": [
         {
-          "title": "Do\u2013Re Patterns",
-          "path": "/assets/pdfs/level1/do-re.pdf"
+          "label": "Do\u2011Mi\u2011Sol patterns (C Major)",
+          "path": "/assets/resources/ss-c-major.pdf"
         },
         {
-          "title": "Simple Intervals",
-          "path": "/assets/pdfs/level1/intervals.pdf"
-        }
-      ]
-    },
-    {
-      "id": "level-2",
-      "name": "Level 2",
-      "passwordHash": "sha256:OijxQHsW2BeAZDnpJuWlCqR/48jfW8IPY2CjvrILVrc=",
-      "description": "Skips & mixed intervals",
-      "files": [
-        {
-          "title": "Triad Skips",
-          "path": "/assets/pdfs/level2/triads.pdf"
+          "label": "La\u2011Ti leading\u2011tone drills",
+          "path": "/assets/resources/ss-leading-tone.pdf"
         }
       ]
     }

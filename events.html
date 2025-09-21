@@ -1,118 +1,67 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rowan ACDA</title>
-  <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
-  <link rel="icon" href="/assets/icons/acda.png">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Events — Rowan ACDA</title>
+<meta name="description" content="Find upcoming Rowan ACDA events, workshops, and volunteer opportunities."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/acda.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
+
 </head>
 <body>
-<header class="site-header">
+
+<header class="site-header" role="banner">
   <div class="container header-inner">
-    <a class="brand" href="/index.html" aria-label="Rowan ACDA home">
-      <img src="/assets/icons/acda.png" alt="" class="brand-mark" />
-      <span class="brand-name">Rowan ACDA</span>
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/acda.png" alt="ACDA logo">
+      <span>Rowan ACDA</span>
     </a>
-
-    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
-      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-    </button>
-
-    <nav id="site-nav" class="site-nav" aria-label="Primary">
-      <ul class="nav-list">
-        <li><a href="/index.html" class="nav-link">Home</a></li>
-        <li><a href="/events.html" class="nav-link">Events</a></li>
-        <li><a href="/members.html" class="nav-link">Members</a></li>
-        <li><a href="/eboard.html" class="nav-link">E-Board</a></li>
-        <li class="menu">
-          <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Resources</button>
-          <div class="menu-panel" role="menu">
-            <a role="menuitem" href="/resources-sightsinging.html">Sight-Singing Vault</a>
-            <a role="menuitem" href="/resources.html#repertoire">Repertoire Lists</a>
-            <a role="menuitem" href="/resources.html#handouts">Clinic Handouts</a>
-            <a role="menuitem" href="/resources.html#bylaws">Bylaws</a>
-          </div>
-        </li>
-      </ul>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
     </nav>
   </div>
 </header>
 
-<main class="main">
-  <section class="page-head">
-    <div class="container">
-      <h1>Events</h1>
-      <p class="muted">Search, filter by tag, and click a card to view full details.</p>
-      <div class="toolbar">
-        <input id="event-search" class="input" type="search" placeholder="Search events… (title, tags)" aria-label="Search events">
-        <div class="chips" id="tag-chips">
-          <button class="chip" data-tag="All" aria-pressed="true">All</button>
-          <button class="chip" data-tag="General">General</button>
-          <button class="chip" data-tag="Professional">Professional</button>
-          <button class="chip" data-tag="Volunteer">Volunteer</button>
-          <button class="chip" data-tag="Performance">Performance</button>
-        </div>
-      </div>
-    </div>
-  </section>
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
 
-  <section class="container">
-    <div id="events-grid" class="cards-grid"></div>
-  </section>
+<header style="margin-bottom:1rem">
+  <h1>Events</h1>
+  <p class="small">Search and filter to find meetings, PDs, performances, and volunteer opportunities.</p>
+</header>
+<div class="search-row">
+  <input id="event-search" type="search" placeholder="Search events (title, location, details)" aria-label="Search events">
+  <div class="chips" id="tag-chips" aria-label="Filter by tag">
+    <span class="chip" data-tag="General">General</span>
+    <span class="chip" data-tag="Professional">Professional</span>
+    <span class="chip" data-tag="Volunteer">Volunteer</span>
+    <span class="chip" data-tag="Performance">Performance</span>
+  </div>
+</div>
+<div id="events-grid" class="grid cols-3" style="margin-top:1rem"></div>
+<script src="/js/events.js" defer></script>
 
-  <!-- Event modal container -->
-  <div id="event-modals"></div>
-  <!-- Backdrop -->
-  <div id="modal-overlay" style="display:none;"></div>
 </main>
 
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <img src="/assets/icons/acda.png" alt="" class="brand-mark sm" />
-      <strong>Rowan ACDA</strong>
-      <p class="muted">American Choral Directors Association — Rowan University</p>
-    </div>
-    <div class="footer-links">
-      <a href="/events.html">Events</a>
-      <a href="/members.html">Members</a>
-      <a href="/eboard.html">E-Board</a>
-      <a href="/resources.html">Resources</a>
-    </div>
-    <div class="footer-meta">
-      <p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
-    </div>
+<footer class="site-footer" role="contentinfo">
+  <div class="container" style="display:flex;align-items:center;gap:.75rem">
+    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
+    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
   </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
-
-<!-- PapaParse (CSV) MUST load before events.js -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
-<script src="/js/events.js" defer></script>
 <script src="/js/core.js" defer></script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var here = location.pathname.replace(/\/$/, '');
-  document.querySelectorAll('#site-nav a.nav-link').forEach(function(a){
-    try{
-      var link = new URL(a.getAttribute('href'), location.origin).pathname.replace(/\/$/, '');
-      if (link === here || (link !== '/' && here.startsWith(link))) {
-        a.setAttribute('aria-current','page');
-      } else {
-        a.removeAttribute('aria-current');
-      }
-    }catch(e){}
-  });
-});
-</script>
 
 </body>
 </html>

@@ -1,8 +1,17 @@
-/* Extra component styles */
-.input:focus, select:focus, .btn:focus, .nav-link:focus, .menu-trigger:focus {outline:2px solid var(--brand); outline-offset:2px}
-.card .btn{margin-top:8px}
-.person-card{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
-.person-card .avatar{width:100px;height:100px;object-fit:cover}
-.note{margin-top:.5rem}
-/* Header menu open state */
-.menu.open .menu-panel{display:block}
+.loop-gallery-wrap{overflow:hidden}
+.loop-gallery{display:flex;gap:1rem;animation:scroll 24s linear infinite}
+.loop-gallery img{height:160px;width:auto;border-radius:.75rem;border:1px solid var(--border)}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.event-card{display:flex;flex-direction:column;gap:.5rem}
+.event-card img{border-radius:.75rem;border:1px solid var(--border);aspect-ratio:16/9;object-fit:cover}
+.search-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+input[type="search"],input[type="text"],select{padding:.6rem .75rem;border:1px solid var(--border);border-radius:.6rem;min-height:var(--tap)}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.chip{padding:.3rem .6rem;border:1px solid var(--border);border-radius:999px;background:#fff;cursor:pointer}
+.chip.active{background:#f3eaea;border-color:#cfa6a6}
+.people{display:grid;gap:1rem;grid-template-columns:repeat(3,minmax(0,1fr))}
+.people .card img{border-radius:.75rem;aspect-ratio:1/1;object-fit:cover}
+@media(max-width:900px){.people{grid-template-columns:1fr 1fr}}
+.file-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.file-tabs a{padding:.4rem .7rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;text-decoration:none}
+.hidden{display:none!important}

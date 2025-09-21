@@ -1,50 +1,37 @@
-// Core: nav toggle, dropdowns, theme, simple modal controls
-(function(){
-  const navToggle = document.querySelector('.nav-toggle');
-  const nav = document.getElementById('site-nav');
-  const menu = document.querySelector('.menu');
-  const trigger = document.querySelector('.menu-trigger');
-
-  // Mobile nav
-  if (navToggle) {
-    navToggle.addEventListener('click', () => {
-      const open = nav.style.display === 'flex';
-      nav.style.display = open ? 'none' : 'flex';
-      navToggle.setAttribute('aria-expanded', String(!open));
-    });
-  }
-
-  // Dropdown
-  if (menu && trigger) {
-    trigger.addEventListener('click', (e) => {
-      const open = menu.classList.contains('open');
-      menu.classList.toggle('open', !open);
-      trigger.setAttribute('aria-expanded', String(!open));
-    });
-    document.addEventListener('click', (e) => {
-      if (!menu.contains(e.target)) {
-        menu.classList.remove('open');
-        trigger.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  // Theme toggle (simple class)
-  const themeBtn = document.querySelector('.theme-toggle');
-  themeBtn?.addEventListener('click', () => document.documentElement.classList.toggle('theme-deep'));
-
-  // Spotlight modals from homepage (data-modal-open)
-  document.querySelectorAll('[data-modal-open]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-modal-open');
-      const modal = document.getElementById('modal-' + id);
-      if (!modal) return;
-      modal.setAttribute('aria-hidden', 'false');
-      const closeTargets = modal.querySelectorAll('[data-modal-close]');
-      closeTargets.forEach(ct => ct.addEventListener('click', () => modal.setAttribute('aria-hidden', 'true'), { once: true }));
-      document.addEventListener('keydown', function esc(ev){
-        if (ev.key === 'Escape') { modal.setAttribute('aria-hidden', 'true'); document.removeEventListener('keydown', esc); }
-      });
-    });
+// Mobile nav & active link
+const navToggle = document.getElementById('nav-toggle');
+const siteNav = document.getElementById('site-nav');
+if (navToggle && siteNav){
+  navToggle.addEventListener('click', ()=>{
+    siteNav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', siteNav.classList.contains('open') ? 'true' : 'false');
+  });
+}
+// Mark active link based on pathname
+(function markActive(){
+  const path = location.pathname.replace(/\/index\.html?$/,'/');
+  document.querySelectorAll('.nav a[data-nav]').forEach(a=>{
+    const target = a.getAttribute('href');
+    if ((target === '/' && path === '/') || (target !== '/' && path.endsWith(target))) {
+      a.classList.add('is-active');
+    }
   });
 })();
+
+// Simple modal manager (data-modal="id")
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-modal]');
+  if (btn){
+    const id = btn.getAttribute('data-modal');
+    const modal = document.getElementById(id);
+    if (modal){ modal.classList.add('open'); modal.querySelector('.dialog').focus(); }
+  }
+  if (e.target.classList.contains('modal')){
+    e.target.classList.remove('open');
+  }
+});
+document.addEventListener('keydown', (e)=>{
+  if (e.key === 'Escape'){
+    document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
+  }
+});
