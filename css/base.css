@@ -2,7 +2,7 @@
   --brand:#7A0A0A;
   --brand-ink:#4C0606;
   --bg:#ffffff;
-  --surface:#F7F7F8;
+  --surface:#FAFAFB;
   --text:#111319;
   --muted:#6B7280;
   --border:#E5E7EB;
@@ -13,7 +13,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 img{max-width:100%;display:block}
 a{color:var(--brand)}
 .container{max-width:1100px;margin:0 auto;padding:0 1rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:.7rem 1rem;border-radius:.75rem;border:1px solid var(--border);background:linear-gradient(180deg,#7A0A0A,#9b1c1c);color:#fff;text-decoration:none;min-height:var(--tap);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.7rem 1rem;border-radius:.75rem;border:1px solid var(--border);background:linear-gradient(180deg, #8c1717, #b63a3a);color:#fff;text-decoration:none;min-height:var(--tap);box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .btn:hover{filter:brightness(1.05)}
 .btn-outline{background:#fff;color:var(--brand);border-color:var(--brand)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:1rem;padding:1rem}
@@ -46,9 +46,22 @@ html{scroll-behavior:smooth}
 .btn{border-radius:calc(var(--radius) - .3rem); transition:transform .12s ease, filter .12s ease}
 .btn:active{transform:translateY(1px)}
 /* Dark mode */
+
+/* Light-first adjustments */
+:root{
+  --bg:#ffffff;
+  --surface:#FAFBFC;
+  --text:#111319;
+  --muted:#5B6170;
+  --border:#EDEFF2;
+  --radius: 1.2rem;
+  --shadow-sm: 0 1px 2px rgba(17,19,25,.04), 0 1px 1px rgba(17,19,25,.04);
+  --shadow-md: 0 8px 20px rgba(17,19,25,.10);
+  --shadow-lg: 0 18px 38px rgba(17,19,25,.12);
+}
+/* Always prefer light look, even if system is dark. */
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#0b0c10; --surface:#121318; --text:#f5f6f8; --muted:#a6acb8; --border:#20232b; }
-  .nav a,.nav button{color:var(--text)}
-  .site-header{background:rgba(18,19,24,.7); backdrop-filter:saturate(1.2) blur(8px)}
+  :root{ --bg:#ffffff; --surface:#FAFBFC; --text:#111319; --muted:#5B6170; --border:#EDEFF2; }
+  .site-header{background:rgba(255,255,255,.85); color:var(--text)}
   .site-footer{color:var(--muted)}
 }

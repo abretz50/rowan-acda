@@ -1,6 +1,6 @@
 .loop-gallery-wrap{overflow:hidden}
 .loop-gallery{display:flex;gap:1rem;animation:scroll 24s linear infinite}
-.loop-gallery img{height:160px;width:auto;border-radius:.75rem;border:1px solid var(--border)}
+.loop-gallery img{height:140px;width:auto;border-radius:.75rem;border:1px solid var(--border)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .event-card{display:flex;flex-direction:column;gap:.5rem}
 .event-card img{border-radius:.75rem;border:1px solid var(--border);aspect-ratio:16/9;object-fit:cover}
