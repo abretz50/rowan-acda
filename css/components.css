@@ -181,3 +181,17 @@ section+section{margin-top:2rem}
   background-size: cover;
   background-position: center;
 }
+
+/* === Welcome band: background flush to container edges === */
+.welcome-band{
+  background:
+    linear-gradient(180deg, rgba(122,10,10,.75), rgba(76,6,6,.65)),
+    var(--welcome-bg, none);
+  background-size: cover;
+  background-position: center;
+  border: none; /* remove inner halo so image sits flush to rounded edges */
+}
+.welcome-band .inner{
+  background: none; /* ensure no secondary background layer */
+  margin: 0;
+}
