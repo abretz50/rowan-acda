@@ -35,34 +35,3 @@ document.addEventListener('keydown', (e)=>{
     document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
   }
 });
-
-// Compat: support .nav-toggle as well as #nav-toggle
-(function(){
-  const btn = document.getElementById('nav-toggle') || document.querySelector('.nav-toggle');
-  const nav = document.getElementById('site-nav');
-  if (btn && nav){
-    btn.addEventListener('click', ()=>{
-      nav.classList.toggle('open');
-      btn.setAttribute('aria-expanded', nav.classList.contains('open') ? 'true' : 'false');
-    });
-  }
-})();
-
-// Resources menu popover
-(function(){
-  const menu = document.querySelector('.menu');
-  if(!menu) return;
-  const trigger = menu.querySelector('.menu-trigger');
-  const panel = menu.querySelector('.menu-panel');
-  if(!trigger || !panel) return;
-  trigger.addEventListener('click', ()=>{
-    const open = menu.classList.toggle('open');
-    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  document.addEventListener('click', (e)=>{
-    if (!menu.contains(e.target)){
-      menu.classList.remove('open');
-      trigger.setAttribute('aria-expanded','false');
-    }
-  });
-})();
