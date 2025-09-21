@@ -1,11 +1,24 @@
+
 async function loadEvents(){
-  // Prefer local JSON for portability; swap to CSV/Sheets if desired.
+  // Prefer local CSV if available, else fallback to JSON
+  try{
+    const csvRes = await fetch('/data/events.csv');
+    if (csvRes.ok){
+      const text = await csvRes.text();
+      const rows = text.trim().split(/?
+/).map(r=>r.split(','));
+      const header = rows.shift().map(h=>h.trim().toLowerCase());
+      const events = rows.map(r => {
+        const rec = {}; r.forEach((v,i)=> rec[header[i]] = v.trim());
+        const tags = (rec.tags || '').split('|').map(s=>s.trim()).filter(Boolean);
+        return { title: rec.title, date: rec.date, location: rec.location, image: rec.image, description: rec.description, tags };
+      }).map(e => ({...e, dateObj: new Date((e.date||'').replace(' ', 'T'))})).sort((a,b)=> a.dateObj - b.dateObj);
+      if (events.length) return events;
+    }
+  }catch(e){/* ignore and fall back */}
   const res = await fetch('/data/events.json');
   const events = await res.json();
-  return events.map(e => ({
-    ...e,
-    dateObj: new Date(e.date.replace(' ', 'T'))
-  })).sort((a,b)=> a.dateObj - b.dateObj);
+  return events.map(e => ({...e, dateObj: new Date(e.date.replace(' ', 'T'))})).sort((a,b)=> a.dateObj - b.dateObj);
 }
 function renderEvents(list){
   const grid = document.getElementById('events-grid');
