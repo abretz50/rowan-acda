@@ -40,3 +40,12 @@
 
 .hero .overlay{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,.1))}
 .fade-rotator img{animation:fade 36s linear infinite}
+
+/* ===== Desktop overrides to match welcome banner and scale ===== */
+@media (min-width: 1024px){
+  .header-inner{ min-height: calc(64px * var(--scale-desktop)); }
+  #site-nav{ top: calc(64px * var(--scale-desktop)); }
+  .brand img{ width: calc(36px * var(--scale-desktop)); height: calc(36px * var(--scale-desktop)); }
+  .site-header{ background: rgba(255,255,255,.9); backdrop-filter: saturate(1.15) blur(8px); }
+  .hero .content{ padding: calc(2.2rem * var(--scale-desktop)/2.5) calc(2rem * var(--scale-desktop)/2.5); }
+}
