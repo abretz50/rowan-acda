@@ -138,3 +138,7 @@ section+section{margin-top:2rem}
   .welcome-band .inner{flex-direction:column; align-items:flex-start}
   .welcome-band .actions{margin-left:0}
 }
+
+
+/* Static spacing tweak for permanent welcome band */
+.welcome-band{margin: clamp(.6rem, 1.8vw, 1rem) auto 0}

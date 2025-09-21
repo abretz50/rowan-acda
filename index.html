@@ -34,7 +34,7 @@
   </div>
 </header>
 
-<div id="welcome-band" class="welcome-band container" role="region" aria-label="Welcome to Rowan ACDA" style="--welcome-bg:url('/assets/img/hero1.png')">
+<div id="welcome-band" class="welcome-band container" role="region" aria-label="Welcome to Rowan ACDA" style="--welcome-bg:url('/assets/img/welcome-bg.png')">
   <div class="inner">
     <div class="logo"><img src="/assets/icons/acda.png" alt="Rowan ACDA logo"></div>
     <div class="copy">
@@ -44,14 +44,10 @@
     <div class="actions">
       <a class="btn alt" href="/members.html">Join Us</a>
       <a class="btn btn-outline" href="/events.html">See Events</a>
-      <button class="close" aria-label="Dismiss welcome">Dismiss</button>
+      
     </div>
   </div>
-</div>
-<script src="/js/welcome-banner.js" defer></script>
-
-
-<main class="container" role="main" style="padding:1.25rem 0 2rem">
+</div><main class="container" role="main" style="padding:1.25rem 0 2rem">
 
 
 
@@ -105,23 +101,6 @@
 </section>
 <script src="/js/home-upcoming.js" defer></script>
 
-
-<div class="modal" id="welcome-modal"><div class="dialog" tabindex="-1">
-  <h3>Welcome to Rowan ACDA</h3>
-  <p>We’re a light‑hearted, light‑themed club focused on choral artistry, education, and service. Explore events, meet the E‑Board, and grab resources.</p>
-  <div class="grid"><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button> <a class="btn" href="/members.html">Join Us</a></div>
-</div></div>
-<script>
-  // Open once per session (simple sessionStorage gate)
-  window.addEventListener('DOMContentLoaded', ()=>{
-    try{
-      if(!sessionStorage.getItem('welcomeShown')){
-        document.getElementById('welcome-modal').classList.add('open');
-        sessionStorage.setItem('welcomeShown','1');
-      }
-    }catch(e){/* ignore */}
-  });
-</script>
 
 </main>
 
