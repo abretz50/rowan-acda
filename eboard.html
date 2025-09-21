@@ -1,341 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rowan NAfME — E-Board</title>
-  <meta name="color-scheme" content="light" />
-  <link rel="preload" as="image" href="/images/background.png" />
-  <link rel="icon" href="/images/logo.png" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>E-Board — Rowan ACDA</title>
+<meta name="description" content="Meet the Rowan ACDA executive board."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/favicon-32.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
 
-  <!-- Page-local styles for people grid/cards -->
-  <style>
-    .grid.people-grid .card.people-card{
-      display:flex; flex-direction:column; height:100%;
-      cursor:pointer; transition:transform .15s ease;
-    }
-    .grid.people-grid .card.people-card:hover{ transform:translateY(-2px); }
-    .card.people-card img{
-      display:block; width:100%; aspect-ratio:16/9; object-fit:cover;
-      border-radius:12px;
-    }
-    .card.people-card p:last-child{ margin-top:auto; } /* pin “Click to read bio.” */
-    .people-card .subtle a{ color:inherit; text-decoration:underline; }
-    .section{ overflow:visible; }
-    
-/* E-Board ONLY: Title row with small round photo (reuse .contact-photo from Resources) */
-.modal .title-row{
-  display:flex; align-items:center; gap:12px;
-}
-
-/* E-Board ONLY: meta line under title */
-.modal .meta-line{ color: var(--muted); margin: 0 0 .5rem; }
-.modal .meta-line a{ color: inherit; text-decoration: underline; }
-
-/* E-Board ONLY: maintain card spacing after heading-type swap */
-.grid.people-grid .card.people-card h3.kicker{ margin: 0 0 4px 0; font-size: .95rem; font-weight: 600; }
-.grid.people-grid .card.people-card h4.person-name{ margin: 0 0 4px 0; font-size: 1.1rem; }
-
-/* Center all E-Board popup content */
-.modal .modal-content {
-  text-align: center;         /* center text */
-  display: flex;              /* use flexbox */
-  flex-direction: column;     /* stack items vertically */
-  align-items: center;        /* center items horizontally */
-}
-
-.modal .modal-header {
-  flex-direction: column;     /* photo above name */
-  align-items: center;
-  gap: 8px;
-}
-
-.modal .title-row {
-  flex-direction: column;     /* stack image + name */
-  align-items: center;
-  text-align: center;
-}
-
-.modal .title-row img.contact-photo {
-  width: 120px;               /* smaller, uniform size */
-  height: 120px;
-  border-radius: 50%;         /* make round */
-  object-fit: cover;
-}
-
-.modal .meta-line {
-  text-align: center;         /* role + email centered */
-}
-/* Center popup content, but keep the close button top-right */
-.modal .modal-content {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative; /* needed for absolute positioning of ✕ */
-  padding-top: 2rem;  /* space so ✕ doesn’t overlap */
-}
-
-.modal .modal-header {
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
-/* ✕ stays in the corner */
-.modal .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.modal .title-row {
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.modal .title-row img.contact-photo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.modal .meta-line {
-  text-align: center;
-}
-
-</style>
 </head>
 <body>
-  <nav class="site-nav"></nav>
 
-  <header class="hero">
-    <div class="hero-inner container">
-      <div>
-        <h1>E-Board</h1>
-        <p>Meet your officers for the 2025-2026 school year!</p>
-      </div>
-    </div>
-  </header>
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/acda.png" alt="ACDA logo">
+      <span>Rowan ACDA</span>
+    </a>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
+    </nav>
+  </div>
+</header>
 
-  <main>
-    <section class="section" aria-labelledby="officers-heading">
-      <div class="container">
-        <h2 id="officers-heading">2025–26 Officers</h2>
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
 
-        <div class="grid people-grid" style="--grid-min:260px">
-          <!-- President -->
-          <article class="card people-card" data-modal="modal-min-hwang">
-            <img src="/images/eboard/min-hwang.jpg" alt="Headshot of Min Hwang" loading="lazy" />
-            <h3 class="kicker">President</h3>
-            <h4 class="person-name">Min Hwang</h4>
-            <p class="subtle">
-              <a href="mailto:hwangm14@students.rowan.edu?subject=NAfME%20President">hwangm14@students.rowan.edu</a>
-            </p>
-            <p>Click to read bio.</p>
-          </article>
-
-          <!-- Vice President -->
-          <article class="card people-card" data-modal="modal-cameron-hyson">
-            <img src="/images/eboard/cameron-hyson.jpg" alt="Headshot of Cameron Hyson" loading="lazy" />
-            <h3 class="kicker">Vice President</h3>
-            <h4 class="person-name">Cameron Hyson</h4>
-            <p class="subtle">
-              <a href="mailto:hysonc84@rowan.edu?subject=NAfME%20Vice%20President">hysonc84@rowan.edu</a>
-            </p>
-            <p>Click to read bio.</p>
-          </article>
-
-          <!-- Treasurer -->
-          <article class="card people-card" data-modal="modal-jessenia-zavala">
-            <img src="/images/eboard/jessenia-zavala.jpg" alt="Headshot of Jessenia Zavala" loading="lazy" />
-            <h3 class="kicker">Treasurer</h3>
-            <h4 class="person-name">Jessenia Zavala</h4>
-            <p class="subtle">
-              <a href="mailto:zavala34@students.rowan.edu?subject=Treasurer">zavala34@students.rowan.edu</a>
-            </p>
-            <p>Click to read bio.</p>
-          </article>
-
-          <!-- Secretary -->
-          <article class="card people-card" data-modal="modal-makayli-matias">
-            <img src="/images/eboard/makayli-matias.jpg" alt="Headshot of Makayli Matias" loading="lazy" />
-            <h3 class="kicker">Secretary</h3>
-            <h4 class="person-name">Makayli Matias</h4>
-            <p class="subtle">
-              <a href="mailto:matias85@rowan.edu?subject=Secretary">matias85@rowan.edu</a>
-            </p>
-            <p>Click to read bio.</p>
-          </article>
-
-          <!-- Social Media Coordinator -->
-          <article class="card people-card" data-modal="modal-emilee-townsley">
-            <img src="/images/eboard/emilee-townsley.jpg" alt="Headshot of Emilee Townsley" loading="lazy" />
-            <h3 class="kicker">Social Media Coordinator</h3>
-            <h4 class="person-name">Emilee Townsley</h4>
-            <p class="subtle">
-              <a href="mailto:townsl72@students.rowan.edu?subject=Social%20Media">townsl72@students.rowan.edu</a>
-            </p>
-            <p>Click to read bio.</p>
-          </article>
-
-          <!-- Senator -->
-          <article class="card people-card" data-modal="modal-adam-bretz">
-            <img src="/images/eboard/adam-bretz.jpg" alt="Headshot of Adam Bretz" loading="lazy" />
-            <h3 class="kicker">Senator</h3>
-            <h4 class="person-name">Adam Bretz</h4>
-            <p class="subtle">
-              <a href="mailto:bretza67@students.rowan.edu?subject=Senator">bretza67@students.rowan.edu</a>
-            </p>
-            <p>Click to read bio.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ======= Officer Modals (same style as Resources page) ======= -->
-
-  <!-- Min Hwang -->
-  <div class="modal" id="modal-min-hwang" role="dialog" aria-modal="true" aria-labelledby="modal-min-hwang-title" hidden>
-    <div class="modal-overlay" data-close="True"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-<div class="title-row"><img class="contact-photo" src="/images/eboard/min-hwang.jpg" alt="Headshot of Min Hwang" loading="lazy" /><h3 class="modal-title" id="modal-min-hwang-title">Min Hwang</h3></div>
-<button class="close-btn" data-close="True" aria-label="Close">✕</button>
-</div>
-      <section>
-        <p class="meta-line"><span class="role">President</span> <span aria-hidden="true">|</span> <a href="mailto:hwangm14@students.rowan.edu">hwangm14@students.rowan.edu</a></p>
-<p>Hi! My name is Min Hwang and I am your Rowan NAfME President. I am currently in my third year at Rowan and I double major in Music Education and Psychology. My primary instrument is the violin but I've marched 4 years of mellophone and am now one of the Rowan University Marching Band drum majors. In my free time I like to play volleyball or go running. This year, I'm excited to empower other music majors into becoming excellent educators.</p>
-      </section>
-    </div>
+<h1>E-Board</h1>
+<div class="people">
+  <div class="card">
+    <img src="/assets/img/person1.png" alt="President portrait" loading="lazy">
+    <h3>Alex Singer</h3>
+    <p class="small">President</p>
+    <button class="btn btn-outline" data-modal="m1">Contact</button>
+  </div>
+  <div class="card">
+    <img src="/assets/img/person2.png" alt="Vice President portrait" loading="lazy">
+    <h3>Jamie Conductor</h3>
+    <p class="small">Vice President</p>
+    <button class="btn btn-outline" data-modal="m2">Contact</button>
+  </div>
+  <div class="card">
+    <img src="/assets/img/person3.png" alt="Secretary portrait" loading="lazy">
+    <h3>Taylor Notes</h3>
+    <p class="small">Secretary</p>
+    <button class="btn btn-outline" data-modal="m3">Contact</button>
+  </div>
+  <div class="card">
+    <img src="/assets/img/person4.png" alt="Treasurer portrait" loading="lazy">
+    <h3>Riley Ledger</h3>
+    <p class="small">Treasurer</p>
+    <button class="btn btn-outline" data-modal="m4">Contact</button>
+  </div>
+  <div class="card">
+    <img src="/assets/img/person5.png" alt="Social Chair portrait" loading="lazy">
+    <h3>Morgan Social</h3>
+    <p class="small">Social Chair</p>
+    <button class="btn btn-outline" data-modal="m5">Contact</button>
+  </div>
+  <div class="card">
+    <img src="/assets/img/person6.png" alt="Outreach Chair portrait" loading="lazy">
+    <h3>Casey Outreach</h3>
+    <p class="small">Outreach Chair</p>
+    <button class="btn btn-outline" data-modal="m6">Contact</button>
   </div>
 
-  <!-- Cameron Hyson -->
-  <div class="modal" id="modal-cameron-hyson" role="dialog" aria-modal="true" aria-labelledby="modal-cameron-hyson-title" hidden>
-    <div class="modal-overlay" data-close="True"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-<div class="title-row"><img class="contact-photo" src="/images/eboard/cameron-hyson.jpg" alt="Headshot of Cameron Hyson" loading="lazy" /><h3 class="modal-title" id="modal-cameron-hyson-title">Cameron Hyson</h3></div>
-<button class="close-btn" data-close="True" aria-label="Close">✕</button>
-</div>
-      <section>
-        <p class="meta-line"><span class="role">Vice President</span> <span aria-hidden="true">|</span> <a href="mailto:hysonc84@rowan.edu">hysonc84@rowan.edu</a></p>
-<p>Cameron Hyson is a tenor II from Millville, New Jersey. He is a Music Education major working to become a great educator. He has been teaching within church ministries his entire life, and is currently involved in the Rowan Concert Choir, the American Choral Directors Association, and much more. As NAfME vice president, Cameron is always free to talk about questions or concerns regarding events, PD’s, or general meetings.</p>
-      </section>
-    </div>
+  <div class="card">
+    <img src="/assets/img/person7.png" alt="Historian portrait" loading="lazy">
+    <h3>Member 7</h3>
+    <p class="small">Historian</p>
+    <button class="btn btn-outline" data-modal="m7">Contact</button>
   </div>
 
-  <!-- Jessenia Zavala -->
-  <div class="modal" id="modal-jessenia-zavala" role="dialog" aria-modal="true" aria-labelledby="modal-jessenia-zavala-title" hidden>
-    <div class="modal-overlay" data-close="True"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-<div class="title-row"><img class="contact-photo" src="/images/eboard/jessenia-zavala.jpg" alt="Headshot of Jessenia Zavala" loading="lazy" /><h3 class="modal-title" id="modal-jessenia-zavala-title">Jessenia Zavala</h3></div>
-<button class="close-btn" data-close="True" aria-label="Close">✕</button>
-</div>
-      <section>
-        <p class="meta-line"><span class="role">Treasurer</span> <span aria-hidden="true">|</span> <a href="mailto:zavala34@students.rowan.edu">zavala34@students.rowan.edu</a></p>
-<p>Jessenia Zavala is a junior Vocal Music Education major at Rowan University and is excited to be serving as Treasurer for NAfME this year! In this role, she will oversee the club’s finances, help plan fundraisers and bake sales, and work with the e-board to lead engaging, interactive meetings for members. Jessenia also serves as Treasurer for ACDA, is a proud member of Tri Alpha, sings with Concert Choir, and studies voice with Professor Marian Stieber. She has previously performed with Rowan’s Opera Company, appearing as the Sandman in <em>Hansel and Gretel</em> and performing in the Fall Opera Scenes. Jessenia has also performed in several productions at Ocean County College, including <em>All Shook Up</em>, <em>Kiss Me, Kate</em>, and <em>Broadway for the Holidays 2 &amp; 3</em>.</p>
-      </section>
-    </div>
+  <div class="card">
+    <img src="/assets/img/person8.png" alt="Librarian portrait" loading="lazy">
+    <h3>Member 8</h3>
+    <p class="small">Librarian</p>
+    <button class="btn btn-outline" data-modal="m8">Contact</button>
   </div>
 
-  <!-- Makayli Matias -->
-  <div class="modal" id="modal-makayli-matias" role="dialog" aria-modal="true" aria-labelledby="modal-makayli-matias-title" hidden>
-    <div class="modal-overlay" data-close="True"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-<div class="title-row"><img class="contact-photo" src="/images/eboard/makayli-matias.jpg" alt="Headshot of Makayli Matias" loading="lazy" /><h3 class="modal-title" id="modal-makayli-matias-title">Makayli Matias</h3></div>
-<button class="close-btn" data-close="True" aria-label="Close">✕</button>
-</div>
-      <section>
-        <p class="meta-line"><span class="role">Secretary</span> <span aria-hidden="true">|</span> <a href="mailto:matias85@rowan.edu">matias85@rowan.edu</a></p>
-<p>Makayli Matias is a sophomore studying Vocal Music Education. She is thrilled to serve as Secretary for both Rowan’s NAfME and ACDA chapters this year, managing communication and tracking point totals for each organization. Makayli sings with both the Concert Choir and Voces ensemble and is also a member of Rowan’s Opera Company. Most recently, she was seen as the Dew Fairy in <em>Hansel and Gretel</em>. She looks forward to continuing to grow as a musician and leader through her involvement at Rowan.</p>
-      </section>
-    </div>
+  <div class="card">
+    <img src="/assets/img/person9.png" alt="Webmaster portrait" loading="lazy">
+    <h3>Member 9</h3>
+    <p class="small">Webmaster</p>
+    <button class="btn btn-outline" data-modal="m9">Contact</button>
   </div>
 
-  <!-- Emilee Townsley -->
-  <div class="modal" id="modal-emilee-townsley" role="dialog" aria-modal="true" aria-labelledby="modal-emilee-townsley-title" hidden>
-    <div class="modal-overlay" data-close="True"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-<div class="title-row"><img class="contact-photo" src="/images/eboard/emilee-townsley.jpg" alt="Headshot of Emilee Townsley" loading="lazy" /><h3 class="modal-title" id="modal-emilee-townsley-title">Emilee Townsley</h3></div>
-<button class="close-btn" data-close="True" aria-label="Close">✕</button>
-</div>
-      <section>
-        <p class="meta-line"><span class="role">Social Media Coordinator</span> <span aria-hidden="true">|</span> <a href="mailto:townsl72@students.rowan.edu">townsl72@students.rowan.edu</a></p>
-<p>Emilee Townsley is a music education major with a concentration in voice. Going into her senior year, she is thrilled to fulfill her role as social media coordinator for NAfME. In this position, she will keep NAfME social platforms updated with the latest news on meetings and events, both inside the chapter and beyond. In addition, she will co-manage the chapter’s website and stay in communication with neighboring collegiate chapters. Emilee is also involved in Rowan’s Concert Choir, Voces ensemble, and ACDA chapter.</p>
-      </section>
-    </div>
+  <div class="card">
+    <img src="/assets/img/person10.png" alt="Membership portrait" loading="lazy">
+    <h3>Member 10</h3>
+    <p class="small">Membership</p>
+    <button class="btn btn-outline" data-modal="m10">Contact</button>
   </div>
 
-  <!-- Adam Bretz -->
-  <div class="modal" id="modal-adam-bretz" role="dialog" aria-modal="true" aria-labelledby="modal-adam-bretz-title" hidden>
-    <div class="modal-overlay" data-close="True"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-<div class="title-row"><img class="contact-photo" src="/images/eboard/adam-bretz.jpg" alt="Headshot of Adam Bretz" loading="lazy" /><h3 class="modal-title" id="modal-adam-bretz-title">Adam Bretz</h3></div>
-<button class="close-btn" data-close="True" aria-label="Close">✕</button>
-</div>
-      <section>
-        <p class="meta-line"><span class="role">Senator</span> <span aria-hidden="true">|</span> <a href="mailto:bretza67@students.rowan.edu">bretza67@students.rowan.edu</a></p>
-<p>Adam is an Electrical &amp; Computer Engineering major with a minor in music (Organ Performance). In his role he attends Student Government meetings and represents the club's interests to the school. Aside from Adam's primary role, he also maintains the chapter's website.</p>
-      </section>
-    </div>
+  <div class="card">
+    <img src="/assets/img/person11.png" alt="Education portrait" loading="lazy">
+    <h3>Member 11</h3>
+    <p class="small">Education</p>
+    <button class="btn btn-outline" data-modal="m11">Contact</button>
   </div>
 
-  <footer class="site-footer"></footer>
+  <div class="card">
+    <img src="/assets/img/person12.png" alt="Outreach 2 portrait" loading="lazy">
+    <h3>Member 12</h3>
+    <p class="small">Outreach 2</p>
+    <button class="btn btn-outline" data-modal="m12">Contact</button>
+  </div>
+</div>
 
-  <!-- Modal controller (same as Resources page) -->
-  <script>
-  (() => {
-    const body = document.body;
 
-    const openById = (id) => {
-      const m = document.getElementById(id);
-      if (!m) return;
-      m.hidden = false;
-      m.classList.add('open');
-      body.style.overflow = 'hidden';
-      const firstClose = m.querySelector('[data-close]');
-      if (firstClose) firstClose.focus();
-    };
+<div class="modal" id="m1"><div class="dialog" tabindex="-1">
+  <h3>Alex Singer — President</h3><p>Alex leads chapter initiatives, conducts sectionals, and loves 7/8 warm‑ups. Coffee enthusiast.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m2"><div class="dialog" tabindex="-1">
+  <h3>Jamie Conductor — Vice President</h3><p>Jamie coordinates events and rehearsal logistics. Favorite chord: Lydian add9.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+</div>
+<div class="modal" id="m3"><div class="dialog" tabindex="-1">
+  <h3>Taylor Notes — Secretary</h3><p>Taylor handles minutes, comms, and socials. Loves creating sing‑along graphics.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m4"><div class="dialog" tabindex="-1">
+  <h3>Riley Ledger — Treasurer</h3><p>Riley manages budgets and fundraisers. Excel wizard, hummus critic.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m5"><div class="dialog" tabindex="-1">
+  <h3>Morgan Social — Social Chair</h3><p>Morgan plans socials and mixers. Theme: cozy jazz + cocoa.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m6"><div class="dialog" tabindex="-1">
+  <h3>Casey Outreach — Outreach Chair</h3><p>Casey coordinates volunteer partnerships and community sings.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m7"><div class="dialog" tabindex="-1"><h3>Member 7 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m8"><div class="dialog" tabindex="-1"><h3>Member 8 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m9"><div class="dialog" tabindex="-1"><h3>Member 9 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m10"><div class="dialog" tabindex="-1"><h3>Member 10 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m11"><div class="dialog" tabindex="-1"><h3>Member 11 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+<div class="modal" id="m12"><div class="dialog" tabindex="-1"><h3>Member 12 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
 
-    const closeModal = (m) => {
-      m.classList.remove('open');
-      m.hidden = true;
-      body.style.overflow = '';
-    };
+</main>
 
-    // Open on card click (and let mailto links work)
-    document.querySelectorAll('.card[data-modal]').forEach(card => {
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('a')) return; // allow mailto without opening
-        openById(card.getAttribute('data-modal'));
-      });
-      card.querySelectorAll('a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
-    });
+<footer class="site-footer" role="contentinfo">
+  <div class="container" style="display:flex;align-items:center;gap:.75rem">
+    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
+    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
+  </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</footer>
+<script src="/js/core.js" defer></script>
 
-    // Close on overlay or ✕
-    document.querySelectorAll('.modal').forEach(m => {
-      m.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal-overlay')) closeModal(m);
-      });
-      m.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(m)));
-    });
-
-    // ESC to close
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(closeModal);
-    });
-  })();
-  </script>
-  <script src="/assets/js/nav.js" defer></script>
 </body>
 </html>

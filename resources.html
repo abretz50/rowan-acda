@@ -1,667 +1,103 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Rowan NAfME — Resources</title>
-<meta content="light" name="color-scheme"/>
-<link as="image" href="/images/background.png" rel="preload"/>
-<link href="/images/logo.png" rel="icon"/>
-<link href="/assets/css/style.css" rel="stylesheet"/>
-<style id="scrollbar-theme">:root{
-  /* Use your site's brand colors if defined; fall back to Rowan gold & a deep navy */
-  --brand-gold: var(--brand-gold, #f5c518);
-  --brand-dark: var(--brand-dark, #0b1f3b);
-  --scroll-track: color-mix(in srgb, var(--brand-dark), white 85%);
-  --scroll-thumb: var(--brand-gold);
-  --scroll-thumb-hover: color-mix(in srgb, var(--brand-gold), black 15%);
-}
-
-/* Firefox */
-html{
-  scrollbar-width: thin;
-  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
-}
-
-/* WebKit */
-::-webkit-scrollbar{
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track{
-  background: var(--scroll-track);
-  border-radius: 8px;
-}
-::-webkit-scrollbar-thumb{
-  background: var(--scroll-thumb);
-  border-radius: 8px;
-  border: 2px solid var(--scroll-track);
-}
-::-webkit-scrollbar-thumb:hover{
-  background: var(--scroll-thumb-hover);
-}
-
-/* Ensure modals use the same theme */
-.modal-content{
-  scrollbar-gutter: stable;
-  max-height: min(80vh, 900px);
-  overflow: auto;
-}</style>
-<style id="scrollbar-theme">
-/* --- Invisible scrollbars (page-only) --- */
-
-/* Page scrollbars */
-html, body {
-  -ms-overflow-style: none;   /* IE/old Edge */
-  scrollbar-width: none;      /* Firefox */
-}
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 0; height: 0;        /* Chrome/Edge/Safari */
-}
-
-/* Any inner scrollable element (cards, modals, etc.) */
-* {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-*::-webkit-scrollbar {
-  width: 0; height: 0;
-}
-
-/* Keep modals scrollable but barless */
-.modal-content{
-  max-height: min(80vh, 900px);
-  overflow: auto;             /* scrolling works; bar hidden */
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Resources — Rowan ACDA</title>
+<meta name="description" content="Repertoire, clinic handouts, bylaws, and the Sight‑Singing Vault."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/favicon-32.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
 
 </head>
-
 <body>
-<nav class="site-nav"></nav>
-<header class="hero">
-<div class="hero-inner container">
-<div>
-<h1>Resources</h1>
-<p>Crucial Links and Resources for future Music Educators</p>
-</div>
-</div>
+
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/acda.png" alt="ACDA logo">
+      <span>Rowan ACDA</span>
+    </a>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
+    </nav>
+  </div>
 </header>
-<main>
-<section class="section">
-<div class="container">
-<div class="grid">
-<!-- Rowan Music Education Curriculum -->
-<article class="card" data-modal="modal-curriculum">
-<h3>Rowan Music Education</h3>
-<div class="kicker">Curriculum</div>
-<p>Program PDFs, Site, and Intro</p>
-</article>
-<!-- Academic Support -->
-<article class="card" data-modal="modal-support">
-<h3>Help &amp; Services</h3>
-<div class="kicker">Academic Support</div>
-<p>Success Center, Tutoring, Advisors, Wellness, Savitz</p>
-</article>
-<!-- Tools & Tutorials -->
-<article class="card" data-modal="modal-tools">
-<h3>Software &amp; Prep</h3>
-<div class="kicker">Tools &amp; Tutorials</div>
-<p>Flat.io, Musicca, Soundtrap, MuseScore, Praxis, Tutorials</p>
-</article>
-<!-- Quick Links -->
-<article class="card" data-modal="modal-quicklinks">
-<h3>Music Education Tools</h3>
-<div class="kicker">Quick Links</div>
-<p>Useful Resources and Bookmarks</p>
-</article>
-<!-- Rowan NAfME Resources -->
-<article class="card" data-modal="modal-chapter">
-<h3>Chapter Resources</h3>
-<div class="kicker">Rowan NAfME</div>
-<p>PD Materials, Peer Tutoring, Advice, FAQ</p>
-</article>
-<!-- NJMEA Resources -->
-<article class="card" data-modal="modal-njmea">
-<h3>State Resources</h3>
-<div class="kicker">NJMEA</div>
-<p>Collegiate Page, Events, Jobs, Contacts, Advocacy</p>
-</article>
-<!-- NAfME National Resources -->
-<article class="card" data-modal="modal-nafme">
-<h3>National Resources</h3>
-<div class="kicker">NAfME</div>
-<p>Library, Blog, Events, Advocacy, Scholarships, Standards</p>
-</article>
-</div>
-</div>
-</section>
-</main>
-<footer class="site-footer"></footer>
-<!-- ========= Modals ========= -->
-<!-- CURRICULUM -->
-<div aria-labelledby="modal-curriculum-title" aria-modal="true" class="modal" hidden="" id="modal-curriculum" role="dialog">
-<div class="modal-overlay" data-close=""></div>
-<div class="modal-content">
-<div class="modal-header"><h3 class="modal-title" id="modal-curriculum-title">Rowan Music Education</h3><button aria-label="Close" class="close-btn" data-close="True">✕</button></div>
-<section>
-<h4>Our Curriculum</h4>
-<p>Our Music Education program is a double major -a Bachelor of Music in Music Education and a Bachelor of Arts in Education- that prepares students to teach music at all levels, from kindergarten to grade 12. The program offers two tracks:</p>
-<ul>
-<li><a href="https://acrobat.adobe.com/link/review?uri=urn:aaid:scds:US:2a8c2ada-bc82-33d7-a6a7-807703e23b5d" rel="noopener" target="_blank">Instrumental Music Education</a>: Instrumental Music Education</li>
-<li><a href="https://acrobat.adobe.com/link/review?uri=urn:aaid:scds:US:36e11886-8543-3ae7-8028-b63425ad7bc0" rel="noopener" target="_blank">Vocal Music Education</a>: Vocal Music Education</li>
-</ul>
-<p>For more information visit: <a href="https://cpa.rowan.edu/music/divisions/musicEdu.html" rel="noopener" target="_blank">Rowan University Music Education Webpage</a></p>
-</section><section>
-  <h4>Program Support</h4>
-  <p>
-    If you have any questions or concerns about your program progress, please reach out to our Music Education contacts below.
-    They’re happy to help and encourage students to connect for support!
-  </p>
-  <ul class="contact-list">
-    <li class="contact">
-      <img src="https://cpa.rowan.edu/_images/bio.headshots/barnes.adrian.jpg" alt="Headshot of Adrian Barnes" class="contact-photo">
-      <div class="meta">
-        <strong>Adrian Barnes</strong><br>
-        <em>Department Chair, Assistant Professor, Co-Coordinator of Music Education (Instrumental)</em><br>
-        <a href="mailto:barnesad@rowan.edu">barnesad@rowan.edu</a> • <a href="tel:+18562564500">856-256-4500</a> x53592<br>
-        Wilson Hall, Rm 224
-      </div>
-    </li>
 
-    <li class="contact">
-      <img src="https://cpa.rowan.edu/_images/bio.headshots/bond.vanessa.jpg" alt="Headshot of Vanessa L. Bond" class="contact-photo">
-      <div class="meta">
-        <strong>Vanessa L. Bond</strong><br>
-        <em>Professor, Coordinator of Graduate Music Education</em><br>
-        <a href="mailto:bondv@rowan.edu">bondv@rowan.edu</a> • <a href="tel:+18562564500">856-256-4500</a> x53532<br>
-        Wilson Hall, 225
-      </div>
-    </li>
-  </ul>
-</section>
-</div>
-</div>
-<!-- SUPPORT -->
-<!-- TOOLS -->
-<!-- QUICK LINKS -->
-<!-- CHAPTER -->
-<!-- NJMEA -->
-<!-- NAFME -->
-<!-- Modal controller --><div aria-labelledby="modal-support-title" aria-modal="true" class="modal" hidden="True" id="modal-support" role="dialog"><div class="modal-overlay" data-close="True"></div><div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="modal-support-title">Help &amp; Services</h3><button aria-label="Close" class="close-btn" data-close="True">✕</button></div><section>
-<h4>Academic Support</h4>
-<p>
-  The Rowan University Music Education program is committed to supporting the academic success of our students.
-  For additional academic support, please visit the
-  <a href="https://sites.rowan.edu/student-success/student-support-services/" target="_blank" rel="noopener noreferrer">Rowan Academic Success Center webpage</a>
-  or the
-  <a href="https://sites.rowan.edu/student-success/tutoring/" target="_blank" rel="noopener noreferrer">Tutoring Services website</a>.
-</p>
- <p>
-    If you have any questions or concerns about your academic progress,
-    please reach out to our advisors below. They’re happy to help!
-  </p>
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
 
-  <ul class="contact-list">
-    <!-- Michalina Zelazny -->
-    <li class="contact">
-      <img
-        src="https://education.rowan.edu/_images/faculty-photos/zelazny_michalina.jpg"
-        alt="Headshot of Michalina Zelazny"
-        class="contact-photo"
-        loading="lazy"
-      >
-      <div class="meta">
-        <strong>Michalina Zelazny, M.A.</strong><br>
-        <em>Advisor, College of Education Advising Center</em><br>
-        <a href="mailto:zelazny@rowan.edu">zelazny@rowan.edu</a> •
-        <a href="tel:+18562564023">856-256-4023</a><br>
-        Herman D. James Hall 2081
-      </div>
-    </li>
-
-    <!-- Alexandria Funkhouser -->
-    <li class="contact">
-      <img
-        src="https://www.shutterstock.com/image-vector/avatar-icon-on-blue-background-600nw-1737270728.jpg"
-        alt="Avatar placeholder for Alexandria Funkhouser"
-        class="contact-photo"
-        loading="lazy"
-      >
-      <div class="meta">
-        <strong>Alexandria Funkhouser</strong><br>
-        <em>
-          Music Industry (students with 50+ credits) •
-          Music Education (students with 50+ credits) •
-          BA Music (students with 50+ credits)
-        </em><br>
-        <em>All other Music Majors</em><br>
-        <a href="mailto:daniels@rowan.edu">daniels@rowan.edu</a> •
-        <a href="tel:+18562565183">856-256-5183</a><br>
-        Wilson Hall, Office #241
-      </div>
-    </li>
-
-    <!-- Mary Bridget Downes Briscione -->
-    <li class="contact">
-      <img
-        src="https://www.shutterstock.com/image-vector/avatar-icon-on-blue-background-600nw-1737270728.jpg"
-        alt="Avatar placeholder for Mary Bridget Downes Briscione"
-        class="contact-photo"
-        loading="lazy"
-      >
-      <div class="meta">
-        <strong>Mary Bridget Downes Briscione</strong><br>
-        <em>
-          Music Education (students under 50 credits) •
-          Music Industry (students under 50 credits) •
-          BA Music (students under 50 credits)
-        </em><br>
-        <a href="mailto:briscione@rowan.edu">briscione@rowan.edu</a> •
-        <a href="tel:+18562565545">856-256-5545</a><br>
-        Wilson Hall, Office #141
-      </div>
-    </li>
-  </ul>
-</section><section>
-<h4>Additional Support Resources</h4>
-<p>For emotional or mental support, students can contact or visit the <a href="https://sites.rowan.edu/wellness/" target="_blank" rel="noopener noreferrer">Wellness Center</a>. The Wellness Center provides a safe and supportive environment for students to discuss their concerns and receive guidance and resources.</p>
-<p>For general support with academics and time management, students can also visit <a href="https://sites.rowan.edu/international/_docs/location-of-savitz-hall-rowan-university.pdf" target="_blank" rel="noopener noreferrer">Savitz Hall</a>. The staff at Savitz Hall are available to provide guidance and support to help students succeed.</p>
-</section></div></div><div aria-labelledby="modal-tools-title" aria-modal="true" class="modal" hidden="True" id="modal-tools" role="dialog"><div class="modal-overlay" data-close="True"></div><div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="modal-tools-title">Software &amp; Prep</h3><button aria-label="Close" class="close-btn" data-close="True">✕</button></div><section>
-<h4>Software</h4>
-<ul>
-<li><strong><a href="https://flat.io" rel="noopener" target="_blank">Flat.io:</a></strong> A cloud-based music notation software that allows you to create, edit, and share sheet music. To use Flat.io, simply sign up for an account and start creating your own sheet music. You can also import and export files in various formats, including MusicXML and PDF.</li>
-<li><strong><a href="https://www.musicca.com/" rel="noopener" target="_blank">Musicca:</a></strong> A music theory and keyboard training game that helps you learn music theory and improve your keyboard skills. To use Musicca, simply sign up for an account and start playing the games and exercises. You can also track your progress and compete with other users.</li>
-<li><strong><a href="https://soundtrap.com" rel="noopener" target="_blank">Soundtrap:</a></strong> An online collaborative digital audio workstation (DAW) that allows you to create, record, and edit music with others in real-time. To use Soundtrap, simply sign up for an account and start creating your own music projects. You can also invite others to collaborate with you and share your projects with the world.</li>
-<li><strong><a href="https://musescore.com" rel="noopener" target="_blank">MuseScore:</a></strong> A free music notation software that allows you to create, edit, and share sheet music. To use MuseScore, simply download and install the software, and then start creating your own sheet music. You can also import and export files in various formats, including MusicXML and PDF.</li>
-</ul>
-</section><section>
-<h4>Praxis Prep</h4>
-<p>Here are some resources to help you prepare for the Praxis exam:</p>
-<ul>
-<li>
-  <strong>
-    <a href="https://www.ets.org/praxis" target="_blank" rel="noopener noreferrer">Praxis Website</a>:
-  </strong>
-  The official website for the Praxis exam, where you can find study materials, practice tests, and registration information.
-</li>
-<li>
-  <strong>
-    <a href="https://www.mometrix.com/academy/praxis-test/" target="_blank" rel="noopener noreferrer">Mometrix Praxis Study Guide</a>:
-  </strong>
-  A comprehensive study guide that includes practice tests, study materials, and test-taking strategies.
-</li>
-<li>
-  <strong>
-    <a href="https://www.kaptest.com/praxis" target="_blank" rel="noopener noreferrer">Kaplan Praxis Prep</a>:
-  </strong>
-  A prep course that includes online lessons, practice tests, and personalized coaching.
-</li>
-
-
-  <li><strong>Quizlets:</strong>
-    <ul>
-      <li><a href="https://quizlet.com/768945334/pedagogues-in-music-education-flash-cards/" target="_blank" rel="noopener noreferrer">Pedagogues in Music Education</a></li>
-      <li><a href="https://quizlet.com/205154880/music-praxis-5113-exam-flash-cards/" target="_blank" rel="noopener noreferrer">Music Praxis 5113 Exam</a></li>
-      <li><a href="https://quizlet.com/594908073/praxis-5113-flash-cards/" target="_blank" rel="noopener noreferrer">Praxis 5113 A</a></li>
-      <li><a href="https://quizlet.com/768946011/praxis-music-content-knowledge-5113-flash-cards/" target="_blank" rel="noopener noreferrer">Praxis: Music: Content Knowledge: 5113</a></li>
-      <li><a href="https://quizlet.com/443132892/praxis-5113-flash-cards/" target="_blank" rel="noopener noreferrer">Praxis 5113 B</a></li>
-    </ul>
-  </li>
-</ul>
-</section><section>
-  <h4>Rowan Music Education program guides</h4>
-  <p>Here is a tutorial to help you with the background check process:</p>
-  <ul>
-    <li>
-      <a href="https://rowannafme.org/criminal-history-viewer.html">View Rowan University Background Check Process (PDF)</a>
-
-      — A step-by-step guide to the background check process at Rowan University.
-    </li>
-  </ul>
-</section>
-</div></div><div aria-labelledby="modal-quicklinks-title" aria-modal="true" class="modal" hidden="True" id="modal-quicklinks" role="dialog"><div class="modal-overlay" data-close="True"></div><div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="modal-quicklinks-title">Music Education Tools</h3><button aria-label="Close" class="close-btn" data-close="True">✕</button></div><section>
-  <h4>Quick Links</h4>
-  <p>We want to hear from you! What quick links do you have bookmarked that you use frequently? Some examples might include:</p>
-  <ul>
-    <li>Music education websites or resources</li>
-    <li>Online tools for lesson planning or grading</li>
-    <li>Websites for finding sheet music or educational materials</li>
-    <li>Other relevant links that you use regularly</li>
-  </ul>
-  <p>Please let us know and we can add these links to this section to make it easier for everyone to access the resources they need.</p>
-
-  <!-- Quick Links – Suggest a Link -->
-  <button type="button" class="btn open-form"
-    data-form-src="https://docs.google.com/forms/d/e/1FAIpQLScY7lSisRRasLosUi6BvjCMsT3qvXvvFHapOez1JjCqfSx2Sg/viewform?embedded=true"
-    data-form-open="https://docs.google.com/forms/d/e/1FAIpQLScY7lSisRRasLosUi6BvjCMsT3qvXvvFHapOez1JjCqfSx2Sg/viewform"
-    data-title="Suggest a Quick Link">
-    Open form
-  </button>
-</section></div></div><div aria-labelledby="modal-chapter-title" aria-modal="true" class="modal" hidden="True" id="modal-chapter" role="dialog"><div class="modal-overlay" data-close="True"></div><div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="modal-chapter-title">Chapter Resources</h3><button aria-label="Close" class="close-btn" data-close="True">✕</button></div><section>
-<h4>Professional Development Resources</h4>
-<p>Materials will be added here from our upcoming Professional Development sessions this year. This will include a brief description of the speaker's points and any resources they shared with us.</p>
-<p>Check back soon for updates and resources from our Professional Development sessions!</p>
-</section><section>
-  <h4>Peer Tutoring and Study Groups</h4>
-  <p>We will try to provide peer tutoring and study group support for classes that are not already assigned tutors. While we cannot guarantee that we will be able to provide this resource for every class, we will do our best to accommodate your needs.</p>
-
-  <!-- Peer Tutoring & Study Groups -->
-  <button type="button" class="btn open-form"
-    data-form-src="https://docs.google.com/forms/d/e/1FAIpQLSdobQVhhjfDvpu5VCDBxEpLfMB6j9F032REpO67OIEeoOIjVw/viewform?embedded=true"
-    data-form-open="https://docs.google.com/forms/d/e/1FAIpQLSdobQVhhjfDvpu5VCDBxEpLfMB6j9F032REpO67OIEeoOIjVw/viewform"
-    data-title="Peer Tutoring & Study Groups">
-    Open form
-  </button>
-</section>
-<section>
-  <h4>Upperclassmen Advice</h4>
-  <p>We're collecting advice and stories from our upperclassmen to share with incoming students. Your experiences will help others navigate the program and make the most of their time at Rowan.</p>
-
-  <!-- Upperclassmen Advice -->
-  <button type="button" class="btn open-form"
-    data-form-src="https://docs.google.com/forms/d/e/1FAIpQLSdMehtiyjJ4w2w6qGfumgNjjkek16bB7IswfuqSDCxXBFTREA/viewform?embedded=true"
-    data-form-open="https://docs.google.com/forms/d/e/1FAIpQLSdMehtiyjJ4w2w6qGfumgNjjkek16bB7IswfuqSDCxXBFTREA/viewform"
-    data-title="Upperclassmen Advice">
-    Open form
-  </button>
-</section>
-<section>
-  <h4>Frequently Asked Questions</h4>
-  <p>Do you have a question about the music education program at Rowan University? Ask it here! We'll do our best to provide a response, and we'll also post some of the most frequently asked questions and answers for others to see.</p>
-  <p>Ask a question about the music education program at Rowan University. We’ll respond and may add common questions to this page for others to see.</p>
-
-  <!-- Frequently Asked Questions -->
-  <button type="button" class="btn open-form"
-    data-form-src="https://docs.google.com/forms/d/e/1FAIpQLSfBVyNk-_lX0fdvaoSZlORzA0W1duHGBcHI3QpQtZDLzrv9Kg/viewform?embedded=true"
-    data-form-open="https://docs.google.com/forms/d/e/1FAIpQLSfBVyNk-_lX0fdvaoSZlORzA0W1duHGBcHI3QpQtZDLzrv9Kg/viewform"
-    data-title="Ask a Question (FAQ)">
-    Open form
-  </button>
-
-  <p>Check back soon for some frequently asked questions and answers!</p>
-</section>
-</div></div><div aria-labelledby="modal-njmea-title" aria-modal="true" class="modal" hidden="True" id="modal-njmea" role="dialog"><div class="modal-overlay" data-close="True"></div><div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="modal-njmea-title">State Resources</h3><button aria-label="Close" class="close-btn" data-close="True">✕</button></div><section>
-<section>
-  <h4>NJMEA Collegiate Board</h4>
-  <p>
-    NJMEA Collegiate is the collegiate division of the New Jersey Music Educators Association. Their mission is to support and advocate for music education in New Jersey, and to provide opportunities for collegiate music educators to network, learn, and grow.
-    For more info, visit the
-    <a href="https://www.njmea.org/collegiate/" target="_blank" rel="noopener noreferrer">NJMEA Collegiate page</a>.
-  </p>
-  <p><strong>Meet the 2025–2026 NJMEA Collegiate Board:</strong></p>
-  <ul>
-    <li>PRESIDENT: Clark Mitchell</li>
-    <li>VICE-PRESIDENT: Nikki Hayden</li>
-    <li>SECRETARY: Kai Cleary</li>
-    <li>TREASURER: Min Hwang</li>
-    <li>SOCIAL MEDIA: Sean Masino</li>
-  </ul>
-  <p>
-    By joining NJMEA Collegiate, you can connect with other music education majors, attend professional development events, and stay up-to-date on the latest news and trends in music education.
-  </p>
-</section>
-
-<section>
-  <h4>NJMEA Events Calendar</h4>
-  <p>
-    View the
-    <a href="https://www.njmea.org/njmea-events" target="_blank" rel="noopener noreferrer">NJMEA Events Calendar</a>
-    to stay up-to-date on upcoming events and conferences.
-  </p>
-</section>
-
-<section>
-  <h4>Job Opportunities</h4>
-  <p>
-    The New Jersey Music Educators Association actively maintains a list of
-    <a href="https://www.njmea.org/job-opportunities" target="_blank" rel="noopener noreferrer">job opportunities</a>
-    in the state. Their site is a great place to search for openings in music education.
-  </p>
-  <p>In addition to the NJMEA job listings, you can also search for job openings by school district. Many school districts list their openings on their own websites.</p>
-  <p>If you're looking for substitute teaching opportunities while you're an undergraduate, you can also reach out to schools or upperclassmen in the music education program here for more information.</p>
-  <p>Rowan University's College of Education also holds career fairs and recruitment events for future teachers—watch for announcements and prepare by updating your resume, practicing interviewing, and researching attendees.</p>
-</section>
-
-<section>
-  <h4>Resource Personnel Contacts</h4>
-  <p>
-    The New Jersey Music Educators Association (NJMEA) has a
-    <a href="https://www.njmea.org/resource-personnel" target="_blank" rel="noopener noreferrer">list of resource personnel contacts</a>
-    who can provide guidance and support on topics such as all-state ensembles, jazz, guitar education, membership, and more.
-  </p>
-  <p>You can view contacts for areas such as:</p>
-  <ul>
-    <li>Accessible Music Education</li>
-    <li>Administrative Matters</li>
-    <li>All-State Band and Chorus Procedures</li>
-    <li>Jazz and Guitar Education</li>
-    <li>Membership and Conference Management</li>
-    <li>Research and Historian</li>
-    <li>Representatives to affiliated organizations</li>
-  </ul>
-</section>
-
-<section>
-  <h4>Program Advocacy</h4>
-  <p>
-    The New Jersey Music Educators Association (NJMEA) is committed to advocating for the importance of music education in our schools and communities.
-    The <a href="https://www.njmea.org/advocacy" target="_blank" rel="noopener noreferrer">NJMEA Advocacy Page</a>
-    offers resources such as advocacy letters, tips for defending music programs, and research on impact.
-  </p>
-</section>
-
-<!-- CLOSE the STATE (NJMEA) modal -->
-</div></div>
-
-<!-- OPEN the NATIONAL (NAfME) modal -->
-<div aria-labelledby="modal-nafme-title" aria-modal="true" class="modal" hidden="True" id="modal-nafme" role="dialog">
-  <div class="modal-overlay" data-close="True"></div>
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 class="modal-title" id="modal-nafme-title">National Resources</h3>
-      <button aria-label="Close" class="close-btn" data-close="True">✕</button>
-    </div>
-
-
-<!-- NAfME -->
-<section>
-  <h4>NAfME Resource Library</h4>
-  <p>
-    The <a href="https://nafme.org/publications-resources/resource-library/" target="_blank" rel="noopener noreferrer">NAfME Resource Library</a>
-    is a comprehensive collection of music education resources—articles, research, and practical guides—covering curriculum, instruction, and assessment.
-  </p>
-  <p>Some of the resources available include:</p>
-  <ul>
-    <li>Music education research papers and articles</li>
-    <li>Teaching strategies and lesson plans</li>
-    <li>Advocacy resources and tools</li>
-    <li>Music education policy and legislation information</li>
-  </ul>
-</section>
-
-<section>
-  <h4>NAfME Blog</h4>
-  <p>
-    The <a href="https://nafme.org/publications-resources/nafme-blog/" target="_blank" rel="noopener noreferrer">NAfME Blog</a>
-    features articles and insights on music education and advocacy, including policy updates, teaching strategies, and arts education research.
-  </p>
-</section>
-
-<section>
-  <h4>NAfME Events Calendar</h4>
-  <p>
-    The <a href="https://nafme.org/professional-learning-events/event-calendar/" target="_blank" rel="noopener noreferrer">NAfME Events Calendar</a>
-    lists webinars, conferences, and workshops for professional development and networking across general, instrumental, and vocal music.
-  </p>
-</section>
-
-<section>
-  <h4>Advocacy</h4>
-  <p>
-    NAfME is a leading advocate for music education at the federal, state, and local levels. The
-    <a href="https://nafme.org/advocacy/" target="_blank" rel="noopener noreferrer">NAfME Advocacy Page</a>
-    highlights initiatives such as:
-  </p>
-  <ul>
-    <li>NAfME Hill Day</li>
-    <li>The Music Teacher Profession Initiative</li>
-    <li>The Arts ARE Educational National Campaign</li>
-  </ul>
-</section>
-
-<section>
-  <h4>Scholarships</h4>
-  <p>
-    NAfME offers a variety of scholarships to music students; see the
-    <a href="https://nafme.org/student-opportunities/scholarships/" target="_blank" rel="noopener noreferrer">NAfME Scholarships Page</a>
-    for eligibility, deadlines, and applications.
-  </p>
-  <p>Examples include performance competitions, composition awards, and opportunities for students with disabilities.</p>
-</section>
-
-<section>
-  <h4>Music Standards</h4>
-  <p>
-    NAfME has developed music standards that emphasize conceptual understanding and musical literacy. Explore frameworks and tools on the
-    <a href="https://nafme.org/publications-resources/standards/" target="_blank" rel="noopener noreferrer">NAfME Standards Page</a>.
-  </p>
-  <p>
-    The 2014 music standards provide teachers with frameworks that match the goals of specialized classes and are organized into strands representing how music instruction is delivered in the U.S.
-  </p>
-  <ul>
-    <li>2014 Music Standards (PK–8 General Music)</li>
-    <li>2014 Music Standards (Composition/Theory)</li>
-    <li>2014 Music Standards (Music Technology)</li>
-    <li>2014 Music Standards (Guitar/Keyboard/Harmonizing Instruments)</li>
-    <li>2014 Music Standards (Ensemble)</li>
-  </ul>
-</section></div></div><!-- Reusable Form Viewer Modal -->
-<div aria-labelledby="modal-form-viewer-title" aria-modal="true"
-     class="modal" hidden id="modal-form-viewer" role="dialog">
-  <div class="modal-overlay" data-close="True"></div>
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 class="modal-title" id="modal-form-viewer-title">Form</h3>
-      <button aria-label="Close" class="close-btn" data-close="True">✕</button>
-    </div>
-    <div class="form-wrap">
-      <iframe id="formFrame" class="form-embed" title="Embedded form"></iframe>
-      <p style="margin-top:8px">
-        <a id="formOpenTab" href="#" target="_blank" rel="noopener noreferrer">Open in a new tab</a>
-      </p>
-    </div>
+<h1>Resources</h1>
+<div class="grid cols-2">
+  <div class="card">
+    <h2>Repertoire</h2>
+<p><button class="btn btn-outline" data-modal="rep-modal">Open Repertoire Ideas</button></p>
+    <p>Programming ideas for mixed, treble, and tenor‑bass ensembles.</p>
+  </div>
+  <div class="card">
+    <h2>Clinic Handouts</h2>
+<p><button class="btn btn-outline" data-modal="clinic-modal">Preview Handouts</button></p>
+    <p>Slides and one‑pagers from our professional development sessions.</p>
   </div>
 </div>
-<script>
-(() => {
-  const body   = document.body;
-  const viewer = document.getElementById('modal-form-viewer');
-  const frame  = document.getElementById('formFrame');
-  const titleEl= document.getElementById('modal-form-viewer-title');
-  const openTab= document.getElementById('formOpenTab');
 
-  function openViewer(src, title, openUrl) {
-    if (!/embedded=true/.test(src)) {
-      src += (src.includes('?') ? '&' : '?') + 'embedded=true';
-    }
-    frame.src = src;
-    titleEl.textContent = title || 'Form';
-    openTab.href = openUrl || src.replace('?embedded=true','');
-    viewer.hidden = false;
-    viewer.classList.add('open');
-    body.style.overflow = 'hidden';
-    viewer.querySelector('[data-close]')?.focus();
-  }
+<section style="margin-top:1.5rem">
+  <div class="card">
+    <h2>Bylaws</h2>
+    <p>Our chapter bylaws outline governance and procedures.</p>
+  </div>
+</section>
 
-  function closeViewer() {
-    viewer.classList.remove('open');
-    viewer.hidden = true;
-    body.style.overflow = '';
-    frame.src = ''; // stop running form when closed
-  }
+<section style="margin-top:1.5rem">
+  <h2>Sight‑Singing Vault</h2>
+  <p>Looking for graded patterns and PDF packets? Access the vault:</p>
+  <p><a class="btn" href="/resources-sightsinging.html">Open the Vault</a></p>
+</section>
 
-  document.querySelectorAll('.open-form').forEach(btn => {
-    btn.addEventListener('click', () => openViewer(
-      btn.getAttribute('data-form-src'),
-      btn.getAttribute('data-title'),
-      btn.getAttribute('data-form-open')
-    ));
-  });
 
-  viewer.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal-overlay')) closeViewer();
-  });
-  viewer.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeViewer));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !viewer.hidden) closeViewer();
-  });
-})();
-</script>
-<script>
-window.addEventListener('load', () => {
-  // Grab a button/link from the nav to sample its styles
-  const navBtn = document.querySelector('.site-nav button, .site-nav a');
-  if (!navBtn) return;
+<div class="modal" id="rep-modal"><div class="dialog" tabindex="-1">
+  <h3>Repertoire Starters</h3>
+  <p class="small">Quick ideas to spark programming (filler examples)</p>
+  <ul>
+    <li>Mixed: Gjeilo — <em>Northern Lights</em></li>
+    <li>Treble: Szymko — <em>It Takes a Village</em></li>
+    <li>TB: Perry — <em>Answers</em></li>
+    <li>Seasonal: Lauridsen — <em>O Magnum Mysterium</em></li>
+  </ul>
+  <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
+</div></div>
 
-  const cs = getComputedStyle(navBtn);
-  const bgImage = cs.backgroundImage;
-  const bgColor = cs.backgroundColor;
-  const borderColor = cs.borderColor;
 
-  // If nav uses a gradient, prefer that; otherwise use the solid color
-  document.documentElement.style.setProperty(
-    '--nav-btn-background',
-    (bgImage && bgImage !== 'none') ? bgImage : bgColor
-  );
-  document.documentElement.style.setProperty('--nav-btn-fg', cs.color || '#111');
-  if (borderColor) {
-    document.documentElement.style.setProperty('--nav-btn-border', borderColor);
-  }
-});
-</script>
+<div class="modal" id="clinic-modal"><div class="dialog" tabindex="-1">
+  <h3>Clinic Handouts (Sampler)</h3>
+  <ul>
+    <li>Warm‑ups that build tone + vowel alignment</li>
+    <li>Quick rhythm games for middle schoolers</li>
+    <li>Beginning conducting: 3 patterns to master</li>
+    <li>Voice care 101 for busy weeks</li>
+  </ul>
+  <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
+</div></div>
 
-<script>(() => {
-  const body = document.body;
+</main>
 
-  const openById = (id) => {
-    const m = document.getElementById(id);
-    if (!m) return;
-    m.hidden = false;
-    m.classList.add('open');
-    body.style.overflow = 'hidden';
-    const firstClose = m.querySelector('[data-close]');
-    if (firstClose) firstClose.focus();
-  };
-
-  const closeModal = (m) => {
-    m.classList.remove('open');
-    m.hidden = true;
-    body.style.overflow = '';
-  };
-
-  // Open on card click
-  document.querySelectorAll('.card[data-modal]').forEach(card => {
-    card.addEventListener('click', () => openById(card.getAttribute('data-modal')));
-    // Allow links in cards without opening modal
-    card.querySelectorAll('a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
-  });
-
-  // Close on overlay or ✕
-  document.querySelectorAll('.modal').forEach(m => {
-    m.addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal-overlay')) closeModal(m);
-    });
-    m.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(m)));
-  });
-
-  // ESC to close
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(closeModal);
-  });
-})();</script><script defer="True" src="/assets/js/nav.js"></script>
+<footer class="site-footer" role="contentinfo">
+  <div class="container" style="display:flex;align-items:center;gap:.75rem">
+    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
+    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
+  </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</footer>
+<script src="/js/core.js" defer></script>
 
 </body>
 </html>
