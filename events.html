@@ -55,25 +55,12 @@
   .modal{ position:fixed; inset:0; display:none; }
   .modal.open{ display:block; }
   .modal .modal-overlay{ position:absolute; inset:0; background:rgba(0,0,0,.35); }
-  .modal .dialog{ position:relative; margin:5vh auto; max-width:min(720px, 92vw); background:#fff; border-radius:1rem; padding:1rem; box-shadow:var(--shadow-lg); }
+  .modal .modal-content{ position:relative; margin:5vh auto; max-width:min(720px, 92vw); background:#fff; border-radius:1rem; padding:1rem; box-shadow:var(--shadow-lg); }
   .modal .modal-header{ display:flex; align-items:center; justify-content:center; position:relative; text-align:center; }
   .modal .modal-header .close-btn{ position:absolute; right:10px; top:10px; }
   .modal .convention-thumb{ width:100%; aspect-ratio:16/9; border-radius:.8rem; object-fit:cover; background:#fff; border:1px solid var(--border); }
   .chip-break{ flex-basis:100%; height:0; }
   @media(max-width:640px){ .chip-break{ display:none; } }
-
-  /* ACDA-style pills (events page scope) */
-  #eventsList .button, .filters .button, .filters .chip, .modal .button{
-    appearance:none; background:#fff; color:var(--text);
-    border:1px solid var(--border); border-radius:999px;
-    height: var(--tap); padding:0 18px; text-decoration:none;
-    display:inline-flex; align-items:center; justify-content:center;
-    box-shadow: var(--shadow);
-  }
-  #eventsList .button:hover, .filters .button:hover, .filters .chip:hover, .modal .button:hover{
-    transform: translateY(-1px); background:#f8f5f5;
-  }
-
 </style>
 </head>
 <body>
@@ -130,7 +117,8 @@
 
 <!-- Simple notice modal for missing RSVP links -->
 <div class="modal" id="notice-modal" role="dialog" aria-modal="true" aria-labelledby="notice-title" hidden>
-<div class="dialog">
+  <div class="modal-overlay" data-close="True"></div>
+  <div class="modal-content">
     <div class="modal-header">
       <h3 class="modal-title" id="notice-title">Heads up</h3>
       <button class="close-btn" data-close="True" aria-label="Close">✕</button>
@@ -260,9 +248,8 @@
     const img = ev.image_url || '/assets/img/about.png';
     return (
       '<div class="modal" id="modal-'+ev.id+'" role="dialog" aria-modal="true" aria-labelledby="modal-'+ev.id+'-title" hidden>'+
-        '
-'+
-        '<div class="dialog">'+
+        '<div class="modal-overlay" data-close="True"></div>'+
+        '<div class="modal-content">'+
           '<div class="modal-header">'+
             '<h3 class="modal-title" id="modal-'+ev.id+'-title">'+(ev.title||'')+'</h3>'+
             '<button class="close-btn" data-close="True" aria-label="Close">✕</button>'+
@@ -289,8 +276,8 @@
       btn.addEventListener('click', () => openModal(document.getElementById(btn.getAttribute('data-modal'))));
     });
     document.querySelectorAll('.modal').forEach(m => {
-      m.addEventListener('click', e => { if(!e.target.closest('.dialog')) closeModal(m); });
-m.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(m)));
+      m.addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(m); });
+      m.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(m)));
     });
     document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(closeModal); });
   }
