@@ -316,3 +316,50 @@ section+section{margin-top:2rem}
   #welcome-band .inner{ grid-template-columns: 1fr; }
   #welcome-band .banner-right{ justify-self: start; align-items: flex-start; }
 }
+
+/* === 3‑column split: text | spacer | logo  === */
+#welcome-band .inner{
+  display:grid;
+  grid-template-columns: 1fr minmax(48px, 8vw) 1fr; /* center spacer gives a clean "thirds" feel */
+  align-items:center;
+  gap: clamp(14px, 2vw, 24px);
+}
+
+/* Left: text block with buttons centered under the text width */
+#welcome-band .left-col{
+  grid-column: 1;
+  display:flex;
+  flex-direction:column;
+  gap: clamp(10px, 1.2vw, 14px);
+  width: fit-content;               /* so centering matches text width */
+  max-width: 56ch;                  /* guard long lines */
+}
+#welcome-band .left-col .copy{ text-align:left; }
+#welcome-band .left-col .actions{
+  align-self:center;                /* center buttons under the text block */
+  display:flex; gap:.6rem; flex-wrap:wrap; justify-content:center;
+}
+
+/* Right: logo centered vertically/horizontally in its third */
+#welcome-band .banner-right{
+  grid-column: 3;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+
+/* Keep the big, square logo from previous step */
+#welcome-band .banner-right .logo{
+  width: clamp(240px, 24vw, 340px);
+  height: clamp(240px, 24vw, 340px);
+  aspect-ratio: 1/1;
+  background:#fff;
+  border: 2px solid rgba(255,255,255,.6);
+  box-shadow: 0 16px 48px rgba(0,0,0,.25);
+  border-radius: .9rem; overflow:hidden;
+}
+#welcome-band .banner-right .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Mobile: collapse to single column (text then buttons then logo) */
+@media (max-width: 780px){
+  #welcome-band .inner{ grid-template-columns: 1fr; }
+  #welcome-band .left-col{ width:auto; }
+}
