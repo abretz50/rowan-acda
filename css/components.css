@@ -207,3 +207,33 @@ section+section{margin-top:2rem}
   .welcome-band .inner{ grid-template-columns: 1fr; }
   .welcome-band .banner-right{ align-items:flex-start; } /* natural stacking on mobile */
 }
+
+/* === Banner: 2x larger square logo + double-height image area === */
+/* Ensure the background image fills the rounded container */
+.welcome-band{
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  border-radius: 1.1rem;
+}
+/* Double the hero height (from earlier ~220–360 to ~440–640) */
+.welcome-band .inner{
+  min-height: clamp(440px, 48vw, 640px);
+  padding-block: clamp(22px, 3vw, 32px);
+  background: none; /* keep background on the outer band so it reaches edges */
+}
+/* Square logo, roughly 2× bigger than prior (90–130 → 180–240) */
+.welcome-band .logo{
+  width: clamp(180px, 18vw, 240px);
+  height: clamp(180px, 18vw, 240px);
+  aspect-ratio: 1 / 1;
+}
+.welcome-band .logo img{
+  width: 100%; height: 100%; object-fit: cover; display:block;
+}
+
+/* Keep it sane on narrow screens */
+@media (max-width: 780px){
+  .welcome-band .inner{ min-height: clamp(340px, 60vh, 520px); }
+  .welcome-band .logo{ width: clamp(128px, 30vw, 200px); height: clamp(128px, 30vw, 200px); }
+}
