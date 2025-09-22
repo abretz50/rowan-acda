@@ -40,13 +40,3 @@
 
 .hero .overlay{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,.1))}
 .fade-rotator img{animation:fade 36s linear infinite}
-
-/* === Force square logo in header === */
-.brand img{
-  width: clamp(28px, 3vw, 40px);
-  height: clamp(28px, 3vw, 40px);
-  aspect-ratio: 1 / 1;
-  object-fit: cover;        /* crops evenly if source PNG isn't square */
-  border-radius: .6rem;     /* subtle rounding to match site style */
-  display: block;
-}
