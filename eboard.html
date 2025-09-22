@@ -13,7 +13,41 @@
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css"/>
+<style>
+  /* Page-local tweaks (keeps ACDA look) */
+  .people{
+    display:grid; gap:1rem;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+  @media (max-width: 900px){ .people{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (max-width: 640px){ .people{ grid-template-columns: 1fr; } }
 
+  .people .card{
+    display:flex; flex-direction:column; gap:.5rem;
+    border:1px solid var(--border); border-radius:1rem; padding:1rem; background:#fff;
+    box-shadow: var(--shadow);
+  }
+  .people .card img{
+    width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:.75rem; border:1px solid var(--border);
+    background:#fff;
+  }
+  .people .card h3{ margin:.25rem 0 0 0; }
+  .people .card .small{ color: var(--muted); }
+
+  /* Use site button look for these actions */
+  .people .card .button{ align-self:flex-start; }
+
+  /* ACDA modal pattern */
+  .modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5); }
+  .modal.open{ display:flex; }
+  .modal .dialog{
+    background:#fff; border-radius:1rem; max-width:720px; width:min(92vw, 720px);
+    max-height:90vh; overflow:auto; padding:1rem; border:1px solid var(--border);
+  }
+  .modal .dialog h3{ text-align:center; }
+  .modal .dialog section{ text-align:center; }
+  .modal .dialog .button-row{ display:flex; gap:.5rem; flex-wrap:wrap; justify-content:center; margin-top:.75rem; }
+</style>
 </head>
 <body>
 
@@ -28,117 +62,149 @@
       <a class="nav-link" data-nav href="/">Home</a>
       <a class="nav-link" data-nav href="/events.html">Events</a>
       <a class="nav-link" data-nav href="/members.html">Members</a>
-      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link is-active" data-nav href="/eboard.html">E-Board</a>
       <a class="nav-link" data-nav href="/resources.html">Resources</a>
     </nav>
   </div>
 </header>
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
+  <h1>E-Board</h1>
 
-<h1>E-Board</h1>
-<div class="people">
-  <div class="card">
-    <img src="/assets/img/person1.png" alt="President portrait" loading="lazy">
-    <h3>Alex Singer</h3>
-    <p class="small">President</p>
-    <button class="btn btn-outline" data-modal="m1">Contact</button>
-  </div>
-  <div class="card">
-    <img src="/assets/img/person2.png" alt="Vice President portrait" loading="lazy">
-    <h3>Jamie Conductor</h3>
-    <p class="small">Vice President</p>
-    <button class="btn btn-outline" data-modal="m2">Contact</button>
-  </div>
-  <div class="card">
-    <img src="/assets/img/person3.png" alt="Secretary portrait" loading="lazy">
-    <h3>Taylor Notes</h3>
-    <p class="small">Secretary</p>
-    <button class="btn btn-outline" data-modal="m3">Contact</button>
-  </div>
-  <div class="card">
-    <img src="/assets/img/person4.png" alt="Treasurer portrait" loading="lazy">
-    <h3>Riley Ledger</h3>
-    <p class="small">Treasurer</p>
-    <button class="btn btn-outline" data-modal="m4">Contact</button>
-  </div>
-  <div class="card">
-    <img src="/assets/img/person5.png" alt="Social Chair portrait" loading="lazy">
-    <h3>Morgan Social</h3>
-    <p class="small">Social Chair</p>
-    <button class="btn btn-outline" data-modal="m5">Contact</button>
-  </div>
-  <div class="card">
-    <img src="/assets/img/person6.png" alt="Outreach Chair portrait" loading="lazy">
-    <h3>Casey Outreach</h3>
-    <p class="small">Outreach Chair</p>
-    <button class="btn btn-outline" data-modal="m6">Contact</button>
-  </div>
+  <div class="people">
+    <!-- President -->
+    <div class="card">
+      <img src="/images/hanna-shein.jpg" alt="Hanna Shein portrait" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/about.png'">
+      <h3>Hanna Shein</h3>
+      <p class="small">President</p>
+      <button class="button" data-modal="m1">Contact</button>
+    </div>
 
-  <div class="card">
-    <img src="/assets/img/person7.png" alt="Historian portrait" loading="lazy">
-    <h3>Member 7</h3>
-    <p class="small">Historian</p>
-    <button class="btn btn-outline" data-modal="m7">Contact</button>
-  </div>
+    <!-- Vice President -->
+    <div class="card">
+      <img src="/images/adam-bretz.jpg" alt="Adam Bretz portrait" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/about.png'">
+      <h3>Adam Bretz</h3>
+      <p class="small">Vice President</p>
+      <button class="button" data-modal="m2">Contact</button>
+    </div>
 
-  <div class="card">
-    <img src="/assets/img/person8.png" alt="Librarian portrait" loading="lazy">
-    <h3>Member 8</h3>
-    <p class="small">Librarian</p>
-    <button class="btn btn-outline" data-modal="m8">Contact</button>
-  </div>
+    <!-- Treasurer -->
+    <div class="card">
+      <img src="/images/jessenia-zavala.jpg" alt="Jessenia Zavala portrait" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/about.png'">
+      <h3>Jessenia Zavala</h3>
+      <p class="small">Treasurer</p>
+      <button class="button" data-modal="m3">Contact</button>
+    </div>
 
-  <div class="card">
-    <img src="/assets/img/person9.png" alt="Webmaster portrait" loading="lazy">
-    <h3>Member 9</h3>
-    <p class="small">Webmaster</p>
-    <button class="btn btn-outline" data-modal="m9">Contact</button>
+    <!-- Secretary -->
+    <div class="card">
+      <img src="/images/makayli-matias.jpg" alt="Makayli Matias portrait" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/about.png'">
+      <h3>Makayli Matias</h3>
+      <p class="small">Secretary</p>
+      <button class="button" data-modal="m4">Contact</button>
+    </div>
+
+    <!-- Social Media Coordinator -->
+    <div class="card">
+      <img src="/images/emma-seidel.jpg" alt="Emma Seidel portrait" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/about.png'">
+      <h3>Emma Seidel</h3>
+      <p class="small">Social Media Coordinator</p>
+      <button class="button" data-modal="m5">Contact</button>
+    </div>
+
+    <!-- Senator -->
+    <div class="card">
+      <img src="/images/cameron-hyson.jpg" alt="Cameron Hyson portrait" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/about.png'">
+      <h3>Cameron Hyson</h3>
+      <p class="small">Senator</p>
+      <button class="button" data-modal="m6">Contact</button>
+    </div>
   </div>
 
-  <div class="card">
-    <img src="/assets/img/person10.png" alt="Membership portrait" loading="lazy">
-    <h3>Member 10</h3>
-    <p class="small">Membership</p>
-    <button class="btn btn-outline" data-modal="m10">Contact</button>
+  <!-- Modals -->
+  <div class="modal" id="m1" role="dialog" aria-modal="true" aria-labelledby="m1-title" hidden>
+    <div class="dialog" tabindex="-1">
+      <h3 id="m1-title">Hanna Shein — President</h3>
+      <section>
+        <p>Hanna is a junior Vocal Performance and Music Education double major, passionate about choral arts. She has performed with NJ All State Mixed Choir, NAfME All Eastern Treble Choir, the Honors Performance Series at Carnegie Hall, and more. Favorite memories include performing at Carnegie Hall and with Chanticleer. She recently appeared as Hansel in Rowan Opera Company’s <em>Hansel and Gretel</em>. When not singing, she’s reading or hanging with her cat, Luna.</p>
+        <div class="button-row">
+          <a class="button" href="mailto:rowanacda1@gmail.com">Email</a>
+          <button class="button" data-close>Close</button>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <div class="card">
-    <img src="/assets/img/person11.png" alt="Education portrait" loading="lazy">
-    <h3>Member 11</h3>
-    <p class="small">Education</p>
-    <button class="btn btn-outline" data-modal="m11">Contact</button>
+  <div class="modal" id="m2" role="dialog" aria-modal="true" aria-labelledby="m2-title" hidden>
+    <div class="dialog" tabindex="-1">
+      <h3 id="m2-title">Adam Bretz — Vice President</h3>
+      <section>
+        <p>Adam is an Electrical &amp; Computer Engineering major with a Music (Organ Performance) minor. He supports chapter operations, helps plan activities, and maintains the chapter website.</p>
+        <div class="button-row">
+          <a class="button" href="mailto:rowanacda1@gmail.com">Email</a>
+          <button class="button" data-close>Close</button>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <div class="card">
-    <img src="/assets/img/person12.png" alt="Outreach 2 portrait" loading="lazy">
-    <h3>Member 12</h3>
-    <p class="small">Outreach 2</p>
-    <button class="btn btn-outline" data-modal="m12">Contact</button>
+  <div class="modal" id="m3" role="dialog" aria-modal="true" aria-labelledby="m3-title" hidden>
+    <div class="dialog" tabindex="-1">
+      <h3 id="m3-title">Jessenia Zavala — Treasurer</h3>
+      <section>
+        <p>Jessenia is a junior Vocal Music Education major who oversees finances, plans fundraisers, and leads engaging meetings. She’s involved in ACDA, Tri Alpha, and sings with Concert Choir.</p>
+        <div class="button-row">
+          <a class="button" href="mailto:rowanacda1@gmail.com">Email</a>
+          <button class="button" data-close>Close</button>
+        </div>
+      </section>
+    </div>
   </div>
-</div>
 
+  <div class="modal" id="m4" role="dialog" aria-modal="true" aria-labelledby="m4-title" hidden>
+    <div class="dialog" tabindex="-1">
+      <h3 id="m4-title">Makayli Matias — Secretary</h3>
+      <section>
+        <p>Makayli is a sophomore studying Vocal Music Education. She manages communication and tracks point totals for NAfME and ACDA. She sings with Concert Choir and Voces and is a member of Opera Company.</p>
+        <div class="button-row">
+          <a class="button" href="mailto:rowanacda1@gmail.com">Email</a>
+          <button class="button" data-close>Close</button>
+        </div>
+      </section>
+    </div>
+  </div>
 
-<div class="modal" id="m1"><div class="dialog" tabindex="-1">
-  <h3>Alex Singer — President</h3><p>Alex leads chapter initiatives, conducts sectionals, and loves 7/8 warm‑ups. Coffee enthusiast.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m2"><div class="dialog" tabindex="-1">
-  <h3>Jamie Conductor — Vice President</h3><p>Jamie coordinates events and rehearsal logistics. Favorite chord: Lydian add9.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-</div>
-<div class="modal" id="m3"><div class="dialog" tabindex="-1">
-  <h3>Taylor Notes — Secretary</h3><p>Taylor handles minutes, comms, and socials. Loves creating sing‑along graphics.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m4"><div class="dialog" tabindex="-1">
-  <h3>Riley Ledger — Treasurer</h3><p>Riley manages budgets and fundraisers. Excel wizard, hummus critic.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m5"><div class="dialog" tabindex="-1">
-  <h3>Morgan Social — Social Chair</h3><p>Morgan plans socials and mixers. Theme: cozy jazz + cocoa.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m6"><div class="dialog" tabindex="-1">
-  <h3>Casey Outreach — Outreach Chair</h3><p>Casey coordinates volunteer partnerships and community sings.</p><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m7"><div class="dialog" tabindex="-1"><h3>Member 7 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m8"><div class="dialog" tabindex="-1"><h3>Member 8 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m9"><div class="dialog" tabindex="-1"><h3>Member 9 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m10"><div class="dialog" tabindex="-1"><h3>Member 10 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m11"><div class="dialog" tabindex="-1"><h3>Member 11 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
-<div class="modal" id="m12"><div class="dialog" tabindex="-1"><h3>Member 12 — Contact</h3><p><a class="btn" href="mailto:rowanacda1@gmail.com">Email</a></p></div></div>
+  <div class="modal" id="m5" role="dialog" aria-modal="true" aria-labelledby="m5-title" hidden>
+    <div class="dialog" tabindex="-1">
+      <h3 id="m5-title">Emma Seidel — Social Media Coordinator</h3>
+      <section>
+        <p>Emma is a Music Education major who keeps the chapter’s social platforms updated with news and events. She also co-manages web content and liaises with neighboring collegiate chapters.</p>
+        <div class="button-row">
+          <a class="button" href="mailto:rowanacda1@gmail.com">Email</a>
+          <button class="button" data-close>Close</button>
+        </div>
+      </section>
+    </div>
+  </div>
 
+  <div class="modal" id="m6" role="dialog" aria-modal="true" aria-labelledby="m6-title" hidden>
+    <div class="dialog" tabindex="-1">
+      <h3 id="m6-title">Cameron Hyson — Senator</h3>
+      <section>
+        <p>Cameron is a Music Education major who represents the chapter’s interests to the school. He’s involved in Rowan Concert Choir and ACDA, and is glad to discuss events, PD, or general meetings.</p>
+        <div class="button-row">
+          <a class="button" href="mailto:rowanacda1@gmail.com">Email</a>
+          <button class="button" data-close>Close</button>
+        </div>
+      </section>
+    </div>
+  </div>
 </main>
 
 <footer class="site-footer" role="contentinfo">
@@ -148,7 +214,33 @@
   </div>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
-<script src="/js/core.js" defer></script>
 
+<script>
+  // Minimal modal wiring (matches ACDA modal pattern)
+  function openModal(m){ if(!m) return; m.classList.add('open'); m.removeAttribute('hidden'); m.querySelector('.dialog')?.focus(); }
+  function closeModal(m){ if(!m) return; m.classList.remove('open'); m.setAttribute('hidden',''); }
+
+  document.addEventListener('click', (e) => {
+    const openBtn = e.target.closest('[data-modal]');
+    if(openBtn){
+      const id = openBtn.getAttribute('data-modal');
+      return openModal(document.getElementById(id));
+    }
+    const closeBtn = e.target.closest('[data-close]');
+    if(closeBtn){
+      return closeModal(closeBtn.closest('.modal'));
+    }
+    // Click outside dialog closes
+    const modal = e.target.classList.contains('modal') ? e.target : null;
+    if(modal && !e.target.closest('.dialog')) closeModal(modal);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.modal.open').forEach(m => closeModal(m));
+    }
+  });
+</script>
+<script src="/js/core.js" defer></script>
 </body>
 </html>
