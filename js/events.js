@@ -1,74 +1,173 @@
 
-async function loadEvents(){
-  // Prefer local CSV if available, else fallback to JSON
-  try{
-    const csvRes = await fetch('/data/events.csv');
-    if (csvRes.ok){
-      const text = await csvRes.text();
-      const rows = text.trim().split(/?
-/).map(r=>r.split(','));
-      const header = rows.shift().map(h=>h.trim().toLowerCase());
-      const events = rows.map(r => {
-        const rec = {}; r.forEach((v,i)=> rec[header[i]] = v.trim());
-        const tags = (rec.tags || '').split('|').map(s=>s.trim()).filter(Boolean);
-        return { title: rec.title, date: rec.date, location: rec.location, image: rec.image, description: rec.description, tags };
-      }).map(e => ({...e, dateObj: new Date((e.date||'').replace(' ', 'T'))})).sort((a,b)=> a.dateObj - b.dateObj);
-      if (events.length) return events;
-    }
-  }catch(e){/* ignore and fall back */}
-  const res = await fetch('/data/events.json');
-  const events = await res.json();
-  return events.map(e => ({...e, dateObj: new Date(e.date.replace(' ', 'T'))})).sort((a,b)=> a.dateObj - b.dateObj);
-}
-function renderEvents(list){
-  const grid = document.getElementById('events-grid');
-  grid.innerHTML = '';
-  if (!list.length){
-    grid.innerHTML = '<p class="small">No events found.</p>';
-    return;
-  }
-  for (const ev of list){
-    const card = document.createElement('div');
-    card.className = 'card event-card';
-    const img = document.createElement('img'); img.loading = 'lazy';
-    img.src = ev.image || '/assets/img/event-fallback.png';
-    img.alt = ev.title;
-    const h3 = document.createElement('h3'); h3.textContent = ev.title;
-    const small = document.createElement('div');
-    small.className = 'small';
-    small.textContent = ev.dateObj.toLocaleString() + ' — ' + (ev.location || '');
-    const tags = document.createElement('div');
-    tags.className = 'tags';
-    (ev.tags||[]).forEach(t => { const s=document.createElement('span'); s.className='tag'; s.textContent=t; tags.appendChild(s); });
-    const btn = document.createElement('button'); btn.className='btn btn-outline'; btn.textContent='Details'; btn.setAttribute('data-modal', 'ev-'+btoa(ev.title).replace(/=/g,''));
-    grid.append(card);
-    card.append(img,h3,small,tags,btn);
+/* Rebuilt events.js — loads Google Sheets CSV and renders to #events-grid */
 
-    // modal
-    const modal = document.createElement('div');
-    modal.className = 'modal'; modal.id = 'ev-'+btoa(ev.title).replace(/=/g,'');
-    modal.innerHTML = '<div class="dialog" tabindex="-1"><h3>'+ev.title+'</h3><p class="small">'+ small.textContent +'</p><p>'+ (ev.description||'') +'</p><div class="tags">'+tags.innerHTML+'</div><div style="margin-top:1rem"><button class="btn btn-outline" onclick="this.closest(\'.modal\').classList.remove(\'open\')">Close (Esc)</button></div></div>';
-    document.body.appendChild(modal);
-  }
-}
-function setupFilters(all){
+(function(){
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
+  const grid = document.getElementById('events-grid');
   const q = document.getElementById('event-search');
-  const chips = document.querySelectorAll('.chip');
-  function apply(){
-    const term = (q.value || '').toLowerCase().trim();
-    const active = Array.from(chips).filter(c=>c.classList.contains('active')).map(c=>c.dataset.tag);
-    const filtered = all.filter(ev => {
-      const matchTerm = !term || (ev.title.toLowerCase().includes(term) || (ev.description||'').toLowerCase().includes(term) || (ev.location||'').toLowerCase().includes(term));
-      const matchTag = !active.length || (ev.tags||[]).some(t => active.includes(t));
+  const chipsWrap = document.getElementById('tag-chips');
+
+  function parseCSV(text){
+    const rows = [];
+    let i=0, field='', row=[], inQuotes=false;
+    while(i < text.length){
+      const c = text[i];
+      if(inQuotes){
+        if(c === '"'){
+          if(text[i+1] === '"'){ field += '"'; i++; }
+          else { inQuotes = false; }
+        } else { field += c; }
+      } else {
+        if(c === '"') inQuotes = true;
+        else if(c === ','){ row.push(field); field=''; }
+        else if(c === '\n'){ row.push(field); field=''; rows.push(row); row=[]; }
+        else if(c === '\r'){ /* ignore */ }
+        else { field += c; }
+      }
+      i++;
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  function toRecords(rows){
+    const header = rows.shift().map(h => h.trim().toLowerCase());
+    return rows.map(r => {
+      const o = {};
+      header.forEach((h, i) => o[h] = (r[i]||'').trim());
+      return o;
+    });
+  }
+
+  function parseDate(dStr){
+    if(!dStr) return null;
+    const p = dStr.split(/[\/-\.]/).map(s=>s.trim());
+    if(p.length < 3) return null;
+    let [m,d,y] = p;
+    m = parseInt(m,10); d = parseInt(d,10); y = parseInt(y,10);
+    if(y < 100) y = 2000 + y;
+    return new Date(y, m-1, d);
+  }
+  function parseTime(tStr){
+    if(!tStr) return {h:0,m:0};
+    const m = tStr.trim().match(/^(\d{1,2}):(\d{2})\s*([AP]M)?$/i);
+    if(!m) return {h:0,m:0};
+    let h = parseInt(m[1],10), mm = parseInt(m[2],10);
+    const ap = (m[3]||'').toUpperCase();
+    if(ap==='PM' && h<12) h+=12;
+    if(ap==='AM' && h===12) h=0;
+    return {h, m:mm};
+  }
+  function combineDateTime(d, t){
+    const dt = new Date(d); dt.setHours(t.h, t.m, 0, 0); return dt;
+  }
+  function formatDateRange(start, end){
+    const dOpt = { month:'long', day:'numeric', year:'numeric' };
+    const tOpt = { hour:'numeric', minute:'2-digit' };
+    const dFmt = new Intl.DateTimeFormat('en-US', dOpt);
+    const tFmt = new Intl.DateTimeFormat('en-US', tOpt);
+    const same = start.toDateString()===end.toDateString();
+    if(same) return dFmt.format(start) + ' • ' + tFmt.format(start) + '–' + tFmt.format(end);
+    return dFmt.format(start) + ' ' + tFmt.format(start) + ' → ' + dFmt.format(end) + ' ' + tFmt.format(end);
+  }
+  function tagList(s){
+    if(!s) return [];
+    // support comma, slash, or pipe separators
+    return s.split(/[\|,;/]+/).map(v=>v.trim()).filter(Boolean);
+  }
+
+  function gcalLink(ev){
+    const text = encodeURIComponent(ev.title || 'ACDA Event');
+    const details = encodeURIComponent((ev.details || ev.description || '') + (ev.signin_link ? '\n\nRSVP: ' + ev.signin_link : ''));
+    const location = encodeURIComponent(ev.location || '');
+    const start = ev.startDateTime, end = ev.endDateTime;
+    const dates = start.getFullYear() + String(start.getMonth()+1).padStart(2,'0') + String(start.getDate()).padStart(2,'0') + 'T' +
+                  String(start.getHours()).padStart(2,'0') + String(start.getMinutes()).padStart(2,'0') + '00/' +
+                  end.getFullYear() + String(end.getMonth()+1).padStart(2,'0') + String(end.getDate()).padStart(2,'0') + 'T' +
+                  String(end.getHours()).padStart(2,'0') + String(end.getMinutes()).padStart(2,'0') + '00';
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&ctz=America/New_York&details='+details+'&location='+location;
+  }
+
+  function badgeHTML(tags){
+    return (tags||[]).map(t => '<span class="chip" aria-hidden="true">'+t+'</span>').join(' ');
+  }
+
+  function cardHTML(ev){
+    const img = ev.image_url || ev.image || '/assets/img/about.png';
+    const btn = ev.signin_link ? '<a class="button" href="'+ev.signin_link+'" target="_blank" rel="noopener">RSVP</a>' : '';
+    return (
+      '<article class="card event-card">' +
+        '<img src="'+img+'" alt="'+(ev.title||'Event photo')+'" loading="lazy">' +
+        '<div class="card-body">' +
+          '<h3>'+ (ev.title||'Untitled') +'</h3>' +
+          '<p class="small"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>' +
+          (ev.description ? '<p>'+ev.description+'</p>' : '') +
+          '<div class="event-actions" style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+            '<a class="button" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>' +
+            btn +
+          '</div>' +
+          '<div class="event-badges" style="margin-top:.5rem">'+ badgeHTML(ev.tags) +'</div>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  let ALL_EVENTS = [];
+
+  function render(list){
+    list.sort((a,b)=> a.startDateTime - b.startDateTime);
+    grid.innerHTML = list.map(cardHTML).join('\n');
+  }
+
+  function applyFilters(){
+    const term = (q?.value||'').toLowerCase().trim();
+    const activeTags = Array.from(chipsWrap?.querySelectorAll('.chip.active')||[]).map(c=>c.dataset.tag);
+    const out = ALL_EVENTS.filter(ev => {
+      const matchTerm = !term || (ev.title?.toLowerCase().includes(term) || (ev.location||'').toLowerCase().includes(term) || (ev.description||'').toLowerCase().includes(term));
+      const matchTag = !activeTags.length || (ev.tags||[]).some(t => activeTags.includes(t));
       return matchTerm && matchTag;
     });
-    renderEvents(filtered);
+    render(out);
   }
-  q.addEventListener('input', apply);
-  chips.forEach(c => c.addEventListener('click', ()=>{ c.classList.toggle('active'); apply(); }));
-  apply();
-}
-window.addEventListener('DOMContentLoaded', async ()=>{
-  const events = await loadEvents();
-  setupFilters(events);
-});
+
+  function wireUI(){
+    q?.addEventListener('input', applyFilters);
+    chipsWrap?.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', ()=>{ ch.classList.toggle('active'); applyFilters(); }));
+  }
+
+  function normalize(rec){
+    const date = parseDate(rec.date || rec.day || rec.event_date);
+    const st = parseTime(rec.start_time || rec.start || rec.begin);
+    const et = parseTime(rec.end_time || rec.end || rec.finish);
+    const start = date? combineDateTime(date, st) : new Date();
+    const end = date? combineDateTime(date, et.h? et : st) : new Date(start.getTime()+60*60*1000);
+    return {
+      id: Math.random().toString(36).slice(2),
+      title: rec.title || rec.name || '',
+      datePretty: date? formatDateRange(start, end) : '',
+      location: rec.location || rec.place || '',
+      tags: tagList(rec.tags),
+      description: rec.description || rec.details || '',
+      details: rec.details || '',
+      signin_link: rec.signin_link || rec.rsvp || '',
+      image_url: rec.image_url || rec.image || '',
+      startDateTime: start, endDateTime: end
+    };
+  }
+
+  async function init(){
+    try{
+      const txt = await fetch(CSV_URL, {cache:'no-store'}).then(r=>r.text());
+      const rows = parseCSV(txt);
+      const recs = toRecords(rows);
+      ALL_EVENTS = recs.map(normalize);
+      wireUI();
+      applyFilters();
+    } catch(err){
+      console.error('Failed to load events CSV', err);
+      grid.innerHTML = '<p class="small">Could not load events right now. Please try again later.</p>';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+})();
