@@ -136,7 +136,8 @@
   }
 
   function normalize(rec){
-    const date = parseDate(rec.date || rec.day || rec.event_date);
+    const dateDT = parseDateTimeString(rec.date);
+    const date = dateDT || parseDate(rec.date || rec.day || rec.event_date);
     const st = parseTime(rec.start_time || rec.start || rec.begin);
     const et = parseTime(rec.end_time || rec.end || rec.finish);
     const start = date? combineDateTime(date, st) : new Date();
@@ -155,14 +156,51 @@
     };
   }
 
+  async function fetchJSONFallback(){
+    try{
+      const r = await fetch('/data/events.json', {cache:'no-store'});
+      if(!r.ok) throw new Error('events.json not found');
+      const arr = await r.json();
+      return arr.map(e => ({
+        id: e.id || Math.random().toString(36).slice(2),
+        title: e.title, datePretty: e.date, location: e.location,
+        tags: e.tags, description: e.description, details: e.description,
+        signin_link: e.signin_link || '', image_url: e.image,
+        startDateTime: new Date(), endDateTime: new Date()
+      }));
+    } catch(err){ console.error('JSON fallback failed', err); return []; }
+  }
+
+  function parseDateTimeString(s){
+    // Handles "M/D/YYYY H:MM AM/PM" in one cell
+    if(!s) return null;
+    const m = s.trim().match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})(?:\s+(\d{1,2}):(\d{2})\s*([AP]M)?)?$/i);
+    if(!m) return null;
+    let mm = parseInt(m[1],10), dd = parseInt(m[2],10), yy = parseInt(m[3],10);
+    if(yy < 100) yy = 2000 + yy;
+    let h = parseInt(m[4]||'0',10), min = parseInt(m[5]||'0',10);
+    const ap = (m[6]||'').toUpperCase();
+    if(ap==='PM' && h<12) h+=12;
+    if(ap==='AM' && h===12) h=0;
+    return new Date(yy, mm-1, dd, h, min, 0, 0);
+  }
+
   async function init(){
     try{
       const txt = await fetch(CSV_URL, {cache:'no-store'}).then(r=>r.text());
       const rows = parseCSV(txt);
       const recs = toRecords(rows);
-      ALL_EVENTS = recs.map(normalize);
+      ALL_EVENTS = recs.map(normalize).filter(ev => ev.title);
+      if(!ALL_EVENTS.length){
+        console.warn('CSV parsed but no records found. Trying JSON fallback.');
+        ALL_EVENTS = await fetchJSONFallback();
+      }
       wireUI();
-      applyFilters();
+      if(!ALL_EVENTS.length){
+        grid.innerHTML = '<p class="small">No events to show yet. Check back soon.</p>';
+      } else {
+        applyFilters();
+      }
     } catch(err){
       console.error('Failed to load events CSV', err);
       grid.innerHTML = '<p class="small">Could not load events right now. Please try again later.</p>';
