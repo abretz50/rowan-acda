@@ -290,3 +290,29 @@ section+section{margin-top:2rem}
     height: clamp(180px, 48vw, 260px) !important;
   }
 }
+
+/* === Center logo+CTAs in the open space to the right of the text === */
+#welcome-band .inner{
+  display: grid;
+  grid-template-columns: auto 1fr;   /* left fits text, right is remaining space */
+  align-items: center;                /* vertical centering */
+}
+#welcome-band .banner-right{
+  margin-left: 0 !important;         /* undo any previous right-hug behavior */
+  justify-self: center;              /* horizontally center within the remaining space */
+  align-items: center;               /* center the stack */
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vw, 18px);
+}
+#welcome-band .actions{
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+  justify-content: center;           /* keep buttons centered under the logo */
+}
+/* Mobile: stack like before */
+@media (max-width: 780px){
+  #welcome-band .inner{ grid-template-columns: 1fr; }
+  #welcome-band .banner-right{ justify-self: start; align-items: flex-start; }
+}
