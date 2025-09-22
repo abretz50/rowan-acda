@@ -14,6 +14,54 @@
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css"/>
 
+<style>
+  :root{ --tap: 40px; }
+  /* Keep ACDA look; only scope page-specific tweaks here */
+  .filters .filters-bar{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  .filters .chips{ display:flex; flex-wrap:wrap; gap:.5rem; }
+  .filters .chip, .filters .button{
+    display:inline-flex; align-items:center; justify-content:center;
+    height: var(--tap);
+    padding: 0 18px;
+    border:1.6px solid var(--border);
+    border-radius:999px;
+    background:#fff; color:var(--text);
+    font-weight:700; box-shadow: var(--shadow);
+    cursor:pointer;
+    transition: transform .06s ease, background .2s ease, border-color .2s ease, filter .2s ease;
+  }
+  .filters .chip:hover, .filters .button:hover{ transform: translateY(-1px); background:#f8f5f5; }
+  .filters .chip[aria-pressed="true"], .filters .button[aria-pressed="true"]{ background:#f3eaea; border-color:var(--border); }
+
+  /* Past events switch */
+  .filters .switch{ position:relative; display:inline-flex; align-items:center; gap:8px; padding-right:52px;
+    border:1.6px solid var(--border); border-radius:999px; background:#fff; height:var(--tap); font-weight:800; }
+  .filters .switch svg{ width:18px; height:18px; }
+  .filters .switch .knob{ position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    width:34px; height:18px; border-radius:999px; background:#f3eded; border:1px solid var(--border); }
+  .filters .switch .knob::after{ content:""; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:999px;
+    background:#c9c9c9; transition: transform .2s ease, background .2s ease; }
+  .filters .switch[aria-pressed="true"] .knob::after{ transform: translateX(14px); background:#7A0A0A; }
+
+  /* Cards / grid */
+  #eventsList.grid{ grid-template-columns: repeat(3, minmax(0,1fr)); gap:1rem; }
+  @media(max-width:900px){ #eventsList.grid{ grid-template-columns: 1fr 1fr; } }
+  @media(max-width:640px){ #eventsList.grid{ grid-template-columns: 1fr; } }
+  .event-card .event-photo{ width:100%; aspect-ratio:16/9; height:auto; object-fit:cover; border-radius:.75rem; border:1px solid var(--border); background:#fff; }
+  .event-actions{ display:flex; gap:.5rem; flex-wrap:wrap; justify-content:flex-start; margin-top:1rem; }
+  .badge{ display:inline-flex; align-items:center; height:28px; padding:0 10px; border:1px solid var(--border); border-radius:999px; font-size:.85rem; background:#fff; }
+
+  /* Modal */
+  .modal{ position:fixed; inset:0; display:none; }
+  .modal.open{ display:block; }
+  .modal .modal-overlay{ position:absolute; inset:0; background:rgba(0,0,0,.35); }
+  .modal .modal-content{ position:relative; margin:5vh auto; max-width:min(720px, 92vw); background:#fff; border-radius:1rem; padding:1rem; box-shadow:var(--shadow-lg); }
+  .modal .modal-header{ display:flex; align-items:center; justify-content:center; position:relative; text-align:center; }
+  .modal .modal-header .close-btn{ position:absolute; right:10px; top:10px; }
+  .modal .convention-thumb{ width:100%; aspect-ratio:16/9; border-radius:.8rem; object-fit:cover; background:#fff; border:1px solid var(--border); }
+  .chip-break{ flex-basis:100%; height:0; }
+  @media(max-width:640px){ .chip-break{ display:none; } }
+</style>
 </head>
 <body>
 
@@ -36,23 +84,50 @@
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
 
-<header style="margin-bottom:1rem">
-  <h1>Events</h1>
-  <p class="small">Search and filter to find meetings, PDs, performances, and volunteer opportunities.</p>
-</header>
-<div class="search-row">
-  <input id="event-search" type="search" placeholder="Search events (title, location, details)" aria-label="Search events">
-  <div class="chips" id="tag-chips" aria-label="Filter by tag">
-    <span class="chip" data-tag="General">General</span>
-    <span class="chip" data-tag="Professional">Professional</span>
-    <span class="chip" data-tag="Volunteer">Volunteer</span>
-    <span class="chip" data-tag="Performance">Performance</span>
+  <header style="margin-bottom:1rem">
+    <h1>Events</h1>
+    <p class="small">Search and filter to find meetings, PDs, performances, and volunteer opportunities.</p>
+  </header>
+
+  <!-- New: filters bar (chips + Past toggle) -->
+  <div class="filters" style="margin:.5rem 0 1rem">
+    <div class="filters-bar">
+      <div class="chips" role="toolbar" aria-label="Filter events by category">
+        <button class="chip" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" data-filter="events" aria-pressed="false">Events</button>
+        <button class="chip" data-filter="meeting" aria-pressed="false">Meetings</button>
+        <button class="chip" data-filter="professional-development" aria-pressed="false">Professional Developments</button>
+        <button class="chip" data-filter="workshop" aria-pressed="false">Workshop</button>
+        <span class="chip-break" aria-hidden="true"></span>
+        <button class="chip" data-filter="volunteer" aria-pressed="false">Volunteer</button>
+        <button class="chip" data-filter="performance" aria-pressed="false">Performances</button>
+      </div>
+      <div class="filters-right">
+        <button id="togglePast" class="button switch" aria-pressed="false" title="Show past events">
+          <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21Zm0 1.8a8.7 8.7 0 1 1 0 17.4 8.7 8.7 0 0 1 0-17.4Zm-.9 3.9a.9.9 0 0 1 1.8 0v4.56l3.22 1.86a.9.9 0 1 1-.9 1.56l-3.6-2.07a.9.9 0 0 1-.46-.78V7.2Z"/></svg>
+          <span>Past events</span>
+          <span class="knob" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="eventsList" class="grid" aria-live="polite"></div>
+</main>
+
+<!-- Simple notice modal for missing RSVP links -->
+<div class="modal" id="notice-modal" role="dialog" aria-modal="true" aria-labelledby="notice-title" hidden>
+  <div class="modal-overlay" data-close="True"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="notice-title">Heads up</h3>
+      <button class="close-btn" data-close="True" aria-label="Close">✕</button>
+    </div>
+    <section>
+      <p>This form is not open yet. Check back closer to the event.</p>
+    </section>
   </div>
 </div>
-<div id="events-grid" class="grid cols-3" style="margin-top:1rem"></div>
-<script src="/js/events.js" defer></script>
-
-</main>
 
 <footer class="site-footer" role="contentinfo">
   <div class="container" style="display:flex;align-items:center;gap:.75rem">
@@ -61,7 +136,254 @@
   </div>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
-<script src="/js/core.js" defer></script>
 
+<script>
+/* Inline events logic (NAfME-style) but using ACDA styling */
+(function(){
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
+  const listEl = document.getElementById('eventsList');
+  const chipsBar = document.querySelector('.filters .chips');
+  const chipButtons = Array.from(chipsBar?.querySelectorAll('button[data-filter]') || []);
+  const pastToggle = document.getElementById('togglePast');
+  const activeFilters = new Set(); // empty = ALL
+
+  function parseCSV(text){
+    const rows = []; let i=0, field='', row=[], inQuotes=false;
+    while(i < text.length){
+      const c = text[i];
+      if(inQuotes){
+        if(c === '"'){ if(text[i+1] === '"'){ field += '"'; i++; } else inQuotes = false; }
+        else field += c;
+      } else {
+        if(c === '"') inQuotes = true;
+        else if(c === ','){ row.push(field); field=''; }
+        else if(c === '\n'){ row.push(field); field=''; rows.push(row); row=[]; }
+        else if(c === '\r'){ /* ignore */ }
+        else field += c;
+      }
+      i++;
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    return rows;
+  }
+  function toRecords(rows){
+    if(!rows.length) return [];
+    const header = rows.shift().map(h=>h.trim().toLowerCase());
+    return rows.map(r=>{ const o={}; header.forEach((h,i)=> o[h]=(r[i]||'').trim()); return o; });
+  }
+
+  function parseDate(dStr){
+    if(!dStr) return null;
+    const m = dStr.trim().match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})$/);
+    if(!m) return null;
+    let mm=+m[1], dd=+m[2], yy=+m[3]; if(yy<100) yy=2000+yy;
+    return new Date(yy, mm-1, dd);
+  }
+  function parseTime(tStr){
+    if(!tStr) return {h:0,m:0};
+    const m = tStr.trim().match(/^(\d{1,2}):(\d{2})\s*([AP]M)?$/i);
+    if(!m) return {h:0,m:0};
+    let h=+m[1], mm=+m[2]; const ap=(m[3]||'').toUpperCase();
+    if(ap==='PM' && h<12) h+=12; if(ap==='AM' && h===12) h=0; return {h, m:mm};
+  }
+  function combineDateTime(d, t){ const dt=new Date(d); dt.setHours(t.h, t.m, 0, 0); return dt; }
+  function formatDateRange(start, end){
+    const dOpt={month:'long',day:'numeric',year:'numeric'}, tOpt={hour:'numeric',minute:'2-digit'};
+    const dFmt=new Intl.DateTimeFormat('en-US',dOpt), tFmt=new Intl.DateTimeFormat('en-US',tOpt);
+    const same=start.toDateString()===end.toDateString();
+    return same ? dFmt.format(start)+' • '+tFmt.format(start)+'–'+tFmt.format(end)
+                : dFmt.format(start)+' '+tFmt.format(start)+' → '+dFmt.format(end)+' '+tFmt.format(end);
+  }
+  function tagSlug(s){ return (s||'').toLowerCase().replace(/\s+/g,'-'); }
+  function normalizeTags(s){ return !s?[]: s.split(/[,;/|]+/).map(v=>v.trim()).filter(Boolean); }
+
+  function getBtnLabel(ev){
+    const tags = new Set((ev.tagSlugs||[]).map(String));
+    if (tags.has('volunteer')) return 'Sign up';
+    if (tags.has('performance') || tags.has('performances')) return 'Tickets';
+    if (tags.has('professional-development') || tags.has('event') || tags.has('events')) return 'Check in';
+    return 'Attendance';
+  }
+  function gcalLink(ev){
+    const text = encodeURIComponent(ev.title || 'ACDA Event');
+    const details = encodeURIComponent((ev.details || ev.description || '') + (ev.signin_link ? '\n\nRSVP: ' + ev.signin_link : ''));
+    const location = encodeURIComponent(ev.location || '');
+    const tz = 'America/New_York';
+    const s = ev.startDateTime, e = ev.endDateTime;
+    const dates = s.getFullYear()+String(s.getMonth()+1).padStart(2,'0')+String(s.getDate()).padStart(2,'0')+'T'+
+                  String(s.getHours()).padStart(2,'0')+String(s.getMinutes()).padStart(2,'0')+'00/'+
+                  e.getFullYear()+String(e.getMonth()+1).padStart(2,'0')+String(e.getDate()).padStart(2,'0')+'T'+
+                  String(e.getHours()).padStart(2,'0')+String(e.getMinutes()).padStart(2,'0')+'00';
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&ctz='+tz+'&details='+details+'&location='+location;
+  }
+
+  function badgeHTML(tags){ return (tags||[]).map(t=>'<span class="badge" data-tag="'+tagSlug(t)+'">'+t+'</span>').join(' '); }
+
+  function cardHTML(ev){
+    const hasLink = !!ev.signin_link;
+    const btnLabel = getBtnLabel(ev);
+    const signinHref = hasLink ? ev.signin_link : '#';
+    const img = ev.image_url || '/assets/img/about.png';
+    return (
+      '<article class="card event-card" data-tags="'+ev.tagSlugs.join(' ')+'" data-when="'+ev.when+'">'+
+        '<img class="event-photo" src="'+img+'" alt="'+(ev.title||'Event photo')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
+        '<div class="card-body">'+
+          '<h3>'+ (ev.title||'Untitled') +'</h3>'+
+          '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
+          (ev.description ? '<p>'+ev.description+'</p>' : '')+
+          '<div class="event-badges" style="margin:.4rem 0 .2rem">'+ badgeHTML(ev.tags) +'</div>'+
+          '<div class="event-actions">'+
+            '<button class="button" data-modal="modal-'+ev.id+'">Details</button>'+
+            '<a class="button" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+          '</div>'+
+        '</div>'+
+      '</article>'
+    );
+  }
+
+  function modalHTML(ev){
+    const hasLink = !!ev.signin_link;
+    const btnLabel = getBtnLabel(ev);
+    const signinHref = hasLink ? ev.signin_link : '#';
+    const img = ev.image_url || '/assets/img/about.png';
+    return (
+      '<div class="modal" id="modal-'+ev.id+'" role="dialog" aria-modal="true" aria-labelledby="modal-'+ev.id+'-title" hidden>'+
+        '<div class="modal-overlay" data-close="True"></div>'+
+        '<div class="modal-content">'+
+          '<div class="modal-header">'+
+            '<h3 class="modal-title" id="modal-'+ev.id+'-title">'+(ev.title||'')+'</h3>'+
+            '<button class="close-btn" data-close="True" aria-label="Close">✕</button>'+
+          '</div>'+
+          '<section>'+
+            '<img class="convention-thumb" src="'+img+'" alt="'+(ev.title||'Event photo')+'" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
+            '<p class="kicker"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
+            (ev.details ? '<p>'+ev.details+'</p>' : '')+
+            '<div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1rem">'+
+              '<a class="button" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
+              '<a class="button" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+            '</div>'+
+          '</section>'+
+        '</div>'+
+      '</div>'
+    );
+  }
+
+  function openModal(m){ m?.classList.add('open'); m?.removeAttribute('hidden'); }
+  function closeModal(m){ m?.classList.remove('open'); m?.setAttribute('hidden',''); }
+
+  function attachModalHandlers(){
+    document.querySelectorAll('[data-modal]').forEach(btn => {
+      btn.addEventListener('click', () => openModal(document.getElementById(btn.getAttribute('data-modal'))));
+    });
+    document.querySelectorAll('.modal').forEach(m => {
+      m.addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(m); });
+      m.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(m)));
+    });
+    document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(closeModal); });
+  }
+
+  function showNotice(){ openModal(document.getElementById('notice-modal')); }
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a.button[data-action="signin"]'); if(!a) return;
+    const hasLink = a.getAttribute('data-has-link')==='1'; const href = a.getAttribute('href');
+    if(!hasLink || !href || href==='#'){ e.preventDefault(); showNotice(); }
+  });
+
+  function render(events){
+    events.sort((a,b)=> a.startDateTime - b.startDateTime);
+    listEl.innerHTML = events.map(cardHTML).join('\n') + '\n' + events.map(modalHTML).join('\n');
+    attachModalHandlers();
+    applyPastVisibility();
+    applyFilters();
+  }
+
+  function applyPastVisibility(){
+    const showPast = pastToggle?.getAttribute('aria-pressed')==='true';
+    listEl.querySelectorAll('[data-when="past"]').forEach(el => el.style.display = showPast ? '' : 'none');
+  }
+
+  function matchesFilters(card){
+    if(activeFilters.size===0) return true;
+    const tags = (card.getAttribute('data-tags')||'').split(/\s+/);
+    function tagMatches(f){
+      if(f==='events') return (['workshop','convention','event','events'].some(t=>tags.includes(t)));
+      if(f==='performance') return (tags.includes('performance')||tags.includes('performances'));
+      return tags.includes(f);
+    }
+    for(const f of activeFilters) if(tagMatches(f)) return true;
+    return false;
+  }
+
+  function applyFilters(){
+    const showPast = pastToggle?.getAttribute('aria-pressed')==='true';
+    listEl.querySelectorAll('.card').forEach(card => {
+      const match = matchesFilters(card);
+      const isPast = card.getAttribute('data-when')==='past';
+      card.style.display = (match && (showPast || !isPast)) ? '' : 'none';
+    });
+  }
+
+  function updatePressedStates(){
+    chipButtons.forEach(b => b.setAttribute('aria-pressed', activeFilters.size===0 ? (b.dataset.filter==='all') : activeFilters.has(b.dataset.filter)));
+  }
+
+  function onChipClick(e){
+    const f = e.currentTarget.dataset.filter;
+    if(f==='all') activeFilters.clear();
+    else { if(activeFilters.has(f)) activeFilters.delete(f); else activeFilters.add(f); }
+    updatePressedStates(); applyFilters();
+  }
+  chipButtons.forEach(b => b.addEventListener('click', onChipClick));
+  pastToggle?.addEventListener('click', () => { const p = pastToggle.getAttribute('aria-pressed')==='true'; pastToggle.setAttribute('aria-pressed', String(!p)); applyPastVisibility(); applyFilters(); });
+
+  function buildEvents(recs){
+    const now = new Date();
+    return recs.map(r => {
+      const date = parseDate(r.date || r.day || r.event_date);
+      const st = parseTime(r.start_time || r.start || r.begin);
+      const et = parseTime(r.end_time || r.end || r.finish);
+      const start = date ? combineDateTime(date, st) : new Date();
+      const end = date ? combineDateTime(date, et.h?et:st) : new Date(start.getTime()+60*60*1000);
+      const when = end < now ? 'past' : 'upcoming';
+      const tags = normalizeTags(r.tags);
+      const slugs = tags.map(tagSlug);
+      return {
+        id: Math.random().toString(36).slice(2),
+        title: r.title || r.name || '',
+        date: r.date,
+        start_time: r.start_time,
+        end_time: r.end_time,
+        startDateTime: start,
+        endDateTime: end,
+        datePretty: formatDateRange(start, end),
+        location: r.location || '',
+        tags,
+        tagSlugs: slugs,
+        description: r.description || '',
+        details: r.details || '',
+        signin_link: r.signin_link || r.rsvp || '',
+        image_url: r.image_url || r.image || '/assets/img/about.png',
+        when
+      };
+    });
+  }
+
+  async function init(){
+    try{
+      const txt = await fetch(CSV_URL, {cache:'no-store'}).then(r=>r.text());
+      const recs = toRecords(parseCSV(txt));
+      const events = buildEvents(recs);
+      if(!events.length) throw new Error('No events parsed');
+      render(events);
+    } catch(err){
+      console.error('Events CSV load failed:', err);
+      listEl.innerHTML = '<p class="kicker">Could not load events. Please try again later.</p>';
+    }
+  }
+  window.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+
+<script src="/js/core.js" defer></script>
 </body>
 </html>
