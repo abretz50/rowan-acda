@@ -143,103 +143,28 @@ section+section{margin-top:2rem}
 /* Static spacing tweak for permanent welcome band */
 .welcome-band{margin: clamp(.6rem, 1.8vw, 1rem) auto 0}
 
-/* === Welcome band: 2x taller + content formatting === */
-.welcome-band .inner{
-  padding-block: clamp(28px, 4.8vw, 44px); /* ~2x of original 14px..22px */
-}
-/* Slightly larger logo in the band */
-.welcome-band .logo{
-  width: clamp(64px, 9vw, 104px);
-  height: clamp(64px, 9vw, 104px);
-}
-/* Tidy text sizes and spacing inside the band only */
-.welcome-band .copy{
-  display:flex; flex-direction:column; gap:.2rem; min-width:0;
-}
-.welcome-band .copy .title{
-  font-weight:800; line-height:1.05; letter-spacing:-.01em;
-  font-size: clamp(1.75rem, 3.6vw, 2.6rem);
-}
-.welcome-band .copy .tagline{
-  font-weight:700; opacity:.98;
-  font-size: clamp(1.15rem, 2.6vw, 1.8rem);
-}
-/* Comfortable spacing for actions */
-.welcome-band .actions{ gap:.6rem; flex-wrap:wrap }
-
-/* === Welcome band background: 2x taller === */
-.welcome-band .inner{
-  padding-block: clamp(56px, 9.6vw, 88px); /* doubled from the prior 28..44 range */
-}
-
-/* === Welcome band: taller container with flush background image === */
-.welcome-band .inner{
-  /* Give the section real vertical presence without over-padding the text */
-  min-height: clamp(220px, 24vw, 360px);
-  padding-block: clamp(16px, 2.2vw, 28px);
-  /* Ensure the background photo always sits flush, covering rounded corners */
-  background-size: cover;
-  background-position: center;
-}
-
-/* === Welcome band: background flush to container edges === */
-.welcome-band{
-  background:
-    linear-gradient(180deg, rgba(122,10,10,.75), rgba(76,6,6,.65)),
-    var(--welcome-bg, none);
-  background-size: cover;
-  background-position: center;
-  border: none; /* remove inner halo so image sits flush to rounded edges */
-}
-.welcome-band .inner{
-  background: none; /* ensure no secondary background layer */
-  margin: 0;
-}
-
-/* Ensure banner image is flush & clipped to rounded corners */
-.welcome-band{overflow:hidden; border-radius:1.1rem;}
-
-/* Banner image flush to rounded edges */
-.welcome-band{overflow:hidden; border-radius:1.1rem; background-size:cover; background-position:center;}
-.welcome-band .inner{background:none; margin:0;}
-
-/* === Ensure banner logo stays perfectly square === */
-.welcome-band .logo{ aspect-ratio: 1 / 1; }
-.welcome-band .logo img{ width:100%; height:100%; object-fit: cover; display:block; }
-
-/* === Banner: two-column layout, logo on right above CTAs === */
+/* === Banner layout: left text centered vertically; right logo centered above CTAs === */
 .welcome-band .inner{
   display:grid;
   grid-template-columns: 1fr auto;
   align-items:center;
   gap: clamp(14px, 2vw, 22px);
 }
+.welcome-band .copy{ text-align:left; align-self:center; }
+.welcome-band .copy .tagline{ font-weight:800; font-size:clamp(1.6rem,3.6vw,2.6rem); line-height:1.1; }
 .welcome-band .banner-right{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap: clamp(10px, 1.4vw, 14px);
+  display:flex; flex-direction:column; align-items:flex-end; justify-content:center; gap: clamp(10px, 1.4vw, 14px);
 }
-/* Square logo box on the right */
 .welcome-band .logo{
-  width: clamp(72px, 9vw, 112px);
-  height: clamp(72px, 9vw, 112px);
-  aspect-ratio: 1/1;
+  width: clamp(80px, 9vw, 120px);
+  height: clamp(80px, 9vw, 120px);
+  aspect-ratio: 1 / 1;
   border-radius: .9rem;
   border: 1px solid rgba(255,255,255,.35);
   overflow: hidden;
-  background: #fff;
+  background:#fff;
 }
-.welcome-band .logo img{ width:100%; height:100%; object-fit: cover; display:block; }
-
-/* Bigger tagline on the left */
-.welcome-band .copy .tagline{
-  font-weight: 800;
-  font-size: clamp(1.6rem, 3.4vw, 2.4rem); /* larger than before */
-  line-height: 1.1;
-}
-
-/* Mobile: stack right column below copy and center it */
+.welcome-band .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
 @media (max-width: 780px){
   .welcome-band .inner{ grid-template-columns: 1fr; }
   .welcome-band .banner-right{ align-items:flex-start; }
