@@ -262,3 +262,31 @@ section+section{margin-top:2rem}
   display: block;
 }
 #welcome-band .banner-right .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* === Focus on logo: bigger square + stronger image overlay === */
+#welcome-band{
+  /* Darken overlay so background image recedes */
+  background: linear-gradient(180deg, rgba(122,10,10,.86), rgba(76,6,6,.78)), var(--welcome-bg, url('/assets/img/hero1.png')) !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+/* Make the logo the hero: ~2.5x typical size, with gentle shadow */
+#welcome-band .banner-right .logo{
+  width: clamp(240px, 24vw, 340px) !important;
+  height: clamp(240px, 24vw, 340px) !important;
+  aspect-ratio: 1/1 !important;
+  background: #fff;
+  border: 2px solid rgba(255,255,255,.6);
+  box-shadow: 0 16px 48px rgba(0,0,0,.25);
+}
+#welcome-band .banner-right .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* Give the logo a little more breathing room above the buttons */
+#welcome-band .banner-right{ gap: clamp(14px, 2.2vw, 20px); }
+
+/* Mobile tune: still prominent but not overwhelming */
+@media (max-width: 780px){
+  #welcome-band .banner-right .logo{
+    width: clamp(180px, 48vw, 260px) !important;
+    height: clamp(180px, 48vw, 260px) !important;
+  }
+}
