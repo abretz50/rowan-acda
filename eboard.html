@@ -1,18 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>E-Board — Rowan ACDA</title>
-<meta name="description" content="Meet the Rowan ACDA executive board."/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
-<link rel="icon" href="/assets/icons/favicon-32.png"/>
-<meta name="theme-color" content="#7A0A0A"/>
-<link rel="stylesheet" href="/css/base.css"/>
-<link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css"/>
+<meta content="Meet the Rowan ACDA executive board." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/assets/icons/favicon-32.png" rel="icon"/>
+<meta content="#7A0A0A" name="theme-color"/>
+<link href="/css/base.css" rel="stylesheet"/>
+<link href="/css/layout.css" rel="stylesheet"/>
+<link href="/css/components.css" rel="stylesheet"/>
 <style>
   /* Page-local tweaks (keeps ACDA look) */
   .people{
@@ -50,171 +51,125 @@
 </style>
 </head>
 <body>
-
 <header class="site-header" role="banner">
-  <div class="container header-inner">
-    <a class="brand" href="/" aria-label="Rowan ACDA Home">
-      <img src="/assets/icons/acda.png" alt="ACDA logo">
-      <span>Rowan ACDA</span>
-    </a>
-    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
-    <nav id="site-nav" class="nav" role="navigation">
-      <a class="nav-link" data-nav href="/">Home</a>
-      <a class="nav-link" data-nav href="/events.html">Events</a>
-      <a class="nav-link" data-nav href="/members.html">Members</a>
-      <a class="nav-link is-active" data-nav href="/eboard.html">E-Board</a>
-      <a class="nav-link" data-nav href="/resources.html">Resources</a>
-    </nav>
-  </div>
+<div class="container header-inner">
+<a aria-label="Rowan ACDA Home" class="brand" href="/">
+<img alt="ACDA logo" src="/assets/icons/acda.png"/>
+<span>Rowan ACDA</span>
+</a>
+<button aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+<nav class="nav" id="site-nav" role="navigation">
+<a class="nav-link" data-nav="" href="/">Home</a>
+<a class="nav-link" data-nav="" href="/events.html">Events</a>
+<a class="nav-link" data-nav="" href="/members.html">Members</a>
+<a class="nav-link is-active" data-nav="" href="/eboard.html">E-Board</a>
+<a class="nav-link" data-nav="" href="/resources.html">Resources</a>
+</nav>
+</div>
 </header>
-
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
-  <h1>E-Board</h1>
-
-  <div class="people">
-    <!-- President -->
-    <div class="card">
-      <img src="/assets/img/hanna-shein.jpg" alt="Hanna Shein portrait" loading="lazy"
-           onerror="this.onerror=null;this.src='/assets/img/about.png'">
-      <h3>Hanna Shein</h3>
-      <p class="small">President</p>
-      <button class="button" data-modal="m1">Contact</button>
-    </div>
-
-    <!-- Vice President -->
-    <div class="card">
-      <img src="/assets/img/adam-bretz.jpg" alt="Adam Bretz portrait" loading="lazy"
-           onerror="this.onerror=null;this.src='/assets/img/about.png'">
-      <h3>Adam Bretz</h3>
-      <p class="small">Vice President</p>
-      <button class="button" data-modal="m2">Contact</button>
-    </div>
-
-    <!-- Treasurer -->
-    <div class="card">
-      <img src="/assets/img/jessenia-zavala.jpg" alt="Jessenia Zavala portrait" loading="lazy"
-           onerror="this.onerror=null;this.src='/assets/img/about.png'">
-      <h3>Jessenia Zavala</h3>
-      <p class="small">Treasurer</p>
-      <button class="button" data-modal="m3">Contact</button>
-    </div>
-
-    <!-- Secretary -->
-    <div class="card">
-      <img src="/assets/img/makayli-matias.jpg" alt="Makayli Matias portrait" loading="lazy"
-           onerror="this.onerror=null;this.src='/assets/img/about.png'">
-      <h3>Makayli Matias</h3>
-      <p class="small">Secretary</p>
-      <button class="button" data-modal="m4">Contact</button>
-    </div>
-
-    <!-- Social Media Coordinator -->
-    <div class="card">
-      <img src="/assets/img/emma-seidel.jpg" alt="Emma Seidel portrait" loading="lazy"
-           onerror="this.onerror=null;this.src='/assets/img/about.png'">
-      <h3>Emma Seidel</h3>
-      <p class="small">Social Media Coordinator</p>
-      <button class="button" data-modal="m5">Contact</button>
-    </div>
-
-    <!-- Senator -->
-    <div class="card">
-      <img src="/assets/img/cameron-hyson.jpg" alt="Cameron Hyson portrait" loading="lazy"
-           onerror="this.onerror=null;this.src='/assets/img/about.png'">
-      <h3>Cameron Hyson</h3>
-      <p class="small">Senator</p>
-      <button class="button" data-modal="m6">Contact</button>
-    </div>
-  </div>
-
-  <!-- Modals -->
-  <div class="modal" id="m1" role="dialog" aria-modal="true" aria-labelledby="m1-title" hidden>
-    <div class="dialog" tabindex="-1">
-      <h3 id="m1-title">Hanna Shein — President</h3>
-      <section>
-        <p>Hanna is a junior Vocal Performance and Music Education double major, passionate about choral arts. She has performed with NJ All State Mixed Choir, NAfME All Eastern Treble Choir, the Honors Performance Series at Carnegie Hall, and more. Favorite memories include performing at Carnegie Hall and with Chanticleer. She recently appeared as Hansel in Rowan Opera Company’s <em>Hansel and Gretel</em>. When not singing, she’s reading or hanging with her cat, Luna.</p>
-        <div class="button-row">
-          <a class="button" href="mailto:sheinh29@rowan.edu">Email</a>
-          <button class="button" data-close>Close</button>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal" id="m2" role="dialog" aria-modal="true" aria-labelledby="m2-title" hidden>
-    <div class="dialog" tabindex="-1">
-      <h3 id="m2-title">Adam Bretz — Vice President</h3>
-      <section>
-        <p>Adam is an Electrical &amp; Computer Engineering major with a Music (Organ Performance) minor. He supports chapter operations, helps plan activities, and maintains the chapter website.</p>
-        <div class="button-row">
-          <a class="button" href="mailto:bretza67@students.rowan.edu">Email</a>
-          <button class="button" data-close>Close</button>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal" id="m3" role="dialog" aria-modal="true" aria-labelledby="m3-title" hidden>
-    <div class="dialog" tabindex="-1">
-      <h3 id="m3-title">Jessenia Zavala — Treasurer</h3>
-      <section>
-        <p>Jessenia is a junior Vocal Music Education major who oversees finances, plans fundraisers, and leads engaging meetings. She’s involved in ACDA, Tri Alpha, and sings with Concert Choir.</p>
-        <div class="button-row">
-          <a class="button" href="mailto:zavala34@students.rowan.edu">Email</a>
-          <button class="button" data-close>Close</button>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal" id="m4" role="dialog" aria-modal="true" aria-labelledby="m4-title" hidden>
-    <div class="dialog" tabindex="-1">
-      <h3 id="m4-title">Makayli Matias — Secretary</h3>
-      <section>
-        <p>Makayli is a sophomore studying Vocal Music Education. She manages communication and tracks point totals for NAfME and ACDA. She sings with Concert Choir and Voces and is a member of Opera Company.</p>
-        <div class="button-row">
-          <a class="button" href="mailto:matias85@rowan.edu">Email</a>
-          <button class="button" data-close>Close</button>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal" id="m5" role="dialog" aria-modal="true" aria-labelledby="m5-title" hidden>
-    <div class="dialog" tabindex="-1">
-      <h3 id="m5-title">Emma Seidel — Social Media Coordinator</h3>
-      <section>
-        <p>Emma is a Music Education major who keeps the chapter’s social platforms updated with news and events. She also co-manages web content and liaises with neighboring collegiate chapters.</p>
-        <div class="button-row">
-          <a class="button" href="mailto:seidel82@students.rowan.edu">Email</a>
-          <button class="button" data-close>Close</button>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal" id="m6" role="dialog" aria-modal="true" aria-labelledby="m6-title" hidden>
-    <div class="dialog" tabindex="-1">
-      <h3 id="m6-title">Cameron Hyson — Senator</h3>
-      <section>
-        <p>Cameron is a Music Education major who represents the chapter’s interests to the school. He’s involved in Rowan Concert Choir and ACDA, and is glad to discuss events, PD, or general meetings.</p>
-        <div class="button-row">
-          <a class="button" href="mailto:hysonc84@rowan.edu">Email</a>
-          <button class="button" data-close>Close</button>
-        </div>
-      </section>
-    </div>
-  </div>
+<h1>E-Board</h1><p class="small" style="text-align:center;margin:.25rem 0 1rem">Click a profile to read their full bio.</p>
+<div class="people">
+<!-- President -->
+<div class="card">
+<img alt="Hanna Shein portrait" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'" src="/assets/img/hanna-shein.jpg"/><p class="small role">President</p><h3>Hanna Shein</h3><p class="muted desc">Hanna is a junior Vocal Performance and Music Education double major, passionate about choral arts.</p><p class="muted contact"><a href="mailto:sheinh29@rowan.edu">sheinh29@rowan.edu</a></p><button class="button" data-modal="m1">Contact</button></div>
+<!-- Vice President -->
+<div class="card">
+<img alt="Adam Bretz portrait" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'" src="/assets/img/adam-bretz.jpg"/><p class="small role">Vice President</p><h3>Adam Bretz</h3><p class="muted desc">Adam is an Electrical &amp; Computer Engineering major with a Music (Organ Performance) minor.</p><p class="muted contact"><a href="mailto:bretza67@students.rowan.edu">bretza67@students.rowan.edu</a></p><button class="button" data-modal="m2">Contact</button></div>
+<!-- Treasurer -->
+<div class="card">
+<img alt="Jessenia Zavala portrait" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'" src="/assets/img/jessenia-zavala.jpg"/><p class="small role">Treasurer</p><h3>Jessenia Zavala</h3><p class="muted desc">Jessenia is a junior Vocal Music Education major who oversees finances, plans fundraisers, and leads engaging meetings.</p><p class="muted contact"><a href="mailto:zavala34@students.rowan.edu">zavala34@students.rowan.edu</a></p><button class="button" data-modal="m3">Contact</button></div>
+<!-- Secretary -->
+<div class="card">
+<img alt="Makayli Matias portrait" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'" src="/assets/img/makayli-matias.jpg"/><p class="small role">Secretary</p><h3>Makayli Matias</h3><p class="muted desc">Makayli is a sophomore studying Vocal Music Education.</p><p class="muted contact"><a href="mailto:matias85@rowan.edu">matias85@rowan.edu</a></p><button class="button" data-modal="m4">Contact</button></div>
+<!-- Social Media Coordinator -->
+<div class="card">
+<img alt="Emma Seidel portrait" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'" src="/assets/img/emma-seidel.jpg"/><p class="small role">Social Media Coordinator</p><h3>Emma Seidel</h3><p class="muted desc">Emma is a Music Education major who keeps the chapter’s social platforms updated with news and events.</p><p class="muted contact"><a href="mailto:seidel82@students.rowan.edu">seidel82@students.rowan.edu</a></p><button class="button" data-modal="m5">Contact</button></div>
+<!-- Senator -->
+<div class="card">
+<img alt="Cameron Hyson portrait" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'" src="/assets/img/cameron-hyson.jpg"/><p class="small role">Senator</p><h3>Cameron Hyson</h3><p class="muted desc">Cameron is a Music Education major who represents the chapter’s interests to the school.</p><p class="muted contact"><a href="mailto:hysonc84@rowan.edu">hysonc84@rowan.edu</a></p><button class="button" data-modal="m6">Contact</button></div>
+</div>
+<!-- Modals -->
+<div aria-labelledby="m1-title" aria-modal="true" class="modal" hidden="" id="m1" role="dialog">
+<div class="dialog" tabindex="-1">
+<h3 id="m1-title">Hanna Shein — President</h3>
+<section>
+<p>Hanna is a junior Vocal Performance and Music Education double major, passionate about choral arts. She has performed with NJ All State Mixed Choir, NAfME All Eastern Treble Choir, the Honors Performance Series at Carnegie Hall, and more. Favorite memories include performing at Carnegie Hall and with Chanticleer. She recently appeared as Hansel in Rowan Opera Company’s <em>Hansel and Gretel</em>. When not singing, she’s reading or hanging with her cat, Luna.</p>
+<div class="button-row">
+<a class="button" href="mailto:sheinh29@rowan.edu">Email</a>
+<button class="button" data-close="">Close</button>
+</div>
+</section>
+</div>
+</div>
+<div aria-labelledby="m2-title" aria-modal="true" class="modal" hidden="" id="m2" role="dialog">
+<div class="dialog" tabindex="-1">
+<h3 id="m2-title">Adam Bretz — Vice President</h3>
+<section>
+<p>Adam is an Electrical &amp; Computer Engineering major with a Music (Organ Performance) minor. He supports chapter operations, helps plan activities, and maintains the chapter website.</p>
+<div class="button-row">
+<a class="button" href="mailto:bretza67@students.rowan.edu">Email</a>
+<button class="button" data-close="">Close</button>
+</div>
+</section>
+</div>
+</div>
+<div aria-labelledby="m3-title" aria-modal="true" class="modal" hidden="" id="m3" role="dialog">
+<div class="dialog" tabindex="-1">
+<h3 id="m3-title">Jessenia Zavala — Treasurer</h3>
+<section>
+<p>Jessenia is a junior Vocal Music Education major who oversees finances, plans fundraisers, and leads engaging meetings. She’s involved in ACDA, Tri Alpha, and sings with Concert Choir.</p>
+<div class="button-row">
+<a class="button" href="mailto:zavala34@students.rowan.edu">Email</a>
+<button class="button" data-close="">Close</button>
+</div>
+</section>
+</div>
+</div>
+<div aria-labelledby="m4-title" aria-modal="true" class="modal" hidden="" id="m4" role="dialog">
+<div class="dialog" tabindex="-1">
+<h3 id="m4-title">Makayli Matias — Secretary</h3>
+<section>
+<p>Makayli is a sophomore studying Vocal Music Education. She manages communication and tracks point totals for NAfME and ACDA. She sings with Concert Choir and Voces and is a member of Opera Company.</p>
+<div class="button-row">
+<a class="button" href="mailto:matias85@rowan.edu">Email</a>
+<button class="button" data-close="">Close</button>
+</div>
+</section>
+</div>
+</div>
+<div aria-labelledby="m5-title" aria-modal="true" class="modal" hidden="" id="m5" role="dialog">
+<div class="dialog" tabindex="-1">
+<h3 id="m5-title">Emma Seidel — Social Media Coordinator</h3>
+<section>
+<p>Emma is a Music Education major who keeps the chapter’s social platforms updated with news and events. She also co-manages web content and liaises with neighboring collegiate chapters.</p>
+<div class="button-row">
+<a class="button" href="mailto:seidel82@students.rowan.edu">Email</a>
+<button class="button" data-close="">Close</button>
+</div>
+</section>
+</div>
+</div>
+<div aria-labelledby="m6-title" aria-modal="true" class="modal" hidden="" id="m6" role="dialog">
+<div class="dialog" tabindex="-1">
+<h3 id="m6-title">Cameron Hyson — Senator</h3>
+<section>
+<p>Cameron is a Music Education major who represents the chapter’s interests to the school. He’s involved in Rowan Concert Choir and ACDA, and is glad to discuss events, PD, or general meetings.</p>
+<div class="button-row">
+<a class="button" href="mailto:hysonc84@rowan.edu">Email</a>
+<button class="button" data-close="">Close</button>
+</div>
+</section>
+</div>
+</div>
 </main>
-
 <footer class="site-footer" role="contentinfo">
-  <div class="container" style="display:flex;align-items:center;gap:.75rem">
-    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
-    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
-  </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<div class="container" style="display:flex;align-items:center;gap:.75rem">
+<img alt="ACDA logo" height="28" src="/assets/icons/acda.png" style="border-radius:.4rem" width="28"/>
+<div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
+</div>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
-
 <script>
   // Minimal modal wiring (matches ACDA modal pattern)
   function openModal(m){ if(!m) return; m.classList.add('open'); m.removeAttribute('hidden'); m.querySelector('.dialog')?.focus(); }
@@ -241,6 +196,6 @@
     }
   });
 </script>
-<script src="/js/core.js" defer></script>
+<script defer="" src="/js/core.js"></script>
 </body>
 </html>
