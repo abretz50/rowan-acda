@@ -4,116 +4,87 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Rowan ACDA</title>
-<meta content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University." name="description"/>
+<title>Resources — Rowan ACDA</title>
+<meta content="Repertoire, clinic handouts, bylaws, and the Sight‑Singing Vault." name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/assets/icons/favicon-32.png" rel="icon"/>
+<meta content="#7A0A0A" name="theme-color"/>
 <link href="/css/base.css" rel="stylesheet"/>
 <link href="/css/layout.css" rel="stylesheet"/>
 <link href="/css/components.css" rel="stylesheet"/>
-<link href="/assets/icons/acda.png" rel="icon"/>
 </head>
 <body>
-<header class="site-header">
+<header class="site-header" role="banner">
 <div class="container header-inner">
-<a aria-label="Rowan ACDA home" class="brand" href="/index.html">
-<img alt="" class="brand-mark" src="/assets/icons/acda.png"/>
-<span class="brand-name">Rowan ACDA</span>
+<a aria-label="Rowan ACDA Home" class="brand" href="/">
+<img alt="ACDA logo" src="/assets/icons/acda.png"/>
+<span>Rowan ACDA</span>
 </a>
-<button aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation" class="nav-toggle">
-<span class="bar"></span><span class="bar"></span><span class="bar"></span>
-</button>
-<nav aria-label="Primary" class="site-nav" id="site-nav">
-<ul class="nav-list">
-<li><a class="nav-link" href="/index.html">Home</a></li>
-<li><a class="nav-link" href="/events.html">Events</a></li>
-<li><a class="nav-link" href="/members.html">Members</a></li>
-<li><a class="nav-link" href="/eboard.html">E-Board</a></li>
-<li class="menu">
-<button aria-expanded="false" aria-haspopup="true" class="menu-trigger">Resources</button>
-<div class="menu-panel" role="menu">
-<a href="/resources-sightsinging.html" role="menuitem">Sight-Singing Vault</a>
-<a href="/resources.html#repertoire" role="menuitem">Repertoire Lists</a>
-<a href="/resources.html#handouts" role="menuitem">Clinic Handouts</a>
-<a href="/resources.html#bylaws" role="menuitem">Bylaws</a>
-</div>
-</li>
-</ul>
+<button aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+<nav class="nav" id="site-nav" role="navigation">
+<a class="nav-link" data-nav="" href="/">Home</a>
+<a class="nav-link" data-nav="" href="/events.html">Events</a>
+<a class="nav-link" data-nav="" href="/members.html">Members</a>
+<a class="nav-link" data-nav="" href="/eboard.html">E-Board</a>
+<a class="nav-link" data-nav="" href="/resources.html">Resources</a>
 </nav>
 </div>
 </header>
-<main class="main">
-<section class="page-head">
-<div class="container">
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
 <h1>Resources</h1>
-<p class="muted">Sight-singing materials, repertoire lists, clinic handouts, and chapter bylaws.</p>
-<div class="toolbar">
-<a class="btn btn-primary" href="/resources-sightsinging.html">Go to Sight‑Singing Vault</a>
+<div class="grid cols-2">
+<div class="card">
+<h2>Repertoire</h2>
+<p><button class="btn btn-outline" data-modal="rep-modal">Open Repertoire Ideas</button></p>
+<p>Programming ideas for mixed, treble, and tenor‑bass ensembles.</p>
 </div>
-</div>
-</section><section class="container" id="sightsinging-picks"><h2>Sight‑Singing Picks (from Vault)</h2><div class="cards-grid"><article class="card"><div class="card-body"><h3>Do‑Mi‑Sol patterns (C Major)</h3><p class="muted">Quick link from the legacy vault</p><a class="btn btn-outline" href="/assets/resources/ss-c-major.pdf">Download</a></div></article><article class="card"><div class="card-body"><h3>La‑Ti leading‑tone drills</h3><p class="muted">Quick link from the legacy vault</p><a class="btn btn-outline" href="/assets/resources/ss-leading-tone.pdf">Download</a></div></article></div></section>
-<section class="container" id="repertoire">
-<h2>Repertoire Lists</h2>
-<div class="cards-grid">
-<article class="card">
-<div class="card-body">
-<h3>Warm‑ups &amp; Canons</h3>
-<p class="muted">Quick starters for any rehearsal.</p>
-<a class="btn btn-outline" href="#">View</a>
-</div>
-</article>
-<article class="card">
-<div class="card-body">
-<h3>Concert Program Ideas</h3>
-<p class="muted">Themes, voicings, and durations.</p>
-<a class="btn btn-outline" href="#">Download</a>
-</div>
-</article>
-</div>
-</section>
-<section class="container" id="handouts">
+<div class="card">
 <h2>Clinic Handouts</h2>
-<div class="cards-grid">
-<article class="card">
-<div class="card-body">
-<h3>Vocal Health Basics</h3>
-<p class="muted">Hydration, warm‑ups, hygiene.</p>
-<a class="btn btn-outline" href="#">View</a>
+<p><button class="btn btn-outline" data-modal="clinic-modal">Preview Handouts</button></p>
+<p>Slides and one‑pagers from our professional development sessions.</p>
 </div>
-</article>
 </div>
-</section>
-<section class="container" id="bylaws">
+<section style="margin-top:1.5rem">
+<div class="card">
 <h2>Bylaws</h2>
-<div class="cards-grid">
-<article class="card">
-<div class="card-body">
-<h3>Chapter Bylaws</h3>
-<p class="muted">Roles, elections, and procedures.</p>
-<a class="btn btn-outline" href="#">Download PDF</a>
-</div>
-</article>
+<p>Our chapter bylaws outline governance and procedures.</p>
 </div>
 </section>
+<section style="margin-top:1.5rem">
+<h2>Sight‑Singing Vault</h2>
+<p>Looking for graded patterns and PDF packets? Access the vault:</p>
+<ul><li><a href="/assets/resources/ss-c-major.pdf">Do‑Mi‑Sol patterns (C Major)</a></li><li><a href="/assets/resources/ss-leading-tone.pdf">La‑Ti leading‑tone drills</a></li></ul><p><a class="btn" href="/resources-sightsinging.html">Open the Vault</a></p>
+</section>
+<div class="modal" id="rep-modal"><div class="dialog" tabindex="-1">
+<h3>Repertoire Starters</h3>
+<p class="small">Quick ideas to spark programming (filler examples)</p>
+<ul>
+<li>Mixed: Gjeilo — <em>Northern Lights</em></li>
+<li>Treble: Szymko — <em>It Takes a Village</em></li>
+<li>TB: Perry — <em>Answers</em></li>
+<li>Seasonal: Lauridsen — <em>O Magnum Mysterium</em></li>
+</ul>
+<p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
+</div></div>
+<div class="modal" id="clinic-modal"><div class="dialog" tabindex="-1">
+<h3>Clinic Handouts (Sampler)</h3>
+<ul>
+<li>Warm‑ups that build tone + vowel alignment</li>
+<li>Quick rhythm games for middle schoolers</li>
+<li>Beginning conducting: 3 patterns to master</li>
+<li>Voice care 101 for busy weeks</li>
+</ul>
+<p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
+</div></div>
 </main>
-<footer class="site-footer">
-<div class="container footer-inner">
-<div class="footer-brand">
-<img alt="" class="brand-mark sm" src="/assets/icons/acda.png"/>
-<strong>Rowan ACDA</strong>
-<p class="muted">American Choral Directors Association — Rowan University</p>
+<footer class="site-footer" role="contentinfo">
+<div class="container" style="display:flex;align-items:center;gap:.75rem">
+<img alt="ACDA logo" height="28" src="/assets/icons/acda.png" style="border-radius:.4rem" width="28"/>
+<div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
 </div>
-<div class="footer-links">
-<a href="/events.html">Events</a>
-<a href="/members.html">Members</a>
-<a href="/eboard.html">E-Board</a>
-<a href="/resources.html">Resources</a>
-</div>
-<div class="footer-meta">
-<p class="muted">© 2025 Rowan ACDA. Designed for accessibility and performance.</p>
-</div>
-</div>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
 <script defer="" src="/js/core.js"></script>
 </body>
