@@ -13,7 +13,17 @@
 <meta content="#7A0A0A" name="theme-color"/>
 <link href="/css/base.css" rel="stylesheet"/>
 <link href="/css/layout.css" rel="stylesheet"/>
-<link href="/css/components.css" rel="stylesheet"/>
+<link href="/css/components.css" rel="stylesheet"/><style>
+/* Scoped hero styles for Resources page */
+.hero-banner{ position:relative; border-radius:.75rem; overflow:hidden; margin: .5rem 0 1.25rem; }
+.hero-banner .hero-media{ height: 280px; background-size: cover; background-position: center; }
+@media (min-width: 900px){ .hero-banner .hero-media{ height: 360px; } }
+.hero-banner .hero-overlay{ position:absolute; inset:0; background: rgba(122,10,10,0.55); mix-blend-mode: multiply; }
+.hero-banner .hero-content{ position:absolute; inset:0; display:flex; align-items:center; }
+.hero-banner .hero-content.container{ padding: 1.25rem; }
+.hero-banner h1{ color:#fff; margin:0; line-height:1.1; }
+.hero-banner .subtitle{ color:#fff; margin-top:.5rem; max-width: 62ch; }
+</style>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -32,8 +42,7 @@
 </nav>
 </div>
 </header>
-<main class="container" role="main" style="padding:1.25rem 0 2rem">
-<h1>Resources</h1>
+<main class="container" role="main" style="padding:1.25rem 0 2rem"><section class="hero-banner"><div class="hero-media" style="background-image:url('/assets/img/ext2_Screenshot 2025-08-28 154957.png')"></div><div class="hero-overlay"></div><div class="hero-content container"><h1>Resources</h1><p class="subtitle">Search here for ACDA and Rowan Choirs resources. Reach out if you need anything not listed here or have something to add.</p></div></section>
 <div class="grid cols-2">
 <div class="card">
 <h2>Choral Show &amp; Tell</h2>
