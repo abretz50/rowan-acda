@@ -35,3 +35,24 @@ document.addEventListener('keydown', (e)=>{
     document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
   }
 });
+
+// Highlight active nav item
+document.addEventListener('DOMContentLoaded', () => {
+  const norm = p => p
+    .replace(/\/index\.html?$/,'/')
+    .replace(/\/+$/,'/') || '/';
+
+  const here = norm(location.pathname);
+  let best = null;
+
+  document.querySelectorAll('#site-nav a[data-nav]').forEach(a => {
+    const href = norm(new URL(a.getAttribute('href'), location.origin).pathname);
+    // exact or prefix match (prefer the longest match)
+    const isMatch = (here === href) || (href !== '/' && here.startsWith(href));
+    if (isMatch && (!best || href.length > best.len)) {
+      best = { el: a, len: href.length };
+    }
+  });
+
+  if (best) best.el.setAttribute('aria-current', 'page');
+});
