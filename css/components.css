@@ -922,4 +922,26 @@ html, body{ background: var(--page-bg); }
   border: 1px solid var(--footer-border);
 }
 
+/* Brand text in the light footer should be dark, not red/white */
+.acda-footer .brand--footer{
+  color: var(--footer-text) !important;     /* e.g., #111 */
+  text-decoration: none;
+}
+.acda-footer .brand--footer .brand-title{
+  color: var(--footer-text) !important;
+  font-weight: 700;
+}
+.acda-footer .brand--footer .brand-subtitle{
+  color: var(--footer-muted) !important;    /* e.g., #6b7280 */
+}
+
+/* Keep other footer links red, but don't recolor the brand link */
+.acda-footer a,
+.acda-footer a:visited{
+  color: var(--acda-red);
+}
+.acda-footer .brand--footer:link,
+.acda-footer .brand--footer:visited{
+  color: var(--footer-text) !important;
+}
 
