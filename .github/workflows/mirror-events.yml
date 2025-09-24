@@ -2,47 +2,79 @@ name: Mirror events CSV hourly
 
 on:
   schedule:
-    - cron: "0 * * * *"   # every hour, on the hour (UTC)
-  workflow_dispatch:       # manual run button
+    - cron: "0 * * * *"   # every hour (UTC)
+  workflow_dispatch:
+
+# prevent concurrent runs from racing each other
+concurrency:
+  group: mirror-events
+  cancel-in-progress: false
 
 permissions:
   contents: write
+
+env:
+  BRANCH: main
+  SRC_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv
+  DEST: assets/data/events.csv
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH }}
+          fetch-depth: 0   # needed for rebase
 
       - name: Fetch latest CSV
-        env:
-          SRC_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv
-          DEST: assets/data/events.csv
         run: |
+          set -euo pipefail
           mkdir -p "$(dirname "$DEST")"
-          tmp=$(mktemp)
+          tmp="$(mktemp)"
           curl -fsSL --retry 3 --retry-delay 5 --max-time 30 \
                -A "RowanACDA/1.0 (GitHub Action)" \
                "$SRC_URL" -o "$tmp"
 
           if [ ! -s "$tmp" ]; then
-            echo "Download empty or failed"; exit 1
+            echo "Download empty or failed"
+            exit 1
           fi
 
           if [ -f "$DEST" ] && cmp -s "$tmp" "$DEST"; then
-            echo "No changes."; exit 0
+            echo "No changes."
+            rm -f "$tmp"
+            echo "NO_CHANGES=1" >> "$GITHUB_ENV"
+            exit 0
           fi
 
           mv "$tmp" "$DEST"
+          echo "NO_CHANGES=0" >> "$GITHUB_ENV"
 
-      - name: Commit & push if changed
+      - name: Commit change
+        if: env.NO_CHANGES == '0'
         run: |
-          if git status --porcelain | grep -q "assets/data/events.csv"; then
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add assets/data/events.csv
-            git commit -m "chore(data): mirror events.csv from Google Sheets [skip ci]"
-            git push
-          else
-            echo "Nothing to commit."
-          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "chore(data): mirror events.csv from Google Sheets [skip ci]"
+
+      - name: Rebase on remote & push
+        if: env.NO_CHANGES == '0'
+        run: |
+          set -e
+          # rebase onto the latest remote to avoid non-fast-forward errors
+          git pull --rebase --autostash origin "$BRANCH" || {
+            echo "Rebase failed; aborting to keep history clean."
+            git rebase --abort
+            exit 1
+          }
+
+          # push (retry once in case of a race)
+          git push origin HEAD:"$BRANCH" || {
+            echo "Non-fast-forward; refetch + rebase once, then retry push."
+            git fetch origin "$BRANCH"
+            git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
+            git push origin HEAD:"$BRANCH"
+          }
