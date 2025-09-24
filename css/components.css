@@ -780,3 +780,37 @@ html, body{ background: var(--page-bg); }
     border-left: 3px solid var(--accent, #7A0A0A);
   }
 }
+
+/* Keep desktop navbar text white */
+@media (min-width: 760px){
+  /* Brand text */
+  .site-header .brand span { color: #fff; }
+
+  /* All nav links */
+  .site-header .nav .nav-link,
+  .site-header .nav .nav-link:link,
+  .site-header .nav .nav-link:visited {
+    color: #fff;
+  }
+
+  /* Hover/focus */
+  .site-header .nav .nav-link:hover,
+  .site-header .nav .nav-link:focus {
+    color: #fff;
+    opacity: .85;              /* subtle feedback */
+  }
+
+  /* Active (aria-current) — keep white, too */
+  .site-header .nav .nav-link[aria-current="page"] {
+    color: #fff;
+    font-weight: 700;
+  }
+  /* Active underline uses currentColor => white */
+  .site-header .nav .nav-link[aria-current="page"]::after {
+    background: #fff;
+  }
+
+  /* If your header has a transparent banner overlay, this helps legibility */
+  .site-header { text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+}
+
