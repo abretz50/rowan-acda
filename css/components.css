@@ -885,5 +885,41 @@ html, body{ background: var(--page-bg); }
   /* remove any old underline indicator */
   .site-header .nav .nav-link[aria-current="page"]::after{ content:none !important; }
 }
+/* Light footer theme */
+:root{
+  --acda-red: #7A0A0A;
+  --footer-bg: #f3f4f6;     /* light grey, darker than white base */
+  --footer-text: #111;      /* body text on light bg */
+  --footer-muted: #6b7280;  /* softer text */
+  --footer-border: #e3e6ea; /* subtle top/bounds */
+}
+
+.acda-footer{
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  border-top: 1px solid var(--footer-border);
+}
+
+/* Headings + muted text on light bg */
+.acda-footer h4{ color: var(--footer-text); }
+.acda-footer .muted{ color: var(--footer-muted); }
+
+/* Links red (incl. visited); keep good focus/hover */
+.acda-footer a,
+.acda-footer a:visited{
+  color: var(--acda-red);
+  text-decoration: none;
+}
+.acda-footer a:hover,
+.acda-footer a:focus{
+  text-decoration: underline;
+  color: #5d0606; /* slightly darker red on hover/focus */
+}
+
+/* Brand avatar ring tuned for light bg */
+.acda-footer .brand--footer img{
+  background: #fff;
+  border: 1px solid var(--footer-border);
+}
 
 
