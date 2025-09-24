@@ -226,11 +226,33 @@
   </div>
 </footer>
 
-
 <script>
 /* Events logic + ACDA modal pattern */
 (function(){
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
+  // === CSV sources + robust fetch with fallback ===
+  const PRIMARY_CSV = "/assets/data/events.csv"; // mirrored copy
+  const BACKUP_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
+
+  async function fetchCSV(){
+    const ctl = new AbortController();
+    const t = setTimeout(()=>ctl.abort(), 10000);
+
+    async function get(url){
+      const r = await fetch(url, { signal: ctl.signal, cache: "no-cache" });
+      if (!r.ok) throw new Error("HTTP "+r.status);
+      return r.text();
+    }
+
+    try {
+      const txt = await get(PRIMARY_CSV);
+      clearTimeout(t);
+      return txt;
+    } catch {
+      try { return await get(BACKUP_CSV); }
+      finally { clearTimeout(t); }
+    }
+  }
+
   const listEl = document.getElementById('eventsList');
   const chipsBar = document.querySelector('.filters .chips');
   const chipButtons = Array.from(chipsBar?.querySelectorAll('button[data-filter]') || []);
@@ -398,7 +420,7 @@
             '<h3 class="modal-title" id="modal-'+ev.id+'-title">'+(ev.title||'')+'</h3>'+
             '<button class="modal-close" type="button" data-close aria-label="Close">✕</button>'+
           '</div>'+
-          '<section style="text-align:center">'+
+          <section style="text-align:center">'+
             '<img class="convention-thumb" src="'+img+'" alt="'+(ev.title||'Event photo')+'" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
             '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
             (ev.details ? '<p>'+ev.details+'</p>' : '')+
@@ -555,7 +577,7 @@
 
   async function init(){
     try{
-      const txt = await fetch(CSV_URL, {cache:'no-store'}).then(r=>r.text());
+      const txt = await fetchCSV(); // ← uses primary, falls back to Google Sheets
       const recs = toRecords(parseCSV(txt));
       const events = buildEvents(recs);
       if(!events.length) throw new Error('No events parsed');
@@ -568,6 +590,7 @@
   window.addEventListener('DOMContentLoaded', init);
 })();
 </script>
+
 
 <script src="/js/core.js" defer></script>
 </body>
