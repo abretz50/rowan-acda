@@ -9,15 +9,16 @@
 const GROUPS = {
   /* ——— Your requested groups ——— */
 
-  "Musical Theater": [
-    { label: "MT — Treble Cuts", url: "/assets/pdfs/musical-theater/treble-cuts.pdf" },
-    { label: "MT — TB Cuts",     url: "/assets/pdfs/musical-theater/tb-cuts.pdf" },
-    { label: "MT — Audition Book", url: "/assets/pdfs/musical-theater/audition-book.pdf" }
-  ],
+  
   "Choral Repertoire": [
     { label: "Mixed (SATB) Packet 1", url: "/assets/pdfs/choral-repertoire/satb-packet-1.pdf" },
     { label: "Treble (SSA) Packet 1", url: "/assets/pdfs/choral-repertoire/ssa-packet-1.pdf" },
     { label: "TB (TTBB) Packet 1",    url: "/assets/pdfs/choral-repertoire/ttbb-packet-1.pdf" }
+  ],
+"Musical Theater": [
+    { label: "MT — Treble Cuts", url: "/assets/pdfs/musical-theater/treble-cuts.pdf" },
+    { label: "MT — TB Cuts",     url: "/assets/pdfs/musical-theater/tb-cuts.pdf" },
+    { label: "MT — Audition Book", url: "/assets/pdfs/musical-theater/audition-book.pdf" }
   ],
   "Church Music": [
     { label: "Hymn Tunes Set A", url: "/assets/pdfs/church-music/hymn-tunes-a.pdf" },
