@@ -229,13 +229,48 @@
   </div>
 </div>
 
-<footer class="site-footer" role="contentinfo">
-  <div class="container" style="display:flex;align-items:center;gap:.75rem">
-    <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem">
-    <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
+<footer class="site-footer acda-footer" role="contentinfo">
+  <div class="container footer-grid">
+    <!-- Brand / blurb -->
+    <div class="footer-brand">
+      <div class="brand--footer">
+        <img src="/assets/icons/acda.png" alt="Rowan ACDA logo" width="40" height="40">
+        <div class="brand-text">
+          <strong>Rowan ACDA</strong>
+          <div class="muted">Collegiate Chapter</div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:.75rem">
+        American Choral Directors Association at Rowan University. We sing, lead, and serve through choral music.
+      </p>
+    </div>
+
+    <!-- Navigate -->
+    <nav aria-label="Footer" class="footer-nav">
+      <h4>Navigate</h4>
+      <ul class="list-unstyled">
+        <li><a href="/events.html">Events</a></li>
+        <li><a href="/members.html">Members</a></li>
+        <li><a href="/eboard.html">E-Board</a></li>
+        <li><a href="/resources.html">Resources</a></li>
+      </ul>
+    </nav>
+
+    <!-- Connect -->
+    <div class="footer-connect">
+      <h4>Connect</h4>
+      <ul class="list-unstyled">
+        <li><a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a></li>
+        <li><a href="https://www.instagram.com/rowanacda/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+      <p class="small muted footer-note">
+        Site theme by Adam Bretz 
+      </p>
+      <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
+    </div>
   </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
+
 
 <!-- Fading slideshow JS -->
 <script>
