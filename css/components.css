@@ -944,4 +944,115 @@ html, body{ background: var(--page-bg); }
 .acda-footer .brand--footer:visited{
   color: var(--footer-text) !important;
 }
+/* Footer palette (examples) */
+:root{
+  --footer-bg: #F1F3F5;          /* your light gray */
+  --footer-text: #1F2937;        /* dark slate for titles */
+  --footer-muted: #6B7280;       /* subtler gray for subtitle/body */
+  --acda-red: #7A0A0A;
+}
+
+/* Brand text in footer: always dark, never underlined, across states */
+.acda-footer .brand--footer,
+.acda-footer .brand--footer:link,
+.acda-footer .brand--footer:visited,
+.acda-footer .brand--footer:hover,
+.acda-footer .brand--footer:active,
+.acda-footer .brand--footer:focus {
+  color: var(--footer-text) !important;
+  text-decoration: none !important;
+}
+
+/* Title & subtitle colors */
+.acda-footer .brand--footer .brand-title { 
+  color: var(--footer-text) !important; 
+  font-weight: 700;
+}
+.acda-footer .brand--footer .brand-subtitle { 
+  color: var(--footer-muted) !important; 
+}
+
+/* Footer links are red — but exclude the brand link */
+.acda-footer a:not(.brand--footer),
+.acda-footer a:not(.brand--footer):visited {
+  color: var(--acda-red);
+  text-decoration: underline;
+}
+.acda-footer a:not(.brand--footer):hover,
+.acda-footer a:not(.brand--footer):focus {
+  text-decoration: none; /* or keep underline if you prefer */
+}
+/* ===== Footer palette (with sane fallbacks) ===== */
+:root{
+  --acda-red:   #7A0A0A;
+  --footer-bg:  #F1F3F5;   /* light grey, darker than a white base */
+  --footer-text:#1F2937;   /* slate-800 */
+  --footer-muted:#6B7280;  /* slate-500 */
+}
+
+/* Footer container */
+.acda-footer{
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  border-top: 1px solid var(--border, #e5e7eb);
+  padding: 2rem 0;
+}
+
+/* 3-column grid like your screenshot */
+.acda-footer .footer-grid{
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem 3rem;
+  align-items: start;
+}
+
+/* Brand row */
+.acda-footer .brand--footer{
+  display: flex; align-items: center; gap: .75rem;
+}
+.acda-footer .brand--footer img{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border, #e5e7eb);
+  background: #fff;
+}
+.acda-footer .brand--footer strong{ 
+  color: var(--footer-text); 
+  font-size: 1.125rem; /* ≈18px */
+  line-height: 1.1;
+}
+.acda-footer .brand--footer .muted,
+.acda-footer .footer-brand .muted{
+  color: var(--footer-muted);
+}
+
+/* Section titles */
+.acda-footer h4{
+  margin: 0 0 .5rem;
+  color: var(--footer-text);
+  font-weight: 700;
+}
+
+/* Links: ACDA red (exclude brand block since it's not a link) */
+.acda-footer a{
+  color: var(--acda-red);
+  text-decoration: underline;
+}
+.acda-footer a:hover,
+.acda-footer a:focus{
+  text-decoration: none;
+}
+
+/* Lists */
+.acda-footer .list-unstyled{ list-style: none; margin: 0; padding: 0; }
+.acda-footer .list-unstyled li + li{ margin-top: .4rem; }
+
+/* Small/notes */
+.acda-footer .footer-note{ margin-top: .75rem; }
+
+/* Responsive: stack to one column on small screens */
+@media (max-width: 900px){
+  .acda-footer .footer-grid{
+    grid-template-columns: 1fr;
+  }
+}
 
