@@ -1056,3 +1056,38 @@ html, body{ background: var(--page-bg); }
   }
 }
 
+/* Mobile dropdown: make ALL items use the ghost-pill look */
+@media (max-width: 800px){
+  /* Base look for every link in the opened mobile menu */
+  .site-header #site-nav a.nav-link{
+    display: flex;                 /* center text perfectly */
+    align-items: center;
+    justify-content: center;
+    height: 46px;                  /* same height for all */
+    padding: 0 18px;
+    margin: 14px auto;             /* the stacked spacing you like */
+    width: min(92vw, 280px);       /* nice pill width */
+    text-align: center;
+    font-weight: 700;
+    border-radius: 14px;           /* same shape as ghost hover */
+    border: 1.6px solid var(--border);
+    background: var(--surface-2, #f7f3f3);
+    color: #7A0A0A;                /* red text */
+    box-shadow: var(--shadow);
+  }
+
+  /* Make the "current" state look identical (no special highlight) */
+  .site-header #site-nav a.nav-link[data-current="true"],
+  .site-header #site-nav a.nav-link.is-active{
+    background: var(--surface-2, #f7f3f3);
+    color: #7A0A0A;
+    border: 1.6px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  /* If you added any active underline/left bar earlier, kill it on mobile */
+  .site-header #site-nav a.nav-link::before,
+  .site-header #site-nav a.nav-link::after{
+    content: none !important;
+  }
+}
