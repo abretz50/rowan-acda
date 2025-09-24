@@ -751,3 +751,32 @@ html, body{ background: var(--page-bg); }
 
 
 
+/* Active nav state */
+.nav .nav-link[aria-current="page"]{
+  color: var(--accent, #7A0A0A);
+  font-weight: 700;
+  position: relative;
+}
+
+/* Underline pill for desktop */
+@media (min-width: 760px){
+  .nav .nav-link[aria-current="page"]::after{
+    content:"";
+    position:absolute; left:.5rem; right:.5rem; bottom:-.35rem;
+    height:3px; border-radius:2px;
+    background: currentColor;
+  }
+}
+
+/* For mobile menu (block buttons) */
+@media (max-width: 759px){
+  .nav .nav-link{
+    display:block;
+    padding:.9rem 1rem;
+    border-top:1px solid var(--border);
+  }
+  .nav .nav-link[aria-current="page"]{
+    background: rgba(122,10,10,.06);
+    border-left: 3px solid var(--accent, #7A0A0A);
+  }
+}
