@@ -315,9 +315,42 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
 </script>
 
 <script>
-/* Home: show only the next 3 upcoming events with same functionality as Events page */
+/* Home: show only the next 3 upcoming events (with primary CSV + Google Sheet fallback) */
 (function(){
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
+  // === CSV sources + robust fetch with fallback ===
+  const PRIMARY_CSV = "/assets/data/events.csv"; // mirrored copy on your site
+  const BACKUP_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
+
+  async function fetchCSV(){
+    const isIOS = /iP(hone|ad|od)/i.test(navigator.userAgent);
+    const isMobileSafari = isIOS && /Safari/i.test(navigator.userAgent) && !/CriOS|FxiOS/i.test(navigator.userAgent);
+
+    const ctl = new AbortController();
+    const t = setTimeout(()=>ctl.abort(), 10000);
+
+    const baseOpts = {
+      mode: 'cors',
+      credentials: 'omit',
+      signal: ctl.signal,
+      ...(isMobileSafari ? {} : { cache: 'no-cache' })
+    };
+
+    async function get(url){
+      const r = await fetch(url, baseOpts);
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return r.text();
+    }
+
+    try{
+      const txt = await get(PRIMARY_CSV);
+      clearTimeout(t);
+      return txt;
+    } catch {
+      try { return await get(BACKUP_CSV); }
+      finally { clearTimeout(t); }
+    }
+  }
+
   const listEl = document.getElementById('home-events');
 
   /* ---------- CSV helpers ---------- */
@@ -349,9 +382,13 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
   /* ---------- Date/time helpers (robust) ---------- */
   function parseDate(dStr){
     if(!dStr) return null;
-    const m = dStr.trim().match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})$/);
+    const s = dStr.trim();
+    // allow M/D or M/D/YY or M/D/YYYY
+    const m = s.match(/^(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?$/);
     if(!m) return null;
-    let mm=+m[1], dd=+m[2], yy=+m[3]; if(yy<100) yy=2000+yy;
+    let mm=+m[1], dd=+m[2];
+    let yy = m[3] ? +m[3] : (new Date()).getFullYear();
+    if(yy<100) yy=2000+yy;
     return new Date(yy, mm-1, dd);
   }
   function parseTime(tStr){
@@ -361,7 +398,7 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
     if(/\bmidnight\b/.test(s)) return {h:0,m:0};
     const m = s.match(/^\s*(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?\s*m\.?)?\s*$/i);
     if(!m) return null;
-    let h=parseInt(m[1],10), mm=m[2]?parseInt(m[2],10):0, ap=m[3]?m[3].replace(/\./g,'').trim():''; 
+    let h=parseInt(m[1],10), mm=m[2]?parseInt(m[2],10):0, ap=m[3]?m[3].replace(/\./g,'').trim():'';
     if(ap){ if(ap.startsWith('p') && h<12) h+=12; if(ap.startsWith('a') && h===12) h=0; }
     return {h, m:mm};
   }
@@ -516,30 +553,6 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
     });
   }
 
-  /* ---------- Mobile-safe fetch with timeout ---------- */
-  async function fetchCSV(url){
-    const isIOS = /iP(hone|ad|od)/i.test(navigator.userAgent);
-    const isMobileSafari = isIOS && /Safari/i.test(navigator.userAgent) && !/CriOS|FxiOS/i.test(navigator.userAgent);
-
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 10000);
-
-    const opts = {
-      mode: 'cors',
-      credentials: 'omit',
-      signal: controller.signal,
-      ...(isMobileSafari ? {} : { cache: 'no-cache' })
-    };
-
-    try{
-      const resp = await fetch(url, opts);
-      if(!resp.ok) throw new Error('HTTP ' + resp.status);
-      return await resp.text();
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
   function openModal(m){ if(!m) return; m.hidden=false; m.classList.add('open'); document.body.style.overflow='hidden'; m.querySelector('.dialog')?.focus({preventScroll:true}); }
   function closeModal(m){ if(!m) return; m.classList.remove('open'); m.hidden=true; document.body.style.overflow=''; }
 
@@ -577,7 +590,7 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
   async function init(){
     if(!listEl.innerHTML.trim()){ listEl.innerHTML = '<p class="kicker">Loading events…</p>'; }
     try{
-      const csv = await fetchCSV(CSV_URL);
+      const csv = await fetchCSV(); // ← uses primary, falls back to Google Sheet
       const recs = toRecords(parseCSV(csv));
       const all = buildEvents(recs);
 
@@ -602,6 +615,7 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
   window.addEventListener('DOMContentLoaded', init);
 })();
 </script>
+
 
 <script src="/js/core.js" defer></script>
 </body>
