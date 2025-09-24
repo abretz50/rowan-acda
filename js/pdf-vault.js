@@ -3,41 +3,30 @@
   // ====== SETTINGS ======
   const PASS = "acda2025"; // <— your password
 
-  // All your vault content lives here.
-  // Keep: const PASS = "acda2025";
+  // ====== CONTENT ======
+  const GROUPS = {
+    "SS#1: Musical Theater Day": [
+      { label: "Sunday in the Park with George — Sunday", url: "/assets/pdfs/musical-theater/Sunday%20in%20the%20Park%20with%20George%20-%20Sunday.pdf" },
+      { label: "Hamilton — Alexander Hamilton",            url: "/assets/pdfs/musical-theater/Hamilton%20-%20Alexander%20Hamilton.pdf" },
+      { label: "Dear Evan Hansen — You Will Be Found",     url: "/assets/pdfs/musical-theater/Dear%20Evan%20Hansen%20-%20You%20Will%20Be%20Found.pdf" },
+      { label: "Les Miserables — Medley",                  url: "/assets/pdfs/musical-theater/Les%20Miserables%20-%20Medley.pdf" },
+      { label: "Hadestown — Wait for Me",                  url: "/assets/pdfs/musical-theater/Hadestown%20-%20Wait%20for%20Me.pdf" },
+      { label: "Into the Woods — No One Is Alone",         url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
+      { label: "West Side — Somewhere",                    url: "/assets/pdfs/musical-theater/West%20Side%20-%20Somewhere.pdf" }
+    ],
 
-const GROUPS = {
-  /* ——— Your requested groups ——— */
+    "SS#2: Cabaret Rehearsal": [
+      { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" }
+    ],
 
-  
- "SS#1: Musical Theater Day": [
-  { label: "Sunday in the Park with George — Sunday", url: "/assets/pdfs/musical-theater/Sunday%20in%20the%20Park%20with%20George%20-%20Sunday.pdf" },
-  { label: "Hamilton — Alexander Hamilton",            url: "/assets/pdfs/musical-theater/Hamilton%20-%20Alexander%20Hamilton.pdf" },
-  { label: "Dear Evan Hansen — You Will Be Found",     url: "/assets/pdfs/musical-theater/Dear%20Evan%20Hansen%20-%20You%20Will%20Be%20Found.pdf" },
-  { label: "Les Miserables — Medley",                  url: "/assets/pdfs/musical-theater/Les%20Miserables%20-%20Medley.pdf" },
-  { label: "Hadestown — Wait for Me",                  url: "/assets/pdfs/musical-theater/Hadestown%20-%20Wait%20for%20Me.pdf" },
-  { label: "Into the Woods — No One Is Alone",         url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
-  { label: "West Side — Somewhere",                    url: "/assets/pdfs/musical-theater/West%20Side%20-%20Somewhere.pdf" }
-],
-
-"SS#2: Cabaret Rehearsal": [
-  { label: "Into the Woods — No One Is Alone",         url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" } ]
- 
-"SS#3: Church Gig 101": []
-
-"SS#4: Professional Development": []
-
-"SS#5: Latin American Music": []
-
-"SS#6: Conducting 101": []
-
-"SS#7: Student Compositions": []
-
-"SS#8: Barbershop": []
-
-"SS#9: Holiday": []
-  
-
+    "SS#3: Church Gig 101": [],
+    "SS#4: Professional Development": [],
+    "SS#5: Latin American Music": [],
+    "SS#6: Conducting 101": [],
+    "SS#7: Student Compositions": [],
+    "SS#8: Barbershop": [],
+    "SS#9: Holiday": []
+  };
 
   // ====== DOM ======
   const sel = document.getElementById("group");
@@ -82,10 +71,8 @@ const GROUPS = {
   }
 
   function openFile(url, btnEl, row) {
-    // mark selected
     row.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed","false"));
     btnEl.setAttribute("aria-pressed","true");
-    // show pdf
     viewer.src = url;
     viewer.classList.remove("hidden");
   }
@@ -105,9 +92,17 @@ const GROUPS = {
     renderTabs(GROUPS[chosen]);
   }
 
-  // Events
+  // ====== Events ======
   btn?.addEventListener("click", unlock);
   pw?.addEventListener("keydown", (e) => { if (e.key === "Enter") unlock(); });
+  // if already unlocked, changing the group updates immediately
+  sel?.addEventListener("change", () => {
+    if (pw.value.trim() === PASS) {
+      status.textContent = "Unlocked.";
+      status.style.color = "var(--muted)";
+      renderTabs(GROUPS[sel.value]);
+    }
+  });
 
   // Boot
   populateCategories();
