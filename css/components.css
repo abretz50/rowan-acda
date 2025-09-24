@@ -846,4 +846,44 @@ html, body{ background: var(--page-bg); }
   }
 }
 
+/* Desktop: perfectly centered pill links */
+@media (min-width: 760px){
+  .site-header .nav{
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+  }
+
+  .site-header .nav .nav-link{
+    display: inline-flex;           /* fixes baseline alignment */
+    align-items: center;            /* vertical centering */
+    justify-content: center;        /* horizontal centering */
+    height: 36px;                   /* pill height (tweak if needed) */
+    padding: 0 .9rem;               /* side padding only */
+    line-height: 1;                 /* no extra vertical space */
+    border-radius: 999px;
+    vertical-align: middle;         /* if mixed with other inline elements */
+    text-decoration: none;
+  }
+
+  /* Ghost hover */
+  .site-header .nav .nav-link:hover,
+  .site-header .nav .nav-link:focus-visible{
+    background: rgba(255,255,255,.12);
+    box-shadow: inset 0 0 0 1.6px rgba(255,255,255,.35);
+    color:#fff;
+  }
+
+  /* Active = same pill, slightly stronger */
+  .site-header .nav .nav-link[aria-current="page"]{
+    background: rgba(255,255,255,.18);
+    box-shadow: inset 0 0 0 1.6px rgba(255,255,255,.55);
+    color:#fff;
+    font-weight: 700;
+  }
+
+  /* remove any old underline indicator */
+  .site-header .nav .nav-link[aria-current="page"]::after{ content:none !important; }
+}
+
 
