@@ -288,9 +288,13 @@
   /* ---------- Date/time helpers (ROBUST) ---------- */
   function parseDate(dStr){
     if(!dStr) return null;
-    const m = dStr.trim().match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})$/);
+    const s = dStr.trim();
+    // allow M/D or M/D/YY or M/D/YYYY
+    const m = s.match(/^(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?$/);
     if(!m) return null;
-    let mm=+m[1], dd=+m[2], yy=+m[3]; if(yy<100) yy=2000+yy;
+    let mm=+m[1], dd=+m[2];
+    let yy = m[3] ? +m[3] : (new Date()).getFullYear();
+    if(yy<100) yy=2000+yy;
     return new Date(yy, mm-1, dd);
   }
 
@@ -420,7 +424,7 @@
             '<h3 class="modal-title" id="modal-'+ev.id+'-title">'+(ev.title||'')+'</h3>'+
             '<button class="modal-close" type="button" data-close aria-label="Close">✕</button>'+
           '</div>'+
-          <section style="text-align:center">'+
+          '<section style="text-align:center">'+
             '<img class="convention-thumb" src="'+img+'" alt="'+(ev.title||'Event photo')+'" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
             '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
             (ev.details ? '<p>'+ev.details+'</p>' : '')+
