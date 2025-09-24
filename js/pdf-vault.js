@@ -4,30 +4,43 @@
   const PASS = "acda2025"; // <— your password
 
   // All your vault content lives here.
-  // Replace the sample URLs with your real PDF paths.
-  const GROUPS = {
-    "Musical Theater Day": [
-      { label: "Set 1 — Treble", url: "/assets/pdfs/mt_day/set1_treble.pdf" },
-      { label: "Set 1 — TB",     url: "/assets/pdfs/mt_day/set1_tb.pdf" },
-      { label: "Audition Cuts",  url: "/assets/pdfs/mt_day/audition_cuts.pdf" }
-    ],
-    "Warm-ups": [
-      { label: "5-Note Patterns", url: "/assets/pdfs/warmups/5-note-patterns.pdf" },
-      { label: "Descending Scales", url: "/assets/pdfs/warmups/descending-scales.pdf" }
-    ],
-    "Level 1 Patterns": [
-      { label: "Do-Mi-So Sets", url: "/assets/pdfs/level1/do-mi-so.pdf" },
-      { label: "Stepwise in C", url: "/assets/pdfs/level1/stepwise-c.pdf" }
-    ],
-    "Holiday Pack": [
-      { label: "Carol Packet (Treble)", url: "/assets/pdfs/holiday/treble-carols.pdf" },
-      { label: "Carol Packet (TB)",     url: "/assets/pdfs/holiday/tb-carols.pdf" }
-    ],
-    "Rhythm Drills": [
-      { label: "Simple Meter 1", url: "/assets/pdfs/rhythm/simple-meter-1.pdf" },
-      { label: "Compound Meter", url: "/assets/pdfs/rhythm/compound-meter.pdf" }
-    ]
-  };
+  // Keep: const PASS = "acda2025";
+
+const GROUPS = {
+  /* ——— Your requested groups ——— */
+
+  "Musical Theater": [
+    { label: "MT — Treble Cuts", url: "/assets/pdfs/musical-theater/treble-cuts.pdf" },
+    { label: "MT — TB Cuts",     url: "/assets/pdfs/musical-theater/tb-cuts.pdf" },
+    { label: "MT — Audition Book", url: "/assets/pdfs/musical-theater/audition-book.pdf" }
+  ],
+  "Choral Repertoire": [
+    { label: "Mixed (SATB) Packet 1", url: "/assets/pdfs/choral-repertoire/satb-packet-1.pdf" },
+    { label: "Treble (SSA) Packet 1", url: "/assets/pdfs/choral-repertoire/ssa-packet-1.pdf" },
+    { label: "TB (TTBB) Packet 1",    url: "/assets/pdfs/choral-repertoire/ttbb-packet-1.pdf" }
+  ],
+  "Church Music": [
+    { label: "Hymn Tunes Set A", url: "/assets/pdfs/church-music/hymn-tunes-a.pdf" },
+    { label: "Anthems Packet",   url: "/assets/pdfs/church-music/anthems-packet.pdf" }
+  ],
+  "Barbershop": [
+    { label: "Barbershop — Polecats", url: "/assets/pdfs/barbershop/polecats.pdf" },
+    { label: "Barbershop — Tags",     url: "/assets/pdfs/barbershop/tags.pdf" }
+  ],
+  "Contemporary": [
+    { label: "A Cappella Charts (SATB)", url: "/assets/pdfs/contemporary/acappella-satb.pdf" },
+    { label: "Vocal Percussion Basics",  url: "/assets/pdfs/contemporary/vp-basics.pdf" }
+  ],
+  "World Music": [
+    { label: "Global Repertoire Sampler", url: "/assets/pdfs/world-music/sampler.pdf" },
+    { label: "Pronunciation Guides",      url: "/assets/pdfs/world-music/pronunciation.pdf" }
+  ],
+   "Holiday": [
+    { label: "Winter Carols (SSA)",  url: "/assets/pdfs/holiday/winter-ssa.pdf" },
+    { label: "Winter Carols (TTBB)", url: "/assets/pdfs/holiday/winter-ttbb.pdf" }
+  ]
+};
+
 
   // ====== DOM ======
   const sel = document.getElementById("group");
