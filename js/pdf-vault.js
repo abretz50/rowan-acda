@@ -10,37 +10,33 @@ const GROUPS = {
   /* ——— Your requested groups ——— */
 
   
-  "Choral Repertoire": [
-    { label: "Mixed (SATB) Packet 1", url: "/assets/pdfs/choral-repertoire/satb-packet-1.pdf" },
-    { label: "Treble (SSA) Packet 1", url: "/assets/pdfs/choral-repertoire/ssa-packet-1.pdf" },
-    { label: "TB (TTBB) Packet 1",    url: "/assets/pdfs/choral-repertoire/ttbb-packet-1.pdf" }
-  ],
-"Musical Theater": [
-    { label: "MT — Treble Cuts", url: "/assets/pdfs/musical-theater/treble-cuts.pdf" },
-    { label: "MT — TB Cuts",     url: "/assets/pdfs/musical-theater/tb-cuts.pdf" },
-    { label: "MT — Audition Book", url: "/assets/pdfs/musical-theater/audition-book.pdf" }
-  ],
-  "Church Music": [
-    { label: "Hymn Tunes Set A", url: "/assets/pdfs/church-music/hymn-tunes-a.pdf" },
-    { label: "Anthems Packet",   url: "/assets/pdfs/church-music/anthems-packet.pdf" }
-  ],
-  "Barbershop": [
-    { label: "Barbershop — Polecats", url: "/assets/pdfs/barbershop/polecats.pdf" },
-    { label: "Barbershop — Tags",     url: "/assets/pdfs/barbershop/tags.pdf" }
-  ],
-  "Contemporary": [
-    { label: "A Cappella Charts (SATB)", url: "/assets/pdfs/contemporary/acappella-satb.pdf" },
-    { label: "Vocal Percussion Basics",  url: "/assets/pdfs/contemporary/vp-basics.pdf" }
-  ],
-  "World Music": [
-    { label: "Global Repertoire Sampler", url: "/assets/pdfs/world-music/sampler.pdf" },
-    { label: "Pronunciation Guides",      url: "/assets/pdfs/world-music/pronunciation.pdf" }
-  ],
-   "Holiday": [
-    { label: "Winter Carols (SSA)",  url: "/assets/pdfs/holiday/winter-ssa.pdf" },
-    { label: "Winter Carols (TTBB)", url: "/assets/pdfs/holiday/winter-ttbb.pdf" }
-  ]
-};
+ "SS#1: Musical Theater Day": [
+  { label: "Sunday in the Park with George — Sunday", url: "/assets/pdfs/musical-theater/Sunday%20in%20the%20Park%20with%20George%20-%20Sunday.pdf" },
+  { label: "Hamilton — Alexander Hamilton",            url: "/assets/pdfs/musical-theater/Hamilton%20-%20Alexander%20Hamilton.pdf" },
+  { label: "Dear Evan Hansen — You Will Be Found",     url: "/assets/pdfs/musical-theater/Dear%20Evan%20Hansen%20-%20You%20Will%20Be%20Found.pdf" },
+  { label: "Les Miserables — Medley",                  url: "/assets/pdfs/musical-theater/Les%20Miserables%20-%20Medley.pdf" },
+  { label: "Hadestown — Wait for Me",                  url: "/assets/pdfs/musical-theater/Hadestown%20-%20Wait%20for%20Me.pdf" },
+  { label: "Into the Woods — No One Is Alone",         url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
+  { label: "West Side — Somewhere",                    url: "/assets/pdfs/musical-theater/West%20Side%20-%20Somewhere.pdf" }
+],
+
+"SS#2: Cabaret Rehearsal": [
+  { label: "Into the Woods — No One Is Alone",         url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" } ]
+ 
+"SS#3: Church Gig 101": []
+
+"SS#4: Professional Development": []
+
+"SS#5: Latin American Music": []
+
+"SS#6: Conducting 101": []
+
+"SS#7: Student Compositions": []
+
+"SS#8: Barbershop": []
+
+"SS#9: Holiday": []
+  
 
 
   // ====== DOM ======
