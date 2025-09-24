@@ -365,4 +365,389 @@ section+section{margin-top:2rem}
 }
 
 
+/* Added 9.23.25 */
+/* ==== Reusable page banner (non-home) ==== */
+.page-banner{
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(220px, 32vw, 360px);  /* similar scale to home hero */
+  padding: clamp(48px, 6vw, 96px) 16px;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+}
+
+.page-banner--gradient{
+  /* Match the home red gradient look (no image) */
+  background:
+    radial-gradient(140% 120% at 80% -10%, #C92C2C 0%, #9E1313 38%, #7A0A0A 60%, #4B0505 100%);
+}
+
+/* Inner content width keeps text from stretching too wide */
+.page-banner .container{
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Title + subtext */
+.page-banner__title{
+  font-family: "Outfit", system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  font-size: clamp(32px, 5vw, 56px);
+  margin: 0 0 8px 0;
+}
+
+.page-banner__subtext{
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.5;
+  opacity: 0.95;
+  margin: 0;
+}
+
+/* Give breathing room after the banner before page content */
+.page-banner + *{
+  margin-top: clamp(24px, 4vw, 48px);
+}
+/* Rounded corners + clip content like the home hero */
+.page-banner{
+  border-radius: clamp(16px, 2vw, 28px);
+  overflow: hidden;                 /* ensures gradient/text clip to the curve */
+  box-shadow: 0 8px 24px rgba(0,0,0,.18); /* optional: same soft drop shadow */
+}
+
+/* If your banner spans 100% width, give it a little side margin so the radius shows */
+.page-banner{
+  width: min(1200px, 100%);
+  margin: clamp(12px, 2.5vw, 24px) auto 0;
+  padding-left: clamp(16px, 3vw, 32px);
+  padding-right: clamp(16px, 3vw, 32px);
+}
+
+.page-banner{
+  --overlay: linear-gradient(140deg, rgba(122,10,10,.85), rgba(75,5,5,.85));
+  --banner-img: none;
+
+  background-image: var(--overlay), var(--banner-img);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff;
+}
+
+.banner-outer .page-banner{
+  border-radius: clamp(16px, 2vw, 28px);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+
+/* Same height as before; just lighten the overlay */
+.page-banner{
+  /* keep your existing --banner-h (don't change it) */
+  --overlay-strength: .45;                 /* was ~.55–.85 — lower = less red */
+  --overlay-1: 122, 10, 10;                /* #7A0A0A */
+  --overlay-2:  75,  5,  5;                /* #4B0505 */
+  --overlay: linear-gradient(
+    140deg,
+    rgba(var(--overlay-1), var(--overlay-strength)),
+    rgba(var(--overlay-2), var(--overlay-strength))
+  );
+
+  /* image stays the same */
+  background-image: var(--overlay), var(--banner-img);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* (optional) slightly stronger overlay on small screens for legibility */
+@media (max-width: 640px){
+  .page-banner{ --overlay-strength: .52; }
+}
+
+/* Remove the red tint when you opt-in with this class */
+.page-banner--no-tint{
+  background-image: var(--banner-img) !important; /* photo only */
+}
+
+/* safety: if an older gradient class sneaks in, still show only the photo */
+.page-banner--no-tint.page-banner--gradient{
+  background: var(--banner-img) !important;
+}
+
+/* optional: tiny text shadow so white text reads on bright photos */
+.page-banner--no-tint .page-banner__title,
+.page-banner--no-tint .page-banner__subtext{
+  text-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+
+/* deletebelow if needed */
+/* === Base page background === */
+html, body{
+  background: #F5F6F7;  /* light grey page base */
+}
+
+/* === Navbar colors === */
+.site-header{
+  background: #7A0A0A;   /* Rowan red */
+  color: #fff;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.site-header .brand span,
+.site-header .nav-link,
+#nav-toggle{
+  color: #fff;           /* white text in the header */
+}
+
+/* Hover/focus for links (accessible & subtle) */
+.site-header .nav-link:hover,
+.site-header .nav-link:focus{
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Indicate current page nicely */
+.site-header .nav-link[aria-current="page"],
+.site-header .nav-link.active{
+  background: rgba(255,255,255,.12);
+  border-radius: .5rem;
+}
+
+/* Mobile toggle button polish */
+#nav-toggle{
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: .5rem;
+}
+
+/* Mobile nav drawer/panel stays red too */
+@media (max-width: 800px){
+  .site-header .nav{
+    background: #7A0A0A;
+  }
+}
+
+/* (Optional) ensure cards stay white on the new grey base */
+.card{ background: #fff; }
+
+/* ===== Site base slightly darker grey ===== */
+:root{
+  --page-bg: #ECEFF1;          /* was lighter; this is a notch darker */
+  --nav-hover-bg: #3A3A3A;     /* dark grey fill on hover */
+  --nav-active-bg: rgba(255,255,255,.14); /* current page pill */
+}
+html, body{ background: var(--page-bg); }
+
+/* keep cards readable on grey base */
+.card{ background: #fff; }
+
+/* ===== Navbar colors & hover fill ===== */
+.site-header{
+  background: #7A0A0A;   /* red header */
+  color: #fff;
+}
+
+/* pill-style links */
+.site-header .nav-link{
+  color: #fff;
+  padding: .5rem .9rem;
+  border-radius: 9999px;
+  transition: background-color .18s ease, color .18s ease, transform .06s ease;
+  text-decoration: none;
+}
+
+/* dark grey fill on hover/focus */
+.site-header .nav-link:hover,
+.site-header .nav-link:focus{
+  background: var(--nav-hover-bg);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* optional: tiny press feedback */
+.site-header .nav-link:active{
+  transform: translateY(1px);
+}
+
+/* current page indicator (keeps your light pill) */
+.site-header .nav-link[aria-current="page"],
+.site-header .nav-link.active{
+  background: var(--nav-active-bg);
+  color: #fff;
+}
+
+/* mobile panel stays red; hover style still applies */
+@media (max-width: 800px){
+  .site-header .nav{ background: #7A0A0A; }
+}
+
+/* ===== Base stays slightly darker grey ===== */
+:root{
+  --page-bg: #ECEFF1;                    /* you liked this */
+  --nav-text: #FFFFFF;
+  --nav-active-bg: rgba(255,255,255,.18);/* ACTIVE pill (subtle) */
+  --nav-hover-bg:  rgba(255,255,255,.12);/* GHOST hover (lighter than active) */
+}
+html, body{ background: var(--page-bg); }
+
+/* ===== Navbar colors ===== */
+.site-header{
+  background: #7A0A0A;   /* red bar */
+  color: var(--nav-text);
+}
+
+.site-header .nav-link{
+  color: var(--nav-text);
+  padding: .5rem .9rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  background: transparent;             /* default = transparent */
+  transition: background-color .18s ease, color .18s ease, transform .06s ease;
+}
+
+/* GHOST hover: lighter + more transparent */
+.site-header .nav-link:hover,
+.site-header .nav-link:focus{
+  background: var(--nav-hover-bg);
+  color: var(--nav-text);
+  text-decoration: none;
+}
+
+/* ACTIVE page: slightly stronger than hover */
+.site-header .nav-link[aria-current="page"],
+.site-header .nav-link.active{
+  background: var(--nav-active-bg);
+  color: var(--nav-text);
+}
+
+/* Optional tap feedback */
+.site-header .nav-link:active{ transform: translateY(1px); }
+
+/* Mobile menu keeps red background */
+@media (max-width: 800px){
+  .site-header .nav{ background: #7A0A0A; }
+}
+
+/* ===== Shared nav colors (desktop + mobile) ===== */
+:root{
+  --nav-text: #fff;
+  --nav-hover-bg:  rgba(255,255,255,.12); /* ghost hover */
+  --nav-active-bg: rgba(255,255,255,.18); /* current page */
+}
+
+/* ===== Mobile dropdown palette & layout ===== */
+@media (max-width: 800px){
+  /* dropdown panel */
+  .site-header .nav{
+    background: #7A0A0A; /* red */
+    box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    border-top: 1px solid rgba(255,255,255,.15);
+  }
+
+  /* links */
+  .site-header .nav-link{
+    display: block;                 /* full-width tap targets */
+    color: var(--nav-text);
+    background: transparent;        /* default transparent */
+    margin: 6px 8px;                /* small side gap so the pill is visible */
+    padding: .7rem 1rem;
+    border-radius: .75rem;          /* soft pill */
+    text-decoration: none;
+    transition: background-color .18s ease, color .18s ease;
+  }
+
+  /* ghost hover/focus (lighter than active) */
+  .site-header .nav-link:hover,
+  .site-header .nav-link:focus-visible{
+    background: var(--nav-hover-bg);
+    color: var(--nav-text);
+  }
+
+  /* active/current page (a touch stronger) */
+  .site-header .nav-link[aria-current="page"],
+  .site-header .nav-link.active{
+    background: var(--nav-active-bg);
+    color: var(--nav-text);
+  }
+
+  /* toggle button remains legible on red */
+  #nav-toggle{
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.06);
+    border-radius: .6rem;
+  }
+  #nav-toggle[aria-expanded="true"]{
+    background: rgba(255,255,255,.12);
+  }
+}
+
+/* (Optional) if you want mobile hover to be a *bit* stronger than desktop */
+@media (max-width: 800px){
+  :root{
+    --nav-hover-bg:  rgba(255,255,255,.14);
+    --nav-active-bg: rgba(255,255,255,.22);
+  }
+}
+
+/* Remove focus ring inside modals */
+.modal .dialog:focus,
+.modal .modal-close:focus{
+  outline: none !important;
+  box-shadow: none !important; /* in case you use shadows for focus */
+}
+
+/* delete below if needed */
+/* Modal scrollbars — same vibe as Resources */
+.modal .dialog{
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;                   /* Firefox */
+  scrollbar-color: #b8b8b8 #f3eded;       /* thumb | track (Firefox) */
+}
+
+/* WebKit (Chrome/Safari/Edge) */
+.modal .dialog::-webkit-scrollbar{ width: 12px; }
+.modal .dialog::-webkit-scrollbar-track{
+  background: #f3eded;
+  border-radius: 10px;
+}
+.modal .dialog::-webkit-scrollbar-thumb{
+  background: #b8b8b8;
+  border-radius: 10px;
+  border: 2px solid #f3eded;
+}
+.modal .dialog::-webkit-scrollbar-thumb:hover{ background: #a6a6a6; }
+
+/* Keep focus ring only for keyboard users (matches Resources behavior) */
+.modal .dialog:focus:not(:focus-visible),
+.modal .modal-close:focus:not(:focus-visible){ outline: none; box-shadow: none; }
+
+/* Make Add to Calendar and Details exactly the same size */
+#eventsList .btn,
+.modal .btn {
+  display: inline-flex;           /* anchors + buttons behave the same */
+  align-items: center;
+  justify-content: center;
+  height: var(--tap, 40px);       /* same height as chips */
+  padding: 0 18px;                /* same horizontal padding */
+  line-height: 1;                 /* avoid extra vertical space */
+  white-space: nowrap;            /* prevent "Add to Calendar" from wrapping */
+}
+
+.event-actions a.btn[href*="calendar.google.com/calendar/render"]{
+  font-size: .90rem;
+}
+
+
+
+
+
+
+
 

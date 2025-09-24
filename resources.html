@@ -1,81 +1,266 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Resources — Rowan ACDA</title>
-<meta content="Repertoire, clinic handouts, bylaws, and the Sight‑Singing Vault." name="description"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@500;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="/assets/icons/favicon-32.png" rel="icon"/>
-<meta content="#7A0A0A" name="theme-color"/>
-<link href="/css/base.css" rel="stylesheet"/>
-<link href="/css/layout.css" rel="stylesheet"/>
-<link href="/css/components.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Resources — Rowan ACDA</title>
+  <meta name="description" content="Repertoire, Professional Developments, Chapter Resources, and the Sight-Singing Vault"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="/assets/icons/favicon-32.png"/>
+  <meta name="theme-color" content="#7A0A0A"/>
+  <link rel="stylesheet" href="/css/base.css"/>
+  <link rel="stylesheet" href="/css/layout.css"/>
+  <link rel="stylesheet" href="/css/components.css"/>
+
+  <!-- Minimal styles just for the modal close "X" -->
+  <style>
+    .modal .dialog{ position: relative; }
+    .modal-close{
+      position: absolute; top: .5rem; right: .5rem;
+      width: 2rem; height: 2rem;
+      display: grid; place-items: center;
+      border: 0; background: transparent; cursor: pointer;
+      border-radius: .5rem; font-size: 1.25rem; line-height: 1;
+      color: #444;
+    }
+    .modal-close:hover{ background: rgba(0,0,0,.06); }
+    @media (prefers-color-scheme: dark){
+      .modal-close{ color: #ddd; }
+      .modal-close:hover{ background: rgba(255,255,255,.08); }
+    }
+    /* Links & Resources spacing tweaks */
+#external-links .cards-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+  gap: 14px;                    /* space between cards (tweak to taste) */
+}
+
+/* Resources: keep long single-column cards with extra vertical spacing */
+#external-links .cards-grid{
+  display: grid;
+  grid-template-columns: 1fr;  /* one long card per row */
+  row-gap: 22px;               /* space between cards (tweak to taste) */
+}
+
+/* Optional: small tidy-up inside each card */
+#external-links h3{ margin: 0 0 .5rem; }
+#external-links .card .card-body > :last-child{ margin-bottom: 0; }
+
+
+    
+  </style>
 </head>
 <body>
-<header class="site-header" role="banner">
-<div class="container header-inner">
-<a aria-label="Rowan ACDA Home" class="brand" href="/">
-<img alt="ACDA logo" src="/assets/icons/acda.png"/>
-<span>Rowan ACDA</span>
-</a>
-<button aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation" id="nav-toggle">☰</button>
-<nav class="nav" id="site-nav" role="navigation">
-<a class="nav-link" data-nav="" href="/">Home</a>
-<a class="nav-link" data-nav="" href="/events.html">Events</a>
-<a class="nav-link" data-nav="" href="/members.html">Members</a>
-<a class="nav-link" data-nav="" href="/eboard.html">E-Board</a>
-<a class="nav-link" data-nav="" href="/resources.html">Resources</a>
-</nav>
-</div>
-</header>
-<main class="container" role="main" style="padding:1.25rem 0 2rem"></div>
-<div class="grid cols-2">
-<div class="card">
-<h2>Choral Show &amp; Tell</h2>
-<p><button class="btn btn-outline" data-modal="rep-modal">Repertoire</button></p>
-<p>We will share the links to pieces presented in our Choral Show &amp; Tell here for future reference.</p>
-</div>
-<div class="card">
-<h2>PD Resources</h2>
-<p><button class="btn btn-outline" data-modal="clinic-modal">See Resources</button></p>
-<p>Resources from our professional development sessions.</p>
-</div>
-</div>
-<section style="margin-top:1.5rem">
-<div class="card">
-<h2>Bylaws</h2>
-<p>Our chapter bylaws outline governance and procedures.</p>
-</div><section class="container" id="external-links"><h2>Links &amp; Resources</h2><div class="cards-grid"><article class="card"><div class="card-body"><h3>Rowan ACDA</h3><ul class="list-unstyled"><li><a href="https://cpa.rowan.edu/music/ensembles/choral.html#tbfest" rel="noopener" target="_blank">Tenor Bass Festival</a></li><li><a href="https://cpa.rowan.edu/music/ensembles/choral.html" rel="noopener" target="_blank">Rowan Choirs</a></li><li><a href="https://www.youtube.com/watch?v=hq9yZ_P2z98&amp;list=RDhq9yZ_P2z98&amp;start_radio=1" rel="noopener" target="_blank">Most Recent Appearance (YouTube)</a></li></ul></div></article><article class="card"><div class="card-body"><h3>Sight Singing Resources</h3><ul class="list-unstyled"><li><a href="https://www.sightreadingfactory.com/" rel="noopener" target="_blank">Sight Reading Factory</a></li><li><a href="https://learnmusictheory.net/singing/index.html" rel="noopener" target="_blank">Learn Music Theory</a></li><li><a href="http://choir.rigbytrojans.org/uploads/2/1/5/4/21541204/sight-singing-exercises.pdf" rel="noopener" target="_blank">Sight Singing Exercises (PDF)</a></li><li><a href="https://www.lightandmatter.com/sight/sight.pdf" rel="noopener" target="_blank">Sight Singing Guide (PDF)</a></li></ul></div></article><article class="card"><div class="card-body"><h3>NJ ACDA</h3><ul class="list-unstyled"><li><a href="https://www.njacda.org/summerconference2024" rel="noopener" target="_blank">Summer Conference 2024</a></li><li><a href="https://www.njacda.org/hs-choral-festival" rel="noopener" target="_blank">High School Choral Festival (Volunteer Opportunity)</a></li><li><a href="https://www.njacda.org/rr" rel="noopener" target="_blank">Repertoire &amp; Resource Chairs</a></li><li><a href="https://www.njacda.org/rrchairs" rel="noopener" target="_blank">Community and Professional Choirs</a></li><li><a href="https://docs.google.com/presentation/d/e/2PACX-1vQDK4zOfWQW7TImu6s6iTXc5zoS0OV6P9KMb2MVz1Bqvyht7Iu-WaLv3PBaB6yC72z9hm4gDnazdJcg/pub?start=false&amp;loop=false&amp;delayms=10000&amp;slide=id.g211288b17b8_0_48" rel="noopener" target="_blank">Advocacy in Music Education (Slides)</a></li></ul></div></article><article class="card"><div class="card-body"><h3>East Region ACDA</h3><ul class="list-unstyled"><li><a href="https://acdaeast.org/conferences/scholarships/" rel="noopener" target="_blank">Scholarships</a></li><li><a href="https://choralnet.org/acda-news" rel="noopener" target="_blank">ACDA News</a></li><li><a href="https://acdaeast.org/about_us/membership/" rel="noopener" target="_blank">Membership</a></li><li><a href="https://acdaeast.org/about_us/rrchairs/" rel="noopener" target="_blank">Repertoire &amp; Resource Chairs</a></li></ul></div></article><article class="card"><div class="card-body"><h3>National ACDA</h3><ul class="list-unstyled"><li><a href="https://acda.org/repertoire" rel="noopener" target="_blank">Repertoire</a></li><li><a href="https://acda.org/membership/membership/" rel="noopener" target="_blank">Membership</a></li><li><a href="https://acda.org/publications/choral-journal" rel="noopener" target="_blank">Choral Journal</a></li><li><a href="https://acda.org/conferences/national-webinars" rel="noopener" target="_blank">National Webinars</a></li><li><a href="https://acda.org/archives/category/chorteach" rel="noopener" target="_blank">Choral Teaching Resources</a></li><li><a href="https://acda.careerwebsite.com/" rel="noopener" target="_blank">Career Center</a></li></ul></div></article></div></section>
-</section>
-<section style="margin-top:1.5rem">
-<h2>Sight‑Singing Vault</h2>
-<p>Access our online portal for our weekly sight-singing sessions</p>
-<p><a class="btn" href="/sightsinging.html">Open the Vault</a></p>
-</section>
-<div class="modal" id="rep-modal"><div class="dialog" tabindex="-1">
-<h3>Repertoire Starters</h3>
-<p class="small">Quick ideas before our first Show and Tell</p>
-<ul>
-<li>Mixed: Gjeilo — <em>Northern Lights</em></li>
-<li>Treble: Szymko — <em>It Takes a Village</em></li>
-<li>TB: Perry — <em>Answers</em></li>
-<li>Seasonal: Lauridsen — <em>O Magnum Mysterium</em></li>
-</ul>
-<p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
-</div></div>
-<div class="modal" id="clinic-modal"><div class="dialog" tabindex="-1"><h3>Professional Development: John Wernega</h3><p>Contact &amp; Links:</p><ul><li>Email: <a href="mailto:Jwernega@quintonschool.info">Jwernega@quintonschool.info</a></li><li>YouTube Channel: <a href="https://www.youtube.com/@thelonearranger1" rel="noopener" target="_blank">thelonearranger1</a></li></ul><h4>Activities</h4><ul><li><a href="https://www.youtube.com/watch?v=knGsitHFgoo" rel="noopener" target="_blank">Musical Chairs — game to identify the difference between a single-note melody and harmony</a></li><li><a href="https://www.youtube.com/watch?v=NsCpM3b_anY" rel="noopener" target="_blank">Solfege Tag</a></li><li><a href="https://www.youtube.com/watch?v=IR1ZOK2Adhg" rel="noopener" target="_blank">Five stations finding the different pattern</a></li><li><a href="https://www.youtube.com/watch?v=2v-QrN-nvY0" rel="noopener" target="_blank">Echoing solfege from piano in sets of three, then sets of four</a></li><li><a href="https://www.youtube.com/watch?v=YD99WFXEm5Y" rel="noopener" target="_blank">Body Scale Simon — demonstrated by first, second, and third graders</a></li></ul><p style="text-align:center"><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p></div></div>
-</main>
-<footer class="site-footer" role="contentinfo">
-<div class="container" style="display:flex;align-items:center;gap:.75rem">
-<img alt="ACDA logo" height="28" src="/assets/icons/acda.png" style="border-radius:.4rem" width="28"/>
-<div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
-</div>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-</footer>
-<script defer="" src="/js/core.js"></script>
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="Rowan ACDA Home">
+        <img src="/assets/icons/acda.png" alt="ACDA logo"/>
+        <span>Rowan ACDA</span>
+      </a>
+      <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+      <nav id="site-nav" class="nav" role="navigation">
+        <a class="nav-link" data-nav href="/">Home</a>
+        <a class="nav-link" data-nav href="/events.html">Events</a>
+        <a class="nav-link" data-nav href="/members.html">Members</a>
+        <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+        <a class="nav-link" data-nav href="/resources.html">Resources</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" role="main" style="padding:1.25rem 0 2rem">
+    <!-- Banner -->
+    <section class="banner-outer" role="region" aria-label="Resources header">
+      <div class="page-banner"
+     style="--banner-img:url('/assets/img/resources-banner.png');">
+
+        <div class="container">
+          <h1 class="page-banner__title">Resources</h1>
+          <p class="page-banner__subtext">Repertoire, Professional Developments, Chapter Resources, and the Sight-Singing Vault</p>
+        </div>
+      </div>
+    </section>
+
+
+    <section style="margin-top:1.5rem">
+      <div class="card">
+        <h2>Sight-Singing Vault</h2>
+      <p>Access our online portal for our weekly sight-singing sessions</p>
+      <p><a class="btn" href="/sightsinging.html">Open the Vault</a></p>
+      </div>
+    </section>
+    </bk>
+    <br>
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Choral Show &amp; Tell</h2>
+        <p>We will share the links to pieces presented in our Choral Show &amp; Tell here for future reference.</p>
+        <p><button class="btn btn-outline" data-modal="rep-modal">Repertoire</button></p>
+      </div>
+      <div class="card">
+        <h2>PD Resources</h2>
+        <p>Resources from our professional development sessions.</p>
+        <p><button class="btn btn-outline" data-modal="clinic-modal">See Resources</button></p>
+      </div>
+    </div>
+
+    
+
+ 
+
+    <section id="external-links" style="margin-top:1.5rem">
+      <h2>Links &amp; Resources</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <div class="card-body">
+            <h3>Rowan ACDA</h3>
+            <ul class="list-unstyled">
+              <li><a href="https://cpa.rowan.edu/music/ensembles/choral.html#tbfest" target="_blank" rel="noopener">Tenor Bass Festival</a></li>
+              <li><a href="https://cpa.rowan.edu/music/ensembles/choral.html" target="_blank" rel="noopener">Rowan Choirs</a></li>
+              <li><a href="https://www.youtube.com/watch?v=hq9yZ_P2z98&list=RDhq9yZ_P2z98&start_radio=1" target="_blank" rel="noopener">Most Recent Appearance (YouTube)</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <h3>Sight Singing Resources</h3>
+            <ul class="list-unstyled">
+              <li><a href="https://www.sightreadingfactory.com/" target="_blank" rel="noopener">Sight Reading Factory</a></li>
+              <li><a href="https://learnmusictheory.net/singing/index.html" target="_blank" rel="noopener">Learn Music Theory</a></li>
+              <li><a href="http://choir.rigbytrojans.org/uploads/2/1/5/4/21541204/sight-singing-exercises.pdf" target="_blank" rel="noopener">Sight Singing Exercises (PDF)</a></li>
+              <li><a href="https://www.lightandmatter.com/sight/sight.pdf" target="_blank" rel="noopener">Sight Singing Guide (PDF)</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <h3>NJ ACDA</h3>
+            <ul class="list-unstyled">
+              <li><a href="https://www.njacda.org/summerconference2024" target="_blank" rel="noopener">Summer Conference 2024</a></li>
+              <li><a href="https://www.njacda.org/hs-choral-festival" target="_blank" rel="noopener">High School Choral Festival (Volunteer Opportunity)</a></li>
+              <li><a href="https://www.njacda.org/rrchairs" target="_blank" rel="noopener">Repertoire &amp; Resource Chairs</a></li>
+              <li><a href="https://sites.google.com/view/njacdacpcrr" target="_blank" rel="noopener">Community and Professional Choirs</a></li>
+              <li><a href="https://docs.google.com/presentation/d/e/2PACX-1vQDK4zOfWQW7TImu6s6iTXc5zoS0OV6P9KMb2MVz1Bqvyht7Iu-WaLv3PBaB6yC72z9hm4gDnazdJcg/pub?start=false&loop=false&delayms=10000&slide=id.g211288b17b8_0_48" target="_blank" rel="noopener">Advocacy in Music Education (Slides)</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <h3>East Region ACDA</h3>
+            <ul class="list-unstyled">
+              <li><a href="https://acdaeast.org/conferences/scholarships/" target="_blank" rel="noopener">Scholarships</a></li>
+              <li><a href="https://choralnet.org/acda-news" target="_blank" rel="noopener">ACDA News</a></li>
+              <li><a href="https://acdaeast.org/about_us/membership/" target="_blank" rel="noopener">Membership</a></li>
+              <li><a href="https://acdaeast.org/about_us/rrchairs/" target="_blank" rel="noopener">Repertoire &amp; Resource Chairs</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <h3>National ACDA</h3>
+            <ul class="list-unstyled">
+              <li><a href="https://acda.org/repertoire" target="_blank" rel="noopener">Repertoire</a></li>
+              <li><a href="https://acda.org/membership/membership/" target="_blank" rel="noopener">Membership</a></li>
+              <li><a href="https://acda.org/publications/choral-journal" target="_blank" rel="noopener">Choral Journal</a></li>
+              <li><a href="https://acda.org/conferences/national-webinars" target="_blank" rel="noopener">National Webinars</a></li>
+              <li><a href="https://acda.org/archives/category/chorteach" target="_blank" rel="noopener">Choral Teaching Resources</a></li>
+              <li><a href="https://acda.careerwebsite.com/" target="_blank" rel="noopener">Career Center</a></li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    
+
+    <!-- Modals -->
+    <div class="modal" id="rep-modal">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="rep-modal-title" tabindex="-1">
+        <button class="modal-close" type="button" aria-label="Close dialog">×</button>
+        <h3 id="rep-modal-title">Repertoire Starters</h3>
+        <p class="small">Quick ideas before our first Show and Tell</p>
+        <ul>
+          <li>Mixed: Gjeilo — <em>Northern Lights</em></li>
+          <li>Treble: Szymko — <em>It Takes a Village</em></li>
+          <li>TB: Perry — <em>Answers</em></li>
+          <li>Seasonal: Lauridsen — <em>O Magnum Mysterium</em></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modal" id="clinic-modal">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="clinic-modal-title" tabindex="-1">
+        <button class="modal-close" type="button" aria-label="Close dialog">×</button>
+        <h3 id="clinic-modal-title">Professional Development: John Wernega</h3>
+        <p>Contact &amp; Links:</p>
+        <ul>
+          <li>Email: <a href="mailto:Jwernega@quintonschool.info">Jwernega@quintonschool.info</a></li>
+          <li>YouTube Channel: <a href="https://www.youtube.com/@thelonearranger1" target="_blank" rel="noopener">thelonearranger1</a></li>
+        </ul>
+        <h4>Activities</h4>
+        <ul>
+          <li><a href="https://www.youtube.com/watch?v=knGsitHFgoo" target="_blank" rel="noopener">Musical Chairs — game to identify the difference between a single-note melody and harmony</a></li>
+          <li><a href="https://www.youtube.com/watch?v=NsCpM3b_anY" target="_blank" rel="noopener">Solfege Tag</a></li>
+          <li><a href="https://www.youtube.com/watch?v=IR1ZOK2Adhg" target="_blank" rel="noopener">Five stations finding the different pattern</a></li>
+          <li><a href="https://www.youtube.com/watch?v=2v-QrN-nvY0" target="_blank" rel="noopener">Echoing solfege from piano in sets of three, then sets of four</a></li>
+          <li><a href="https://www.youtube.com/watch?v=YD99WFXEm5Y" target="_blank" rel="noopener">Body Scale Simon — demonstrated by first, second, and third graders</a></li>
+        </ul>
+      </div>
+    </div>
+    
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container" style="display:flex;align-items:center;gap:.75rem">
+      <img src="/assets/icons/acda.png" alt="ACDA logo" width="28" height="28" style="border-radius:.4rem"/>
+      <div style="flex:1">© <span id="year"></span> Rowan ACDA. Built with love and lots of scales.</div>
+    </div>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  </footer>
+
+  <script defer src="/js/core.js"></script>
+
+  <!-- Tiny modal controller: open via [data-modal], close via X, backdrop, or Esc -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const openModal = (id) => {
+        const m = document.getElementById(id);
+        if (!m) return;
+        m.classList.add('open');
+        const dlg = m.querySelector('.dialog');
+        if (dlg) dlg.focus();
+      };
+      const closeModal = (m) => {
+        m.classList.remove('open');
+      };
+
+      // Openers
+      document.querySelectorAll('[data-modal]').forEach(btn => {
+        btn.addEventListener('click', () => openModal(btn.getAttribute('data-modal')));
+      });
+
+      // Close via X and backdrop
+      document.querySelectorAll('.modal').forEach(m => {
+        const x = m.querySelector('.modal-close');
+        if (x) x.addEventListener('click', () => closeModal(m));
+        m.addEventListener('click', (e) => {
+          if (e.target === m) closeModal(m); // click backdrop
+        });
+      });
+
+      // Close via Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal.open').forEach(closeModal);
+        }
+      });
+    });
+  </script>
 </body>
 </html>

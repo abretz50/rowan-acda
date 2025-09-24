@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Rowan ACDA</title>
 <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University."/>
+
+<!-- Speed up the sheet fetch -->
+<link rel="preconnect" href="https://docs.google.com" crossorigin>
+<link rel="dns-prefetch" href="https://docs.google.com">
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
@@ -14,6 +19,68 @@
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css"/>
 
+<style>
+  /* Inline red “Add to Calendar” link */
+  .event-meta .calendar-link{
+    color:#7A0A0A; font-weight:700;
+  }
+  .event-meta .calendar-link:hover,
+  .event-meta .calendar-link:focus{ text-decoration:underline; }
+
+  /* Tags: red text + red outline (matches Events page) */
+  .event-badges .badge{
+    color:#7A0A0A; border:1.6px solid #7A0A0A; background:#fff; font-weight:700;
+  }
+
+  /* Hide scrollbar in any modal dialog, keep it scrollable */
+  .modal .dialog{ overflow:auto; -ms-overflow-style:none; scrollbar-width:none; }
+  .modal .dialog::-webkit-scrollbar{ display:none; }
+
+  /* ===== Fading slideshow (bigger) ===== */
+  .slideshow-wrap{
+    border:1px solid var(--border);
+    border-radius:1rem;
+    overflow:hidden;
+    background:#fff;
+  }
+  .slideshow{
+    position:relative;
+    width:100%;
+    height:clamp(260px, 45vw, 540px); /* bigger, responsive */
+    background:#f7f7f7;
+  }
+  .slideshow img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity 900ms ease;
+    /* perf hints */
+    backface-visibility:hidden;
+    transform:translateZ(0);
+    will-change:opacity;
+  }
+  .slideshow img.active{ opacity:1; }
+  /* smoother, longer cross-fade */
+.slideshow img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition: opacity 1.8s cubic-bezier(.22,.61,.36,1); /* was 900ms ease */
+  backface-visibility:hidden;
+  transform:translateZ(0);
+  will-change:opacity;
+}
+/* Home only: hide tags and buttons inside Featured Events */
+#home-events .event-badges,
+#home-events .event-actions,
+#home-events [data-modal],
+#home-events [data-action="signin"]{
+  display: none !important;
+}
+
+</style>
 </head>
 <body>
 
@@ -34,64 +101,108 @@
   </div>
 </header>
 
-<div id="welcome-band" class="welcome-band container" role="region" aria-label="Welcome to Rowan ACDA" style="--welcome-bg:url('/assets/img/welcome-bg.png')">
-  <div class="inner">
-<div class="copy">
-    <div class="title">Rowan ACDA</div>
-    <div class="tagline">Sing. Lead. Inspire.</div>
-  </div>
-  <div class="banner-right">
-    <div class="logo"><img src="/assets/icons/acda.png" alt="Rowan ACDA logo"></div>
-    <div class="actions"><a class="btn alt" href="/members.html">Join Us</a><a class="btn btn-outline" href="/events.html">See Events</a></div>
-  </div>
-</div>
-  </div>
-  <div class="banner-right"><div class="actions"></div>
-  </div>
-</div>
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
+  <section class="banner-outer" role="region" aria-label="Home header">
+    <div class="page-banner"
+         style="--banner-img:url('/assets/img/index-header.jpg')">
+      <div class="container">
+        <h1 class="page-banner__title">Rowan ACDA</h1>
+        <p class="page-banner__subtext">Sing. Lead. Inspire.</p>
+      </div>
     </div>
-    <div class="actions"></div>
-  </div>
-</div><main class="container" role="main" style="padding:1.25rem 0 2rem">
+  </section>
+
+    <section style="margin-top:2rem">
+    <h2>What is Rowan ACDA?</h2>
+    <p>The Rowan American Choral Directors Association's mission is to create opportunities for students to learn more about an array of different choral techniques and aspects that will enrich and supplement their education. This includes fundraising, holding events and activities that either interest or inform members, and bringing in presenters from on and off-campus to hold workshops and masterclasses. Our goal is to allow everyone to learn about and experience choral music while acquiring various choral directing skills.</p>
+    <p><a class="btn btn-outline" href="/members.html">Read More</a></p>
+  </section>
 
 
 
 
-
-<section style="margin-top:2rem" aria-labelledby="feat-h">
-  <div class="section-header">
-    <h2 id="feat-h">Featured Events</h2>
-    <div class="actions"><a class="btn btn-outline" href="/events.html">All events</a></div>
-  </div>
-  <p class="section-lead">Here are the next few things on our calendar.</p>
-  <div id="home-events" class="events-feature"></div>
-</section>
-<script src="/js/home-events.js" defer></script>
-
-<section style="margin-top:2rem" aria-labelledby="highlights-h">
-  <h2 id="highlights-h">Highlights</h2>
-  <div class="loop-gallery-wrap">
-    <div class="loop-gallery">
-      <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/52848310914_2abe6f0220_o-scaled.jpg" alt="Highlight photo" loading="lazy">
-      <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Highlight photo" loading="lazy">
+  <section style="margin-top:2rem" aria-labelledby="feat-h">
+    <div class="section-header">
+      <h2 id="feat-h">Featured Events</h2>
+      <div class="actions"><a class="btn btn-outline" href="/events.html">All events</a></div>
     </div>
-  </div>
-</section>
+    <div id="home-events" class="events-feature" aria-live="polite"></div>
+  </section>
+  
+  <!-- ===== Chapter Highlights (FADING SLIDESHOW) ===== -->
+  <section style="margin-top:2rem" aria-labelledby="highlights-h">
+    <h2 id="highlights-h">Chapter Highlights</h2>
+    <div class="slideshow-wrap">
+      <div class="slideshow" aria-label="Chapter Highlights Slideshow">
+        <!-- One set of images; JS will fade through them -->
+        <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Highlight photo" loading="eager" class="active">
+        <img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154922.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154928.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154950.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 155003.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154905.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/ext2_Screenshot 2025-08-28 154916.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/ext_gallery4.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/index-header.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/members-banner.jpg" alt="Highlight photo" loading="lazy">
+      </div>
+    </div>
+  </section>
+  <!-- Focus Areas -->
+  <section style="margin-top:2rem" aria-labelledby="focus-h">
+    <div class="section-header">
+      <h2 id="focus-h">Our Chapter</h2>
+    </div>
+
+    <div class="events-feature">
+      <!-- Choral Engagement -->
+      <article class="card">
+        <img src="/assets/img/choral-engagement.jpg" alt="Choral Engagement" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about2.png'">
+        <div class="meta">
+          <h3>Choral Engagement</h3>
+          <p>Did you love choir in High School? Want to sing in a growing choral community of many majors?  Join Rowan's own "Choir Club"! Rowan's chapter of the American Choral Director's Associciation is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107! </p>
+        </div>
+      </article>
+
+      <!-- Sightreading -->
+      <article class="card">
+        <img src="/assets/img/sightreading.jpg" alt="Sightreading" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about1.png'">
+        <div class="meta">
+          <h3>Sightreading</h3>
+          <p>Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval! </p>
+        </div>
+      </article>
+
+      <!-- Development -->
+      <article class="card">
+        <img src="/assets/img/development.jpg" alt="Development" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about.png'">
+        <div class="meta">
+          <h3>Development</h3>
+          <p>In sessions coordinated by our Vice President, industry professionals will present development sessions on varying revelevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs. </p>
+        </div>
+      </article>
+    </div>
+  </section>
 
 
 
+  
 
-<section style="margin-top:2rem">
-  <h2>More About Rowan ACDA</h2>
-  <p>Founded with the mission of connecting students through music, Rowan ACDA fosters leadership and artistry. 
-  We offer masterclasses, socials, and community outreach events throughout the year. 
-  Whether you want to learn about conducting, network with peers, or just sing—this is the place for you.</p>
-  <p><button class="btn btn-outline" data-modal="about-popup">Read More</button></p>
-</section>
+  <section style="margin-top:2rem" aria-labelledby="contact-h">
+    <h2 id="contact-h">Contact & Join</h2>
+    <p>Have questions? Email <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>. Ready to get started?</p>
+    <p><a class="btn" href="/members.html">Become a Member</a></p>
+  </section>
+</main>
 
+<!-- About modal -->
 <div class="modal" id="about-popup"><div class="dialog" tabindex="-1">
   <h3>About Rowan ACDA</h3>
   <p>Rowan ACDA is one of the most active collegiate ACDA chapters in the region. 
@@ -99,15 +210,19 @@
   Membership provides both community and professional growth.</p>
   <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
 </div></div>
-<section style="margin-top:2rem" aria-labelledby="contact-h">
-  <h2 id="contact-h">Contact & Join</h2>
-  <p>Have questions? Email <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>. Ready to get started?</p>
-  <p><a class="btn" href="/members.html">Become a Member</a></p>
-</section>
-<script src="/js/home-upcoming.js" defer></script>
 
-
-</main>
+<!-- Heads-up modal (for missing RSVP links, like on Events page) -->
+<div class="modal" id="notice-modal" role="dialog" aria-modal="true" aria-labelledby="notice-title" hidden>
+  <div class="dialog" tabindex="-1">
+    <div class="modal-header" style="text-align:center">
+      <h3 class="modal-title" id="notice-title">Heads up</h3>
+      <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
+    </div>
+    <section style="text-align:center">
+      <p>This form is not open yet. Check back closer to the event.</p>
+    </section>
+  </div>
+</div>
 
 <footer class="site-footer" role="contentinfo">
   <div class="container" style="display:flex;align-items:center;gap:.75rem">
@@ -116,7 +231,338 @@
   </div>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </footer>
-<script src="/js/core.js" defer></script>
 
+<!-- Fading slideshow JS -->
+<script>
+(function(){
+  const container = document.querySelector('.slideshow');
+  if(!container) return;
+  const slides = Array.from(container.querySelectorAll('img'));
+  if(slides.length === 0) return;
+
+  let i = 0, timer = null, running = false;
+const FADE_MS = 900;   // match the CSS 1.8s
+const HOLD_MS = 2600;   // how long each slide stays fully visible
+const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
+
+
+  function show(n){
+    slides.forEach((img, idx)=> img.classList.toggle('active', idx === n));
+  }
+  function start(){
+    if(running || slides.length < 2) return;
+    running = true;
+    timer = setInterval(()=>{ i = (i+1) % slides.length; show(i); }, INTERVAL);
+  }
+  function stop(){
+    running = false;
+    if(timer){ clearInterval(timer); timer = null; }
+  }
+
+  // Init
+  show(0);
+
+  // Pause when off-screen or tab hidden
+  const io = new IntersectionObserver(([entry])=>{
+    entry.isIntersecting ? start() : stop();
+  }, { threshold: 0.2 });
+  io.observe(container);
+
+  document.addEventListener('visibilitychange', () => {
+    document.hidden ? stop() : start();
+  });
+})();
+</script>
+
+<script>
+/* Home: show only the next 3 upcoming events with same functionality as Events page */
+(function(){
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
+  const listEl = document.getElementById('home-events');
+
+  /* ---------- CSV helpers ---------- */
+  function parseCSV(text){
+    const rows = []; let i=0, field='', row=[], inQuotes=false;
+    while(i < text.length){
+      const c = text[i];
+      if(inQuotes){
+        if(c === '"'){ if(text[i+1] === '"'){ field += '"'; i++; } else inQuotes = false; }
+        else field += c;
+      } else {
+        if(c === '"') inQuotes = true;
+        else if(c === ','){ row.push(field); field=''; }
+        else if(c === '\n'){ row.push(field); field=''; rows.push(row); row=[]; }
+        else if(c === '\r'){ /* ignore */ }
+        else field += c;
+      }
+      i++;
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    return rows;
+  }
+  function toRecords(rows){
+    if(!rows.length) return [];
+    const header = rows.shift().map(h=>h.trim().toLowerCase());
+    return rows.map(r=>{ const o={}; header.forEach((h,i)=> o[h]=(r[i]||'').trim()); return o; });
+  }
+
+  /* ---------- Date/time helpers (robust) ---------- */
+  function parseDate(dStr){
+    if(!dStr) return null;
+    const m = dStr.trim().match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})$/);
+    if(!m) return null;
+    let mm=+m[1], dd=+m[2], yy=+m[3]; if(yy<100) yy=2000+yy;
+    return new Date(yy, mm-1, dd);
+  }
+  function parseTime(tStr){
+    if(!tStr) return null;
+    let s = String(tStr).trim().toLowerCase().replace(/[\u2013\u2014]/g, '-');
+    if(/\bnoon\b/.test(s)) return {h:12,m:0};
+    if(/\bmidnight\b/.test(s)) return {h:0,m:0};
+    const m = s.match(/^\s*(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?\s*m\.?)?\s*$/i);
+    if(!m) return null;
+    let h=parseInt(m[1],10), mm=m[2]?parseInt(m[2],10):0, ap=m[3]?m[3].replace(/\./g,'').trim():''; 
+    if(ap){ if(ap.startsWith('p') && h<12) h+=12; if(ap.startsWith('a') && h===12) h=0; }
+    return {h, m:mm};
+  }
+  function parseTimeRange(s){
+    if(!s) return null;
+    let str = String(s).toLowerCase().replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
+    const m = str.match(/^(.+?)\s*-\s*(.+)$/);
+    if(!m) return null;
+    let a = m[1].trim(), b = m[2].trim();
+    const suffix = b.match(/\b([ap])\.?m\.?\b/);
+    if(suffix && !/\b([ap])\.?m\.?\b/.test(a)) a += ' ' + suffix[0];
+    const t1 = parseTime(a), t2 = parseTime(b);
+    if(!t1 || !t2) return null;
+    return {start:t1, end:t2};
+  }
+  function combineDateTime(d, t){ const dt=new Date(d); const time=t||{h:0,m:0}; dt.setHours(time.h,time.m,0,0); return dt; }
+  function formatDateRange(start, end){
+    const dOpt={month:'long',day:'numeric',year:'numeric'};
+    const tOpt={hour:'numeric',minute:'2-digit'};
+    const dFmt=new Intl.DateTimeFormat('en-US',dOpt), tFmt=new Intl.DateTimeFormat('en-US',tOpt);
+    const same = start.toDateString()===end.toDateString();
+    return same ? dFmt.format(start)+' • '+tFmt.format(start)+'–'+tFmt.format(end)
+                : dFmt.format(start)+' '+tFmt.format(start)+' → '+dFmt.format(end)+' '+tFmt.format(end);
+  }
+  function tagSlug(s){ return (s||'').toLowerCase().replace(/\s+/g,'-'); }
+  function normalizeTags(s){ return !s?[]: s.split(/[,;/|]+/).map(v=>v.trim()).filter(Boolean); }
+
+  /* ---------- Labels & links ---------- */
+  function getBtnLabel(ev){
+    const tags = new Set((ev.tagSlugs||[]).map(String));
+    if (tags.has('volunteer')) return 'Sign up';
+    if (tags.has('performance') || tags.has('performances')) return 'Tickets';
+    if (tags.has('professional-development') || tags.has('event') || tags.has('events')) return 'Check in';
+    return 'Attendance';
+  }
+  function gcalLink(ev){
+    const text = encodeURIComponent(ev.title || 'ACDA Event');
+    const details = encodeURIComponent((ev.details || ev.description || '') + (ev.signin_link ? '\n\nRSVP: ' + ev.signin_link : ''));
+    const location = encodeURIComponent(ev.location || '');
+    const tz = 'America/New_York';
+    const s = ev.startDateTime, e = ev.endDateTime;
+    const dates = s.getFullYear()+String(s.getMonth()+1).padStart(2,'0')+String(s.getDate()).padStart(2,'0')+'T'+
+                  String(s.getHours()).padStart(2,'0')+String(s.getMinutes()).padStart(2,'0')+'00/'+
+                  e.getFullYear()+String(e.getMonth()+1).padStart(2,'0')+String(e.getDate()).padStart(2,'0')+'T'+
+                  String(e.getHours()).padStart(2,'0')+String(e.getMinutes()).padStart(2,'0')+'00';
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&ctz='+tz+'&details='+details+'&location='+location;
+  }
+  function badgeHTML(tags){ return (tags||[]).map(t=>'<span class="badge" data-tag="'+tagSlug(t)+'">'+t+'</span>').join(' '); }
+
+  /* ---------- Cards (home “Featured Events” style) ---------- */
+  function cardHTML(ev){
+    const hasLink = !!ev.signin_link;
+    const btnLabel = getBtnLabel(ev);
+    const signinHref = hasLink ? ev.signin_link : '#';
+    const img = ev.image_url || '/assets/img/about.png';
+
+    return (
+      '<article class="card" data-tags="'+ev.tagSlugs.join(' ')+'" data-when="'+ev.when+'">'+
+        '<img src="'+img+'" alt="'+(ev.title||'Event photo')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
+        '<div class="meta">'+
+          '<h3>'+ (ev.title||'Untitled') +'</h3>'+
+          '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+
+            (ev.location? ' • '+ev.location : '')+
+            ' • <a class="calendar-link" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
+          '</p>'+
+          '<div class="event-badges" style="margin:.4rem 0 .4rem">'+ badgeHTML(ev.tags) +'</div>'+
+          (ev.description ? '<p>'+ev.description+'</p>' : '')+
+          '<div class="event-actions" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem">'+
+            '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+            '<button class="btn btn-outline" data-modal="modal-'+ev.id+'">Details</button>'+
+          '</div>'+
+        '</div>'+
+      '</article>'
+    );
+  }
+
+  function modalHTML(ev){
+    const hasLink = !!ev.signin_link;
+    const btnLabel = getBtnLabel(ev);
+    const signinHref = hasLink ? ev.signin_link : '#';
+    const img = ev.image_url || '/assets/img/about.png';
+
+    return (
+      '<div class="modal" id="modal-'+ev.id+'" role="dialog" aria-modal="true" aria-labelledby="modal-'+ev.id+'-title" hidden>'+
+        '<div class="dialog" tabindex="-1">'+
+          '<div class="modal-header" style="text-align:center;position:relative">'+
+            '<h3 class="modal-title" id="modal-'+ev.id+'-title">'+(ev.title||'')+'</h3>'+
+            '<button class="modal-close" type="button" data-close aria-label="Close">✕</button>'+
+          '</div>'+
+          '<section style="text-align:center">'+
+            '<img class="convention-thumb" src="'+img+'" alt="'+(ev.title||'Event photo')+'" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
+            '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
+            (ev.details ? '<p>'+ev.details+'</p>' : '')+
+            '<div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1rem">'+
+              '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+              '<a class="btn btn-outline" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
+            '</div>'+
+          '</section>'+
+        '</div>'+
+      '</div>'
+    );
+  }
+
+  /* ---------- Build from sheet ---------- */
+  function buildEvents(recs){
+    const now = new Date();
+    return recs.map(r => {
+      const date = parseDate(r.date || r.day || r.event_date);
+
+      const stRaw = r.start_time || r.start || r.begin || '';
+      const etRaw = r.end_time   || r.end   || r.finish || '';
+      const rangeRaw = r.time || r.time_range || r.times || '';
+
+      let st = parseTime(stRaw);
+      let et = parseTime(etRaw);
+      if((!st || !et) && rangeRaw){
+        const rng = parseTimeRange(rangeRaw);
+        if(rng){ st = st || rng.start; et = et || rng.end; }
+      }
+
+      const start = date ? combineDateTime(date, st || {h:0,m:0}) : new Date();
+      let end = date ? (et ? combineDateTime(date, et) : new Date(start.getTime() + 60*60*1000))
+                     : new Date(start.getTime() + 60*60*1000);
+
+      if(end <= start){
+        if(rangeRaw) end = new Date(end.getTime() + 24*60*60*1000);
+        else end = new Date(start.getTime() + 60*60*1000);
+      }
+
+      const when = end < now ? 'past' : 'upcoming';
+      const tags = normalizeTags(r.tags);
+      const slugs = tags.map(tagSlug);
+
+      return {
+        id: Math.random().toString(36).slice(2),
+        title: r.title || r.name || '',
+        date: r.date,
+        start_time: r.start_time,
+        end_time: r.end_time,
+        startDateTime: start,
+        endDateTime: end,
+        datePretty: formatDateRange(start, end),
+        location: r.location || '',
+        tags,
+        tagSlugs: slugs,
+        description: r.description || '',
+        details: r.details || '',
+        signin_link: r.signin_link || r.rsvp || '',
+        image_url: r.image_url || r.image || '/assets/img/about.png',
+        when
+      };
+    });
+  }
+
+  /* ---------- Mobile-safe fetch with timeout ---------- */
+  async function fetchCSV(url){
+    const isIOS = /iP(hone|ad|od)/i.test(navigator.userAgent);
+    const isMobileSafari = isIOS && /Safari/i.test(navigator.userAgent) && !/CriOS|FxiOS/i.test(navigator.userAgent);
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
+
+    const opts = {
+      mode: 'cors',
+      credentials: 'omit',
+      signal: controller.signal,
+      ...(isMobileSafari ? {} : { cache: 'no-cache' })
+    };
+
+    try{
+      const resp = await fetch(url, opts);
+      if(!resp.ok) throw new Error('HTTP ' + resp.status);
+      return await resp.text();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function openModal(m){ if(!m) return; m.hidden=false; m.classList.add('open'); document.body.style.overflow='hidden'; m.querySelector('.dialog')?.focus({preventScroll:true}); }
+  function closeModal(m){ if(!m) return; m.classList.remove('open'); m.hidden=true; document.body.style.overflow=''; }
+
+  function attachModalHandlers(){
+    document.querySelectorAll('[data-modal]').forEach(btn=>{
+      btn.addEventListener('click',()=> openModal(document.getElementById(btn.getAttribute('data-modal'))));
+    });
+    document.querySelectorAll('.modal').forEach(m=>{
+      m.addEventListener('click',(e)=>{ if(e.target===m) closeModal(m); });
+      m.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click',()=> closeModal(m)));
+    });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(closeModal); });
+  }
+
+  function showNotice(){ openModal(document.getElementById('notice-modal')); }
+  document.addEventListener('click',(e)=>{
+    const a = e.target.closest('a[data-action="signin"]');
+    if(!a) return;
+    const hasLink = a.getAttribute('data-has-link') === '1';
+    const href = a.getAttribute('href');
+    if(!hasLink || !href || href === '#'){ e.preventDefault(); showNotice(); }
+  });
+
+  function render(events){
+    if(!events.length){
+      listEl.innerHTML = '<p class="kicker">No upcoming events yet. Check back soon!</p>';
+      return;
+    }
+    const cards = events.map(cardHTML).join('\n');
+    const modals = events.map(modalHTML).join('\n');
+    listEl.innerHTML = cards + '\n' + modals;
+    attachModalHandlers();
+  }
+
+  async function init(){
+    if(!listEl.innerHTML.trim()){ listEl.innerHTML = '<p class="kicker">Loading events…</p>'; }
+    try{
+      const csv = await fetchCSV(CSV_URL);
+      const recs = toRecords(parseCSV(csv));
+      const all = buildEvents(recs);
+
+      // Only upcoming; earliest first; take top 3
+      const upcoming = all
+        .filter(ev => ev.when === 'upcoming')
+        .sort((a,b)=> a.startDateTime - b.startDateTime)
+        .slice(0,3);
+
+      render(upcoming);
+    } catch(err){
+      console.error('Home events load failed:', err);
+      listEl.innerHTML = `
+        <div class="card"><div class="card-body">
+          <p class="kicker">Couldn’t load events on this device.</p>
+          <button class="btn" id="retry-home-events">Try again</button>
+        </div></div>`;
+      document.getElementById('retry-home-events')?.addEventListener('click', init, { once:true });
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+
+<script src="/js/core.js" defer></script>
 </body>
 </html>

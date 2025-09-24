@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+<link rel="preconnect" href="https://docs.google.com" crossorigin>
+<link rel="dns-prefetch" href="https://docs.google.com">
+
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Events — Rowan ACDA</title>
@@ -16,7 +20,8 @@
 
 <style>
   :root{ --tap: 40px; }
-  /* Keep ACDA look; only scope page-specific tweaks here */
+
+  /* ===== Filters ===== */
   .filters .filters-bar{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
   .filters .chips{ display:flex; flex-wrap:wrap; gap:.5rem; }
   .filters .chip, .filters .button{
@@ -43,7 +48,7 @@
     background:#c9c9c9; transition: transform .2s ease, background .2s ease; }
   .filters .switch[aria-pressed="true"] .knob::after{ transform: translateX(14px); background:#7A0A0A; }
 
-  /* Cards / grid */
+  /* ===== Cards / grid ===== */
   #eventsList.grid{ grid-template-columns: repeat(3, minmax(0,1fr)); gap:1rem; }
   @media(max-width:900px){ #eventsList.grid{ grid-template-columns: 1fr 1fr; } }
   @media(max-width:640px){ #eventsList.grid{ grid-template-columns: 1fr; } }
@@ -51,16 +56,60 @@
   .event-actions{ display:flex; gap:.5rem; flex-wrap:wrap; justify-content:flex-start; margin-top:1rem; }
   .badge{ display:inline-flex; align-items:center; height:28px; padding:0 10px; border:1px solid var(--border); border-radius:999px; font-size:.85rem; background:#fff; }
 
-  /* Modal */
-  .modal{ position:fixed; inset:0; display:none; }
-  .modal.open{ display:block; }
-  .modal .modal-overlay{ position:absolute; inset:0; background:rgba(0,0,0,.35); }
-  .modal .modal-content{ position:relative; margin:5vh auto; max-width:min(720px, 92vw); background:#fff; border-radius:1rem; padding:1rem; box-shadow:var(--shadow-lg); }
+  /* ===== ACDA Modal pattern (consistent with Resources/E-Board) ===== */
+  .modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.35); z-index:1000; }
+  .modal.open{ display:flex; }
+  .modal .dialog{
+    background:#fff; border-radius:1rem; max-width:720px; width:min(92vw, 720px);
+    max-height:90vh; overflow:auto; padding:1rem; border:1px solid var(--border);
+    position:relative;
+  }
   .modal .modal-header{ display:flex; align-items:center; justify-content:center; position:relative; text-align:center; }
-  .modal .modal-header .close-btn{ position:absolute; right:10px; top:10px; }
-  .modal .convention-thumb{ width:100%; aspect-ratio:16/9; border-radius:.8rem; object-fit:cover; background:#fff; border:1px solid var(--border); }
+  .modal .modal-title{ margin:.25rem 0 .5rem; }
+  .modal .modal-close{
+    position:absolute; right:10px; top:10px;
+    width:2rem; height:2rem; display:grid; place-items:center;
+    border:0; background:transparent; cursor:pointer; border-radius:.5rem;
+    font-size:1.25rem; line-height:1; color:#444;
+  }
+  .modal .modal-close:hover{ background: rgba(0,0,0,.06); }
+  @media (prefers-color-scheme: dark){
+    .modal .modal-close{ color:#ddd; }
+    .modal .modal-close:hover{ background: rgba(255,255,255,.08); }
+  }
+  .modal .dialog:focus:not(:focus-visible),
+  .modal .modal-close:focus:not(:focus-visible){ outline:none; box-shadow:none; }
+
+  /* Hide scrollbar in the popup dialog (keep scroll) */
+  .modal .dialog{
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .modal .dialog::-webkit-scrollbar{ display: none; }
+
+  .convention-thumb{ width:100%; aspect-ratio:16/9; border-radius:.8rem; object-fit:cover; background:#fff; border:1px solid var(--border); }
+
   .chip-break{ flex-basis:100%; height:0; }
   @media(max-width:640px){ .chip-break{ display:none; } }
+
+  /* === NEW: inline red Add to Calendar link === */
+  .event-meta .calendar-link{
+    color:#7A0A0A;
+    font-weight:700;
+  }
+  .event-meta .calendar-link:hover,
+  .event-meta .calendar-link:focus{
+    text-decoration:underline;
+  }
+
+  /* Event tags: red text + red outline */
+  .event-badges .badge{
+    color:#7A0A0A;
+    border:1.6px solid #7A0A0A;
+    background:#fff;
+    font-weight:700;
+  }
 </style>
 </head>
 <body>
@@ -84,12 +133,19 @@
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
 
-  <header style="margin-bottom:1rem">
-    <h1>Events</h1>
-    <p class="small">Search and filter to find meetings, PDs, performances, and volunteer opportunities.</p>
-  </header>
+  <section class="banner-outer" role="region" aria-label="Events header">
+    <div class="page-banner"
+         style="--banner-img:url('/assets/img/events-banner.png')">
+      <div class="container">
+        <h1 class="page-banner__title">Events</h1>
+        <p class="page-banner__subtext">Performances, Volunteer Opportunites, Meeings, and Workshops</p>
+      </div>
+    </div>
+  </section>
 
-  <!-- New: filters bar (chips + Past toggle) -->
+  <br>
+
+  <!-- Filters -->
   <div class="filters" style="margin:.5rem 0 1rem">
     <div class="filters-bar">
       <div class="chips" role="toolbar" aria-label="Filter events by category">
@@ -115,13 +171,12 @@
   <div id="eventsList" class="grid" aria-live="polite"></div>
 </main>
 
-<!-- Simple notice modal for missing RSVP links -->
+<!-- Notice modal (ACDA style) -->
 <div class="modal" id="notice-modal" role="dialog" aria-modal="true" aria-labelledby="notice-title" hidden>
-  <div class="modal-overlay" data-close="True"></div>
-  <div class="modal-content">
+  <div class="dialog" tabindex="-1">
     <div class="modal-header">
       <h3 class="modal-title" id="notice-title">Heads up</h3>
-      <button class="close-btn" data-close="True" aria-label="Close">✕</button>
+      <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
     </div>
     <section>
       <p>This form is not open yet. Check back closer to the event.</p>
@@ -138,7 +193,7 @@
 </footer>
 
 <script>
-/* Inline events logic (NAfME-style) but using ACDA styling */
+/* Events logic + ACDA modal pattern */
 (function(){
   const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
   const listEl = document.getElementById('eventsList');
@@ -147,6 +202,7 @@
   const pastToggle = document.getElementById('togglePast');
   const activeFilters = new Set(); // empty = ALL
 
+  /* ---------- CSV helpers ---------- */
   function parseCSV(text){
     const rows = []; let i=0, field='', row=[], inQuotes=false;
     while(i < text.length){
@@ -172,6 +228,7 @@
     return rows.map(r=>{ const o={}; header.forEach((h,i)=> o[h]=(r[i]||'').trim()); return o; });
   }
 
+  /* ---------- Date/time helpers (ROBUST) ---------- */
   function parseDate(dStr){
     if(!dStr) return null;
     const m = dStr.trim().match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})$/);
@@ -179,24 +236,72 @@
     let mm=+m[1], dd=+m[2], yy=+m[3]; if(yy<100) yy=2000+yy;
     return new Date(yy, mm-1, dd);
   }
+
+  // Accepts: 7 | 7pm | 7:30 | 7:30pm | 19:30 | 12 am/pm | noon | midnight
   function parseTime(tStr){
-    if(!tStr) return {h:0,m:0};
-    const m = tStr.trim().match(/^(\d{1,2}):(\d{2})\s*([AP]M)?$/i);
-    if(!m) return {h:0,m:0};
-    let h=+m[1], mm=+m[2]; const ap=(m[3]||'').toUpperCase();
-    if(ap==='PM' && h<12) h+=12; if(ap==='AM' && h===12) h=0; return {h, m:mm};
+    if(!tStr) return null;
+    let s = String(tStr).trim().toLowerCase();
+    s = s.replace(/[\u2013\u2014]/g, '-'); // normalize dashes
+
+    if(/\bnoon\b/.test(s)) return {h:12, m:0};
+    if(/\bmidnight\b/.test(s)) return {h:0, m:0};
+
+    const m = s.match(/^\s*(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?\s*m\.?)?\s*$/i);
+    if(!m) return null;
+
+    let h = parseInt(m[1],10);
+    let mm = m[2] ? parseInt(m[2],10) : 0;
+    const ap = m[3] ? m[3].replace(/\./g,'').trim() : '';
+
+    if(ap){ // 12h
+      if(ap.startsWith('p') && h < 12) h += 12;
+      if(ap.startsWith('a') && h === 12) h = 0;
+    }
+    // 24h stays as-is
+    return {h, m:mm};
   }
-  function combineDateTime(d, t){ const dt=new Date(d); dt.setHours(t.h, t.m, 0, 0); return dt; }
+
+  // Accepts: "6-8 pm", "6 pm - 8 pm", "6–8 PM"
+  function parseTimeRange(s){
+    if(!s) return null;
+    let str = String(s).toLowerCase().replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
+    const m = str.match(/^(.+?)\s*-\s*(.+)$/);
+    if(!m) return null;
+
+    let a = m[1].trim();
+    let b = m[2].trim();
+
+    // If only end has am/pm, inherit to start
+    const suffix = b.match(/\b([ap])\.?m\.?\b/);
+    if(suffix && !/\b([ap])\.?m\.?\b/.test(a)) a += ' ' + suffix[0];
+
+    const t1 = parseTime(a);
+    const t2 = parseTime(b);
+    if(!t1 || !t2) return null;
+    return {start: t1, end: t2};
+  }
+
+  function combineDateTime(d, t){
+    const dt = new Date(d);
+    const time = t || {h:0,m:0};
+    dt.setHours(time.h, time.m, 0, 0);
+    return dt;
+  }
+
   function formatDateRange(start, end){
-    const dOpt={month:'long',day:'numeric',year:'numeric'}, tOpt={hour:'numeric',minute:'2-digit'};
-    const dFmt=new Intl.DateTimeFormat('en-US',dOpt), tFmt=new Intl.DateTimeFormat('en-US',tOpt);
+    const dOpt={month:'long',day:'numeric',year:'numeric'};
+    const tOpt={hour:'numeric',minute:'2-digit'};
+    const dFmt=new Intl.DateTimeFormat('en-US',dOpt);
+    const tFmt=new Intl.DateTimeFormat('en-US',tOpt);
     const same=start.toDateString()===end.toDateString();
     return same ? dFmt.format(start)+' • '+tFmt.format(start)+'–'+tFmt.format(end)
                 : dFmt.format(start)+' '+tFmt.format(start)+' → '+dFmt.format(end)+' '+tFmt.format(end);
   }
+
   function tagSlug(s){ return (s||'').toLowerCase().replace(/\s+/g,'-'); }
   function normalizeTags(s){ return !s?[]: s.split(/[,;/|]+/).map(v=>v.trim()).filter(Boolean); }
 
+  /* ---------- Labels & links ---------- */
   function getBtnLabel(ev){
     const tags = new Set((ev.tagSlugs||[]).map(String));
     if (tags.has('volunteer')) return 'Sign up';
@@ -216,25 +321,29 @@
                   String(e.getHours()).padStart(2,'0')+String(e.getMinutes()).padStart(2,'0')+'00';
     return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&ctz='+tz+'&details='+details+'&location='+location;
   }
-
   function badgeHTML(tags){ return (tags||[]).map(t=>'<span class="badge" data-tag="'+tagSlug(t)+'">'+t+'</span>').join(' '); }
 
+  /* ---------- Card & modal templates ---------- */
   function cardHTML(ev){
     const hasLink = !!ev.signin_link;
     const btnLabel = getBtnLabel(ev);
     const signinHref = hasLink ? ev.signin_link : '#';
     const img = ev.image_url || '/assets/img/about.png';
+
     return (
       '<article class="card event-card" data-tags="'+ev.tagSlugs.join(' ')+'" data-when="'+ev.when+'">'+
         '<img class="event-photo" src="'+img+'" alt="'+(ev.title||'Event photo')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
         '<div class="card-body">'+
           '<h3>'+ (ev.title||'Untitled') +'</h3>'+
-          '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
+          '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+
+            (ev.location? ' • '+ev.location : '')+
+            ' • <a class="calendar-link" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
+          '</p>'+
+          '<div class="event-badges" style="margin:.4rem 0 .4rem">'+ badgeHTML(ev.tags) +'</div>'+
           (ev.description ? '<p>'+ev.description+'</p>' : '')+
-          '<div class="event-badges" style="margin:.4rem 0 .2rem">'+ badgeHTML(ev.tags) +'</div>'+
           '<div class="event-actions">'+
-            '<button class="button" data-modal="modal-'+ev.id+'">Details</button>'+
-            '<a class="button" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+            '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+            '<button class="btn btn-outline" data-modal="modal-'+ev.id+'">Details</button>'+
           '</div>'+
         '</div>'+
       '</article>'
@@ -246,21 +355,21 @@
     const btnLabel = getBtnLabel(ev);
     const signinHref = hasLink ? ev.signin_link : '#';
     const img = ev.image_url || '/assets/img/about.png';
+
     return (
       '<div class="modal" id="modal-'+ev.id+'" role="dialog" aria-modal="true" aria-labelledby="modal-'+ev.id+'-title" hidden>'+
-        '<div class="modal-overlay" data-close="True"></div>'+
-        '<div class="modal-content">'+
+        '<div class="dialog" tabindex="-1">'+
           '<div class="modal-header">'+
             '<h3 class="modal-title" id="modal-'+ev.id+'-title">'+(ev.title||'')+'</h3>'+
-            '<button class="close-btn" data-close="True" aria-label="Close">✕</button>'+
+            '<button class="modal-close" type="button" data-close aria-label="Close">✕</button>'+
           '</div>'+
-          '<section>'+
+          '<section style="text-align:center">'+
             '<img class="convention-thumb" src="'+img+'" alt="'+(ev.title||'Event photo')+'" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
-            '<p class="kicker"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
+            '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
             (ev.details ? '<p>'+ev.details+'</p>' : '')+
             '<div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1rem">'+
-              '<a class="button" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
-              '<a class="button" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+              '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+              '<a class="btn btn-outline" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
             '</div>'+
           '</section>'+
         '</div>'+
@@ -268,25 +377,44 @@
     );
   }
 
-  function openModal(m){ m?.classList.add('open'); m?.removeAttribute('hidden'); }
-  function closeModal(m){ m?.classList.remove('open'); m?.setAttribute('hidden',''); }
+  /* ---------- Render & interactions ---------- */
+  function openModal(m){
+    if(!m) return;
+    m.hidden = false;
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    const dlg = m.querySelector('.dialog'); if(dlg) dlg.focus({preventScroll:true});
+  }
+  function closeModal(m){
+    if(!m) return;
+    m.classList.remove('open');
+    m.hidden = true;
+    document.body.style.overflow = '';
+  }
 
   function attachModalHandlers(){
     document.querySelectorAll('[data-modal]').forEach(btn => {
       btn.addEventListener('click', () => openModal(document.getElementById(btn.getAttribute('data-modal'))));
     });
     document.querySelectorAll('.modal').forEach(m => {
-      m.addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(m); });
+      m.addEventListener('click', (e) => { if(e.target === m) closeModal(m); });
       m.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(m)));
     });
-    document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(closeModal); });
+    document.addEventListener('keydown', (e) => {
+      if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(closeModal);
+    });
   }
 
   function showNotice(){ openModal(document.getElementById('notice-modal')); }
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a.button[data-action="signin"]'); if(!a) return;
-    const hasLink = a.getAttribute('data-has-link')==='1'; const href = a.getAttribute('href');
-    if(!hasLink || !href || href==='#'){ e.preventDefault(); showNotice(); }
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-action="signin"]');
+    if (!a) return;
+    const hasLink = a.getAttribute('data-has-link') === '1';
+    const href = a.getAttribute('href');
+    if (!hasLink || !href || href === '#') {
+      e.preventDefault();
+      showNotice();
+    }
   });
 
   function render(events){
@@ -297,11 +425,11 @@
     applyFilters();
   }
 
+  /* ---------- Filters ---------- */
   function applyPastVisibility(){
     const showPast = pastToggle?.getAttribute('aria-pressed')==='true';
     listEl.querySelectorAll('[data-when="past"]').forEach(el => el.style.display = showPast ? '' : 'none');
   }
-
   function matchesFilters(card){
     if(activeFilters.size===0) return true;
     const tags = (card.getAttribute('data-tags')||'').split(/\s+/);
@@ -313,7 +441,6 @@
     for(const f of activeFilters) if(tagMatches(f)) return true;
     return false;
   }
-
   function applyFilters(){
     const showPast = pastToggle?.getAttribute('aria-pressed')==='true';
     listEl.querySelectorAll('.card').forEach(card => {
@@ -322,11 +449,9 @@
       card.style.display = (match && (showPast || !isPast)) ? '' : 'none';
     });
   }
-
   function updatePressedStates(){
     chipButtons.forEach(b => b.setAttribute('aria-pressed', activeFilters.size===0 ? (b.dataset.filter==='all') : activeFilters.has(b.dataset.filter)));
   }
-
   function onChipClick(e){
     const f = e.currentTarget.dataset.filter;
     if(f==='all') activeFilters.clear();
@@ -336,17 +461,42 @@
   chipButtons.forEach(b => b.addEventListener('click', onChipClick));
   pastToggle?.addEventListener('click', () => { const p = pastToggle.getAttribute('aria-pressed')==='true'; pastToggle.setAttribute('aria-pressed', String(!p)); applyPastVisibility(); applyFilters(); });
 
+  /* ---------- Build & load (uses robust time parsing) ---------- */
   function buildEvents(recs){
     const now = new Date();
     return recs.map(r => {
       const date = parseDate(r.date || r.day || r.event_date);
-      const st = parseTime(r.start_time || r.start || r.begin);
-      const et = parseTime(r.end_time || r.end || r.finish);
-      const start = date ? combineDateTime(date, st) : new Date();
-      const end = date ? combineDateTime(date, et.h?et:st) : new Date(start.getTime()+60*60*1000);
+
+      // Accept either separate start/end columns OR a single time range column
+      const stRaw = r.start_time || r.start || r.begin || '';
+      const etRaw = r.end_time   || r.end   || r.finish || '';
+      const rangeRaw = r.time || r.time_range || r.times || '';
+
+      let st = parseTime(stRaw);
+      let et = parseTime(etRaw);
+
+      if((!st || !et) && rangeRaw){
+        const rng = parseTimeRange(rangeRaw);
+        if(rng){ st = st || rng.start; et = et || rng.end; }
+      }
+
+      const start = date ? combineDateTime(date, st || {h:0,m:0}) : new Date();
+      let end = date ? (et ? combineDateTime(date, et) : new Date(start.getTime() + 60*60*1000))
+                     : new Date(start.getTime() + 60*60*1000);
+
+      // If end <= start, try treating it as crossing midnight when a range was present; otherwise default to +1h
+      if(end <= start){
+        if(rangeRaw){
+          end = new Date(end.getTime() + 24*60*60*1000);
+        } else {
+          end = new Date(start.getTime() + 60*60*1000);
+        }
+      }
+
       const when = end < now ? 'past' : 'upcoming';
       const tags = normalizeTags(r.tags);
       const slugs = tags.map(tagSlug);
+
       return {
         id: Math.random().toString(36).slice(2),
         title: r.title || r.name || '',
