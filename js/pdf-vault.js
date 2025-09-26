@@ -17,7 +17,8 @@
 
     "SS#2: Cabaret Rehearsal": [
       { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
-      { label: "Martin - The Awakening", url: "/assets/pdfs/choral-rep/The%20Awakening%20-%20Martin.pdf"}
+      { label: "Martin - The Awakening", url: "/assets/pdfs/choral-rep/The%20Awakening%20-%20Martin.pdf"},
+      { label: "Ticheli - Earth Song", url: "/assets/pdfs/choral-rep/Earth%20Song.pdf"}
     ],
 
     "SS#3: Church Gig 101": [],
