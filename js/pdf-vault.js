@@ -21,7 +21,10 @@
     ],
 
     "SS#3: Church Gig 101": [],
-    "SS#4: Professional Development": [],
+    "SS#4: Professional Development": [
+
+      { label: "Crane - Flight", url: "/assets/pdfs/choral-rep/Flight.pdf"}
+    ],
     "SS#5: Latin American Music": [],
     "SS#6: Conducting 101": [],
     "SS#7: Student Compositions": [],
