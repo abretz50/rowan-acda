@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Sight‑Singing Vault — Rowan ACDA</title>
-<meta name="description" content="Password‑protected PDF vault for sight‑singing resources."/>
+<title>Sight-Singing Vault — Rowan ACDA</title>
+<meta name="description" content="Password-protected PDF vault for sight-singing resources."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
@@ -13,7 +13,6 @@
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css"/>
-
 </head>
 <body>
 
@@ -36,7 +35,7 @@
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
 
-<h1>Sight‑Singing Vault</h1>
+<h1>Sight-Singing Vault</h1>
 <p class="small">Enter the sight-reading session topic and password to access public domain scores we will read together</p>
 <div class="grid cols-2">
   <div class="card">
@@ -49,6 +48,10 @@
   <div class="card">
     <h3>Viewer</h3>
     <embed id="vault-viewer" class="hidden" type="application/pdf" style="width:100%;height:70vh;border:1px solid var(--border);border-radius:.5rem"/>
+    <!-- Open in new tab button -->
+    <p class="small" style="margin-top:.5rem">
+      <button class="btn" id="open-newtab" disabled>Open in new tab</button>
+    </p>
   </div>
 </div>
 <script src="/js/pdf-vault.js" defer></script>
@@ -98,6 +101,31 @@
 </footer>
 
 <script src="/js/core.js" defer></script>
+
+<!-- Wiring for the new-tab button -->
+<script>
+  (() => {
+    const viewer = document.getElementById('vault-viewer');
+    const btn = document.getElementById('open-newtab');
+
+    function syncButton() {
+      const src = viewer.getAttribute('src') || '';
+      btn.disabled = src.trim() === '';
+    }
+
+    // Watch for pdf-vault.js setting the viewer src
+    new MutationObserver(syncButton).observe(viewer, { attributes: true, attributeFilter: ['src'] });
+
+    // Run once on load
+    syncButton();
+
+    // Open current PDF in a new tab
+    btn.addEventListener('click', () => {
+      const src = viewer.getAttribute('src');
+      if (src) window.open(src, '_blank', 'noopener');
+    });
+  })();
+</script>
 
 </body>
 </html>
