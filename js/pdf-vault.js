@@ -16,7 +16,7 @@
     ],
 
     "SS#2: Cabaret Rehearsal": [
-      { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" }
+      { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
       { label: "Martin - The Awakening", url: "/assets/pdfs/choral-rep/The%20Awakening%20-%20Martin.pdf"}
     ],
 
