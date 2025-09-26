@@ -24,7 +24,8 @@
     "SS#3: Church Gig 101": [],
     "SS#4: Professional Development": [
 
-      { label: "Crane - Flight", url: "/assets/pdfs/choral-rep/Flight.pdf"}
+      { label: "Crane - Flight", url: "/assets/pdfs/choral-rep/Flight.pdf"},
+      { label: "Smallwood - Total Praise", url: "/assets/pdfs/choral-rep/Total%20Praise.pdf"}
     ],
     "SS#5: Latin American Music": [],
     "SS#6: Conducting 101": [],
