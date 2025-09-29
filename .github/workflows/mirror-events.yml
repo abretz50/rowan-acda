@@ -5,6 +5,7 @@ on:
     - cron: "0 * * * *"   # every hour (UTC)
   workflow_dispatch:
 
+# prevent concurrent runs from racing each other
 concurrency:
   group: mirror-events
   cancel-in-progress: false
@@ -14,10 +15,7 @@ permissions:
 
 env:
   BRANCH: main
-  # >>> Replace with your real sheet ID (the long string after /d/ in the URL)
-  SHEET_ID: 1AbCdefGhijKlmnOpQRstuVWxyz0123456789
-  # >>> Replace if your sheet tab isn't the first; use the tab's gid from the URL
-  GID: "0"
+  SRC_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv
   DEST: assets/data/events.csv
 
 jobs:
@@ -28,40 +26,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ env.BRANCH }}
-          fetch-depth: 0
+          fetch-depth: 0   # needed for rebase
 
-      - name: Fetch latest CSV (live export, cache-busted)
+      - name: Fetch latest CSV
         run: |
           set -euo pipefail
-
-          # Build live export URL (requires the sheet to be viewable by "Anyone with the link")
-          URL="https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}&cachebust=${GITHUB_RUN_ID}"
-
           mkdir -p "$(dirname "$DEST")"
           tmp="$(mktemp)"
-
-          # Show headers to confirm we didn't get HTML
-          echo ">>> Requesting: $URL"
-          curl -sI "$URL" | sed -n '1,20p'
-
-          # Download
           curl -fsSL --retry 3 --retry-delay 5 --max-time 30 \
                -A "RowanACDA/1.0 (GitHub Action)" \
-               "$URL" -o "$tmp"
+               "$SRC_URL" -o "$tmp"
 
-          # Basic sanity checks
           if [ ! -s "$tmp" ]; then
-            echo "::error::Download empty or failed."
-            exit 1
-          fi
-          filetype="$(file -b --mime-type "$tmp")"
-          if ! echo "$filetype" | grep -qiE 'text/csv|application/vnd\.ms-excel'; then
-            echo "::error::Expected CSV, got $filetype. Is the sheet shared as 'Anyone with the link can view'?"
-            head -n 20 "$tmp" || true
+            echo "Download empty or failed"
             exit 1
           fi
 
-          # If unchanged, skip commit
           if [ -f "$DEST" ] && cmp -s "$tmp" "$DEST"; then
             echo "No changes."
             rm -f "$tmp"
@@ -71,8 +51,6 @@ jobs:
 
           mv "$tmp" "$DEST"
           echo "NO_CHANGES=0" >> "$GITHUB_ENV"
-          echo "Preview of new CSV:"
-          head -n 5 "$DEST" || true
 
       - name: Commit change
         if: env.NO_CHANGES == '0'
@@ -80,11 +58,23 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$DEST"
-          git commit -m "chore(data): mirror events.csv from Google Sheets (live export) [skip ci]"
+          git commit -m "chore(data): mirror events.csv from Google Sheets [skip ci]"
 
       - name: Rebase on remote & push
         if: env.NO_CHANGES == '0'
         run: |
           set -e
-          git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
-          git push origin HEAD:"$BRANCH"
+          # rebase onto the latest remote to avoid non-fast-forward errors
+          git pull --rebase --autostash origin "$BRANCH" || {
+            echo "Rebase failed; aborting to keep history clean."
+            git rebase --abort
+            exit 1
+          }
+
+          # push (retry once in case of a race)
+          git push origin HEAD:"$BRANCH" || {
+            echo "Non-fast-forward; refetch + rebase once, then retry push."
+            git fetch origin "$BRANCH"
+            git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
+            git push origin HEAD:"$BRANCH"
+          }
