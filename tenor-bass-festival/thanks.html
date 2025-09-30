@@ -1,44 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Thanks — Volunteers • Rowan ACDA</title>
-
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Volunteer Sign‑Up — Tenor‑Bass Festival • Rowan ACDA</title>
+<meta name="description" content="Volunteer roles and sign-up for the Rowan Tenor‑Bass Festival."/>
+
+<!-- Speed up the sheet fetch -->
+<link rel="preconnect" href="https://docs.google.com" crossorigin>
+<link rel="dns-prefetch" href="https://docs.google.com">
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
 <link rel="icon" href="/assets/icons/favicon-32.png"/>
-<script defer src="/js/core.js"></script>
-
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
 
 <style>
-:root{--blue:#1b4fb8;--gold:#f4c542;--ink:#0c1220;--muted:#6b7280;--radius:18px;}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.55}
-.container{max-width:1120px;margin:0 auto;padding:0 1rem}
-h1,h2,h3{font-family:Outfit,Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0 0 .5rem}
-h1{font-size:clamp(1.8rem,3vw,2.4rem)}
-p{margin:.5rem 0}
-.muted{color:var(--muted)}
-.section{padding:2rem 0}
-.badge{display:inline-block;font-weight:700;padding:.25rem .55rem;border-radius:999px;background:var(--blue);color:#fff;margin-right:.35rem;font-size:.8rem}
-.form{display:grid;gap:.8rem}
-.form-row{display:grid;gap:.6rem;grid-template-columns:repeat(2,minmax(0,1fr))}
-label{font-weight:600;font-size:.92rem}
-input,select,textarea{width:100%;padding:.7rem;border-radius:12px;border:1px solid #d9e0ef;background:#fff}
-small.help{color:var(--muted);display:block;margin-top:.25rem}
-.btn{appearance:none;border:0;border-radius:12px;padding:.7rem 1rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem}
-.btn.primary{background:var(--blue);color:#fff}
-.btn.ghost{background:transparent;border:1px solid #d9e0ef;color:#18224a}
-.card{background:#fff;border:1px solid #e6ebf4;border-radius:var(--radius);padding:1rem}
-.grid{display:grid;gap:1rem}
-.grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.hr{height:1px;background:#e6ebf4;margin:1rem 0}
-.points{display:inline-block;padding:.2rem .5rem;border-radius:999px;background:#eef2ff}
-@media (max-width:900px){.form-row{grid-template-columns:1fr}.grid.cols-3{grid-template-columns:1fr}}
-</style>
+  /* Inline red “Add to Calendar” link */
+  .event-meta .calendar-link{
+    color:#7A0A0A; font-weight:700;
+  }
+  .event-meta .calendar-link:hover,
+  .event-meta .calendar-link:focus{ text-decoration:underline; }
 
+  /* Tags: red text + red outline (matches Events page) */
+  .event-badges .badge{
+    color:#7A0A0A; border:1.6px solid #7A0A0A; background:#fff; font-weight:700;
+  }
+
+  /* Hide scrollbar in any modal dialog, keep it scrollable */
+  .modal .dialog{ overflow:auto; -ms-overflow-style:none; scrollbar-width:none; }
+  .modal .dialog::-webkit-scrollbar{ display:none; }
+
+  /* ===== Fading slideshow (bigger) ===== */
+  .slideshow-wrap{
+    border:1px solid var(--border);
+    border-radius:1rem;
+    overflow:hidden;
+    background:#fff;
+  }
+  .slideshow{
+    position:relative;
+    width:100%;
+    height:clamp(260px, 45vw, 540px); /* bigger, responsive */
+    background:#f7f7f7;
+  }
+  .slideshow img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity 900ms ease;
+    /* perf hints */
+    backface-visibility:hidden;
+    transform:translateZ(0);
+    will-change:opacity;
+  }
+  .slideshow img.active{ opacity:1; }
+  /* smoother, longer cross-fade */
+.slideshow img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition: opacity 1.8s cubic-bezier(.22,.61,.36,1); /* was 900ms ease */
+  backface-visibility:hidden;
+  transform:translateZ(0);
+  will-change:opacity;
+}
+/* Home only: hide tags and buttons inside Featured Events */
+#home-events .event-badges,
+#home-events .event-actions,
+#home-events [data-modal],
+#home-events [data-action="signin"]{
+  display: none !important;
+}
+
+</style>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -60,11 +102,8 @@ small.help{color:var(--muted);display:block;margin-top:.25rem}
 <main class="section">
   <div class="container">
     <h1>Thanks for volunteering!</h1>
-    <p class="muted">We’ve received your volunteer form. You’ll get details (arrival time, assignment, contact) closer to the event.</p>
-    <div style="margin-top:1rem">
-      <a class="btn primary" href="/tenor-bass-festival/">Back to volunteer page</a>
-      <a class="btn ghost" href="/">Return home</a>
-    </div>
+    <p class="muted">We’ve received your volunteer form. We’ll email details closer to the event.</p>
+    <p><a class="btn" href="/tenor-bass-festival/">Back to volunteer page</a></p>
   </div>
 </main>
 <footer class="site-footer acda-footer" role="contentinfo">

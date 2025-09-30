@@ -1,1 +1,1 @@
-This folder makes /tenor-bass-festival/ a volunteers-only page.
+Volunteer page using site-native head/base.css and no custom styles.
