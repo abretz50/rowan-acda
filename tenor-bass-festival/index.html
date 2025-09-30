@@ -1,1 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Volunteer Sign-Up — Tenor-Bass Festival • Rowan ACDA</title>
+<meta name="description" content="Volunteer roles and sign-up for the Rowan Tenor-Bass Festival."/>
 
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/favicon-32.png"/>
+<script defer src="/js/core.js"></script>
+
+
+<style>
+:root{--blue:#1b4fb8;--gold:#f4c542;--ink:#0c1220;--muted:#6b7280;--radius:18px;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.55}
+.container{max-width:1120px;margin:0 auto;padding:0 1rem}
+h1,h2,h3{font-family:Outfit,Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0 0 .5rem}
+h1{font-size:clamp(1.8rem,3vw,2.4rem)}
+p{margin:.5rem 0}
+.muted{color:var(--muted)}
+.section{padding:2rem 0}
+.badge{display:inline-block;font-weight:700;padding:.25rem .55rem;border-radius:999px;background:var(--blue);color:#fff;margin-right:.35rem;font-size:.8rem}
+.form{display:grid;gap:.8rem}
+.form-row{display:grid;gap:.6rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+label{font-weight:600;font-size:.92rem}
+input,select,textarea{width:100%;padding:.7rem;border-radius:12px;border:1px solid #d9e0ef;background:#fff}
+small.help{color:var(--muted);display:block;margin-top:.25rem}
+.btn{appearance:none;border:0;border-radius:12px;padding:.7rem 1rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.ghost{background:transparent;border:1px solid #d9e0ef;color:#18224a}
+.card{background:#fff;border:1px solid #e6ebf4;border-radius:var(--radius);padding:1rem}
+.grid{display:grid;gap:1rem}
+.grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.hr{height:1px;background:#e6ebf4;margin:1rem 0}
+.points{display:inline-block;padding:.2rem .5rem;border-radius:999px;background:#eef2ff}
+@media (max-width:900px){.form-row{grid-template-columns:1fr}.grid.cols-3{grid-template-columns:1fr}}
+</style>
+
+</head>
+<body>
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/acda.png" alt="ACDA logo">
+      <span>Rowan ACDA</span>
+    </a>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main class="section">
+  <div class="container">
+    <span class="badge">ACDA</span>
+    <h1>Volunteer Sign-Up — Tenor-Bass Festival</h1>
+    <p class="muted">Choose a role and time window below. Some roles award ACDA/NAfME points as noted.</p>
+
+    <div class="card" style="margin-top:1rem">
+      <h2 style="margin-top:0">Available Roles</h2>
+      <div class="grid cols-3">
+        <div class="card"><strong>Bus Crew</strong><br><span class="muted">7:30–9:30</span><br><span class="points">2 pts</span></div><div class="card"><strong>Lobby Ushers</strong><br><span class="muted">7:30–9:30</span><br><span class="points">2 pts</span></div><div class="card"><strong>Registration</strong><br><span class="muted">7:30–9:30</span><br><span class="points">2 pts</span></div><div class="card"><strong>Set-Up Crew</strong><br><span class="muted">9:30–10:00</span><br><span class="points">2 pts</span></div><div class="card"><strong>Lunch Bouncers</strong><br><span class="muted">11:15–12:30</span><br><span class="points">3 pts</span></div><div class="card"><strong>Serving/Clean-Up</strong><br><span class="muted">11:15–12:15</span><br><span class="points">3 pts</span></div><div class="card"><strong>Restroom Patrol</strong><br><span class="muted">TBA</span><br><span class="points">2 pts</span></div><div class="card"><strong>Teacher Hospitality (AM)</strong><br><span class="muted">TBA</span><br><span class="points">2 pts</span></div><div class="card"><strong>T|B Merchandise</strong><br><span class="muted">11:00–12:30</span><br></div><div class="card"><strong>ACDA Merchandise</strong><br><span class="muted">11:00–12:30</span><br></div><div class="card"><strong>NAfME Snack Table</strong><br><span class="muted">11:00–12:30</span><br><span class="points">2 pts</span></div><div class="card"><strong>153 Readiness Piano</strong><br><span class="muted">TBA</span><br></div><div class="card"><strong>Sing-A-Long Band</strong><br><span class="muted">TBA</span><br></div><div class="card"><strong>Sing-A-Long Lead</strong><br><span class="muted">TBA</span><br></div><div class="card"><strong>PowerPoint (9:00–9:20)</strong><br><span class="muted">9:00–9:20</span><br></div><div class="card"><strong>Signage (create/place)</strong><br><span class="muted">TBA</span><br></div><div class="card"><strong>Packet Collating</strong><br><span class="muted">TBA</span><br></div><div class="card"><strong>Guest Artist Host</strong><br><span class="muted">TBA</span><br></div><div class="card"><strong>Performers (permission req.)</strong><br><span class="muted">TBA</span><br></div>
+      </div>
+      <p class="small muted" style="margin-top:.5rem">Roles/time windows based on last year’s plan; will update as finalized.</p>
+    </div>
+
+    <div class="hr"></div>
+
+    <form class="form" name="tenor-bass-volunteers" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/tenor-bass-festival/thanks.html">
+      <input type="hidden" name="form-name" value="tenor-bass-volunteers">
+      <p style="display:none"><label>Don’t fill this out if you’re human: <input name="bot-field"/></label></p>
+
+      <div class="form-row">
+        <div>
+          <label for="first">First name</label>
+          <input id="first" name="first" required autocomplete="given-name"/>
+        </div>
+        <div>
+          <label for="last">Last name</label>
+          <input id="last" name="last" required autocomplete="family-name"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email"/>
+        </div>
+        <div>
+          <label for="affil">Affiliation</label>
+          <input id="affil" name="affiliation" placeholder="Rowan ACDA / NAfME / other"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="role" class="required">Preferred role</label>
+          <select id="role" name="role" required>
+            <option value="">Select…</option>
+<option value="Bus Crew (7:30–9:30)">Bus Crew (7:30–9:30 — 2 pts)</option>
+<option value="Lobby Ushers (7:30–9:30)">Lobby Ushers (7:30–9:30 — 2 pts)</option>
+<option value="Registration (7:30–9:30)">Registration (7:30–9:30 — 2 pts)</option>
+<option value="Set-Up Crew (9:30–10:00)">Set-Up Crew (9:30–10:00 — 2 pts)</option>
+<option value="Lunch Bouncers (11:15–12:30)">Lunch Bouncers (11:15–12:30 — 3 pts)</option>
+<option value="Serving/Clean-Up (11:15–12:15)">Serving/Clean-Up (11:15–12:15 — 3 pts)</option>
+<option value="Restroom Patrol (TBA)">Restroom Patrol (TBA — 2 pts)</option>
+<option value="Teacher Hospitality (AM) (TBA)">Teacher Hospitality (AM) (TBA — 2 pts)</option>
+<option value="T|B Merchandise (11:00–12:30)">T|B Merchandise (11:00–12:30)</option>
+<option value="ACDA Merchandise (11:00–12:30)">ACDA Merchandise (11:00–12:30)</option>
+<option value="NAfME Snack Table (11:00–12:30)">NAfME Snack Table (11:00–12:30 — 2 pts)</option>
+<option value="153 Readiness Piano (TBA)">153 Readiness Piano (TBA)</option>
+<option value="Sing-A-Long Band (TBA)">Sing-A-Long Band (TBA)</option>
+<option value="Sing-A-Long Lead (TBA)">Sing-A-Long Lead (TBA)</option>
+<option value="PowerPoint (9:00–9:20) (9:00–9:20)">PowerPoint (9:00–9:20) (9:00–9:20)</option>
+<option value="Signage (create/place) (TBA)">Signage (create/place) (TBA)</option>
+<option value="Packet Collating (TBA)">Packet Collating (TBA)</option>
+<option value="Guest Artist Host (TBA)">Guest Artist Host (TBA)</option>
+<option value="Performers (permission req.) (TBA)">Performers (permission req.) (TBA)</option>
+          </select>
+        </div>
+        <div>
+          <label for="alt_role">Alternate role (optional)</label>
+          <select id="alt_role" name="alternate_role">
+            <option value="">Select…</option>
+<option value="Bus Crew (7:30–9:30)">Bus Crew (7:30–9:30 — 2 pts)</option>
+<option value="Lobby Ushers (7:30–9:30)">Lobby Ushers (7:30–9:30 — 2 pts)</option>
+<option value="Registration (7:30–9:30)">Registration (7:30–9:30 — 2 pts)</option>
+<option value="Set-Up Crew (9:30–10:00)">Set-Up Crew (9:30–10:00 — 2 pts)</option>
+<option value="Lunch Bouncers (11:15–12:30)">Lunch Bouncers (11:15–12:30 — 3 pts)</option>
+<option value="Serving/Clean-Up (11:15–12:15)">Serving/Clean-Up (11:15–12:15 — 3 pts)</option>
+<option value="Restroom Patrol (TBA)">Restroom Patrol (TBA — 2 pts)</option>
+<option value="Teacher Hospitality (AM) (TBA)">Teacher Hospitality (AM) (TBA — 2 pts)</option>
+<option value="T|B Merchandise (11:00–12:30)">T|B Merchandise (11:00–12:30)</option>
+<option value="ACDA Merchandise (11:00–12:30)">ACDA Merchandise (11:00–12:30)</option>
+<option value="NAfME Snack Table (11:00–12:30)">NAfME Snack Table (11:00–12:30 — 2 pts)</option>
+<option value="153 Readiness Piano (TBA)">153 Readiness Piano (TBA)</option>
+<option value="Sing-A-Long Band (TBA)">Sing-A-Long Band (TBA)</option>
+<option value="Sing-A-Long Lead (TBA)">Sing-A-Long Lead (TBA)</option>
+<option value="PowerPoint (9:00–9:20) (9:00–9:20)">PowerPoint (9:00–9:20) (9:00–9:20)</option>
+<option value="Signage (create/place) (TBA)">Signage (create/place) (TBA)</option>
+<option value="Packet Collating (TBA)">Packet Collating (TBA)</option>
+<option value="Guest Artist Host (TBA)">Guest Artist Host (TBA)</option>
+<option value="Performers (permission req.) (TBA)">Performers (permission req.) (TBA)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="arrival">Earliest arrival time (optional)</label>
+          <input id="arrival" name="earliest_arrival" placeholder="e.g., 7:15 AM"/>
+        </div>
+        <div>
+          <label for="depart">Latest departure time (optional)</label>
+          <input id="depart" name="latest_departure" placeholder="e.g., 12:45 PM"/>
+        </div>
+      </div>
+
+      <div>
+        <label for="notes">Notes (skills, restrictions, instrument if band, etc.)</label>
+        <textarea id="notes" name="notes" rows="3"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label><input type="checkbox" name="permission_perform" value="yes"> I have permission to perform (if I chose a performer role).</label>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div>
+        <button class="btn primary" type="submit">Submit volunteer form</button>
+        <a class="btn ghost" href="/">Back to ACDA home</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer class="site-footer acda-footer" role="contentinfo">
+  <div class="container footer-grid">
+    <!-- Brand / blurb -->
+    <div class="footer-brand">
+      <div class="brand--footer">
+        <img src="/assets/icons/acda.png" alt="Rowan ACDA logo" width="40" height="40">
+        <div class="brand-text">
+          <strong>Rowan ACDA</strong>
+          <div class="muted">Collegiate Chapter</div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:.75rem">
+        American Choral Directors Association at Rowan University. We sing, lead, and serve through choral music.
+      </p>
+    </div>
+
+    <!-- Navigate -->
+    <nav aria-label="Footer" class="footer-nav">
+      <h4>Navigate</h4>
+      <ul class="list-unstyled">
+        <li><a href="/events.html">Events</a></li>
+        <li><a href="/members.html">Members</a></li>
+        <li><a href="/eboard.html">E-Board</a></li>
+        <li><a href="/resources.html">Resources</a></li>
+      </ul>
+    </nav>
+
+    <!-- Connect -->
+    <div class="footer-connect">
+      <h4>Connect</h4>
+      <ul class="list-unstyled">
+        <li><a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a></li>
+        <li><a href="https://www.instagram.com/rowanacda/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+      <p class="small muted footer-note">
+        Site theme by Adam Bretz 
+      </p>
+      <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Progressive enhancement: Try capacity function first. If unavailable, fall back to Netlify Forms action.
+(function(){
+  const form = document.querySelector('form[name="tenor-bass-volunteers"]');
+  if(!form) return;
+  form.addEventListener('submit', async (e) => {
+    try {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const res = await fetch('/.netlify/functions/register-tb', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          first: data.first,
+          last: data.last,
+          email: data.email,
+          role: data.role,
+          alternate_role: data.alternate_role || '',
+          notes: data.notes || ''
+        })
+      });
+      if (res.ok) { 
+        const out = await res.json();
+        if (out.ok) { window.location.href = form.action; return; }
+        alert(out.message || 'Sorry, this slot is full.');
+        return;
+      }
+      // If function returns an error, try regular form submit
+      form.submit();
+    } catch(err) {
+      // If function is not deployed, just submit normally to Netlify Forms
+      form.submit();
+    }
+  }, { passive: false });
+})();
+</script>
+
+</body>
+</html>

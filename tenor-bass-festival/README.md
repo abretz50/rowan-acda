@@ -1,0 +1,1 @@
+This folder makes /tenor-bass-festival/ a volunteers-only page.
