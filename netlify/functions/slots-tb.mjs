@@ -1,98 +1,130 @@
-// netlify/functions/slots-tb.mjs
+// Serverless backend for Tenor–Bass Festival volunteer signups
+// Works with the front-end at /.netlify/functions/slots-tb
+// Storage: Netlify Blobs (no DB needed)
+
 import { getStore } from '@netlify/blobs';
 
-const STORE = 'tb-2025';
-const ROSTER_KEY = 'volunteer-grid.json';
+const STORE_NAME = 'tb-volunteers';
+const ROSTER_KEY = 'roster.json';
 
-/** Default roles (key = "Role (Window)") grouped by window */
-const DEFAULT_ROLES = [
-  "Bus Crew (7:30–9:30)",
-  "Lobby Ushers (7:30–9:30)",
-  "Registration (7:30–9:30)",
-  "Set-Up Crew (9:30–10:00)",
-  "T|B Merchandise (11:00–12:30)",
-  "ACDA Merchandise (11:00–12:30)",
-  "NAfME Snack Table (11:00–12:30)",
-  "Lunch Bouncers (11:15–12:30)",
-  "Restroom Patrol (TBA)",
-  "Teacher Hospitality (AM) (TBA)",
-  "153 Readiness Piano (TBA)",
-  "Sing-A-Long Band (TBA)",
-  "Sing-A-Long Lead (TBA)",
-  "PowerPoint (9:00–9:20)",
-  "Signage (create/place) (TBA)",
-  "Packet Collating (TBA)",
-  "Guest Artist Host (TBA)",
-  "Performers (permission req.) (TBA)"
-];
-
-function initRoster(roles) {
-  const roster = {};
-  for (const key of roles) roster[key] = [null, null, null, null];
-  return roster;
-}
-
-function json(body, status=200, headers={}) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'content-type': 'application/json', ...headers }
-  });
-}
-
-export default async (request, context) => {
-  const store = getStore(STORE);
-
-  // Get or init roster
-  let roster = {};
-  try {
-    const existing = await store.get(ROSTER_KEY, { type:'json' });
-    roster = existing || initRoster(DEFAULT_ROLES);
-    if (!existing) {
-      await store.set(ROSTER_KEY, JSON.stringify(roster, null, 2), { contentType: 'application/json' });
-    }
-  } catch {
-    roster = initRoster(DEFAULT_ROLES);
-    await store.set(ROSTER_KEY, JSON.stringify(roster, null, 2), { contentType: 'application/json' });
+// Utility: create a humble CSV string from the roster object
+function rosterToCSV(roster) {
+  const rows = [['Role (Time)', 'Slot #', 'First', 'Last', 'Email']];
+  for (const [key, arr] of Object.entries(roster)) {
+    (arr || []).forEach((entry, i) => {
+      if (!entry) return rows.push([key, i + 1, '', '', '']);
+      const { first = '', last = '', email = '' } = entry;
+      rows.push([key, i + 1, first, last, email]);
+    });
   }
+  return rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+}
 
-  const url = new URL(request.url);
-  if (request.method === 'GET') {
+// Initialize empty slots if needed based on posted key/slot
+function ensureShape(roster, key, slotIndex) {
+  if (!roster[key]) roster[key] = [];
+  if (roster[key].length <= slotIndex) {
+    const need = slotIndex + 1 - roster[key].length;
+    roster[key].push(...Array.from({ length: need }, () => null));
+  }
+}
+
+export default async function handler(req) {
+  const store = getStore(STORE_NAME);
+  const url = new URL(req.url);
+
+  // ---- GET: read roster / export CSV ----
+  if (req.method === 'GET') {
+    const roster = (await store.get(ROSTER_KEY, { type: 'json' })) || {};
+
+    // Admin peek: GET ?admin=json
+    if (url.searchParams.get('admin') === 'json') {
+      return new Response(JSON.stringify({ ok: true, roster }, null, 2), {
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+
+    // Frontend: GET ?roster=1
     if (url.searchParams.get('roster')) {
-      return json({ roster });
-    }
-    if (url.searchParams.get('csv')) {
-      const rows = [['Window','Role','Slot 1','Slot 2','Slot 3','Slot 4']];
+      // Reduce to display-only data (names) for privacy
+      const display = {};
       for (const [key, arr] of Object.entries(roster)) {
-        const m = key.match(/^(.*) \((.*)\)$/);
-        const role = m ? m[1] : key;
-        const window = m ? m[2] : '';
-        rows.push([window, role, ...(arr || [] ).map(x => x || '')]);
+        display[key] = (arr || []).map(e => (e ? `${e.first} ${e.last}`.trim() : null));
       }
-      const csv = rows.map(r => r.map(x => `"${String(x).replaceAll('"','""')}"`).join(',')).join('\n');
-      return new Response(csv, { status:200, headers:{ 'content-type': 'text/csv', 'content-disposition': 'attachment; filename="tenor-bass-volunteers.csv"' } });
+      return new Response(JSON.stringify({ ok: true, roster: display }), {
+        headers: { 'content-type': 'application/json' },
+      });
     }
-    return json({ ok:true });
+
+    // Export: GET ?csv=1
+    if (url.searchParams.get('csv')) {
+      const csv = rosterToCSV(roster);
+      return new Response(csv, {
+        headers: {
+          'content-type': 'text/csv; charset=utf-8',
+          'content-disposition': 'attachment; filename="tenor-bass-volunteers.csv"',
+        },
+      });
+    }
+
+    // Fallback
+    return new Response(JSON.stringify({ ok: true }), {
+      headers: { 'content-type': 'application/json' },
+    });
   }
 
-  if (request.method === 'POST') {
-    const body = await request.json().catch(() => null);
-    if (!body || !body.key || typeof body.slot !== 'number' || !body.first || !body.last || !body.email) {
-      return json({ error: 'Missing fields' }, 400);
+  // ---- POST: claim a slot ----
+  if (req.method === 'POST') {
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ ok: false, error: 'Bad JSON' }), {
+        status: 400,
+        headers: { 'content-type': 'application/json' },
+      });
     }
-    const key = body.key;
-    const slot = body.slot;
-    if (!roster[key] || slot < 0 || slot > 3) return json({ error:'Invalid slot' }, 400);
-    if (roster[key][slot]) return json({ ok:false, message:'Slot already taken' }, 409);
 
-    const name = `${body.first.trim()} ${body.last.trim()}`;
-    roster[key][slot] = name;
-    await store.set(ROSTER_KEY, JSON.stringify(roster, null, 2), { contentType: 'application/json' });
+    const { key, slot, first, last, email } = body || {};
+    if (!key || typeof slot !== 'number' || !first || !last || !email) {
+      return new Response(JSON.stringify({ ok: false, error: 'Missing fields' }), {
+        status: 400,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
 
-    const recKey = `volunteers/${Date.now()}_${body.email.replace(/[^a-zA-Z0-9._-]/g,'_')}.json`;
-    await store.set(recKey, JSON.stringify({ ...body, name, ts: new Date().toISOString() }, null, 2), { contentType: 'application/json' });
+    // Load current roster
+    const roster = (await getStore(STORE_NAME).get(ROSTER_KEY, { type: 'json' })) || {};
+    ensureShape(roster, key, slot);
 
-    return json({ ok:true, roster });
+    // Prevent double-claim
+    if (roster[key][slot]) {
+      return new Response(
+        JSON.stringify({ ok: false, error: 'Slot already taken.' }),
+        { status: 409, headers: { 'content-type': 'application/json' } }
+      );
+    }
+
+    // Save claim
+    roster[key][slot] = { first, last, email, ts: Date.now() };
+    await store.setJSON(ROSTER_KEY, roster);
+
+    // Return display-safe data
+    return new Response(JSON.stringify({ ok: true }), {
+      headers: { 'content-type': 'application/json' },
+    });
   }
 
-  return json({ error:'Method not allowed' }, 405);
-};
+  // ---- OPTIONS/CORS (optional; mostly for local dev) ----
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
+  }
+
+  return new Response('Method Not Allowed', { status: 405 });
+}
