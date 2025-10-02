@@ -1,0 +1,77 @@
+Division,Stop Name
+PEDAL,Regal 4
+PEDAL,Bassoon 8
+PEDAL,Trumpet 8
+PEDAL,Bassoon 16
+PEDAL,Trombone 16
+PEDAL,Contra Bassoon 32
+PEDAL,Cornet V
+PEDAL,Fourniture IV
+PEDAL,Bourdon 4
+PEDAL,Choral Bass 4
+PEDAL,Bourdon 8
+PEDAL,Octave 8
+PEDAL,Quint 10 2/3
+PEDAL,Gamba 16
+PEDAL,Violone 16
+PEDAL,Subbass 16
+PEDAL,Principal 16
+SWELL,Vox Humana 8
+SWELL,Oboe 8
+SWELL,Trumpet 8
+SWELL,Bassoon 16
+SWELL,Plein Jeu III-IV
+SWELL,Tierce 1 3/5
+SWELL,Harmonic Piccolo 2
+SWELL,Nazard 2 2/3
+SWELL,Harmonic Flute 4
+SWELL,Principal 4
+SWELL,Gamba Celeste 8
+SWELL,Gamba 8
+SWELL,Clarabella 8
+SWELL,Diapason 8
+SWELL,Gamba 16
+SWELL,Swell to Swell 4
+SWELL,Swell Unison Off
+SWELL,Swell to Swell 16
+GREAT,Tremulant
+GREAT,Regal 8
+GREAT,Trumpet 8
+GREAT,Mixture IV
+GREAT,Seventeenth 1 3/5
+GREAT,Fifteenth 2
+GREAT,Twelfth 2 2/3
+GREAT,Koppel Flöte 4
+GREAT,Octave 4
+GREAT,Harmonic Flute 8
+GREAT,Violoncello 8
+GREAT,Metal Bourdon 8
+GREAT,Open Diapason 8
+CHOIR,Violone 16
+CHOIR,Tremulant
+CHOIR,Clarinet 8
+CHOIR,Mixture IV
+CHOIR,Nasard 1 1/3
+CHOIR,Principal 2
+CHOIR,Gedackt 4
+CHOIR,Principal 4
+CHOIR,Gemshorn Celeste 8
+CHOIR,Gemshorn 8
+CHOIR,Wood Bourdon 8
+CHOIR,Spitz Principal 8
+CHOIR,Choir to Choir 4
+COUPLERS,Choir Unison Off
+COUPLERS,Choir to Choir 16
+COUPLERS,Tremulant
+COUPLERS,Great to Pedal 8
+COUPLERS,Great to Pedal 4
+COUPLERS,Swell to Pedal 8
+COUPLERS,Swell to Pedal 4
+COUPLERS,Choir to Pedal 8
+COUPLERS,Choir to Pedal 4
+COUPLERS,Swell to Great 16
+COUPLERS,Swell to Great 8
+COUPLERS,Swell to Great 4
+COUPLERS,Choir to Great 16
+COUPLERS,Choir to Great 8
+COUPLERS,Choir to Great 4
