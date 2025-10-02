@@ -18,6 +18,37 @@
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css"/>
+
+<style>
+  /* Pretty stoplist table */
+  .stoplist-table{
+    width: min(960px, 100%);
+    border-collapse: collapse;
+    margin: .25rem auto 0;
+    font-size: .95rem;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius: .75rem;
+    overflow: hidden;
+  }
+  .stoplist-table thead th{
+    background: #f6f6f7;
+    text-align:left;
+    padding:.6rem .8rem;
+    border-bottom:1px solid var(--border);
+    font-weight:700;
+  }
+  .stoplist-table td{
+    padding:.55rem .8rem;
+    border-top:1px solid var(--border);
+    vertical-align: top;
+  }
+  .stoplist-note{ font-size:.9rem; color:var(--muted) }
+  .stoplist-actions{ display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem }
+
+  /* Modal image tweak if any images appear inside */
+  .modal .dialog img{ max-width:100%; height:auto; border-radius:.5rem; }
+</style>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -38,22 +69,235 @@
 </header>
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
-  <!-- Banner matches size/spacing of home page -->
+  <!-- Banner (same size/spacing as home) -->
   <section class="banner-outer" role="region" aria-label="Organ header">
     <div class="page-banner" style="--banner-img:url('/organ/images/organ banner.jpg')">
       <div class="container">
         <h1 class="page-banner__title">Organ</h1>
-        <p class="page-banner__subtext">Rowan University Organs</p>
+        <p class="page-banner__subtext">Rowan’s organs, curriculum options, and featured instruments</p>
       </div>
     </div>
   </section>
 
-  <!-- Page content -->
-  <section style="margin-top:2rem">
-    <h2>About the Organ Program</h2>
-    <p class="muted">Welcome! This page will share an overview of the organs available at Rowan University. The University has a Moller Artiste available for student practice and a Large Wicks Organ in Pfleeger Concert Hall. </p>
+  <!-- In-page quick nav -->
+  <nav class="kicker" aria-label="Section navigation" style="margin-top:1rem">
+    <a href="#rowans-organs" class="nav-link" style="margin-right:1rem">Rowan’s Organs</a>
+    <a href="#curriculums" class="nav-link" style="margin-right:1rem">Program Curriculums</a>
+    <a href="#helen-stanger-storer" class="nav-link" style="margin-right:1rem">Helen Stanger Storer Organ</a>
+    <a href="#moller-double-artiste" class="nav-link">Möller Double Artiste</a>
+  </nav>
+
+  <!-- Rowan's organs -->
+  <section id="rowans-organs" style="margin-top:2rem" aria-labelledby="rowans-organs-h">
+    <div class="section-header">
+      <h2 id="rowans-organs-h">Rowan’s Organs</h2>
+    </div>
+    <div class="media-row">
+      <article class="card">
+        <img src="/organ/images/Pfleeger Hall.jpg" alt="Pfleeger Concert Hall Organ" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about.png'">
+        <div class="meta">
+          <h3>Pfleeger Concert Hall (Wicks)</h3>
+          <p>Rowan’s large concert instrument, ideal for major works, orchestral collaborations, and recitals in Pfleeger Hall.</p>
+          <div class="stoplist-actions">
+            <button class="btn btn-outline" data-modal="modal-stoplist-helen">View Stoplist</button>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <img src="/organ/images/organ banner.jpg" alt="Möller Double Artiste practice organ" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about1.png'">
+        <div class="meta">
+          <h3>Möller Double Artiste (Practice)</h3>
+          <p>Dedicated practice instrument supporting daily study, service playing, and core technique.</p>
+          <div class="stoplist-actions">
+            <button class="btn btn-outline" data-modal="modal-stoplist-moller">View Stoplist</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Organ program curriculums -->
+  <section id="curriculums" style="margin-top:2rem" aria-labelledby="curriculums-h">
+    <div class="section-header">
+      <h2 id="curriculums-h">The Organ Program Curriculums</h2>
+      <p class="muted">Options include BA, MA, and Minor/CUG (Certificate of Undergraduate Study).</p>
+    </div>
+
+    <div class="events-feature">
+      <article class="card">
+        <div class="meta">
+          <h3>BA in Music — Organ</h3>
+          <ul class="list-unstyled">
+            <li>Private study in organ literature, technique, and service playing</li>
+            <li>Keyboard skills, continuo/figured-bass fundamentals</li>
+            <li>Recital/performance opportunities and collaborative projects</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="meta">
+          <h3>MA in Music — Organ</h3>
+          <ul class="list-unstyled">
+            <li>Advanced repertoire and historical performance practice</li>
+            <li>Research/writing or additional recital track</li>
+            <li>Pedagogy and leadership opportunities (studio/classroom)</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="meta">
+          <h3>Minor / CUG in Organ</h3>
+          <ul class="list-unstyled">
+            <li>Flexible pathway to add organ proficiency to your degree</li>
+            <li>Focus on hymn-playing, registration, and service leading</li>
+            <li>Ideal for music ed, composition, and performance majors</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div style="margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap">
+      <a class="btn" href="/members.html">Request More Info</a>
+      <a class="btn btn-outline" href="/resources.html">View Organ Resources</a>
+    </div>
+  </section>
+
+  <!-- Helen Stanger Storer Organ (Pfleeger) -->
+  <section id="helen-stanger-storer" style="margin-top:2rem" aria-labelledby="helen-h">
+    <div class="section-header">
+      <h2 id="helen-h">Helen Stanger Storer Organ</h2>
+    </div>
+    <div class="card">
+      <img src="/organ/images/organ banner.jpg" alt="Helen Stanger Storer Organ" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/members-banner.jpg'">
+      <div class="meta">
+        <p>A featured concert instrument associated with Rowan’s program. Students hear, study, and perform literature that suits its tonal design, with emphasis on registration, color, and historical style.</p>
+        <div class="stoplist-actions">
+          <button class="btn btn-outline" data-modal="modal-stoplist-helen">View Stoplist</button>
+          <a class="btn" href="#hear-the-organ">Hear the Organ</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hear the Organ -->
+    <section id="hear-the-organ" style="margin-top:1rem" aria-labelledby="hear-h">
+      <h3 id="hear-h">Hear the Organ</h3>
+      <p class="muted">Recent appearances and recordings from Pfleeger Concert Hall.</p>
+      <ul class="list-unstyled" style="display:grid; gap:.5rem">
+        <!-- Replace the # links with actual YouTube URLs -->
+        <li>
+          <a class="btn btn-outline" href="#" target="_blank" rel="noopener">
+            YouTube: Performance 1 (add title)
+          </a>
+        </li>
+        <li>
+          <a class="btn btn-outline" href="#" target="_blank" rel="noopener">
+            YouTube: Performance 2 (add title)
+          </a>
+        </li>
+        <li>
+          <a class="btn btn-outline" href="#" target="_blank" rel="noopener">
+            YouTube: Performance 3 (add title)
+          </a>
+        </li>
+      </ul>
+      <p class="stoplist-note">Tip: paste full YouTube links above; they’ll open in a new tab.</p>
+    </section>
+  </section>
+
+  <!-- Möller Double Artiste (Practice) -->
+  <section id="moller-double-artiste" style="margin-top:2rem" aria-labelledby="moller-h">
+    <div class="section-header">
+      <h2 id="moller-h">Möller Double Artiste</h2>
+    </div>
+    <div class="card">
+      <img src="/organ/images/organ banner.jpg" alt="Möller Double Artiste" loading="lazy"
+           onerror="this.onerror=null;this.src='/assets/img/index-header.jpg'">
+      <div class="meta">
+        <p>The campus’s daily workhorse and practice instrument. Students build reliable technique, hymn-playing, and registration skills for church and concert settings.</p>
+        <div class="stoplist-actions">
+          <button class="btn btn-outline" data-modal="modal-stoplist-moller">View Stoplist</button>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
+
+<!-- ===== Stoplist Modals ===== -->
+<!-- Helen Stanger Storer (Pfleeger) Stoplist -->
+<div class="modal" id="modal-stoplist-helen" role="dialog" aria-modal="true" aria-labelledby="modal-stoplist-helen-title" hidden>
+  <div class="dialog" tabindex="-1">
+    <div class="modal-header" style="text-align:center;position:relative">
+      <h3 class="modal-title" id="modal-stoplist-helen-title">Stoplist — Helen Stanger Storer Organ (Pfleeger Hall)</h3>
+      <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
+    </div>
+    <section>
+      <!-- Example layout; fill in with actual ranks/stops -->
+      <table class="stoplist-table">
+        <thead>
+          <tr>
+            <th style="width:26%">Great</th>
+            <th style="width:26%">Swell</th>
+            <th style="width:26%">Choir/Positiv</th>
+            <th style="width:22%">Pedal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Principal 8′<br>Octave 4′<br>Mixture IV<br>Trumpet 8′</td>
+            <td>Gedeckt 8′<br>Viola 8′<br>Gemshorn 4′<br>Oboe 8′</td>
+            <td>Rohrflöte 8′<br>Nasat 2 2/3′<br>Prinzipal 2′<br>Klarinette 8′</td>
+            <td>Bourdon 16′<br>Principal 8′<br>Choralbass 4′<br>Posaune 16′</td>
+          </tr>
+          <!-- Add rows as needed -->
+        </tbody>
+      </table>
+      <p class="stoplist-note" style="margin-top:.6rem">Replace the example stops with the official specification.</p>
+      <div style="margin-top:.8rem; text-align:center">
+        <button class="btn" data-close>Close</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Möller Double Artiste Stoplist -->
+<div class="modal" id="modal-stoplist-moller" role="dialog" aria-modal="true" aria-labelledby="modal-stoplist-moller-title" hidden>
+  <div class="dialog" tabindex="-1">
+    <div class="modal-header" style="text-align:center;position:relative">
+      <h3 class="modal-title" id="modal-stoplist-moller-title">Stoplist — Möller Double Artiste</h3>
+      <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
+    </div>
+    <section>
+      <table class="stoplist-table">
+        <thead>
+          <tr>
+            <th style="width:26%">Manual I</th>
+            <th style="width:26%">Manual II</th>
+            <th style="width:26%">Manual III (if present)</th>
+            <th style="width:22%">Pedal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Diapason 8′<br>Flute 8′<br>Octave 4′<br>Trumpet 8′</td>
+            <td>Gedeckt 8′<br>Salicional 8′<br>Fugara 4′<br>Oboe 8′</td>
+            <td>(Optional ranks)<br>—<br>—<br>—</td>
+            <td>Subbass 16′<br>Bass Flute 8′<br>Choralbass 4′<br>Bassoon 16′</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="stoplist-note" style="margin-top:.6rem">Replace with the exact Möller Double Artiste specification.</p>
+      <div style="margin-top:.8rem; text-align:center">
+        <button class="btn" data-close>Close</button>
+      </div>
+    </section>
+  </div>
+</div>
+<!-- ===== End Stoplist Modals ===== -->
 
 <footer class="site-footer acda-footer" role="contentinfo">
   <div class="container footer-grid">
@@ -99,7 +343,28 @@
 
 <script src="/js/core.js" defer></script>
 <script>
+  // Footer year
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+
+  // Lightweight modal handlers (works even if core.js doesn't wire them)
+  function openModal(m){ if(!m) return; m.hidden=false; m.classList.add('open'); document.body.style.overflow='hidden'; m.querySelector('.dialog')?.focus({preventScroll:true}); }
+  function closeModal(m){ if(!m) return; m.classList.remove('open'); m.hidden=true; document.body.style.overflow=''; }
+
+  document.addEventListener('click', (e)=>{
+    const trigger = e.target.closest('[data-modal]');
+    if(trigger){
+      const id = trigger.getAttribute('data-modal');
+      const modal = document.getElementById(id);
+      if(modal){ openModal(modal); }
+    }
+    if(e.target.matches('[data-close]') || e.target.closest('[data-close]')){
+      const modal = e.target.closest('.modal'); closeModal(modal);
+    }
+  });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(closeModal); });
+  document.querySelectorAll('.modal').forEach(m=>{
+    m.addEventListener('click',(e)=>{ if(e.target===m) closeModal(m); });
+  });
 </script>
 </body>
 </html>
