@@ -14,8 +14,8 @@ permissions:
 
 env:
   BRANCH: main
-  # Keep your public publish URL, but we add a cache-buster to avoid stale bytes.
-  # (For instant updates you can later switch to /export?format=csv&gid=...)
+  # You can keep the published CSV; we add a cache-buster to reduce staleness.
+  # For instant updates, consider switching to /export?format=csv&gid=<GID>.
   SRC_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv
   DEST: assets/data/events.csv
 
@@ -55,37 +55,26 @@ jobs:
             exit 1
           fi
 
-          # Normalize line endings so git diffs are sane
+          # Normalize to LF so git history stays clean
           sed -e 's/\r$//' "$tmp" > "$DEST"
           rm -f "$tmp"
 
-      - name: Commit if changed
+      - name: Commit (always)
         run: |
           set -e
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Only commit if DEST changed
-          if git diff --quiet -- "$DEST"; then
-            echo "No change detected in $DEST; nothing to commit."
-            exit 0
-          fi
-
+          # Stage the CSV we just wrote
           git add "$DEST"
-          git commit -m "chore(data): overwrite events.csv from published Google Sheet [skip ci]"
+
+          # Commit with timestamp. If no diff, make an empty commit to force a deploy.
+          TS="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git commit -m "chore(data): mirror events.csv @ ${TS}" \
+            || git commit --allow-empty -m "chore(data): mirror (no content change) @ ${TS}"
 
       - name: Rebase on remote & push
         run: |
-          # If there was no commit above, this is a no-op.
-          if git log -1 --pretty=%B | grep -q "overwrite events.csv from published Google Sheet"; then
-            set -e
-            git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
-            git push origin HEAD:"$BRANCH" || {
-              echo "Non-fast-forward; refetch + rebase once, then retry push."
-              git fetch origin "$BRANCH"
-              git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
-              git push origin HEAD:"$BRANCH"
-            }
-          else
-            echo "No commit to push."
-          fi
+          set -e
+          git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
+          git push origin HEAD:"$BRANCH"
