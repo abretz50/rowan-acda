@@ -5,22 +5,21 @@ on:
     - cron: "0 * * * *"   # every hour (UTC)
   workflow_dispatch:
 
-# avoid racing hourly runs
+# prevent concurrent runs from racing each other
 concurrency:
   group: mirror-events
   cancel-in-progress: false
 
-# IMPORTANT: also set repository Settings → Actions → General → Workflow permissions = Read and write
+# Make sure repo Settings → Actions → General → Workflow permissions = Read and write
 permissions:
   contents: write
-  pull-requests: write
 
 env:
   BRANCH: main
+  # You can keep this public "publish to web" URL, but it's cachey. For instant updates,
+  # swap to: https://docs.google.com/spreadsheets/d/<SHEET_ID>/export?format=csv&gid=<GID>
   SRC_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv
   DEST: assets/data/events.csv
-  # set to "commit" to push directly (requires branch not protected), or "pr" to open/update a PR
-  MODE: commit
 
 jobs:
   mirror:
@@ -31,72 +30,85 @@ jobs:
         with:
           ref: ${{ env.BRANCH }}
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}  # ensure push permissions
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Show repo state (diagnostic)
-        run: |
-          echo "On ref: $GITHUB_REF / branch env: $BRANCH"
-          git status -sb || true
-          git remote -v || true
-
-      - name: Fetch latest CSV (cache-busted)
-        id: fetch
-        shell: bash
+      - name: Fetch latest CSV (force fresh + normalize)
         run: |
           set -euo pipefail
           mkdir -p "$(dirname "$DEST")"
+
           tmp="$(mktemp)"
 
-          # cache-bust Google + any intermediate caches
-          BUSTER="$(date +%s)"
-          URL="${SRC_URL}&t=${BUSTER}"
+          # Add a cache-buster so Google/CDNs can't hand us a stale publish artifact
+          if [[ "$SRC_URL" == *"?"* ]]; then
+            url="${SRC_URL}&t=$(date +%s%N)"
+          else
+            url="${SRC_URL}?t=$(date +%s%N)"
+          fi
 
-          echo "Downloading: $URL"
+          echo "GET: $url"
           curl -fsSL --retry 5 --retry-delay 5 --max-time 60 \
-            -A "RowanACDA/1.0 (GitHub Action)" \
-            -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
-            "$URL" -o "$tmp"
+               -A "RowanACDA/1.0 (GitHub Action)" \
+               -H 'Cache-Control: no-cache, no-store, must-revalidate' \
+               -H 'Pragma: no-cache' \
+               "$url" -o "$tmp"
 
           if [ ! -s "$tmp" ]; then
             echo "::error::Downloaded file is empty."
             exit 1
           fi
 
-          # If file identical, set output and bail
-          if [ -f "$DEST" ] && cmp -s "$tmp" "$DEST"; then
-            echo "No changes detected."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            rm -f "$tmp"
-            exit 0
+          # Normalize line endings (Sheets/publish can output CRLF)
+          tmpn="$(mktemp)"
+          sed -e 's/\r$//' "$tmp" > "$tmpn"
+          rm -f "$tmp"
+
+          # Compare against current (also normalized) and skip if identical
+          if [ -f "$DEST" ]; then
+            cur_norm="$(mktemp)"
+            sed -e 's/\r$//' "$DEST" > "$cur_norm"
+
+            if cmp -s "$tmpn" "$cur_norm"; then
+              echo "No changes in CSV content."
+              rm -f "$tmpn" "$cur_norm"
+              echo "NO_CHANGES=1" >> "$GITHUB_ENV"
+              exit 0
+            fi
+            rm -f "$cur_norm"
           fi
 
-          mv "$tmp" "$DEST"
-          echo "changed=true" >> "$GITHUB_OUTPUT"
+          # Content changed → update working tree
+          mv "$tmpn" "$DEST"
+          echo "NO_CHANGES=0" >> "$GITHUB_ENV"
 
       - name: Configure git author
-        if: steps.fetch.outputs.changed == 'true'
+        if: env.NO_CHANGES == '0'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Commit change
-        if: steps.fetch.outputs.changed == 'true' && env.MODE == 'commit'
+        if: env.NO_CHANGES == '0'
         run: |
           set -e
           git add "$DEST"
           git commit -m "chore(data): mirror events.csv from Google Sheets [skip ci]"
-          # Rebase to avoid non-FF and then push
-          git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
-          git push origin HEAD:"$BRANCH"
 
-      - name: Create or update PR
-        if: steps.fetch.outputs.changed == 'true' && env.MODE == 'pr'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "chore(data): mirror events.csv from Google Sheets"
-          title: "Mirror events.csv from Google Sheets"
-          body: "Automated mirror of events.csv."
-          branch: chore/mirror-events-csv
-          base: ${{ env.BRANCH }}
-          labels: data, automation
-          add-paths: ${{ env.DEST }}
+      - name: Rebase on remote & push
+        if: env.NO_CHANGES == '0'
+        run: |
+          set -e
+          # Rebase onto latest remote to avoid non-fast-forward errors
+          git pull --rebase --autostash origin "$BRANCH" || {
+            echo "Rebase failed; aborting to keep history clean."
+            git rebase --abort
+            exit 1
+          }
+
+          # Push (retry once in case of a race)
+          git push origin HEAD:"$BRANCH" || {
+            echo "Non-fast-forward; refetch + rebase once, then retry push."
+            git fetch origin "$BRANCH"
+            git pull --rebase --autostash origin "$BRANCH" || { git rebase --abort; exit 1; }
+            git push origin HEAD:"$BRANCH"
+          }
