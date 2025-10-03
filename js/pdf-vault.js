@@ -24,7 +24,7 @@
     "SS#3: Church Gig 101": [
       { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
       { label: "Abide With Me", url: "/assets/pdfs/church-music/Abide%20With%20Me.pdf"},
-      { label: "Lift Every Voice and Sing", url: "/assets/pdfs/church-music/Lift%20Every%20Voice%20and%20Sing.pdf"},
+      { label: "Lift Every Voice and Sing", url: "/assets/pdfs/church-music/Lift%20Every%20Voice%20and%20Sing%20.pdf"},
       { label: "How Great Thou Art", url: "/assets/pdfs/church-music/How%20Great%20Thou%20Art.pdf"}
       
     ],
