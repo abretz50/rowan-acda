@@ -21,7 +21,13 @@
       { label: "Ticheli - Earth Song", url: "/assets/pdfs/choral-rep/Earth%20Song.pdf"}
     ],
 
-    "SS#3: Church Gig 101": [],
+    "SS#3: Church Gig 101": [
+      { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
+      { label: "Abide With Me", url: "/assets/pdfs/church-music/Abide%With%Me.pdf"},
+      { label: "Lift Every Voice and Sing", url: "/assets/pdfs/church-music/Lift%Every%Voice%and%Sing.pdf"},
+      { label: "How Great Thou Art", url: "/assets/pdfs/church-music/How%Great%Thou%Art.pdf"}
+      
+    ],
     "SS#4: Professional Development": [
 
       { label: "Crane - Flight", url: "/assets/pdfs/choral-rep/Flight.pdf"},
