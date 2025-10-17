@@ -41,7 +41,7 @@
       f("Let Me Be Your Star",              "acit", "Let Me Be Your Star .pdf"),
       f("Loneliness of Evening",            "acit", "Loneliness of Evening.pdf"),
       f("The Year's at the Spring",         "acit", "The year's at the spring.pdf"), // ← make sure the file actually includes ".pdf"
-      f("Weep You No More, Sad Fountains",  "acit", "Weep You No More Sad Fountains .pdf"),
+      f("Weep You No More, Sad Fountains",  "acit", "Weep You No More Sad Fountains.pdf"),
     ],
 
     "SS#5: Latin American Music": [],
