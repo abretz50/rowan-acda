@@ -3,49 +3,60 @@
   // ====== SETTINGS ======
   const PASS = "acda2025"; // <— your password
 
+  // Small helper to safely build file URLs (handles spaces, apostrophes, etc.)
+  const fileUrl = (dir, name) => `/assets/pdfs/${dir}/${encodeURIComponent(name)}`;
+
+  // Convenience helper to define an entry
+  const f = (label, dir, name) => ({ label, url: fileUrl(dir, name) });
+
   // ====== CONTENT ======
   const GROUPS = {
     "SS#1: Musical Theater Day": [
-      { label: "Sunday in the Park with George — Sunday", url: "/assets/pdfs/musical-theater/Sunday%20in%20the%20Park%20with%20George%20-%20Sunday.pdf" },
-      { label: "Hamilton — Alexander Hamilton",            url: "/assets/pdfs/musical-theater/Hamilton%20-%20Alexander%20Hamilton.pdf" },
-      { label: "Dear Evan Hansen — You Will Be Found",     url: "/assets/pdfs/musical-theater/Dear%20Evan%20Hansen%20-%20You%20Will%20Be%20Found.pdf" },
-      { label: "Les Miserables — Medley",                  url: "/assets/pdfs/musical-theater/Les%20Miserables%20-%20Medley.pdf" },
-      { label: "Hadestown — Wait for Me",                  url: "/assets/pdfs/musical-theater/Hadestown%20-%20Wait%20for%20Me.pdf" },
-      { label: "Into the Woods — No One Is Alone",         url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
-      { label: "West Side — Somewhere",                    url: "/assets/pdfs/musical-theater/West%20Side%20-%20Somewhere.pdf" }
+      f("Sunday in the Park with George — Sunday", "musical-theater", "Sunday in the Park with George - Sunday.pdf"),
+      f("Hamilton — Alexander Hamilton",            "musical-theater", "Hamilton - Alexander Hamilton.pdf"),
+      f("Dear Evan Hansen — You Will Be Found",     "musical-theater", "Dear Evan Hansen - You Will Be Found.pdf"),
+      f("Les Miserables — Medley",                  "musical-theater", "Les Miserables - Medley.pdf"),
+      f("Hadestown — Wait for Me",                  "musical-theater", "Hadestown - Wait for Me.pdf"),
+      f("Into the Woods — No One Is Alone",         "musical-theater", "Into The Woods - No One Is Alone.pdf"),
+      f("West Side — Somewhere",                    "musical-theater", "West Side - Somewhere.pdf"),
     ],
 
     "SS#2: Cabaret Rehearsal": [
-      { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
-      { label: "Martin - The Awakening", url: "/assets/pdfs/choral-rep/The%20Awakening%20-%20Martin.pdf"},
-      { label: "Ticheli - Earth Song", url: "/assets/pdfs/choral-rep/Earth%20Song.pdf"}
+      f("Into the Woods — No One Is Alone", "musical-theater", "Into The Woods - No One Is Alone.pdf"),
+      f("Martin — The Awakening",           "choral-rep",      "The Awakening - Martin.pdf"),
+      f("Ticheli — Earth Song",             "choral-rep",      "Earth Song.pdf"),
     ],
 
     "SS#3: Church Gig 101": [
-      { label: "Into the Woods — No One Is Alone", url: "/assets/pdfs/musical-theater/Into%20The%20Woods%20-%20No%20One%20Is%20Alone.pdf" },
-      { label: "Abide With Me", url: "/assets/pdfs/church-music/Abide%20With%20Me.pdf"},
-      { label: "Lift Every Voice and Sing", url: "/assets/pdfs/church-music/Lift%20Every%20Voice%20and%20Sing%20.pdf"},
-      { label: "How Great Thou Art", url: "/assets/pdfs/church-music/How%20Great%20Thou%20Art.pdf"}
-      
+      f("Into the Woods — No One Is Alone", "musical-theater", "Into The Woods - No One Is Alone.pdf"),
+      f("Abide With Me",                     "church-music",    "Abide With Me.pdf"),
+      f("Lift Every Voice and Sing",         "church-music",    "Lift Every Voice and Sing .pdf"),
+      f("How Great Thou Art",                "church-music",    "How Great Thou Art.pdf"),
     ],
-    "SS#4: Professional Development": [
 
-      { label: "Crane - Flight", url: "/assets/pdfs/choral-rep/Flight.pdf"},
-      { label: "Smallwood - Total Praise", url: "/assets/pdfs/choral-rep/Total%20Praise.pdf"}
+    // ✅ NEW: ACIT Visit group populated from /assets/pdfs/acit
+    "SS#4: ACIT Visit": [
+      // These file names match what’s in your screenshot (including spaces before ".pdf")
+      f("Damask Roses",                     "acit", "Damask Roses .pdf"),
+      f("Let Me Be Your Star",              "acit", "Let Me Be Your Star .pdf"),
+      f("Loneliness of Evening",            "acit", "Loneliness of Evening.pdf"),
+      f("The Year's at the Spring",         "acit", "The year's at the spring.pdf"), // ← make sure the file actually includes ".pdf"
+      f("Weep You No More, Sad Fountains",  "acit", "Weep You No More Sad Fountains .pdf"),
     ],
+
     "SS#5: Latin American Music": [],
     "SS#6: Conducting 101": [],
     "SS#7: Student Compositions": [],
     "SS#8: Barbershop": [],
-    "SS#9: Holiday": []
+    "SS#9: Holiday": [],
   };
 
   // ====== DOM ======
-  const sel = document.getElementById("group");
-  const pw  = document.getElementById("pw");
-  const btn = document.getElementById("vault-open");
+  const sel    = document.getElementById("group");
+  const pw     = document.getElementById("pw");
+  const btn    = document.getElementById("vault-open");
   const status = document.getElementById("vault-status");
-  const tabs = document.getElementById("vault-tabs");
+  const tabs   = document.getElementById("vault-tabs");
   const viewer = document.getElementById("vault-viewer");
 
   // Populate the Category <select> from GROUPS
@@ -73,7 +84,7 @@
       const b = document.createElement("button");
       b.className = "btn btn-outline";
       b.type = "button";
-      b.textContent = f.label || `File ${i+1}`;
+      b.textContent = f.label || `File ${i + 1}`;
       b.addEventListener("click", () => openFile(f.url, b, tabRow));
       tabRow.appendChild(b);
     });
@@ -83,8 +94,8 @@
   }
 
   function openFile(url, btnEl, row) {
-    row.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed","false"));
-    btnEl.setAttribute("aria-pressed","true");
+    row.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", "false"));
+    btnEl.setAttribute("aria-pressed", "true");
     viewer.src = url;
     viewer.classList.remove("hidden");
   }
@@ -107,7 +118,6 @@
   // ====== Events ======
   btn?.addEventListener("click", unlock);
   pw?.addEventListener("keydown", (e) => { if (e.key === "Enter") unlock(); });
-  // if already unlocked, changing the group updates immediately
   sel?.addEventListener("change", () => {
     if (pw.value.trim() === PASS) {
       status.textContent = "Unlocked.";
@@ -118,4 +128,5 @@
 
   // Boot
   populateCategories();
+  pw?.focus?.();
 })();
