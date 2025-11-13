@@ -45,7 +45,11 @@
     ],
 
     "SS#5: Latin American Music": [],
-    "SS#6: Conducting 101": [],
+    "SS#6: Conducting 101": [
+      f("Abide With Me",                     "church-music",    "Abide With Me.pdf"),
+       f("How Great Thou Art",                "church-music",    "How Great Thou Art.pdf"),
+      f("Ticheli — Earth Song",             "choral-rep",      "Earth Song.pdf"),
+    ],
     "SS#7: Student Compositions": [],
     "SS#8: Barbershop": [],
     "SS#9: Holiday": [],
