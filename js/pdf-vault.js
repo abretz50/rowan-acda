@@ -43,16 +43,19 @@
       f("The Year's at the Spring",         "acit", "The year's at the spring.pdf"), // ← make sure the file actually includes ".pdf"
       f("Weep You No More, Sad Fountains",  "acit", "scan_rmcinnis_2025-10-17-12-08-51.pdf"),
     ],
-
-    "SS#5: Latin American Music": [],
-    "SS#6: Conducting 101": [
+    "SS#5: Conducting 101": [
       f("Abide With Me",                     "church-music",    "Abide With Me.pdf"),
        f("How Great Thou Art",                "church-music",    "How Great Thou Art.pdf"),
       f("Ticheli — Earth Song",             "choral-rep",      "Earth Song.pdf"),
     ],
-    "SS#7: Student Compositions": [],
+    "SS#6: Musical Theater Day": [
+
+
+
+      
+    ],
     "SS#8: Barbershop": [],
-    "SS#9: Holiday": [],
+    "SS#9: New Works": [],
   };
 
   // ====== DOM ======
