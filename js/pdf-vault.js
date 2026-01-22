@@ -49,7 +49,7 @@
       f("Ticheli — Earth Song",             "choral-rep",      "Earth Song.pdf"),
     ],
     "SS#6: Musical Theater Day": [
-
+      f("Company - Being Alive", "musical-theater", "Company - Being Alive.pdf")
 
 
       
