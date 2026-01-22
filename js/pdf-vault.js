@@ -49,10 +49,16 @@
       f("Ticheli — Earth Song",             "choral-rep",      "Earth Song.pdf"),
     ],
     "SS#6: Musical Theater Day": [
-      f("Company - Being Alive", "musical-theater", "Company - Being Alive.pdf")
-
-
-      
+    f("Hair — Let the Sunshine In",                          "musical-theater", "Hair - Let the Sunshine In.pdf"),
+    f("Hamilton — Who Lives, Who Dies, Who Tells Your Story","musical-theater", "Hamilton - Who Lives Who Dies Who Tells Your Story.pdf"),
+    f("Hadestown — Nothing Changes",                        "musical-theater", "Hadestown - Nothing Changes.pdf"),
+    f("Rent — Seasons of Love",                             "musical-theater", "Rent - Seasons of Love.pdf"),
+    f("Waitress — A Soft Place to Land",                    "musical-theater", "Waitress - A Soft Place to Land.pdf"),
+    f("Newsies — Seize the Day",                            "musical-theater", "Newsies - Seize the Day.pdf"),
+    f("Tick Tick Boom — Louder Than Words",              "musical-theater", "tick tick BOOM - Louder Than Words.pdf"),
+    f("Company — Being Alive",                              "musical-theater", "Company - Being Alive.pdf"),
+    f("Grease — We Go Together",                            "musical-theater", "Grease - We Go Together.pdf"),
+    f("Wicked — Wicked Overture",                           "musical-theater", "Wicked - Wicked Overture.pdf"),
     ],
     "SS#8: Barbershop": [],
     "SS#9: New Works": [],
