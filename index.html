@@ -122,16 +122,92 @@
 
 
   
-  <!-- ===== Merch (Shopify Collection Embed) ===== -->
-  <section style="margin-top:2rem" aria-labelledby="shop-h">
+  <section style="margin-top:2rem" aria-labelledby="feat-h">
+    <div class="section-header">
+      <h2 id="feat-h">Featured Events</h2>
+      <div class="actions"><a class="btn btn-outline" href="/events.html">All events</a></div>
+    </div>
+    <div id="home-events" class="events-feature" aria-live="polite"></div>
+  </section>
+  
+  <!-- ===== Chapter Highlights (FADING SLIDESHOW) ===== -->
+  <section style="margin-top:2rem" aria-labelledby="highlights-h">
+    <h2 id="highlights-h">Chapter Highlights</h2>
+    <div class="slideshow-wrap">
+      <div class="slideshow" aria-label="Chapter Highlights Slideshow">
+        <!-- One set of images; JS will fade through them -->
+        <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Highlight photo" loading="eager" class="active">
+	<img src="/assets/img/Screenshot 2025-09-24 094012.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 093949.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 094001.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 094018.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 094022.png" alt="Highlight photo" loading="lazy">
+	<img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154922.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154928.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154950.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 155003.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154905.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/ext2_Screenshot 2025-08-28 154916.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/ext_gallery4.png" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/index-header.jpg" alt="Highlight photo" loading="lazy">
+        <img src="/assets/img/members-banner.jpg" alt="Highlight photo" loading="lazy">
+      </div>
+    </div>
+  </section>
+  <!-- Focus Areas -->
+  <section style="margin-top:2rem" aria-labelledby="focus-h">
+    <div class="section-header">
+      <h2 id="focus-h">Our Chapter</h2>
+    </div>
+
+    <div class="events-feature">
+      <!-- Choral Engagement -->
+      <article class="card">
+        <img src="/assets/img/choral-engagement.jpg" alt="Choral Engagement" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about2.png'">
+        <div class="meta">
+          <h3>Choral Engagement</h3>
+          <p>Did you love choir in High School? Want to sing in a growing choral community of many majors?  Join Rowan's own "Choir Club"! Rowan's chapter of the American Choral Director's Associciation is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107! </p>
+        </div>
+      </article>
+
+      <!-- Sightreading -->
+      <article class="card">
+        <img src="/assets/img/sightreading.jpg" alt="Sightreading" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about1.png'">
+        <div class="meta">
+          <h3>Sightreading</h3>
+          <p>Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval! </p>
+        </div>
+      </article>
+
+      <!-- Development -->
+      <article class="card">
+        <img src="/assets/img/development.jpg" alt="Development" loading="lazy"
+             onerror="this.onerror=null;this.src='/assets/img/about.png'">
+        <div class="meta">
+          <h3>Development</h3>
+          <p>In sessions coordinated by our Vice President, industry professionals will present development sessions on varying revelevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs. </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+
+
+  
+
+  
+
+<section style="margin-top:2rem" aria-labelledby="shop-h">
     <div class="section-header">
       <h2 id="shop-h">Shop Rowan ACDA Merch</h2>
     </div>
     <p class="kicker">All orders are print-on-demand and ship directly to you.</p>
-    
-    <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start;justify-content:flex-start">
-      <!-- Featured products -->
-      
     <div class="events-feature" style="margin-top:1rem">
       <article class="card">
         <div class="meta">
@@ -448,93 +524,170 @@
 </script>
         </div>
       </article>
-    </div>
 
-    </div>
-
-    
-  </section>
-
-<section style="margin-top:2rem" aria-labelledby="feat-h">
-    <div class="section-header">
-      <h2 id="feat-h">Featured Events</h2>
-      <div class="actions"><a class="btn btn-outline" href="/events.html">All events</a></div>
-    </div>
-    <div id="home-events" class="events-feature" aria-live="polite"></div>
-  </section>
-  
-  <!-- ===== Chapter Highlights (FADING SLIDESHOW) ===== -->
-  <section style="margin-top:2rem" aria-labelledby="highlights-h">
-    <h2 id="highlights-h">Chapter Highlights</h2>
-    <div class="slideshow-wrap">
-      <div class="slideshow" aria-label="Chapter Highlights Slideshow">
-        <!-- One set of images; JS will fade through them -->
-        <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Highlight photo" loading="eager" class="active">
-	<img src="/assets/img/Screenshot 2025-09-24 094012.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 093949.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094001.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094018.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094022.png" alt="Highlight photo" loading="lazy">
-	<img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154922.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154928.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154950.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 155003.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154905.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/ext2_Screenshot 2025-08-28 154916.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/ext_gallery4.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/index-header.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/members-banner.jpg" alt="Highlight photo" loading="lazy">
-      </div>
-    </div>
-  </section>
-  <!-- Focus Areas -->
-  <section style="margin-top:2rem" aria-labelledby="focus-h">
-    <div class="section-header">
-      <h2 id="focus-h">Our Chapter</h2>
-    </div>
-
-    <div class="events-feature">
-      <!-- Choral Engagement -->
       <article class="card">
-        <img src="/assets/img/choral-engagement.jpg" alt="Choral Engagement" loading="lazy"
-             onerror="this.onerror=null;this.src='/assets/img/about2.png'">
         <div class="meta">
-          <h3>Choral Engagement</h3>
-          <p>Did you love choir in High School? Want to sing in a growing choral community of many majors?  Join Rowan's own "Choir Club"! Rowan's chapter of the American Choral Director's Associciation is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107! </p>
+          <h3 style="margin-bottom:.5rem">Sweatshirt</h3>
+          <div id='product-component-1769137089018'></div>
+<script type="text/javascript">
+/*<![CDATA[*/
+(function () {
+  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+  if (window.ShopifyBuy) {
+    if (window.ShopifyBuy.UI) {
+      ShopifyBuyInit();
+    } else {
+      loadScript();
+    }
+  } else {
+    loadScript();
+  }
+  function loadScript() {
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = scriptURL;
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+    script.onload = ShopifyBuyInit;
+  }
+  function ShopifyBuyInit() {
+    var client = ShopifyBuy.buildClient({
+      domain: 'wqjsdh-bj.myshopify.com',
+      storefrontAccessToken: 'f8e91c74b437bb4c808014ecae006a07',
+    });
+    ShopifyBuy.UI.onReady(client).then(function (ui) {
+      ui.createComponent('product', {
+        id: '10198201565368',
+        node: document.getElementById('product-component-1769137089018'),
+        moneyFormat: '%24%7B%7Bamount%7D%7D',
+        options: {
+  "product": {
+    "styles": {
+      "product": {
+        "@media (min-width: 601px)": {
+          "max-width": "calc(25% - 20px)",
+          "margin-left": "20px",
+          "margin-bottom": "50px"
+        }
+      },
+      "button": {
+        "font-family": "Montserrat, sans-serif",
+        "font-weight": "bold",
+        ":hover": {
+          "background-color": "#941917"
+        },
+        "background-color": "#a41c1a",
+        ":focus": {
+          "background-color": "#941917"
+        }
+      }
+    },
+    "text": {
+      "button": "Add to cart"
+    },
+    "googleFonts": [
+      "Montserrat"
+    ]
+  },
+  "productSet": {
+    "styles": {
+      "products": {
+        "@media (min-width: 601px)": {
+          "margin-left": "-20px"
+        }
+      }
+    }
+  },
+  "modalProduct": {
+    "contents": {
+      "img": false,
+      "imgWithCarousel": true,
+      "button": false,
+      "buttonWithQuantity": true
+    },
+    "styles": {
+      "product": {
+        "@media (min-width: 601px)": {
+          "max-width": "100%",
+          "margin-left": "0px",
+          "margin-bottom": "0px"
+        }
+      },
+      "button": {
+        "font-family": "Montserrat, sans-serif",
+        "font-weight": "bold",
+        ":hover": {
+          "background-color": "#941917"
+        },
+        "background-color": "#a41c1a",
+        ":focus": {
+          "background-color": "#941917"
+        }
+      }
+    },
+    "googleFonts": [
+      "Montserrat"
+    ],
+    "text": {
+      "button": "Add to cart"
+    }
+  },
+  "option": {},
+  "cart": {
+    "styles": {
+      "button": {
+        "font-family": "Montserrat, sans-serif",
+        "font-weight": "bold",
+        ":hover": {
+          "background-color": "#941917"
+        },
+        "background-color": "#a41c1a",
+        ":focus": {
+          "background-color": "#941917"
+        }
+      }
+    },
+    "text": {
+      "total": "Subtotal",
+      "button": "Checkout"
+    },
+    "googleFonts": [
+      "Montserrat"
+    ]
+  },
+  "toggle": {
+    "styles": {
+      "toggle": {
+        "font-family": "Montserrat, sans-serif",
+        "font-weight": "bold",
+        "background-color": "#a41c1a",
+        ":hover": {
+          "background-color": "#941917"
+        },
+        ":focus": {
+          "background-color": "#941917"
+        }
+      }
+    },
+    "googleFonts": [
+      "Montserrat"
+    ]
+  }
+},
+      });
+    });
+  }
+})();
+/*]]>*/
+</script>
         </div>
       </article>
-
-      <!-- Sightreading -->
-      <article class="card">
-        <img src="/assets/img/sightreading.jpg" alt="Sightreading" loading="lazy"
-             onerror="this.onerror=null;this.src='/assets/img/about1.png'">
-        <div class="meta">
-          <h3>Sightreading</h3>
-          <p>Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval! </p>
-        </div>
-      </article>
-
-      <!-- Development -->
-      <article class="card">
-        <img src="/assets/img/development.jpg" alt="Development" loading="lazy"
-             onerror="this.onerror=null;this.src='/assets/img/about.png'">
-        <div class="meta">
-          <h3>Development</h3>
-          <p>In sessions coordinated by our Vice President, industry professionals will present development sessions on varying revelevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs. </p>
-        </div>
-      </article>
     </div>
+
   </section>
 
 
 
-  
-
-  <section style="margin-top:2rem" aria-labelledby="contact-h">
+<section style="margin-top:2rem" aria-labelledby="contact-h">
     <h2 id="contact-h">Contact & Join</h2>
     <p>Have questions? Email <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>. Ready to get started?</p>
     <p><a class="btn" href="/members.html">Become a Member</a></p>
