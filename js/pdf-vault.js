@@ -50,7 +50,7 @@
     ],
     "SS#6: Musical Theater Day": [
     f("Hair — Let the Sunshine In",                          "musical-theater", "Hair - Let the Sunshine In.pdf"),
-    f("Hamilton — Who Lives, Who Dies, Who Tells Your Story","musical-theater", "Hamilton - Who Lives Who Dies Who Tells Your Story.pdf"),
+    f("Hamilton — My Shot","musical-theater", "Hamilton - My Shot.pdf"),
     f("Hadestown — Nothing Changes",                        "musical-theater", "Hadestown - Nothing Changes.pdf"),
     f("Rent — Seasons of Love",                             "musical-theater", "Rent - Seasons of Love.pdf"),
     f("Waitress — A Soft Place to Land",                    "musical-theater", "Waitress - A Soft Place to Land.pdf"),
