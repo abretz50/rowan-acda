@@ -57,7 +57,6 @@
     f("Newsies — Once and for All",                            "musical-theater", "Newsies - Once and for All.pdf"),
     f("Tick Tick Boom — Louder Than Words",              "musical-theater", "Tick Tick Boom - Louder Than Words.pdf"),
     f("Company — Being Alive",                              "musical-theater", "Company - Being Alive.pdf"),
-    f("Grease — We Go Together",                            "musical-theater", "Grease - We Go Together.pdf"),
     f("A Chorus Line - What I Did for Love",                           "musical-theater", "A Chorus Line - What I Did for Love.pdf"),
     ],
     "SS#8: Barbershop": [],
