@@ -1,8 +1,8 @@
 name: Mirror events CSV hourly
 
 on:
-  schedule:
-    - cron: "0 * * * *"   # every hour (UTC)
+ schedule:
+  - cron: "0 9 * * *"   # once a day at 09:00 UTC
   workflow_dispatch:
 
 concurrency:
