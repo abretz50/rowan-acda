@@ -11,6 +11,13 @@
 
   // ====== CONTENT ======
   const GROUPS = {
+    "SS#8: Student Conductor's Showcase": [
+      f("Paulus — The Road Home",             "choral-rep",      "The Road Home.pdf"),
+      f("Vivaldi — Gloria in excelsis",             "choral-rep",      "Gloria in excelsis.pdf"),
+      f("Ryan Main — Dies Irae",             "choral-rep",      "Dies Irae - Ryan Main.pdf"),
+      f("Ticheli — Earth Song",             "choral-rep",      "Earth Song.pdf"),
+      f("Beck — Count the Stars",             "choral-rep",      "Count the Stars.pdf"),
+    ],
     "SS#1: Musical Theater Day": [
       f("Sunday in the Park with George — Sunday", "musical-theater", "Sunday in the Park with George - Sunday.pdf"),
       f("Hamilton — Alexander Hamilton",            "musical-theater", "Hamilton - Alexander Hamilton.pdf"),
@@ -59,7 +66,7 @@
     f("Company — Being Alive",                              "musical-theater", "Company - Being Alive.pdf"),
     f("A Chorus Line - What I Did for Love",                           "musical-theater", "A Chorus Line - What I Did for Love.pdf"),
     ],
-    "SS#8: Barbershop": [],
+    
     "SS#9: New Works": [],
   };
 
