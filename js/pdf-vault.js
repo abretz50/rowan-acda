@@ -15,7 +15,6 @@
       f("Paulus — The Road Home",             "choral-rep",      "The Road Home.pdf"),
       f("Vivaldi — Gloria in excelsis",             "choral-rep",      "Gloria in excelsis.pdf"),
       f("Ryan Main — Dies Irae",             "choral-rep",      "Dies Irae - Ryan Main.pdf"),
-      f("Ticheli — Earth Song",             "choral-rep",      "Earth Song.pdf"),
       f("Beck — Count the Stars",             "choral-rep",      "Count the Stars.pdf"),
     ],
     "SS#1: Musical Theater Day": [
