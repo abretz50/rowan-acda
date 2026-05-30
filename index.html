@@ -60,18 +60,6 @@
   }
   .slideshow img.active{ opacity:1; }
 
-  /* Pause button */
-  .slideshow-controls{
-    display:flex; justify-content:center; padding:.5rem 0 .25rem;
-  }
-  .slideshow-pause{
-    appearance:none; border:1px solid var(--border); background:#fff;
-    border-radius:.5rem; padding:.3rem .8rem; cursor:pointer; font-size:.85rem;
-    color:var(--muted); transition:background .15s ease;
-    min-height:36px;
-  }
-  .slideshow-pause:hover{ background:var(--surface); }
-
   /* Home only: hide tags and buttons inside Featured Events */
   #home-events .event-badges,
   #home-events .event-actions,
@@ -166,9 +154,6 @@
         <img src="/assets/img/ext2_Screenshot 2025-08-28 154916.png" alt="Chapter event, August 2025" loading="lazy">
         <img src="/assets/img/ext_gallery4.png" alt="Rowan ACDA gallery" loading="lazy">
         <img src="/assets/img/members-banner.jpg" alt="Rowan ACDA member group photo" loading="lazy">
-      </div>
-      <div class="slideshow-controls">
-        <button class="slideshow-pause" id="slideshow-pause-btn" aria-pressed="false" aria-label="Pause slideshow">⏸ Pause</button>
       </div>
     </div>
   </section>
@@ -313,7 +298,7 @@
   const slides = Array.from(container.querySelectorAll('img'));
   if(slides.length === 0) return;
 
-  let i = 0, timer = null, running = false, paused = false;
+  let i = 0, timer = null, running = false;
   const FADE_MS = 900;
   const HOLD_MS = 2600;
   const INTERVAL = FADE_MS + HOLD_MS;
@@ -322,7 +307,7 @@
     slides.forEach((img, idx)=> img.classList.toggle('active', idx === n));
   }
   function start(){
-    if(running || paused || slides.length < 2) return;
+    if(running || slides.length < 2) return;
     running = true;
     timer = setInterval(()=>{ i = (i+1) % slides.length; show(i); }, INTERVAL);
   }
@@ -343,24 +328,6 @@
     document.hidden ? stop() : start();
   });
 
-  // Pause button (WCAG 2.2.2)
-  const pauseBtn = document.getElementById('slideshow-pause-btn');
-  if(pauseBtn){
-    pauseBtn.addEventListener('click', ()=>{
-      paused = !paused;
-      if(paused){
-        stop();
-        pauseBtn.textContent = '▶ Play';
-        pauseBtn.setAttribute('aria-pressed', 'true');
-        pauseBtn.setAttribute('aria-label', 'Play slideshow');
-      } else {
-        pauseBtn.textContent = '⏸ Pause';
-        pauseBtn.setAttribute('aria-pressed', 'false');
-        pauseBtn.setAttribute('aria-label', 'Pause slideshow');
-        start();
-      }
-    });
-  }
 })();
 </script>
 
