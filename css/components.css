@@ -1056,38 +1056,88 @@ html, body{ background: var(--page-bg); }
   }
 }
 
-/* Mobile dropdown: make ALL items use the ghost-pill look */
-@media (max-width: 800px){
-  /* Base look for every link in the opened mobile menu */
-  .site-header #site-nav a.nav-link{
-    display: flex;                 /* center text perfectly */
+/* ===== Mobile Navigation (consolidated — overrides all earlier rules) ===== */
+@media (max-width: 900px) {
+  /* Hamburger button */
+  #nav-toggle {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 46px;                  /* same height for all */
-    padding: 0 18px;
-    margin: 14px auto;             /* the stacked spacing you like */
-    width: min(92vw, 280px);       /* nice pill width */
-    text-align: center;
-    font-weight: 700;
-    border-radius: 14px;           /* same shape as ghost hover */
-    border: 1.6px solid var(--border);
-    background: var(--surface-2, #f7f3f3);
-    color: #7A0A0A;                /* red text */
-    box-shadow: var(--shadow);
+    margin-left: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: .5rem;
+    background: rgba(255,255,255,.15);
+    border: 1.5px solid rgba(255,255,255,.4);
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  #nav-toggle[aria-expanded="true"] {
+    background: rgba(255,255,255,.25);
   }
 
-  /* Make the "current" state look identical (no special highlight) */
-  .site-header #site-nav a.nav-link[data-current="true"],
-  .site-header #site-nav a.nav-link.is-active{
-    background: var(--surface-2, #f7f3f3);
+  /* Dropdown panel */
+  #site-nav {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 2px solid var(--border);
+    box-shadow: 0 8px 28px rgba(0,0,0,.13);
+    padding: .6rem .75rem .75rem;
+    flex-direction: column;
+    gap: .3rem;
+    z-index: 49;
+  }
+  #site-nav.open {
+    display: flex;
+  }
+
+  /* Nav links: full-width tappable rows */
+  .site-header #site-nav a.nav-link,
+  .site-header #site-nav a.nav-link:link,
+  .site-header #site-nav a.nav-link:visited {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    width: 100%;
+    border-radius: .75rem;
     color: #7A0A0A;
-    border: 1.6px solid var(--border);
-    box-shadow: var(--shadow);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    background: transparent;
+    border: 1.5px solid transparent;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
   }
 
-  /* If you added any active underline/left bar earlier, kill it on mobile */
+  /* Hover / focus */
+  .site-header #site-nav a.nav-link:hover,
+  .site-header #site-nav a.nav-link:focus-visible {
+    background: #fdf0f0;
+    border-color: #e8c4c4;
+    color: #7A0A0A;
+  }
+
+  /* Active / current page */
+  .site-header #site-nav a.nav-link[aria-current="page"],
+  .site-header #site-nav a.nav-link.is-active {
+    background: #f3eaea;
+    border-color: #d4a0a0;
+    color: #5d0606;
+  }
+
+  /* Kill any pseudo-element indicators from desktop rules */
   .site-header #site-nav a.nav-link::before,
-  .site-header #site-nav a.nav-link::after{
+  .site-header #site-nav a.nav-link::after {
     content: none !important;
   }
 }

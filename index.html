@@ -6,7 +6,6 @@
 <title>Rowan ACDA</title>
 <meta name="description" content="Rowan ACDA — American Choral Directors Association collegiate chapter at Rowan University."/>
 
-<!-- Speed up the sheet fetch -->
 <link rel="preconnect" href="https://docs.google.com" crossorigin>
 <link rel="dns-prefetch" href="https://docs.google.com">
 
@@ -20,7 +19,7 @@
 <link rel="stylesheet" href="/css/components.css"/>
 
 <style>
-  /* Inline red “Add to Calendar” link */
+  /* Inline red "Add to Calendar" link */
   .event-meta .calendar-link{
     color:#7A0A0A; font-weight:700;
   }
@@ -36,7 +35,7 @@
   .modal .dialog{ overflow:auto; -ms-overflow-style:none; scrollbar-width:none; }
   .modal .dialog::-webkit-scrollbar{ display:none; }
 
-  /* ===== Fading slideshow (bigger) ===== */
+  /* ===== Fading slideshow ===== */
   .slideshow-wrap{
     border:1px solid var(--border);
     border-radius:1rem;
@@ -46,7 +45,7 @@
   .slideshow{
     position:relative;
     width:100%;
-    height:clamp(260px, 45vw, 540px); /* bigger, responsive */
+    height:clamp(260px, 45vw, 540px);
     background:#f7f7f7;
   }
   .slideshow img{
@@ -54,32 +53,32 @@
     width:100%; height:100%;
     object-fit:cover;
     opacity:0;
-    transition:opacity 900ms ease;
-    /* perf hints */
+    transition: opacity 1.8s cubic-bezier(.22,.61,.36,1);
     backface-visibility:hidden;
     transform:translateZ(0);
     will-change:opacity;
   }
   .slideshow img.active{ opacity:1; }
-  /* smoother, longer cross-fade */
-.slideshow img{
-  position:absolute; inset:0;
-  width:100%; height:100%;
-  object-fit:cover;
-  opacity:0;
-  transition: opacity 1.8s cubic-bezier(.22,.61,.36,1); /* was 900ms ease */
-  backface-visibility:hidden;
-  transform:translateZ(0);
-  will-change:opacity;
-}
-/* Home only: hide tags and buttons inside Featured Events */
-#home-events .event-badges,
-#home-events .event-actions,
-#home-events [data-modal],
-#home-events [data-action="signin"]{
-  display: none !important;
-}
 
+  /* Pause button */
+  .slideshow-controls{
+    display:flex; justify-content:center; padding:.5rem 0 .25rem;
+  }
+  .slideshow-pause{
+    appearance:none; border:1px solid var(--border); background:#fff;
+    border-radius:.5rem; padding:.3rem .8rem; cursor:pointer; font-size:.85rem;
+    color:var(--muted); transition:background .15s ease;
+    min-height:36px;
+  }
+  .slideshow-pause:hover{ background:var(--surface); }
+
+  /* Home only: hide tags and buttons inside Featured Events */
+  #home-events .event-badges,
+  #home-events .event-actions,
+  #home-events [data-modal],
+  #home-events [data-action="signin"]{
+    display: none !important;
+  }
 </style>
 </head>
 <body>
@@ -112,75 +111,70 @@
     </div>
   </section>
 
-    <section style="margin-top:2rem">
+  <section>
     <h2>What is Rowan ACDA?</h2>
     <p>The Rowan American Choral Directors Association's mission is to create opportunities for students to learn more about an array of different choral techniques and aspects that will enrich and supplement their education. This includes fundraising, holding events and activities that either interest or inform members, and bringing in presenters from on and off-campus to hold workshops and masterclasses. Our goal is to allow everyone to learn about and experience choral music while acquiring various choral directing skills.</p>
     <p><a class="btn btn-outline" href="/members.html">Read More</a></p>
   </section>
 
-
-
-
-  
-  <section style="margin-top:2rem" aria-labelledby="feat-h">
+  <section aria-labelledby="feat-h">
     <div class="section-header">
       <h2 id="feat-h">Featured Events</h2>
       <div class="actions"><a class="btn btn-outline" href="/events.html">All events</a></div>
     </div>
     <div id="home-events" class="events-feature" aria-live="polite"></div>
   </section>
-  
+
   <!-- ===== Chapter Highlights (FADING SLIDESHOW) ===== -->
-  <section style="margin-top:2rem" aria-labelledby="highlights-h">
+  <section aria-labelledby="highlights-h">
     <h2 id="highlights-h">Chapter Highlights</h2>
     <div class="slideshow-wrap">
-      <div class="slideshow" aria-label="Chapter Highlights Slideshow">
-		 <!-- NEW: Feb 6, 2026 screenshots (added to the front) -->
-  <img src="/assets/img/Screenshot 2026-02-06 222534.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222526.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222515.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222506.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222458.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222447.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222423.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222431.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222403.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222355.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222337.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222328.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222311.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222301.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222244.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222224.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222156.png" alt="Highlight photo" loading="lazy">
-  <img src="/assets/img/Screenshot 2026-02-06 222215.png" alt="Highlight photo" loading="lazy">
-
-		  
-        <!-- One set of images; JS will fade through them -->
-        <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Highlight photo" loading="eager" class="active">
-	<img src="/assets/img/Screenshot 2025-09-24 094012.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 093949.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094001.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094018.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094022.png" alt="Highlight photo" loading="lazy">
-	<img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154922.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154928.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154950.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 155003.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154905.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/ext2_Screenshot 2025-08-28 154916.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/ext_gallery4.png" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/index-header.jpg" alt="Highlight photo" loading="lazy">
-        <img src="/assets/img/members-banner.jpg" alt="Highlight photo" loading="lazy">
+      <div class="slideshow" aria-label="Chapter Highlights Slideshow" role="img">
+        <img src="/assets/img/Screenshot 2026-02-06 222534.png" alt="Chapter event, February 2026" loading="eager" class="active">
+        <img src="/assets/img/Screenshot 2026-02-06 222526.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222515.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222506.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222458.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222447.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222423.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222431.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222403.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222355.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222337.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222328.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222311.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222301.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222244.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222224.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222156.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/Screenshot 2026-02-06 222215.png" alt="Chapter event, February 2026" loading="lazy">
+        <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Rowan ACDA members performing" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 094012.png" alt="Chapter event, September 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 093949.png" alt="Chapter event, September 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 094001.png" alt="Chapter event, September 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 094018.png" alt="Chapter event, September 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-09-24 094022.png" alt="Chapter event, September 2025" loading="lazy">
+        <img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Rowan ACDA choir" loading="lazy">
+        <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Rowan ACDA members" loading="lazy">
+        <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Rowan ACDA chapter" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154922.png" alt="Chapter event, August 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154928.png" alt="Chapter event, August 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154950.png" alt="Chapter event, August 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 155003.png" alt="Chapter event, August 2025" loading="lazy">
+        <img src="/assets/img/Screenshot 2025-08-28 154905.png" alt="Chapter event, August 2025" loading="lazy">
+        <img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Rowan ACDA members" loading="lazy">
+        <img src="/assets/img/ext2_Screenshot 2025-08-28 154916.png" alt="Chapter event, August 2025" loading="lazy">
+        <img src="/assets/img/ext_gallery4.png" alt="Rowan ACDA gallery" loading="lazy">
+        <img src="/assets/img/members-banner.jpg" alt="Rowan ACDA member group photo" loading="lazy">
+      </div>
+      <div class="slideshow-controls">
+        <button class="slideshow-pause" id="slideshow-pause-btn" aria-pressed="false" aria-label="Pause slideshow">⏸ Pause</button>
       </div>
     </div>
   </section>
+
   <!-- Focus Areas -->
-  <section style="margin-top:2rem" aria-labelledby="focus-h">
+  <section aria-labelledby="focus-h">
     <div class="section-header">
       <h2 id="focus-h">Our Chapter</h2>
     </div>
@@ -192,7 +186,7 @@
              onerror="this.onerror=null;this.src='/assets/img/about2.png'">
         <div class="meta">
           <h3>Choral Engagement</h3>
-          <p>Did you love choir in High School? Want to sing in a growing choral community of many majors?  Join Rowan's own "Choir Club"! Rowan's chapter of the American Choral Director's Associciation is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107! </p>
+          <p>Did you love choir in High School? Want to sing in a growing choral community of many majors? Join Rowan's own "Choir Club"! Rowan's chapter of the American Choral Directors Association is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107!</p>
         </div>
       </article>
 
@@ -202,7 +196,7 @@
              onerror="this.onerror=null;this.src='/assets/img/about1.png'">
         <div class="meta">
           <h3>Sightreading</h3>
-          <p>Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval! </p>
+          <p>Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval!</p>
         </div>
       </article>
 
@@ -212,19 +206,13 @@
              onerror="this.onerror=null;this.src='/assets/img/about.png'">
         <div class="meta">
           <h3>Development</h3>
-          <p>In sessions coordinated by our Vice President, industry professionals will present development sessions on varying revelevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs. </p>
+          <p>In sessions coordinated by our Vice President, industry professionals will present development sessions on varying relevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs.</p>
         </div>
       </article>
     </div>
   </section>
 
-
-
-  
-
-  
-
-<section style="margin-top:2rem" aria-labelledby="shop-h">
+  <section aria-labelledby="shop-h">
     <div class="section-header">
       <h2 id="shop-h">Shop Rowan ACDA Merch</h2>
     </div>
@@ -234,481 +222,24 @@
         <div class="meta">
           <h3 style="margin-bottom:.5rem">T-Shirt</h3>
           <div id='product-component-1769136492453'></div>
-<script type="text/javascript">
-/*<![CDATA[*/
-(function () {
-  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-  if (window.ShopifyBuy) {
-    if (window.ShopifyBuy.UI) {
-      ShopifyBuyInit();
-    } else {
-      loadScript();
-    }
-  } else {
-    loadScript();
-  }
-  function loadScript() {
-    var script = document.createElement('script');
-    script.async = true;
-    script.src = scriptURL;
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-    script.onload = ShopifyBuyInit;
-  }
-  function ShopifyBuyInit() {
-    var client = ShopifyBuy.buildClient({
-      domain: 'wqjsdh-bj.myshopify.com',
-      storefrontAccessToken: 'f8e91c74b437bb4c808014ecae006a07',
-    });
-    ShopifyBuy.UI.onReady(client).then(function (ui) {
-      ui.createComponent('product', {
-        id: '10198201630904',
-        node: document.getElementById('product-component-1769136492453'),
-        moneyFormat: '%24%7B%7Bamount%7D%7D',
-        options: {
-  "product": {
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "calc(25% - 20px)",
-          "margin-left": "20px",
-          "margin-bottom": "50px"
-        }
-      },
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "width": "280px",
-    "text": {
-      "button": "Add to cart"
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  },
-  "productSet": {
-    "styles": {
-      "products": {
-        "@media (min-width: 601px)": {
-          "margin-left": "-20px"
-        }
-      }
-    }
-  },
-  "modalProduct": {
-    "contents": {
-      "img": false,
-      "imgWithCarousel": true,
-      "button": false,
-      "buttonWithQuantity": true
-    },
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "100%",
-          "margin-left": "0px",
-          "margin-bottom": "0px"
-        }
-      },
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "googleFonts": [
-      "Montserrat"
-    ],
-    "text": {
-      "button": "Add to cart"
-    }
-  },
-  "option": {},
-  "cart": {
-    "styles": {
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "text": {
-      "total": "Subtotal",
-      "button": "Checkout"
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  },
-  "toggle": {
-    "styles": {
-      "toggle": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        "background-color": "#a41c1a",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  }
-},
-      });
-    });
-  }
-})();
-/*]]>*/
-</script>
         </div>
       </article>
-
       <article class="card">
         <div class="meta">
           <h3 style="margin-bottom:.5rem">Hoodie</h3>
           <div id='product-component-1769136523855'></div>
-<script type="text/javascript">
-/*<![CDATA[*/
-(function () {
-  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-  if (window.ShopifyBuy) {
-    if (window.ShopifyBuy.UI) {
-      ShopifyBuyInit();
-    } else {
-      loadScript();
-    }
-  } else {
-    loadScript();
-  }
-  function loadScript() {
-    var script = document.createElement('script');
-    script.async = true;
-    script.src = scriptURL;
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-    script.onload = ShopifyBuyInit;
-  }
-  function ShopifyBuyInit() {
-    var client = ShopifyBuy.buildClient({
-      domain: 'wqjsdh-bj.myshopify.com',
-      storefrontAccessToken: 'f8e91c74b437bb4c808014ecae006a07',
-    });
-    ShopifyBuy.UI.onReady(client).then(function (ui) {
-      ui.createComponent('product', {
-        id: '10198201729208',
-        node: document.getElementById('product-component-1769136523855'),
-        moneyFormat: '%24%7B%7Bamount%7D%7D',
-        options: {
-  "product": {
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "calc(25% - 20px)",
-          "margin-left": "20px",
-          "margin-bottom": "50px"
-        }
-      },
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "width": "280px",
-    "text": {
-      "button": "Add to cart"
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  },
-  "productSet": {
-    "styles": {
-      "products": {
-        "@media (min-width: 601px)": {
-          "margin-left": "-20px"
-        }
-      }
-    }
-  },
-  "modalProduct": {
-    "contents": {
-      "img": false,
-      "imgWithCarousel": true,
-      "button": false,
-      "buttonWithQuantity": true
-    },
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "100%",
-          "margin-left": "0px",
-          "margin-bottom": "0px"
-        }
-      },
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "googleFonts": [
-      "Montserrat"
-    ],
-    "text": {
-      "button": "Add to cart"
-    }
-  },
-  "option": {},
-  "cart": {
-    "styles": {
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "text": {
-      "total": "Subtotal",
-      "button": "Checkout"
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  },
-  "toggle": {
-    "styles": {
-      "toggle": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        "background-color": "#a41c1a",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  }
-},
-      });
-    });
-  }
-})();
-/*]]>*/
-</script>
         </div>
       </article>
-
       <article class="card">
         <div class="meta">
           <h3 style="margin-bottom:.5rem">Sweatshirt</h3>
           <div id='product-component-1769137089018'></div>
-<script type="text/javascript">
-/*<![CDATA[*/
-(function () {
-  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-  if (window.ShopifyBuy) {
-    if (window.ShopifyBuy.UI) {
-      ShopifyBuyInit();
-    } else {
-      loadScript();
-    }
-  } else {
-    loadScript();
-  }
-  function loadScript() {
-    var script = document.createElement('script');
-    script.async = true;
-    script.src = scriptURL;
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-    script.onload = ShopifyBuyInit;
-  }
-  function ShopifyBuyInit() {
-    var client = ShopifyBuy.buildClient({
-      domain: 'wqjsdh-bj.myshopify.com',
-      storefrontAccessToken: 'f8e91c74b437bb4c808014ecae006a07',
-    });
-    ShopifyBuy.UI.onReady(client).then(function (ui) {
-      ui.createComponent('product', {
-        id: '10198201565368',
-        node: document.getElementById('product-component-1769137089018'),
-        moneyFormat: '%24%7B%7Bamount%7D%7D',
-        options: {
-  "product": {
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "calc(25% - 20px)",
-          "margin-left": "20px",
-          "margin-bottom": "50px"
-        }
-      },
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "text": {
-      "button": "Add to cart"
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  },
-  "productSet": {
-    "styles": {
-      "products": {
-        "@media (min-width: 601px)": {
-          "margin-left": "-20px"
-        }
-      }
-    }
-  },
-  "modalProduct": {
-    "contents": {
-      "img": false,
-      "imgWithCarousel": true,
-      "button": false,
-      "buttonWithQuantity": true
-    },
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "100%",
-          "margin-left": "0px",
-          "margin-bottom": "0px"
-        }
-      },
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "googleFonts": [
-      "Montserrat"
-    ],
-    "text": {
-      "button": "Add to cart"
-    }
-  },
-  "option": {},
-  "cart": {
-    "styles": {
-      "button": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        "background-color": "#a41c1a",
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "text": {
-      "total": "Subtotal",
-      "button": "Checkout"
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  },
-  "toggle": {
-    "styles": {
-      "toggle": {
-        "font-family": "Montserrat, sans-serif",
-        "font-weight": "bold",
-        "background-color": "#a41c1a",
-        ":hover": {
-          "background-color": "#941917"
-        },
-        ":focus": {
-          "background-color": "#941917"
-        }
-      }
-    },
-    "googleFonts": [
-      "Montserrat"
-    ]
-  }
-},
-      });
-    });
-  }
-})();
-/*]]>*/
-</script>
         </div>
       </article>
     </div>
-
   </section>
 
-
-
-<section style="margin-top:2rem" aria-labelledby="contact-h">
+  <section aria-labelledby="contact-h">
     <h2 id="contact-h">Contact & Join</h2>
     <p>Have questions? Email <a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a>. Ready to get started?</p>
     <p><a class="btn" href="/members.html">Become a Member</a></p>
@@ -718,13 +249,13 @@
 <!-- About modal -->
 <div class="modal" id="about-popup"><div class="dialog" tabindex="-1">
   <h3>About Rowan ACDA</h3>
-  <p>Rowan ACDA is one of the most active collegiate ACDA chapters in the region. 
-  We participate in conferences, host our own Cabaret, and bring in guest clinicians. 
+  <p>Rowan ACDA is one of the most active collegiate ACDA chapters in the region.
+  We participate in conferences, host our own Cabaret, and bring in guest clinicians.
   Membership provides both community and professional growth.</p>
   <p><button class="btn btn-outline" onclick="this.closest('.modal').classList.remove('open')">Close</button></p>
 </div></div>
 
-<!-- Heads-up modal (for missing RSVP links, like on Events page) -->
+<!-- Heads-up modal (for missing RSVP links) -->
 <div class="modal" id="notice-modal" role="dialog" aria-modal="true" aria-labelledby="notice-title" hidden>
   <div class="dialog" tabindex="-1">
     <div class="modal-header" style="text-align:center">
@@ -739,7 +270,6 @@
 
 <footer class="site-footer acda-footer" role="contentinfo">
   <div class="container footer-grid">
-    <!-- Brand / blurb -->
     <div class="footer-brand">
       <div class="brand--footer">
         <img src="/assets/icons/acda.png" alt="Rowan ACDA logo" width="40" height="40">
@@ -752,8 +282,6 @@
         American Choral Directors Association at Rowan University. We sing, lead, and serve through choral music.
       </p>
     </div>
-
-    <!-- Navigate -->
     <nav aria-label="Footer" class="footer-nav">
       <h4>Navigate</h4>
       <ul class="list-unstyled">
@@ -763,8 +291,6 @@
         <li><a href="/resources.html">Resources</a></li>
       </ul>
     </nav>
-
-    <!-- Connect -->
     <div class="footer-connect">
       <h4>Connect</h4>
       <ul class="list-unstyled">
@@ -772,13 +298,12 @@
         <li><a href="https://www.instagram.com/rowanacda/" target="_blank" rel="noopener">Instagram</a></li>
       </ul>
       <p class="small muted footer-note">
-        Site theme by Adam Bretz 
+        Site theme by Adam Bretz
       </p>
       <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
     </div>
   </div>
 </footer>
-
 
 <!-- Fading slideshow JS -->
 <script>
@@ -788,17 +313,16 @@
   const slides = Array.from(container.querySelectorAll('img'));
   if(slides.length === 0) return;
 
-  let i = 0, timer = null, running = false;
-const FADE_MS = 900;   // match the CSS 1.8s
-const HOLD_MS = 2600;   // how long each slide stays fully visible
-const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
-
+  let i = 0, timer = null, running = false, paused = false;
+  const FADE_MS = 900;
+  const HOLD_MS = 2600;
+  const INTERVAL = FADE_MS + HOLD_MS;
 
   function show(n){
     slides.forEach((img, idx)=> img.classList.toggle('active', idx === n));
   }
   function start(){
-    if(running || slides.length < 2) return;
+    if(running || paused || slides.length < 2) return;
     running = true;
     timer = setInterval(()=>{ i = (i+1) % slides.length; show(i); }, INTERVAL);
   }
@@ -807,7 +331,6 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
     if(timer){ clearInterval(timer); timer = null; }
   }
 
-  // Init
   show(0);
 
   // Pause when off-screen or tab hidden
@@ -819,312 +342,94 @@ const INTERVAL = FADE_MS + HOLD_MS; // total per slide ~7s
   document.addEventListener('visibilitychange', () => {
     document.hidden ? stop() : start();
   });
-})();
-</script>
 
-<script>
-/* Home: show only the next 3 upcoming events (with primary CSV + Google Sheet fallback) */
-(function(){
-  // === CSV sources + robust fetch with fallback ===
-  const PRIMARY_CSV = "/assets/data/events.csv"; // mirrored copy on your site
-  const BACKUP_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
-
-  async function fetchCSV(){
-    const isIOS = /iP(hone|ad|od)/i.test(navigator.userAgent);
-    const isMobileSafari = isIOS && /Safari/i.test(navigator.userAgent) && !/CriOS|FxiOS/i.test(navigator.userAgent);
-
-    const ctl = new AbortController();
-    const t = setTimeout(()=>ctl.abort(), 10000);
-
-    const baseOpts = {
-      mode: 'cors',
-      credentials: 'omit',
-      signal: ctl.signal,
-      ...(isMobileSafari ? {} : { cache: 'no-cache' })
-    };
-
-    async function get(url){
-      const r = await fetch(url, baseOpts);
-      if(!r.ok) throw new Error("HTTP "+r.status);
-      return r.text();
-    }
-
-    try{
-      const txt = await get(PRIMARY_CSV);
-      clearTimeout(t);
-      return txt;
-    } catch {
-      try { return await get(BACKUP_CSV); }
-      finally { clearTimeout(t); }
-    }
-  }
-
-  const listEl = document.getElementById('home-events');
-
-  /* ---------- CSV helpers ---------- */
-  function parseCSV(text){
-    const rows = []; let i=0, field='', row=[], inQuotes=false;
-    while(i < text.length){
-      const c = text[i];
-      if(inQuotes){
-        if(c === '"'){ if(text[i+1] === '"'){ field += '"'; i++; } else inQuotes = false; }
-        else field += c;
+  // Pause button (WCAG 2.2.2)
+  const pauseBtn = document.getElementById('slideshow-pause-btn');
+  if(pauseBtn){
+    pauseBtn.addEventListener('click', ()=>{
+      paused = !paused;
+      if(paused){
+        stop();
+        pauseBtn.textContent = '▶ Play';
+        pauseBtn.setAttribute('aria-pressed', 'true');
+        pauseBtn.setAttribute('aria-label', 'Play slideshow');
       } else {
-        if(c === '"') inQuotes = true;
-        else if(c === ','){ row.push(field); field=''; }
-        else if(c === '\n'){ row.push(field); field=''; rows.push(row); row=[]; }
-        else if(c === '\r'){ /* ignore */ }
-        else field += c;
+        pauseBtn.textContent = '⏸ Pause';
+        pauseBtn.setAttribute('aria-pressed', 'false');
+        pauseBtn.setAttribute('aria-label', 'Pause slideshow');
+        start();
       }
-      i++;
-    }
-    if(field.length || row.length){ row.push(field); rows.push(row); }
-    return rows;
-  }
-  function toRecords(rows){
-    if(!rows.length) return [];
-    const header = rows.shift().map(h=>h.trim().toLowerCase());
-    return rows.map(r=>{ const o={}; header.forEach((h,i)=> o[h]=(r[i]||'').trim()); return o; });
-  }
-
-  /* ---------- Date/time helpers (robust) ---------- */
-  function parseDate(dStr){
-    if(!dStr) return null;
-    const s = dStr.trim();
-    // allow M/D or M/D/YY or M/D/YYYY
-    const m = s.match(/^(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?$/);
-    if(!m) return null;
-    let mm=+m[1], dd=+m[2];
-    let yy = m[3] ? +m[3] : (new Date()).getFullYear();
-    if(yy<100) yy=2000+yy;
-    return new Date(yy, mm-1, dd);
-  }
-  function parseTime(tStr){
-    if(!tStr) return null;
-    let s = String(tStr).trim().toLowerCase().replace(/[\u2013\u2014]/g, '-');
-    if(/\bnoon\b/.test(s)) return {h:12,m:0};
-    if(/\bmidnight\b/.test(s)) return {h:0,m:0};
-    const m = s.match(/^\s*(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?\s*m\.?)?\s*$/i);
-    if(!m) return null;
-    let h=parseInt(m[1],10), mm=m[2]?parseInt(m[2],10):0, ap=m[3]?m[3].replace(/\./g,'').trim():'';
-    if(ap){ if(ap.startsWith('p') && h<12) h+=12; if(ap.startsWith('a') && h===12) h=0; }
-    return {h, m:mm};
-  }
-  function parseTimeRange(s){
-    if(!s) return null;
-    let str = String(s).toLowerCase().replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
-    const m = str.match(/^(.+?)\s*-\s*(.+)$/);
-    if(!m) return null;
-    let a = m[1].trim(), b = m[2].trim();
-    const suffix = b.match(/\b([ap])\.?m\.?\b/);
-    if(suffix && !/\b([ap])\.?m\.?\b/.test(a)) a += ' ' + suffix[0];
-    const t1 = parseTime(a), t2 = parseTime(b);
-    if(!t1 || !t2) return null;
-    return {start:t1, end:t2};
-  }
-  function combineDateTime(d, t){ const dt=new Date(d); const time=t||{h:0,m:0}; dt.setHours(time.h,time.m,0,0); return dt; }
-  function formatDateRange(start, end){
-    const dOpt={month:'long',day:'numeric',year:'numeric'};
-    const tOpt={hour:'numeric',minute:'2-digit'};
-    const dFmt=new Intl.DateTimeFormat('en-US',dOpt), tFmt=new Intl.DateTimeFormat('en-US',tOpt);
-    const same = start.toDateString()===end.toDateString();
-    return same ? dFmt.format(start)+' • '+tFmt.format(start)+'–'+tFmt.format(end)
-                : dFmt.format(start)+' '+tFmt.format(start)+' → '+dFmt.format(end)+' '+tFmt.format(end);
-  }
-  function tagSlug(s){ return (s||'').toLowerCase().replace(/\s+/g,'-'); }
-  function normalizeTags(s){ return !s?[]: s.split(/[,;/|]+/).map(v=>v.trim()).filter(Boolean); }
-
-  /* ---------- Labels & links ---------- */
-  function getBtnLabel(ev){
-    const tags = new Set((ev.tagSlugs||[]).map(String));
-    if (tags.has('volunteer')) return 'Sign up';
-    if (tags.has('performance') || tags.has('performances')) return 'Tickets';
-    if (tags.has('professional-development') || tags.has('event') || tags.has('events')) return 'Check in';
-    return 'Attendance';
-  }
-  function gcalLink(ev){
-    const text = encodeURIComponent(ev.title || 'ACDA Event');
-    const details = encodeURIComponent((ev.details || ev.description || '') + (ev.signin_link ? '\n\nRSVP: ' + ev.signin_link : ''));
-    const location = encodeURIComponent(ev.location || '');
-    const tz = 'America/New_York';
-    const s = ev.startDateTime, e = ev.endDateTime;
-    const dates = s.getFullYear()+String(s.getMonth()+1).padStart(2,'0')+String(s.getDate()).padStart(2,'0')+'T'+
-                  String(s.getHours()).padStart(2,'0')+String(s.getMinutes()).padStart(2,'0')+'00/'+
-                  e.getFullYear()+String(e.getMonth()+1).padStart(2,'0')+String(e.getDate()).padStart(2,'0')+'T'+
-                  String(e.getHours()).padStart(2,'0')+String(e.getMinutes()).padStart(2,'0')+'00';
-    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&ctz='+tz+'&details='+details+'&location='+location;
-  }
-  function badgeHTML(tags){ return (tags||[]).map(t=>'<span class="badge" data-tag="'+tagSlug(t)+'">'+t+'</span>').join(' '); }
-
-  /* ---------- Cards (home “Featured Events” style) ---------- */
-  function cardHTML(ev){
-    const hasLink = !!ev.signin_link;
-    const btnLabel = getBtnLabel(ev);
-    const signinHref = hasLink ? ev.signin_link : '#';
-    const img = ev.image_url || '/assets/img/about.png';
-
-    return (
-      '<article class="card" data-tags="'+ev.tagSlugs.join(' ')+'" data-when="'+ev.when+'">'+
-        '<img src="'+img+'" alt="'+(ev.title||'Event photo')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
-        '<div class="meta">'+
-          '<h3>'+ (ev.title||'Untitled') +'</h3>'+
-          '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+
-            (ev.location? ' • '+ev.location : '')+
-            ' • <a class="calendar-link" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
-          '</p>'+
-          '<div class="event-badges" style="margin:.4rem 0 .4rem">'+ badgeHTML(ev.tags) +'</div>'+
-          (ev.description ? '<p>'+ev.description+'</p>' : '')+
-          '<div class="event-actions" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem">'+
-            '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
-            '<button class="btn btn-outline" data-modal="modal-'+ev.id+'">Details</button>'+
-          '</div>'+
-        '</div>'+
-      '</article>'
-    );
-  }
-
-  function modalHTML(ev){
-    const hasLink = !!ev.signin_link;
-    const btnLabel = getBtnLabel(ev);
-    const signinHref = hasLink ? ev.signin_link : '#';
-    const img = ev.image_url || '/assets/img/about.png';
-
-    return (
-      '<div class="modal" id="modal-'+ev.id+'" role="dialog" aria-modal="true" aria-labelledby="modal-'+ev.id+'-title" hidden>'+
-        '<div class="dialog" tabindex="-1">'+
-          '<div class="modal-header" style="text-align:center;position:relative">'+
-            '<h3 class="modal-title" id="modal-'+ev.id+'-title">'+(ev.title||'')+'</h3>'+
-            '<button class="modal-close" type="button" data-close aria-label="Close">✕</button>'+
-          '</div>'+
-          '<section style="text-align:center">'+
-            '<img class="convention-thumb" src="'+img+'" alt="'+(ev.title||'Event photo')+'" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
-            '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
-            (ev.details ? '<p>'+ev.details+'</p>' : '')+
-            '<div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1rem">'+
-              '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
-              '<a class="btn btn-outline" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
-            '</div>'+
-          '</section>'+
-        '</div>'+
-      '</div>'
-    );
-  }
-
-  /* ---------- Build from sheet ---------- */
-  function buildEvents(recs){
-    const now = new Date();
-    return recs.map(r => {
-      const date = parseDate(r.date || r.day || r.event_date);
-
-      const stRaw = r.start_time || r.start || r.begin || '';
-      const etRaw = r.end_time   || r.end   || r.finish || '';
-      const rangeRaw = r.time || r.time_range || r.times || '';
-
-      let st = parseTime(stRaw);
-      let et = parseTime(etRaw);
-      if((!st || !et) && rangeRaw){
-        const rng = parseTimeRange(rangeRaw);
-        if(rng){ st = st || rng.start; et = et || rng.end; }
-      }
-
-      const start = date ? combineDateTime(date, st || {h:0,m:0}) : new Date();
-      let end = date ? (et ? combineDateTime(date, et) : new Date(start.getTime() + 60*60*1000))
-                     : new Date(start.getTime() + 60*60*1000);
-
-      if(end <= start){
-        if(rangeRaw) end = new Date(end.getTime() + 24*60*60*1000);
-        else end = new Date(start.getTime() + 60*60*1000);
-      }
-
-      const when = end < now ? 'past' : 'upcoming';
-      const tags = normalizeTags(r.tags);
-      const slugs = tags.map(tagSlug);
-
-      return {
-        id: Math.random().toString(36).slice(2),
-        title: r.title || r.name || '',
-        date: r.date,
-        start_time: r.start_time,
-        end_time: r.end_time,
-        startDateTime: start,
-        endDateTime: end,
-        datePretty: formatDateRange(start, end),
-        location: r.location || '',
-        tags,
-        tagSlugs: slugs,
-        description: r.description || '',
-        details: r.details || '',
-        signin_link: r.signin_link || r.rsvp || '',
-        image_url: r.image_url || r.image || '/assets/img/about.png',
-        when
-      };
     });
   }
-
-  function openModal(m){ if(!m) return; m.hidden=false; m.classList.add('open'); document.body.style.overflow='hidden'; m.querySelector('.dialog')?.focus({preventScroll:true}); }
-  function closeModal(m){ if(!m) return; m.classList.remove('open'); m.hidden=true; document.body.style.overflow=''; }
-
-  function attachModalHandlers(){
-    document.querySelectorAll('[data-modal]').forEach(btn=>{
-      btn.addEventListener('click',()=> openModal(document.getElementById(btn.getAttribute('data-modal'))));
-    });
-    document.querySelectorAll('.modal').forEach(m=>{
-      m.addEventListener('click',(e)=>{ if(e.target===m) closeModal(m); });
-      m.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click',()=> closeModal(m)));
-    });
-    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(closeModal); });
-  }
-
-  function showNotice(){ openModal(document.getElementById('notice-modal')); }
-  document.addEventListener('click',(e)=>{
-    const a = e.target.closest('a[data-action="signin"]');
-    if(!a) return;
-    const hasLink = a.getAttribute('data-has-link') === '1';
-    const href = a.getAttribute('href');
-    if(!hasLink || !href || href === '#'){ e.preventDefault(); showNotice(); }
-  });
-
-  function render(events){
-    if(!events.length){
-      listEl.innerHTML = '<p class="kicker">No upcoming events yet. Check back soon!</p>';
-      return;
-    }
-    const cards = events.map(cardHTML).join('\n');
-    const modals = events.map(modalHTML).join('\n');
-    listEl.innerHTML = cards + '\n' + modals;
-    attachModalHandlers();
-  }
-
-  async function init(){
-    if(!listEl.innerHTML.trim()){ listEl.innerHTML = '<p class="kicker">Loading events…</p>'; }
-    try{
-      const csv = await fetchCSV(); // ← uses primary, falls back to Google Sheet
-      const recs = toRecords(parseCSV(csv));
-      const all = buildEvents(recs);
-
-      // Only upcoming; earliest first; take top 3
-      const upcoming = all
-        .filter(ev => ev.when === 'upcoming')
-        .sort((a,b)=> a.startDateTime - b.startDateTime)
-        .slice(0,3);
-
-      render(upcoming);
-    } catch(err){
-      console.error('Home events load failed:', err);
-      listEl.innerHTML = `
-        <div class="card"><div class="card-body">
-          <p class="kicker">Couldn’t load events on this device.</p>
-          <button class="btn" id="retry-home-events">Try again</button>
-        </div></div>`;
-      document.getElementById('retry-home-events')?.addEventListener('click', init, { once:true });
-    }
-  }
-
-  window.addEventListener('DOMContentLoaded', init);
 })();
 </script>
 
+<!-- Shopify Buy Button -->
+<script>
+(function(){
+  const DOMAIN = 'wqjsdh-bj.myshopify.com';
+  const TOKEN  = 'f8e91c74b437bb4c808014ecae006a07';
+  const PRODUCTS = [
+    { id: '10198201630904', node: 'product-component-1769136492453' },
+    { id: '10198201729208', node: 'product-component-1769136523855' },
+    { id: '10198201565368', node: 'product-component-1769137089018' },
+  ];
 
+  const BTN_STYLES = {
+    "font-family": "Montserrat, sans-serif",
+    "font-weight": "bold",
+    ":hover":  { "background-color": "#941917" },
+    "background-color": "#a41c1a",
+    ":focus":  { "background-color": "#941917" }
+  };
+
+  function buildOptions(productId){
+    return {
+      product: {
+        styles: {
+          product: { "@media (min-width: 601px)": { "max-width": "calc(25% - 20px)", "margin-left": "20px", "margin-bottom": "50px" } },
+          button: BTN_STYLES
+        },
+        width: "280px",
+        text: { button: "Add to cart" },
+        googleFonts: ["Montserrat"]
+      },
+      productSet: { styles: { products: { "@media (min-width: 601px)": { "margin-left": "-20px" } } } },
+      modalProduct: {
+        contents: { img: false, imgWithCarousel: true, button: false, buttonWithQuantity: true },
+        styles: {
+          product: { "@media (min-width: 601px)": { "max-width": "100%", "margin-left": "0px", "margin-bottom": "0px" } },
+          button: BTN_STYLES
+        },
+        googleFonts: ["Montserrat"],
+        text: { button: "Add to cart" }
+      },
+      option: {},
+      cart: { styles: { button: BTN_STYLES }, text: { total: "Subtotal", button: "Checkout" }, googleFonts: ["Montserrat"] },
+      toggle: { styles: { toggle: { ...BTN_STYLES, "font-family": "Montserrat, sans-serif", "font-weight": "bold" } }, googleFonts: ["Montserrat"] }
+    };
+  }
+
+  function initAll(){
+    const client = ShopifyBuy.buildClient({ domain: DOMAIN, storefrontAccessToken: TOKEN });
+    ShopifyBuy.UI.onReady(client).then(ui => {
+      PRODUCTS.forEach(({ id, node }) => {
+        ui.createComponent('product', { id, node: document.getElementById(node), moneyFormat: '%24%7B%7Bamount%7D%7D', options: buildOptions(id) });
+      });
+    });
+  }
+
+  const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+  if(window.ShopifyBuy){
+    window.ShopifyBuy.UI ? initAll() : (function load(){ var s=document.createElement('script'); s.async=true; s.src=scriptURL; s.onload=initAll; document.head.appendChild(s); })();
+  } else {
+    var s=document.createElement('script'); s.async=true; s.src=scriptURL; s.onload=initAll;
+    (document.getElementsByTagName('head')[0]||document.body).appendChild(s);
+  }
+})();
+</script>
+
+<script src="/js/home-events.js" defer></script>
 <script src="/js/core.js" defer></script>
 </body>
 </html>
