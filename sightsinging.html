@@ -23,14 +23,14 @@
   }
   .view-tab {
     appearance: none; background: none; border: none;
-    padding: .55rem 1rem; font-weight: 700; font-size: .95rem;
+    padding: .55rem 1.1rem; font-weight: 700; font-size: .95rem;
     color: var(--muted); cursor: pointer; border-radius: .5rem .5rem 0 0;
     border-bottom: 2px solid transparent; margin-bottom: -2px;
     transition: color .15s ease, border-color .15s ease;
+    letter-spacing: .01em;
   }
   .view-tab:hover { color: var(--brand); }
   .view-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
-  .view-tab .tab-icon { margin-right: .3rem; }
 
   /* ── Panels ── */
   .panel { display: none; }
@@ -42,7 +42,7 @@
     margin-bottom: 1rem;
   }
   .search-filter-bar input[type="search"] {
-    flex: 1 1 200px; padding: .55rem .8rem;
+    flex: 1 1 220px; padding: .55rem .8rem;
     border: 1.5px solid var(--border); border-radius: .6rem;
     font-size: .95rem; min-height: 40px;
   }
@@ -50,142 +50,187 @@
   .cat-chips { display: flex; gap: .4rem; flex-wrap: wrap; }
   .cat-chip {
     appearance: none; background: #fff; border: 1.5px solid var(--border);
-    border-radius: 999px; padding: .3rem .75rem; font-size: .85rem; font-weight: 700;
+    border-radius: 999px; padding: .3rem .8rem; font-size: .83rem; font-weight: 700;
     cursor: pointer; transition: background .15s, border-color .15s, color .15s;
     color: var(--muted);
   }
   .cat-chip:hover { border-color: var(--brand); color: var(--brand); }
   .cat-chip.active { background: #f3eaea; border-color: var(--brand); color: var(--brand); }
 
-  /* ── This Week hero ── */
+  /* ── Current session hero ── */
   .this-week-hero {
     background: linear-gradient(135deg, #7A0A0A 0%, #a61f1f 100%);
-    border-radius: 1rem; padding: 1.5rem; color: #fff; margin-bottom: 1.25rem;
+    border-radius: 1rem; padding: 1.5rem 1.75rem; color: #fff; margin-bottom: 1.25rem;
     display: flex; justify-content: space-between; align-items: flex-start;
     gap: 1rem; flex-wrap: wrap;
   }
+  .this-week-hero .session-kicker {
+    font-size: .78rem; font-weight: 800; letter-spacing: .08em;
+    text-transform: uppercase; opacity: .75; margin-bottom: .25rem;
+  }
   .this-week-hero h2 { margin: 0 0 .25rem; font-size: 1.5rem; color: #fff; }
-  .this-week-hero .session-meta { opacity: .85; font-size: .92rem; }
+  .this-week-hero .session-meta { opacity: .8; font-size: .9rem; }
   .this-week-hero .score-count {
     background: rgba(255,255,255,.18); border-radius: .5rem;
-    padding: .25rem .7rem; font-weight: 700; font-size: .9rem; white-space: nowrap;
+    padding: .3rem .9rem; font-weight: 700; font-size: .88rem; white-space: nowrap;
+    align-self: flex-start;
   }
+  .no-session-notice {
+    border: 1.5px solid var(--border); border-radius: 1rem; padding: 1.5rem 1.75rem;
+    margin-bottom: 1.25rem; background: var(--surface);
+  }
+  .no-session-notice .no-session-title {
+    font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: .25rem;
+  }
+  .no-session-notice .no-session-sub { color: var(--muted); font-size: .9rem; }
 
   /* ── Score grid ── */
   .score-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: .75rem;
   }
   .score-card {
     background: #fff; border: 1px solid var(--border); border-radius: .9rem;
-    padding: .9rem 1rem; display: flex; flex-direction: column; gap: .4rem;
+    padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .35rem;
     transition: transform .15s ease, box-shadow .15s ease;
   }
   .score-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-  .score-card .score-title { font-weight: 700; font-size: .95rem; line-height: 1.3; }
-  .score-card .score-composer { color: var(--muted); font-size: .85rem; }
-  .score-card .score-cat {
-    display: inline-flex; align-items: center; gap: .3ch;
-    padding: .15rem .5rem; border-radius: 999px; font-size: .78rem; font-weight: 700;
-    border: 1.5px solid; align-self: flex-start; margin-top: .1rem;
+  .score-session-lbl {
+    font-size: .75rem; font-weight: 800; color: var(--muted);
+    letter-spacing: .04em; text-transform: uppercase; margin-bottom: .1rem;
   }
-  .score-card .score-actions { display: flex; gap: .4rem; margin-top: .4rem; flex-wrap: wrap; }
-  .score-card .btn-sm {
+  .score-title  { font-weight: 700; font-size: .97rem; line-height: 1.3; }
+  .score-composer { color: var(--muted); font-size: .85rem; font-style: italic; }
+  .score-meta {
+    font-size: .8rem; color: var(--muted); display: flex; align-items: center;
+    flex-wrap: wrap; gap: .2rem;
+  }
+  .meta-sep { opacity: .4; }
+  .score-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .15rem; }
+  .score-tag {
+    display: inline-flex; align-items: center;
+    padding: .12rem .5rem; border-radius: 999px; font-size: .75rem; font-weight: 700;
+    border: 1.5px solid;
+  }
+  .score-actions { display: flex; gap: .4rem; margin-top: .5rem; flex-wrap: wrap; }
+  .btn-sm {
     display: inline-flex; align-items: center; justify-content: center;
-    padding: .35rem .75rem; border-radius: .5rem; font-size: .83rem; font-weight: 700;
+    padding: .35rem .8rem; border-radius: .5rem; font-size: .82rem; font-weight: 700;
     text-decoration: none; border: 1.5px solid var(--brand);
     background: var(--brand); color: #fff; cursor: pointer;
     transition: filter .12s ease;
   }
-  .score-card .btn-sm:hover { filter: brightness(1.1); }
-  .score-card .btn-sm.outline { background: #fff; color: var(--brand); }
+  .btn-sm:hover { filter: brightness(1.1); }
+  .btn-sm.outline { background: #fff; color: var(--brand); }
 
-  /* Category colour coding */
-  .cat-musical-theater  { color: #6d3a9b; border-color: #c2a0e0; background: #f5eeff; }
-  .cat-choral-rep       { color: #0a5e7a; border-color: #9fd0e8; background: #edf6fb; }
-  .cat-church-music     { color: #7a5a0a; border-color: #e8d09f; background: #fdf7e8; }
-  .cat-contemporary     { color: #1a6b30; border-color: #9fd4ac; background: #edfaf1; }
-  .cat-classical        { color: #7a0a3a; border-color: #e09fc0; background: #feeef5; }
-  .cat-jazz-pop         { color: #5a4a0a; border-color: #d4c07a; background: #faf7e8; }
-  .cat-other            { color: var(--muted); border-color: var(--border); background: #fff; }
+  /* Tag / category colour coding */
+  .cat-musical-theater  { color: #5c2d8a; border-color: #c2a0e0; background: #f5eeff; }
+  .cat-choral-rep       { color: #0a4f68; border-color: #9fd0e8; background: #edf6fb; }
+  .cat-church-music     { color: #6b4c09; border-color: #e8d09f; background: #fdf7e8; }
+  .cat-contemporary     { color: #155227; border-color: #9fd4ac; background: #edfaf1; }
+  .cat-classical        { color: #6b0a31; border-color: #e09fc0; background: #feeef5; }
+  .cat-jazz-pop         { color: #4a3b09; border-color: #d4c07a; background: #faf7e8; }
+  .cat-other            { color: var(--muted); border-color: var(--border); background: #f9f9f9; }
 
   /* ── Session accordion ── */
-  .session-group { border: 1px solid var(--border); border-radius: .9rem; overflow: hidden; margin-bottom: .6rem; }
+  .session-group { border: 1px solid var(--border); border-radius: .9rem; overflow: hidden; margin-bottom: .5rem; }
   .session-toggle {
     display: flex; align-items: center; justify-content: space-between;
-    padding: .85rem 1rem; background: #fff; cursor: pointer;
+    padding: .9rem 1.1rem; background: #fff; cursor: pointer;
     appearance: none; border: none; width: 100%; text-align: left;
-    font-weight: 700; font-size: .97rem; gap: 1rem;
+    font-weight: 700; font-size: .95rem; gap: 1rem;
     transition: background .15s ease;
   }
   .session-toggle:hover { background: var(--surface); }
-  .session-toggle .session-toggle-left { display: flex; align-items: center; gap: .6rem; }
-  .session-toggle .session-num {
-    background: var(--brand); color: #fff; border-radius: .4rem;
-    padding: .1rem .5rem; font-size: .78rem; font-weight: 800;
+  .session-toggle-left { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+  .session-num {
+    background: var(--brand); color: #fff; border-radius: .35rem;
+    padding: .1rem .5rem; font-size: .76rem; font-weight: 800; letter-spacing: .02em;
   }
-  .session-toggle .chevron { transition: transform .2s ease; font-size: .8rem; color: var(--muted); }
-  .session-group.open .session-toggle .chevron { transform: rotate(180deg); }
+  .chevron { transition: transform .2s ease; font-size: .75rem; color: var(--muted); }
+  .session-group.open .chevron { transform: rotate(180deg); }
   .session-body { display: none; padding: .75rem; background: var(--surface); border-top: 1px solid var(--border); }
   .session-group.open .session-body { display: block; }
-  .session-date { color: var(--muted); font-size: .83rem; font-weight: 400; }
+  .session-date { color: var(--muted); font-size: .82rem; font-weight: 400; }
 
   /* ── Lock screen ── */
-  .lock-screen {
-    max-width: 420px; margin: 2rem auto; text-align: center;
+  .lock-screen { max-width: 400px; margin: 2.5rem auto; }
+  .lock-screen-heading {
+    border-bottom: 2px solid var(--border); padding-bottom: .75rem; margin-bottom: 1.25rem;
   }
-  .lock-icon { font-size: 2.5rem; margin-bottom: .75rem; }
-  .lock-screen h2 { margin: 0 0 .5rem; }
-  .lock-screen p { color: var(--muted); margin-bottom: 1.25rem; }
+  .lock-screen-heading h2 { margin: 0 0 .25rem; }
+  .lock-screen-heading p { margin: 0; color: var(--muted); font-size: .9rem; }
   .lock-form { display: flex; flex-direction: column; gap: .6rem; }
   .lock-form input {
     padding: .6rem .8rem; border: 1.5px solid var(--border); border-radius: .6rem;
     font-size: 1rem; min-height: 44px;
   }
   .lock-form input:focus { outline: 3px solid #9b1c1c; outline-offset: 2px; }
-  .lock-error { color: var(--brand); font-size: .9rem; min-height: 1.2rem; }
+  .lock-error { color: var(--brand); font-size: .88rem; min-height: 1.2rem; }
+  .lock-divider {
+    border: none; border-top: 1px solid var(--border); margin: 1.25rem 0 1rem;
+  }
+  .lock-secondary-label { font-size: .82rem; color: var(--muted); margin-bottom: .6rem; }
 
-  /* ── E-Board admin panel ── */
+  /* ── E-Board admin ── */
   .eboard-panel {
     display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;
   }
-  @media (max-width: 700px) { .eboard-panel { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .eboard-panel { grid-template-columns: 1fr; } }
 
   .admin-card {
-    background: #fff; border: 1px solid var(--border); border-radius: .9rem; padding: 1rem;
+    background: #fff; border: 1px solid var(--border); border-radius: .9rem; padding: 1.1rem;
   }
-  .admin-card h3 { margin: 0 0 .75rem; font-size: 1rem; }
-  .admin-form { display: flex; flex-direction: column; gap: .5rem; }
-  .admin-form label { font-size: .85rem; font-weight: 700; color: var(--muted); margin-bottom: .1rem; }
+  .admin-card h3 { margin: 0 0 .8rem; font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: .5rem; }
+  .admin-form { display: flex; flex-direction: column; gap: .55rem; }
+  .form-group { display: flex; flex-direction: column; gap: .2rem; }
+  .form-group label { font-size: .8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
   .admin-form input, .admin-form select, .admin-form textarea {
     padding: .5rem .7rem; border: 1.5px solid var(--border); border-radius: .55rem;
-    font-size: .9rem; width: 100%; min-height: 38px; font-family: inherit;
+    font-size: .9rem; width: 100%; min-height: 38px; font-family: inherit; background: #fff;
   }
   .admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus {
-    outline: 3px solid #9b1c1c; outline-offset: 2px;
+    outline: 3px solid #9b1c1c; outline-offset: 2px; border-color: transparent;
   }
-  .form-group { display: flex; flex-direction: column; gap: .2rem; }
-  .admin-status { font-size: .85rem; min-height: 1.2rem; margin-top: .25rem; }
-  .admin-status.ok { color: #1a6b30; }
+  .form-hint { font-size: .78rem; color: var(--muted); }
+  .admin-status { font-size: .85rem; min-height: 1.2rem; margin-top: .2rem; }
+  .admin-status.ok  { color: #155227; }
   .admin-status.err { color: var(--brand); }
 
-  .eboard-badge {
-    display: inline-flex; align-items: center; gap: .4rem;
-    background: #f3eaea; border: 1.5px solid #d4a0a0; border-radius: .5rem;
-    padding: .3rem .7rem; font-size: .85rem; font-weight: 700; color: #5d0606;
-    margin-bottom: .75rem;
+  .eboard-mode-bar {
+    display: flex; align-items: center; gap: .75rem;
+    background: #f3eaea; border: 1.5px solid #d4a0a0; border-radius: .6rem;
+    padding: .5rem .9rem; margin-bottom: 1rem;
+    font-size: .88rem; font-weight: 700; color: #5d0606;
+  }
+  .eboard-mode-bar .mode-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #7A0A0A; flex-shrink: 0;
   }
 
+  .admin-session-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .5rem .65rem; background: var(--surface); border: 1px solid var(--border);
+    border-radius: .55rem; gap: .5rem; flex-wrap: wrap;
+  }
+  .admin-session-num { font-weight: 800; font-size: .82rem; color: var(--brand); margin-right: .3rem; }
+  .admin-session-name { font-size: .88rem; font-weight: 600; }
+  .admin-session-active {
+    display: inline-block; font-size: .72rem; font-weight: 800; color: #155227;
+    background: #edfaf1; border: 1px solid #9fd4ac; border-radius: 999px;
+    padding: .1rem .45rem; margin-left: .35rem;
+  }
+  .admin-session-meta { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+
   /* ── Empty states ── */
-  .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--muted); }
-  .empty-state .empty-icon { font-size: 2rem; margin-bottom: .5rem; }
+  .empty-state { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: .92rem; }
 
   /* ── Viewer modal ── */
-  .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.55); z-index: 1000; }
+  .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.5); z-index: 1000; }
   .modal.open { display: flex; }
   .modal .dialog {
-    background: #fff; border-radius: 1rem; width: min(95vw, 900px);
+    background: #fff; border-radius: 1rem; width: min(95vw, 920px);
     max-height: 92vh; display: flex; flex-direction: column;
     border: 1px solid var(--border); box-shadow: var(--shadow-lg); overflow: hidden;
   }
@@ -193,18 +238,15 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: .75rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
   }
-  .modal-header h3 { margin: 0; font-size: 1rem; }
+  .modal-header h3 { margin: 0; font-size: .97rem; }
   .modal-close-btn {
     appearance: none; background: none; border: none; cursor: pointer;
     width: 32px; height: 32px; display: grid; place-items: center;
-    border-radius: .4rem; font-size: 1.2rem; color: var(--muted);
+    border-radius: .4rem; font-size: 1.1rem; color: var(--muted);
   }
   .modal-close-btn:hover { background: var(--surface); }
   .modal embed { flex: 1; min-height: 0; border: none; }
-  .modal-footer {
-    padding: .6rem 1rem; border-top: 1px solid var(--border);
-    display: flex; gap: .5rem; flex-shrink: 0;
-  }
+  .modal-footer { padding: .6rem 1rem; border-top: 1px solid var(--border); display: flex; gap: .5rem; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -232,134 +274,177 @@
     <div class="page-banner" style="--banner-img:url('/assets/img/eboard-header.jpg')">
       <div class="container">
         <h1 class="page-banner__title">Digital Choral Library</h1>
-        <p class="page-banner__subtext">Weekly sight-singing sessions & score archive</p>
+        <p class="page-banner__subtext">Sight-Singing Sessions &amp; Score Archive</p>
       </div>
     </div>
   </section>
 
-  <!-- ── Lock screen (shown when not authenticated) ── -->
-  <section id="lock-section" class="lock-screen" aria-label="Login">
-    <div class="lock-icon">🎼</div>
-    <h2>Member Access</h2>
-    <p>Enter the session password to browse scores and open PDFs.</p>
-    <form class="lock-form" id="lock-form" novalidate>
-      <input type="password" id="lock-pw" placeholder="Session password" autocomplete="current-password" aria-label="Password"/>
-      <button class="btn" type="submit">Unlock Library</button>
-      <div class="lock-error" id="lock-error" role="alert" aria-live="polite"></div>
-    </form>
-    <p style="margin-top:1rem; font-size:.85rem; color:var(--muted)">
-      E-Board? <button id="eboard-login-toggle" class="btn btn-outline" style="font-size:.83rem;padding:.3rem .7rem">Admin Login</button>
-    </p>
-    <!-- E-Board login (hidden initially) -->
-    <form class="lock-form" id="eboard-lock-form" novalidate style="display:none;margin-top:.75rem">
-      <input type="password" id="eboard-pw" placeholder="E-Board password" autocomplete="current-password" aria-label="E-Board password"/>
-      <button class="btn" type="submit" style="background:linear-gradient(180deg,#2a5a2a,#3a7a3a)">Unlock E-Board</button>
-      <div class="lock-error" id="eboard-lock-error" role="alert" aria-live="polite"></div>
-    </form>
+  <!-- ── Lock screen ── -->
+  <section id="lock-section" aria-label="Library Access">
+    <div class="lock-screen">
+      <div class="lock-screen-heading">
+        <h2>Member Access</h2>
+        <p>Enter the session password to browse scores and open PDFs.</p>
+      </div>
+      <form class="lock-form" id="lock-form" novalidate>
+        <div class="form-group">
+          <label for="lock-pw">Password</label>
+          <input type="password" id="lock-pw" placeholder="Session password" autocomplete="current-password" aria-label="Password"/>
+        </div>
+        <button class="btn" type="submit">Access Library</button>
+        <div class="lock-error" id="lock-error" role="alert" aria-live="polite"></div>
+      </form>
+
+      <hr class="lock-divider"/>
+      <div class="lock-secondary-label">E-Board login</div>
+      <button id="eboard-login-toggle" class="btn btn-outline" style="width:100%">Show E-Board Login</button>
+      <form class="lock-form" id="eboard-lock-form" novalidate style="display:none;margin-top:.75rem">
+        <div class="form-group">
+          <label for="eboard-pw">E-Board Password</label>
+          <input type="password" id="eboard-pw" placeholder="E-Board password" autocomplete="current-password" aria-label="E-Board password"/>
+        </div>
+        <button class="btn" type="submit">Access E-Board Panel</button>
+        <div class="lock-error" id="eboard-lock-error" role="alert" aria-live="polite"></div>
+      </form>
+    </div>
   </section>
 
-  <!-- ── Main library (shown when authenticated) ── -->
+  <!-- ── Main library ── -->
   <section id="library-section" style="display:none" aria-label="Choral Library">
 
-    <!-- View tabs -->
     <div class="view-tabs" role="tablist">
-      <button class="view-tab active" role="tab" aria-selected="true"  aria-controls="panel-week"    id="tab-week">
-        <span class="tab-icon">📅</span>This Week
-      </button>
-      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-library" id="tab-library">
-        <span class="tab-icon">📚</span>Full Library
-      </button>
-      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-eboard"  id="tab-eboard" id="eboard-tab" style="display:none">
-        <span class="tab-icon">🔧</span>E-Board
-      </button>
+      <button class="view-tab active" role="tab" aria-selected="true"  aria-controls="panel-week"    id="tab-week">Sessions</button>
+      <button class="view-tab"        role="tab" aria-selected="false" aria-controls="panel-library" id="tab-library">Full Library</button>
+      <button class="view-tab"        role="tab" aria-selected="false" aria-controls="panel-eboard"  id="tab-eboard" style="display:none">E-Board</button>
     </div>
 
-    <!-- ── This Week panel ── -->
+    <!-- Sessions panel -->
     <div class="panel active" id="panel-week" role="tabpanel" aria-labelledby="tab-week">
       <div id="this-week-hero"></div>
-      <div id="this-week-scores" class="score-grid"></div>
-
-      <h3 style="margin:1.5rem 0 .6rem">Previous Sessions</h3>
+      <div id="this-week-scores" class="score-grid" style="margin-bottom:1.5rem"></div>
+      <h3 id="past-sessions-heading" style="margin:0 0 .6rem">All Sessions</h3>
       <div id="past-sessions"></div>
     </div>
 
-    <!-- ── Library panel ── -->
+    <!-- Full Library panel -->
     <div class="panel" id="panel-library" role="tabpanel" aria-labelledby="tab-library">
       <div class="search-filter-bar">
-        <input type="search" id="lib-search" placeholder="Search by title or composer…" aria-label="Search scores"/>
-        <div class="cat-chips" id="cat-chips" role="group" aria-label="Filter by category"></div>
+        <input type="search" id="lib-search" placeholder="Search by title, composer, or year…" aria-label="Search scores"/>
+        <div class="cat-chips" id="cat-chips" role="group" aria-label="Filter by tag"></div>
       </div>
       <div id="lib-results" class="score-grid"></div>
     </div>
 
-    <!-- ── E-Board panel ── -->
+    <!-- E-Board panel -->
     <div class="panel" id="panel-eboard" role="tabpanel" aria-labelledby="tab-eboard">
-      <div class="eboard-badge">🔧 E-Board Mode</div>
+      <div class="eboard-mode-bar">
+        <span class="mode-dot" aria-hidden="true"></span>
+        E-Board Management Mode
+      </div>
 
       <div class="eboard-panel">
-        <!-- Add score to current session -->
+
+        <!-- Add score -->
         <div class="admin-card">
-          <h3>Add Score to This Week</h3>
-          <p class="small" style="color:var(--muted);margin:-.25rem 0 .75rem">Current session: <strong id="current-session-label">—</strong></p>
+          <h3>Add Score to Active Session</h3>
+          <p class="form-hint" style="margin:-.4rem 0 .75rem">Active session: <strong id="current-session-label">—</strong></p>
           <form class="admin-form" id="add-score-form" novalidate>
             <div class="form-group">
               <label for="score-title">Title *</label>
               <input type="text" id="score-title" required placeholder="e.g. Earth Song"/>
             </div>
-            <div class="form-group">
-              <label for="score-composer">Composer</label>
-              <input type="text" id="score-composer" placeholder="e.g. Ticheli"/>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="score-cfirst">Composer First Name</label>
+                <input type="text" id="score-cfirst" placeholder="e.g. Frank"/>
+              </div>
+              <div class="form-group">
+                <label for="score-clast">Composer Last Name</label>
+                <input type="text" id="score-clast" placeholder="e.g. Ticheli"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="score-year">Year</label>
+                <input type="text" id="score-year" placeholder="e.g. 1993" maxlength="4"/>
+              </div>
+              <div class="form-group">
+                <label for="score-voicing">Voicing</label>
+                <select id="score-voicing">
+                  <option value="">— Select —</option>
+                  <option>SATB</option>
+                  <option>SATB divisi</option>
+                  <option>SAB</option>
+                  <option>SSA</option>
+                  <option>SSAA</option>
+                  <option>TTBB</option>
+                  <option>2-Part</option>
+                  <option>Unison</option>
+                  <option>Other</option>
+                </select>
+              </div>
             </div>
             <div class="form-group">
-              <label for="score-category">Category *</label>
-              <select id="score-category" required>
-                <option value="">— Select —</option>
-                <option value="choral-rep">Choral Repertoire</option>
-                <option value="musical-theater">Musical Theater</option>
-                <option value="church-music">Church Music</option>
-                <option value="contemporary">Contemporary</option>
-                <option value="classical">Classical</option>
-                <option value="jazz-pop">Jazz &amp; Pop</option>
-                <option value="other">Other</option>
+              <label for="score-instr">Instrumentation</label>
+              <input type="text" id="score-instr" placeholder="e.g. Piano, A Cappella, Orchestra"/>
+            </div>
+            <div class="form-group">
+              <label for="score-tags">Tags *</label>
+              <select id="score-tags" multiple size="5" style="min-height:90px">
+                <option>Classical</option>
+                <option>Musical Theater</option>
+                <option>Church Music</option>
+                <option>Contemporary</option>
+                <option>Jazz &amp; Pop</option>
+                <option>Sacred</option>
+                <option>Secular</option>
+                <option>A Cappella</option>
+                <option>Folk</option>
               </select>
+              <span class="form-hint">Hold Ctrl / Cmd to select multiple</span>
             </div>
             <div class="form-group">
               <label for="score-url">Google Drive PDF URL *</label>
               <input type="url" id="score-url" required placeholder="https://drive.google.com/…"/>
             </div>
-            <button class="btn" type="submit" style="margin-top:.25rem">Add Score</button>
+            <button class="btn" type="submit">Add Score</button>
             <div class="admin-status" id="add-score-status"></div>
           </form>
         </div>
 
         <!-- New session -->
         <div class="admin-card">
-          <h3>New Session</h3>
+          <h3>Create New Session</h3>
           <form class="admin-form" id="new-session-form" novalidate>
-            <div class="form-group">
-              <label for="sess-num">Session # *</label>
-              <input type="text" id="sess-num" required placeholder="e.g. SS#10"/>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="sess-num">Session ID *</label>
+                <input type="text" id="sess-num" required placeholder="e.g. SS#10"/>
+              </div>
+              <div class="form-group">
+                <label for="sess-date">Date *</label>
+                <input type="date" id="sess-date" required/>
+              </div>
             </div>
             <div class="form-group">
               <label for="sess-name">Theme / Name *</label>
               <input type="text" id="sess-name" required placeholder="e.g. Musical Theater Day"/>
             </div>
-            <div class="form-group">
-              <label for="sess-date">Date *</label>
-              <input type="date" id="sess-date" required/>
+            <div class="form-group" style="flex-direction:row;align-items:center;gap:.5rem">
+              <input type="checkbox" id="sess-current" style="width:auto;min-height:auto"/>
+              <label for="sess-current" style="text-transform:none;letter-spacing:0;font-size:.88rem;font-weight:600;color:var(--text)">Mark as active session (shows in Sessions tab)</label>
             </div>
-            <button class="btn" type="submit" style="margin-top:.25rem;background:linear-gradient(180deg,#2a5a2a,#3a7a3a)">Create Session</button>
+            <button class="btn" type="submit">Create Session</button>
             <div class="admin-status" id="new-session-status"></div>
           </form>
 
-          <hr style="margin:1rem 0; border:none; border-top:1px solid var(--border)">
-          <h3 style="margin:0 0 .5rem">All Sessions</h3>
-          <div id="admin-session-list" style="display:flex;flex-direction:column;gap:.4rem;max-height:260px;overflow-y:auto"></div>
+          <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>
+          <h3 style="margin:0 0 .65rem;border:none;padding:0">All Sessions</h3>
+          <div id="admin-session-list" style="display:flex;flex-direction:column;gap:.35rem;max-height:280px;overflow-y:auto"></div>
         </div>
       </div>
 
-      <!-- Session scores in admin view -->
-      <h3 style="margin:.5rem 0 .6rem">This Week's Scores</h3>
+      <h3 style="margin:.25rem 0 .65rem">Active Session — Scores</h3>
       <div id="admin-scores" class="score-grid"></div>
     </div>
 
@@ -371,11 +456,11 @@
   <div class="dialog">
     <div class="modal-header">
       <h3 id="pdf-modal-title">Score Viewer</h3>
-      <button class="modal-close-btn" id="pdf-modal-close" aria-label="Close viewer">✕</button>
+      <button class="modal-close-btn" id="pdf-modal-close" aria-label="Close viewer">&#10005;</button>
     </div>
-    <embed id="pdf-embed" type="application/pdf" src="" style="width:100%;flex:1;min-height:60vh"/>
+    <embed id="pdf-embed" type="application/pdf" src="" style="width:100%;flex:1;min-height:62vh"/>
     <div class="modal-footer">
-      <a id="pdf-newtab-btn" class="btn" href="#" target="_blank" rel="noopener">Open in new tab ↗</a>
+      <a id="pdf-newtab-btn" class="btn" href="#" target="_blank" rel="noopener">Open in New Tab</a>
       <button class="btn btn-outline" id="pdf-close-btn">Close</button>
     </div>
   </div>
@@ -411,7 +496,7 @@
         <li><a href="https://www.instagram.com/rowanacda/" target="_blank" rel="noopener">Instagram</a></li>
       </ul>
       <p class="small muted footer-note">Site theme by Adam Bretz</p>
-      <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
+      <p class="small muted">&#169; <span id="year"></span> Rowan ACDA</p>
     </div>
   </div>
 </footer>
