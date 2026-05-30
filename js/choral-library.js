@@ -26,7 +26,7 @@
 
 // ── CONFIG ────────────────────────────────────────────────
 const MEMBER_PASS  = 'acda2025';
-const EBOARD_PASS  = 'acda-eboard-2025';
+const EBOARD_PASS  = 'ilovetosing';
 const DAT_URL      = '/assets/data/choral-library.dat';
 const SCRIPT_URL   = '';
 const SCRIPT_TOKEN = '';
