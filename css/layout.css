@@ -1,7 +1,7 @@
 .site-header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:50}
 .header-inner{display:flex;align-items:center;gap:.75rem;min-height:64px}
 .brand{display:flex;align-items:center;gap:.5rem;text-decoration:none;color:inherit;font-weight:700}
-.brand img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+.brand img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.55)}
 .nav{margin-left:auto;display:flex;align-items:center;gap:.25rem}
 .nav a,.nav button{appearance:none;background:none;border:0;padding:.5rem .75rem;border-radius:.6rem;min-height:var(--tap);text-decoration:none;color:#111;cursor:pointer}
 .nav a:hover,.nav button:hover{background:var(--surface)}
