@@ -1,68 +1,105 @@
-# Rowan ACDA Digital Choral Library
+﻿# Rowan ACDA Digital Choral Library
 # ─────────────────────────────────────────────────────────────────────────────
 # Format (pipe-delimited):
 #
-#   SESSION | num | name | date | current (Y/N)
-#   SCORE   | session_num | title | composer_first | composer_last | year | voicing | instrumentation | tags | url
+#   SCORE   | title | composer_first | composer_last | year | voicing | instrumentation | tags(;sep) | url
+#   SESSION | num | name
+#   SET     | session_num | score_url
 #
 # Tags: Classical, Musical Theater, Church Music, Contemporary, Jazz & Pop,
-#       Sacred, Secular, A Cappella, Folk — separate multiple tags with semicolons
-# Voicing: SATB, SATB divisi, SAB, SSA, SSAA, TTBB, 2-Part, Unison, Other
-# Instrumentation: Piano, A Cappella, Orchestra, Band, Organ, Guitar, Other
-# Leave unknown fields empty (keep the pipe delimiter)
+#       Sacred, Secular, A Cappella, Folk
 # ─────────────────────────────────────────────────────────────────────────────
 
-SESSION|SS#9|General Meeting|2026-02-06|N
-SCORE|SS#9|Break Forth, O Beauteous Heavenly Light|Johann Sebastian|Bach|1734|SATB|Organ|Classical;Sacred|/assets/pdfs/choral-rep/Break Forth.pdf
-SCORE|SS#9|Danny Boy|arr. |Knight||SATB|Piano|Folk|/assets/pdfs/choral-rep/Danny Boy.pdf
-SCORE|SS#9|Shenandoah|arr. James|Adams||SATB|A Cappella|Folk|/assets/pdfs/choral-rep/Shenandoah.pdf
-SCORE|SS#9|The Pasture|Z.|Stroope|2001|SATB|Piano|Contemporary|/assets/pdfs/choral-rep/The Pasture.pdf
+# ── Library (all unique scores) ──────────────────────────────────────────────
+SCORE|Break Forth, O Beauteous Heavenly Light|Johann Sebastian|Bach|1734|SATB|Organ|Classical;Sacred|/assets/pdfs/choral-rep/Break Forth.pdf
+SCORE|Danny Boy|arr.|Knight||SATB|Piano|Folk|/assets/pdfs/choral-rep/Danny Boy.pdf
+SCORE|Shenandoah|arr. James|Adams||SATB|A Cappella|Folk|/assets/pdfs/choral-rep/Shenandoah.pdf
+SCORE|The Pasture|Z.|Stroope|2001|SATB|Piano|Contemporary|/assets/pdfs/choral-rep/The Pasture.pdf
+SCORE|The Road Home|Stephen|Paulus|1994|SATB|Piano|Contemporary|/assets/pdfs/choral-rep/The Road Home.pdf
+SCORE|Gloria in Excelsis|Antonio|Vivaldi|1715|SATB|Orchestra|Classical;Sacred|/assets/pdfs/choral-rep/Gloria in excelsis.pdf
+SCORE|Dies Irae|Ryan|Main||SATB|Piano|Classical;Sacred|/assets/pdfs/choral-rep/Dies Irae - Ryan Main.pdf
+SCORE|Count the Stars|Brandon|Beck||SATB|Piano|Contemporary|/assets/pdfs/choral-rep/Count the Stars.pdf
+SCORE|Let the Sunshine In|Galt|MacDermot|1967|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hair - Let the Sunshine In.pdf
+SCORE|My Shot|Lin-Manuel|Miranda|2015|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hamilton - My Shot.pdf
+SCORE|Nothing Changes|Anaïs|Mitchell|2019|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hadestown - Nothing Changes.pdf
+SCORE|Seasons of Love|Jonathan|Larson|1996|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Rent - Seasons of Love.pdf
+SCORE|Opening Up|Sara|Bareilles|2019|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Waitress - Opening Up.pdf
+SCORE|Once and for All|Alan|Menken|2017|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Newsies - Once and for All.pdf
+SCORE|Louder Than Words|Jonathan|Larson|2001|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Tick Tick Boom - Louder Than Words.pdf
+SCORE|Being Alive|Stephen|Sondheim|1970|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Company - Being Alive.pdf
+SCORE|What I Did for Love|Marvin|Hamlisch|1975|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/A Chorus Line - What I Did for Love.pdf
+SCORE|Abide With Me|Henry|Lyte|1847|SATB|Organ|Church Music;Sacred|/assets/pdfs/church-music/Abide With Me.pdf
+SCORE|How Great Thou Art|Carl|Boberg|1885|SATB|Piano|Church Music;Sacred|/assets/pdfs/church-music/How Great Thou Art.pdf
+SCORE|Earth Song|Frank|Ticheli|1993|SATB|A Cappella|Contemporary|/assets/pdfs/choral-rep/Earth Song.pdf
+SCORE|Damask Roses|||||||/assets/pdfs/acit/Damask Roses .pdf
+SCORE|Let Me Be Your Star||||||Musical Theater|/assets/pdfs/acit/Let Me Be Your Star .pdf
+SCORE|Loneliness of Evening|Richard|Rodgers|1949|SATB|Piano|Musical Theater|/assets/pdfs/acit/Loneliness of Evening.pdf
+SCORE|The Year's at the Spring|Amy|Beach|1899|SATB|Piano|Classical|/assets/pdfs/acit/The year's at the spring.pdf
+SCORE|Weep You No More, Sad Fountains|||||||/assets/pdfs/acit/scan_rmcinnis_2025-10-17-12-08-51.pdf
+SCORE|No One Is Alone|Stephen|Sondheim|1987|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf
+SCORE|Lift Every Voice and Sing|J. Rosamond|Johnson|1900|SATB|Piano|Church Music;Sacred|/assets/pdfs/church-music/Lift Every Voice and Sing .pdf
+SCORE|The Awakening|John|Martin||SATB|Piano|Contemporary|/assets/pdfs/choral-rep/The Awakening - Martin.pdf
+SCORE|Sunday|Stephen|Sondheim|1984|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Sunday in the Park with George - Sunday.pdf
+SCORE|Alexander Hamilton|Lin-Manuel|Miranda|2015|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hamilton - Alexander Hamilton.pdf
+SCORE|You Will Be Found|Benj|Pasek|2015|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Dear Evan Hansen - You Will Be Found.pdf
+SCORE|Medley||||||Musical Theater|/assets/pdfs/musical-theater/Les Miserables - Medley.pdf
+SCORE|Wait for Me|Anaïs|Mitchell|2019|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hadestown - Wait for Me.pdf
+SCORE|Somewhere|Leonard|Bernstein|1957|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/West Side - Somewhere.pdf
 
-SESSION|SS#8|Student Conductor's Showcase|2025-11-14|N
-SCORE|SS#8|The Road Home|Stephen|Paulus|1994|SATB|Piano|Contemporary|/assets/pdfs/choral-rep/The Road Home.pdf
-SCORE|SS#8|Gloria in Excelsis|Antonio|Vivaldi|1715|SATB|Orchestra|Classical;Sacred|/assets/pdfs/choral-rep/Gloria in excelsis.pdf
-SCORE|SS#8|Dies Irae|Ryan|Main||SATB|Piano|Classical;Sacred|/assets/pdfs/choral-rep/Dies Irae - Ryan Main.pdf
-SCORE|SS#8|Count the Stars|Brandon|Beck||SATB|Piano|Contemporary|/assets/pdfs/choral-rep/Count the Stars.pdf
+# ── Sessions / Sets ──────────────────────────────────────────────────────────
+SESSION|SS#9|General Meeting
+SESSION|SS#8|Student Conductor's Showcase
+SESSION|SS#6|Musical Theater Day II
+SESSION|SS#5|Conducting 101
+SESSION|SS#4|ACIT Visit
+SESSION|SS#3|Church Gig 101
+SESSION|SS#2|Cabaret Rehearsal
+SESSION|SS#1|Musical Theater Day I
 
-SESSION|SS#6|Musical Theater Day II|2025-10-24|N
-SCORE|SS#6|Let the Sunshine In|Galt|MacDermot|1967|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hair - Let the Sunshine In.pdf
-SCORE|SS#6|My Shot|Lin-Manuel|Miranda|2015|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hamilton - My Shot.pdf
-SCORE|SS#6|Nothing Changes|Anaïs|Mitchell|2019|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hadestown - Nothing Changes.pdf
-SCORE|SS#6|Seasons of Love|Jonathan|Larson|1996|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Rent - Seasons of Love.pdf
-SCORE|SS#6|Opening Up|Sara|Bareilles|2019|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Waitress - Opening Up.pdf
-SCORE|SS#6|Once and for All|Alan|Menken|2017|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Newsies - Once and for All.pdf
-SCORE|SS#6|Louder Than Words|Jonathan|Larson|2001|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Tick Tick Boom - Louder Than Words.pdf
-SCORE|SS#6|Being Alive|Stephen|Sondheim|1970|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Company - Being Alive.pdf
-SCORE|SS#6|What I Did for Love|Marvin|Hamlisch|1975|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/A Chorus Line - What I Did for Love.pdf
+# ── Set Contents ─────────────────────────────────────────────────────────────
+SET|SS#9|/assets/pdfs/choral-rep/Break Forth.pdf
+SET|SS#9|/assets/pdfs/choral-rep/Danny Boy.pdf
+SET|SS#9|/assets/pdfs/choral-rep/Shenandoah.pdf
+SET|SS#9|/assets/pdfs/choral-rep/The Pasture.pdf
 
-SESSION|SS#5|Conducting 101|2025-10-10|N
-SCORE|SS#5|Abide With Me|Henry|Lyte|1847|SATB|Organ|Church Music;Sacred|/assets/pdfs/church-music/Abide With Me.pdf
-SCORE|SS#5|How Great Thou Art|Carl|Boberg|1885|SATB|Piano|Church Music;Sacred|/assets/pdfs/church-music/How Great Thou Art.pdf
-SCORE|SS#5|Earth Song|Frank|Ticheli|1993|SATB|A Cappella|Contemporary|/assets/pdfs/choral-rep/Earth Song.pdf
+SET|SS#8|/assets/pdfs/choral-rep/The Road Home.pdf
+SET|SS#8|/assets/pdfs/choral-rep/Gloria in excelsis.pdf
+SET|SS#8|/assets/pdfs/choral-rep/Dies Irae - Ryan Main.pdf
+SET|SS#8|/assets/pdfs/choral-rep/Count the Stars.pdf
 
-SESSION|SS#4|ACIT Visit|2025-10-17|N
-SCORE|SS#4|Damask Roses|||||||/assets/pdfs/acit/Damask Roses .pdf
-SCORE|SS#4|Let Me Be Your Star|||||||Musical Theater|/assets/pdfs/acit/Let Me Be Your Star .pdf
-SCORE|SS#4|Loneliness of Evening|Richard|Rodgers|1949|SATB|Piano|Musical Theater|/assets/pdfs/acit/Loneliness of Evening.pdf
-SCORE|SS#4|The Year's at the Spring|Amy|Beach|1899|SATB|Piano|Classical|/assets/pdfs/acit/The year's at the spring.pdf
-SCORE|SS#4|Weep You No More, Sad Fountains|||||||Classical|/assets/pdfs/acit/scan_rmcinnis_2025-10-17-12-08-51.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Hair - Let the Sunshine In.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Hamilton - My Shot.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Hadestown - Nothing Changes.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Rent - Seasons of Love.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Waitress - Opening Up.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Newsies - Once and for All.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Tick Tick Boom - Louder Than Words.pdf
+SET|SS#6|/assets/pdfs/musical-theater/Company - Being Alive.pdf
+SET|SS#6|/assets/pdfs/musical-theater/A Chorus Line - What I Did for Love.pdf
 
-SESSION|SS#3|Church Gig 101|2025-09-26|N
-SCORE|SS#3|No One Is Alone|Stephen|Sondheim|1987|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf
-SCORE|SS#3|Abide With Me|Henry|Lyte|1847|SATB|Organ|Church Music;Sacred|/assets/pdfs/church-music/Abide With Me.pdf
-SCORE|SS#3|Lift Every Voice and Sing|J. Rosamond|Johnson|1900|SATB|Piano|Church Music;Sacred|/assets/pdfs/church-music/Lift Every Voice and Sing .pdf
-SCORE|SS#3|How Great Thou Art|Carl|Boberg|1885|SATB|Piano|Church Music;Sacred|/assets/pdfs/church-music/How Great Thou Art.pdf
+SET|SS#5|/assets/pdfs/church-music/Abide With Me.pdf
+SET|SS#5|/assets/pdfs/church-music/How Great Thou Art.pdf
+SET|SS#5|/assets/pdfs/choral-rep/Earth Song.pdf
 
-SESSION|SS#2|Cabaret Rehearsal|2025-09-12|N
-SCORE|SS#2|No One Is Alone|Stephen|Sondheim|1987|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf
-SCORE|SS#2|The Awakening|John|Martin||SATB|Piano|Contemporary|/assets/pdfs/choral-rep/The Awakening - Martin.pdf
-SCORE|SS#2|Earth Song|Frank|Ticheli|1993|SATB|A Cappella|Contemporary|/assets/pdfs/choral-rep/Earth Song.pdf
+SET|SS#4|/assets/pdfs/acit/Damask Roses .pdf
+SET|SS#4|/assets/pdfs/acit/Let Me Be Your Star .pdf
+SET|SS#4|/assets/pdfs/acit/Loneliness of Evening.pdf
+SET|SS#4|/assets/pdfs/acit/The year's at the spring.pdf
+SET|SS#4|/assets/pdfs/acit/scan_rmcinnis_2025-10-17-12-08-51.pdf
 
-SESSION|SS#1|Musical Theater Day I|2025-08-29|N
-SCORE|SS#1|Sunday|Stephen|Sondheim|1984|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Sunday in the Park with George - Sunday.pdf
-SCORE|SS#1|Alexander Hamilton|Lin-Manuel|Miranda|2015|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hamilton - Alexander Hamilton.pdf
-SCORE|SS#1|You Will Be Found|Benj|Pasek|2015|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Dear Evan Hansen - You Will Be Found.pdf
-SCORE|SS#1|Medley|||||||Musical Theater|/assets/pdfs/musical-theater/Les Miserables - Medley.pdf
-SCORE|SS#1|Wait for Me|Anaïs|Mitchell|2019|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Hadestown - Wait for Me.pdf
-SCORE|SS#1|No One Is Alone|Stephen|Sondheim|1987|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf
-SCORE|SS#1|Somewhere|Leonard|Bernstein|1957|SATB|Piano|Musical Theater|/assets/pdfs/musical-theater/West Side - Somewhere.pdf
+SET|SS#3|/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf
+SET|SS#3|/assets/pdfs/church-music/Abide With Me.pdf
+SET|SS#3|/assets/pdfs/church-music/Lift Every Voice and Sing .pdf
+SET|SS#3|/assets/pdfs/church-music/How Great Thou Art.pdf
+
+SET|SS#2|/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf
+SET|SS#2|/assets/pdfs/choral-rep/The Awakening - Martin.pdf
+SET|SS#2|/assets/pdfs/choral-rep/Earth Song.pdf
+
+SET|SS#1|/assets/pdfs/musical-theater/Sunday in the Park with George - Sunday.pdf
+SET|SS#1|/assets/pdfs/musical-theater/Hamilton - Alexander Hamilton.pdf
+SET|SS#1|/assets/pdfs/musical-theater/Dear Evan Hansen - You Will Be Found.pdf
+SET|SS#1|/assets/pdfs/musical-theater/Les Miserables - Medley.pdf
+SET|SS#1|/assets/pdfs/musical-theater/Hadestown - Wait for Me.pdf
+SET|SS#1|/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf
+SET|SS#1|/assets/pdfs/musical-theater/West Side - Somewhere.pdf

@@ -223,6 +223,54 @@
   }
   .admin-session-meta { font-size: .78rem; color: var(--muted); white-space: nowrap; }
 
+  /* ── Session toggle wrap (holds toggle btn + eboard action btns side by side) ── */
+  .session-toggle-wrap {
+    display: flex; align-items: center; background: #fff;
+    border-bottom: 1px solid transparent;
+  }
+  .session-group.open .session-toggle-wrap { border-bottom-color: var(--border); }
+  .session-toggle-wrap .session-toggle { flex: 1; }
+  .session-header-btns { display: flex; gap: .35rem; padding: 0 .75rem 0 0; flex-shrink: 0; }
+
+  /* ── Inline session edit form ── */
+  .sess-inline-edit { background: var(--surface); border-bottom: 1px solid var(--border); }
+  .admin-input {
+    padding: .4rem .6rem; border: 1.5px solid var(--border); border-radius: .5rem;
+    font-size: .88rem; min-height: 36px; font-family: inherit; background: #fff; width: 100%;
+  }
+  .admin-input:focus { outline: 3px solid #9b1c1c; outline-offset: 2px; border-color: transparent; }
+
+  /* ── Add to Set panel (inline in library cards) ── */
+  .add-to-set-panel {
+    display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
+    margin-top: .4rem; padding: .5rem .6rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: .5rem;
+  }
+  .ats-select {
+    flex: 1; padding: .35rem .5rem; border: 1.5px solid var(--border); border-radius: .45rem;
+    font-size: .82rem; min-height: 34px; font-family: inherit;
+  }
+  .ats-msg { font-size: .8rem; color: #155227; font-weight: 600; }
+
+  /* ── Lib picker (inside session accordion) ── */
+  .add-scores-section { padding: .75rem; border-top: 1px solid var(--border); background: var(--surface); }
+  .lib-picker { margin-top: .6rem; }
+  .lib-picker-search {
+    width: 100%; padding: .4rem .7rem; border: 1.5px solid var(--border);
+    border-radius: .5rem; font-size: .88rem; margin-bottom: .5rem;
+    font-family: inherit; min-height: 36px;
+  }
+  .lib-picker-results {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    gap: .4rem; max-height: 280px; overflow-y: auto;
+  }
+  .lib-picker-card {
+    background: #fff; border: 1px solid var(--border); border-radius: .6rem;
+    padding: .55rem .7rem; display: flex; flex-direction: column; gap: .15rem;
+  }
+  .lib-picker-title { font-weight: 700; font-size: .85rem; line-height: 1.25; }
+  .lib-picker-composer { font-size: .78rem; color: var(--muted); font-style: italic; }
+
   /* ── Empty states ── */
   .empty-state { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: .92rem; }
 
@@ -360,9 +408,6 @@
 
     <!-- Sessions panel -->
     <div class="panel active" id="panel-week" role="tabpanel" aria-labelledby="tab-week">
-      <div id="this-week-hero"></div>
-      <div id="this-week-scores" class="score-grid" style="margin-bottom:1.5rem"></div>
-      <h3 id="past-sessions-heading" style="margin:0 0 .6rem">All Sessions</h3>
       <div id="past-sessions"></div>
     </div>
 
@@ -386,8 +431,7 @@
 
         <!-- Add score -->
         <div class="admin-card">
-          <h3>Add Score to Active Session</h3>
-          <p class="form-hint" style="margin:-.4rem 0 .75rem">Active session: <strong id="current-session-label">—</strong></p>
+          <h3>Add Score to Library</h3>
           <form class="admin-form" id="add-score-form" novalidate>
             <div class="form-group">
               <label for="score-title">Title *</label>
@@ -452,40 +496,29 @@
           </form>
         </div>
 
-        <!-- New session -->
+        <!-- New set -->
         <div class="admin-card">
-          <h3>Create New Session</h3>
+          <h3>Create New Set</h3>
           <form class="admin-form" id="new-session-form" novalidate>
             <div class="form-row">
               <div class="form-group">
-                <label for="sess-num">Session ID *</label>
+                <label for="sess-num">Set ID *</label>
                 <input type="text" id="sess-num" required placeholder="e.g. SS#10"/>
               </div>
               <div class="form-group">
-                <label for="sess-date">Date *</label>
-                <input type="date" id="sess-date" required/>
+                <label for="sess-name">Name *</label>
+                <input type="text" id="sess-name" required placeholder="e.g. Musical Theater Day"/>
               </div>
             </div>
-            <div class="form-group">
-              <label for="sess-name">Theme / Name *</label>
-              <input type="text" id="sess-name" required placeholder="e.g. Musical Theater Day"/>
-            </div>
-            <div class="form-group" style="flex-direction:row;align-items:center;gap:.5rem">
-              <input type="checkbox" id="sess-current" style="width:auto;min-height:auto"/>
-              <label for="sess-current" style="text-transform:none;letter-spacing:0;font-size:.88rem;font-weight:600;color:var(--text)">Mark as active session (shows in Sessions tab)</label>
-            </div>
-            <button class="btn" type="submit">Create Session</button>
+            <button class="btn" type="submit">Create Set</button>
             <div class="admin-status" id="new-session-status"></div>
           </form>
 
           <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>
-          <h3 style="margin:0 0 .65rem;border:none;padding:0">All Sessions</h3>
+          <h3 style="margin:0 0 .65rem;border:none;padding:0">All Sets</h3>
           <div id="admin-session-list" style="display:flex;flex-direction:column;gap:.35rem;max-height:280px;overflow-y:auto"></div>
         </div>
       </div>
-
-      <h3 style="margin:.25rem 0 .65rem">Active Session — Scores</h3>
-      <div id="admin-scores" class="score-grid"></div>
     </div>
 
   </section>
