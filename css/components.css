@@ -1011,8 +1011,8 @@ html, body{ background: var(--page-bg); }
   display: flex; align-items: center; gap: .75rem;
 }
 .acda-footer .brand--footer img{
-  width: 56px; height: 56px; border-radius: .5rem;
-  object-fit: contain;
+  width: 56px; height: 56px; border-radius: 50%;
+  object-fit: cover;
   background: #fff;
 }
 .acda-footer .brand--footer strong{ 
