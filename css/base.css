@@ -99,9 +99,10 @@ html{scroll-behavior:smooth}
 /* Brand row */
 .brand--footer{ display:flex; align-items:center; gap:.75rem; }
 .brand--footer img{
-  width:40px; height:40px; border-radius:50%;
+  width:52px; height:52px; border-radius:50%;
   object-fit:cover;
-  background:#fff; border:1px solid rgba(255,255,255,.18);
+  background:#fff; border:2px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
 }
 .brand--footer .brand-text strong{ color:#fff; display:block; }
 .brand--footer .brand-text .muted{ font-size:.9rem; }
