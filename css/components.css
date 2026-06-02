@@ -1011,11 +1011,9 @@ html, body{ background: var(--page-bg); }
   display: flex; align-items: center; gap: .75rem;
 }
 .acda-footer .brand--footer img{
-  width: 52px; height: 52px; border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--border, #e5e7eb);
+  width: 56px; height: 56px; border-radius: .5rem;
+  object-fit: contain;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,.1);
 }
 .acda-footer .brand--footer strong{ 
   color: var(--footer-text); 
