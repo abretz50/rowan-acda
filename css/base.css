@@ -100,6 +100,7 @@ html{scroll-behavior:smooth}
 .brand--footer{ display:flex; align-items:center; gap:.75rem; }
 .brand--footer img{
   width:40px; height:40px; border-radius:50%;
+  object-fit:cover;
   background:#fff; border:1px solid rgba(255,255,255,.18);
 }
 .brand--footer .brand-text strong{ color:#fff; display:block; }
