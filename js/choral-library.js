@@ -77,6 +77,38 @@ function pdfEmbedUrl(url){
 function getSelectedTags(sel){ return Array.from(sel.selectedOptions).map(o=>o.value); }
 function urlId(url){ return url.replace(/[^a-z0-9]/gi,'-'); }
 
+// For selects with an "Other" option + companion text input
+const KNOWN_VOICINGS = ['','SATB','SATB divisi','SAB','SSA','SSAA','TTBB','2-Part','Unison','Other'];
+const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Chamber Ensemble','Strings','Band','Brass','Other'];
+
+function initOtherSelect(selectId, otherId){
+  const sel=document.getElementById(selectId);
+  const inp=document.getElementById(otherId);
+  if(!sel||!inp) return;
+  sel.addEventListener('change',()=>inp.classList.toggle('visible', sel.value==='Other'));
+}
+
+function getSelectOrOther(selectId, otherId){
+  const sel=document.getElementById(selectId);
+  const inp=document.getElementById(otherId);
+  if(!sel) return '';
+  if(sel.value==='Other') return inp?.value.trim()||'';
+  return sel.value;
+}
+
+function setSelectOrOther(selectId, otherId, value, knownValues){
+  const sel=document.getElementById(selectId);
+  const inp=document.getElementById(otherId);
+  if(!sel) return;
+  if(!value){ sel.value=''; inp&&inp.classList.remove('visible'); return; }
+  if(knownValues.includes(value)){
+    sel.value=value; inp&&inp.classList.remove('visible');
+  } else {
+    sel.value='Other';
+    if(inp){ inp.value=value; inp.classList.add('visible'); }
+  }
+}
+
 // ── PERSISTENCE ───────────────────────────────────────────
 function saveAll(){
   try{
@@ -318,8 +350,8 @@ function openEditModal(scoreIdx){
   document.getElementById('edit-cfirst').value=score.composer_first;
   document.getElementById('edit-clast').value=score.composer_last;
   document.getElementById('edit-year').value=score.year;
-  document.getElementById('edit-voicing').value=score.voicing;
-  document.getElementById('edit-instr').value=score.instrumentation;
+  setSelectOrOther('edit-voicing','edit-voicing-other',score.voicing,KNOWN_VOICINGS);
+  setSelectOrOther('edit-instr','edit-instr-other',score.instrumentation,KNOWN_INSTRS);
   document.getElementById('edit-url').value=score.url;
   document.getElementById('edit-status').textContent='';
   // Reset upload box
@@ -493,15 +525,15 @@ function initAdminForms(){
     const statusEl=document.getElementById('add-score-status');
     const title=document.getElementById('score-title').value.trim();
     const url=document.getElementById('score-url').value.trim();
-    if(!title||!url){ statusEl.textContent='Title and URL are required.'; statusEl.className='admin-status err'; return; }
+    if(!title||!url){ statusEl.textContent='Title and a PDF upload are required.'; statusEl.className='admin-status err'; return; }
     if(library.find(s=>s.url===url)){ statusEl.textContent='A score with that URL already exists.'; statusEl.className='admin-status err'; return; }
     library.push({
       title, url,
       composer_first:document.getElementById('score-cfirst').value.trim(),
       composer_last:document.getElementById('score-clast').value.trim(),
       year:document.getElementById('score-year').value.trim(),
-      voicing:document.getElementById('score-voicing').value,
-      instrumentation:document.getElementById('score-instr').value.trim(),
+      voicing:getSelectOrOther('score-voicing','score-voicing-other'),
+      instrumentation:getSelectOrOther('score-instr','score-instr-other'),
       tags:getSelectedTags(document.getElementById('score-tags')),
     });
     saveAll();
@@ -540,8 +572,8 @@ function initAdminForms(){
       composer_first:document.getElementById('edit-cfirst').value.trim(),
       composer_last:document.getElementById('edit-clast').value.trim(),
       year:document.getElementById('edit-year').value.trim(),
-      voicing:document.getElementById('edit-voicing').value,
-      instrumentation:document.getElementById('edit-instr').value.trim(),
+      voicing:getSelectOrOther('edit-voicing','edit-voicing-other'),
+      instrumentation:getSelectOrOther('edit-instr','edit-instr-other'),
       tags:getSelectedTags(document.getElementById('edit-tags')),
     };
     // Update URL references in sets if URL changed
@@ -712,6 +744,10 @@ async function init(){
   initPreviewObserver(); initTabs(); initDelegates();
   initLockForms(); initAdminForms(); initSearch();
   initGhToken(); initPdfUpload();
+  initOtherSelect('score-voicing','score-voicing-other');
+  initOtherSelect('score-instr','score-instr-other');
+  initOtherSelect('edit-voicing','edit-voicing-other');
+  initOtherSelect('edit-instr','edit-instr-other');
   if(memberUnlocked) showLibrary();
 }
 

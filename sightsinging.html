@@ -331,6 +331,15 @@
   }
   .delete-confirm span { flex: 1; color: #7f1d1d; font-weight: 600; }
 
+  /* ── "Other" custom input ── */
+  .other-input {
+    display: none; margin-top: .35rem;
+    padding: .5rem .7rem; border: 1.5px solid var(--border); border-radius: .55rem;
+    font-size: .9rem; width: 100%; min-height: 38px; font-family: inherit;
+  }
+  .other-input:focus { outline: 3px solid #9b1c1c; outline-offset: 2px; border-color: transparent; }
+  .other-input.visible { display: block; }
+
   /* ── PDF upload box ── */
   .upload-box {
     border: 2px dashed var(--border); border-radius: .75rem;
@@ -489,13 +498,27 @@
                   <option>TTBB</option>
                   <option>2-Part</option>
                   <option>Unison</option>
-                  <option>Other</option>
+                  <option value="Other">Other…</option>
                 </select>
+                <input type="text" id="score-voicing-other" class="other-input" placeholder="Enter voicing…"/>
               </div>
             </div>
             <div class="form-group">
               <label for="score-instr">Instrumentation</label>
-              <input type="text" id="score-instr" placeholder="e.g. Piano, A Cappella, Orchestra"/>
+              <select id="score-instr">
+                <option value="">— Select —</option>
+                <option>A Cappella</option>
+                <option>Piano</option>
+                <option>Organ</option>
+                <option>Guitar</option>
+                <option>Orchestra</option>
+                <option>Chamber Ensemble</option>
+                <option>Strings</option>
+                <option>Band</option>
+                <option>Brass</option>
+                <option value="Other">Other…</option>
+              </select>
+              <input type="text" id="score-instr-other" class="other-input" placeholder="Enter instrumentation…"/>
             </div>
             <div class="form-group">
               <label for="score-tags">Tags *</label>
@@ -643,13 +666,27 @@
             <option>TTBB</option>
             <option>2-Part</option>
             <option>Unison</option>
-            <option>Other</option>
+            <option value="Other">Other…</option>
           </select>
+          <input type="text" id="edit-voicing-other" class="other-input" placeholder="Enter voicing…"/>
         </div>
       </div>
       <div class="form-group">
         <label for="edit-instr">Instrumentation</label>
-        <input type="text" id="edit-instr" placeholder="e.g. Piano, A Cappella"/>
+        <select id="edit-instr">
+          <option value="">— Select —</option>
+          <option>A Cappella</option>
+          <option>Piano</option>
+          <option>Organ</option>
+          <option>Guitar</option>
+          <option>Orchestra</option>
+          <option>Chamber Ensemble</option>
+          <option>Strings</option>
+          <option>Band</option>
+          <option>Brass</option>
+          <option value="Other">Other…</option>
+        </select>
+        <input type="text" id="edit-instr-other" class="other-input" placeholder="Enter instrumentation…"/>
       </div>
       <div class="form-group">
         <label for="edit-tags">Tags</label>
