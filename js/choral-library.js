@@ -147,7 +147,8 @@ function scoreCardHTML(score, opts={}){
   return `<div class="score-card">
     <div class="pdf-preview-wrap">
       <iframe class="pdf-preview" data-src="${escAttr(embed)}"
-        title="Preview: ${escAttr(score.title)}" tabindex="-1" loading="lazy"></iframe>
+        title="Preview: ${escAttr(score.title)}" tabindex="-1" loading="lazy"
+        scrolling="no"></iframe>
       <div class="pdf-preview-overlay" data-open-pdf
         data-url="${escAttr(score.url)}" data-title="${escAttr(score.title)}"
         aria-label="Open ${escAttr(score.title)}"></div>
