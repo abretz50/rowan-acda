@@ -19,6 +19,11 @@ const TAG_CLASSES = {
 };
 function tagClass(t){ return TAG_CLASSES[t]||'cat-other'; }
 
+// ── CONFIG ────────────────────────────────────────────────
+const GH_REPO   = 'abretz50/rowan-acda';
+const GH_BRANCH = 'main';
+const LS_GH_TOK = 'acda_gh_token';
+
 // ── STATE ─────────────────────────────────────────────────
 let library  = []; // Score[]
 let sessions = []; // {num, name, scoreUrls: string[]}
@@ -403,6 +408,98 @@ function initLockForms(){
   });
 }
 
+// ── GITHUB UPLOAD ─────────────────────────────────────────
+function getGhToken(){ try{ return sessionStorage.getItem(LS_GH_TOK)||''; } catch{ return ''; } }
+function setGhToken(t){ try{ sessionStorage.setItem(LS_GH_TOK,t); } catch{} }
+
+function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(file);
+  });
+}
+
+async function uploadPdfToGitHub(file){
+  const token=getGhToken();
+  if(!token) throw new Error('No GitHub token set — save one in the token field above.');
+  const path=`assets/pdfs/uploads/${file.name}`;
+  const base64=await fileToBase64(file);
+
+  // Check if file already exists (need SHA to overwrite)
+  let sha=null;
+  try{
+    const check=await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${path}`,{
+      headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}
+    });
+    if(check.ok){ const d=await check.json(); sha=d.sha; }
+  } catch{}
+
+  const body={message:`Upload ${file.name} via E-Board`,content:base64,branch:GH_BRANCH};
+  if(sha) body.sha=sha;
+
+  const res=await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${path}`,{
+    method:'PUT',
+    headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+    body:JSON.stringify(body),
+  });
+  if(!res.ok){
+    const err=await res.json().catch(()=>({}));
+    throw new Error(err.message||`GitHub API error ${res.status}`);
+  }
+  return `/assets/pdfs/uploads/${file.name}`;
+}
+
+function initGhToken(){
+  const input=document.getElementById('gh-token');
+  const saveBtn=document.getElementById('gh-token-save');
+  const statusEl=document.getElementById('gh-token-status');
+  // Restore saved token
+  const saved=getGhToken();
+  if(saved){ input.value=saved; statusEl.textContent='Token loaded from session.'; statusEl.className='admin-status ok'; }
+
+  saveBtn.addEventListener('click',()=>{
+    const val=input.value.trim();
+    if(!val){ statusEl.textContent='Enter a token first.'; statusEl.className='admin-status err'; return; }
+    setGhToken(val);
+    statusEl.textContent='Token saved for this session.'; statusEl.className='admin-status ok';
+  });
+}
+
+function initPdfUpload(){
+  const fileInput=document.getElementById('score-file');
+  const uploadBox=document.getElementById('upload-box');
+  const labelText=document.getElementById('upload-label-text');
+  const statusEl=document.getElementById('upload-status');
+  const urlInput=document.getElementById('score-url');
+
+  // Click the hidden file input when the box label is clicked
+  uploadBox.querySelector('.upload-label').addEventListener('click',()=>fileInput.click());
+
+  fileInput.addEventListener('change',async()=>{
+    const file=fileInput.files[0];
+    if(!file) return;
+    if(file.type!=='application/pdf'){ statusEl.textContent='Please select a PDF file.'; statusEl.className='admin-status err'; return; }
+
+    labelText.textContent=file.name;
+    uploadBox.classList.add('has-file','uploading');
+    statusEl.textContent='Uploading…'; statusEl.className='admin-status';
+
+    try{
+      const url=await uploadPdfToGitHub(file);
+      urlInput.value=url;
+      statusEl.textContent=`Uploaded! URL auto-filled below.`; statusEl.className='admin-status ok';
+      uploadBox.classList.remove('uploading');
+    } catch(err){
+      statusEl.textContent=`Upload failed: ${err.message}`; statusEl.className='admin-status err';
+      uploadBox.classList.remove('uploading','has-file');
+      labelText.textContent='Upload PDF directly to GitHub';
+      fileInput.value='';
+    }
+  });
+}
+
 // ── ADMIN FORMS ───────────────────────────────────────────
 function initAdminForms(){
   // Add score to library
@@ -425,6 +522,11 @@ function initAdminForms(){
     saveAll();
     statusEl.textContent='Score added to library.'; statusEl.className='admin-status ok';
     e.target.reset();
+    // Reset upload box
+    const uploadBox=document.getElementById('upload-box');
+    const labelText=document.getElementById('upload-label-text');
+    if(uploadBox){ uploadBox.classList.remove('has-file','uploading'); }
+    if(labelText){ labelText.textContent='Upload PDF directly to GitHub'; }
     buildTagChips(); renderLibrary(); renderThisWeek();
   });
 
@@ -620,6 +722,7 @@ async function init(){
   checkSavedAuth();
   initPreviewObserver(); initTabs(); initDelegates();
   initLockForms(); initAdminForms(); initSearch();
+  initGhToken(); initPdfUpload();
   if(memberUnlocked) showLibrary();
 }
 
