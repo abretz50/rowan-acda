@@ -512,10 +512,7 @@
               </select>
               <span class="form-hint">Hold Ctrl / Cmd to select multiple</span>
             </div>
-            <div class="form-group">
-              <label for="score-url">PDF URL *</label>
-              <input type="url" id="score-url" required placeholder="https://drive.google.com/… or upload below"/>
-            </div>
+            <input type="hidden" id="score-url"/>
             <!-- Direct PDF upload -->
             <div class="upload-box" id="upload-box">
               <input type="file" id="score-file" accept=".pdf" style="display:none"/>
@@ -669,9 +666,14 @@
         </select>
         <span class="form-hint">Hold Ctrl / Cmd to select multiple</span>
       </div>
-      <div class="form-group">
-        <label for="edit-url">Google Drive PDF URL *</label>
-        <input type="url" id="edit-url" required placeholder="https://drive.google.com/…"/>
+      <input type="hidden" id="edit-url"/>
+      <!-- Upload replacement PDF -->
+      <div class="upload-box" id="edit-upload-box" style="margin-bottom:.25rem">
+        <input type="file" id="edit-score-file" accept=".pdf" style="display:none"/>
+        <span class="upload-icon">&#8679;</span>
+        <label class="upload-label" for="edit-score-file" id="edit-upload-label">Replace PDF — drop here or click to browse</label>
+        <p class="upload-sub">Leave empty to keep the existing PDF</p>
+        <div class="admin-status" id="edit-upload-status" style="margin-top:.5rem"></div>
       </div>
       <div style="display:flex;gap:.5rem;margin-top:.25rem">
         <button class="btn" type="submit" style="flex:1">Save Changes</button>

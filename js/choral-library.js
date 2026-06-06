@@ -322,6 +322,13 @@ function openEditModal(scoreIdx){
   document.getElementById('edit-instr').value=score.instrumentation;
   document.getElementById('edit-url').value=score.url;
   document.getElementById('edit-status').textContent='';
+  // Reset upload box
+  const eb=document.getElementById('edit-upload-box');
+  const el=document.getElementById('edit-upload-label');
+  if(eb){ eb.classList.remove('has-file','uploading'); }
+  if(el){ el.textContent='Replace PDF — drop here or click to browse'; }
+  const es=document.getElementById('edit-upload-status');
+  if(es){ es.textContent=''; es.className='admin-status'; }
   const sel=document.getElementById('edit-tags');
   Array.from(sel.options).forEach(o=>{ o.selected=score.tags.includes(o.value); });
   const modal=document.getElementById('edit-modal');
@@ -420,12 +427,13 @@ async function uploadPdfToGitHub(file){
 
 function initGhToken(){ /* no-op — token lives in Cloudflare Worker secret */ }
 
-function initPdfUpload(){
-  const fileInput=document.getElementById('score-file');
-  const uploadBox=document.getElementById('upload-box');
-  const labelText=document.getElementById('upload-label-text');
-  const statusEl=document.getElementById('upload-status');
-  const urlInput=document.getElementById('score-url');
+function initUploadBox({ boxId, fileId, labelId, statusId, urlTargetId, defaultLabel }){
+  const uploadBox=document.getElementById(boxId);
+  const fileInput=document.getElementById(fileId);
+  const labelText=document.getElementById(labelId);
+  const statusEl=document.getElementById(statusId);
+  const urlInput=document.getElementById(urlTargetId);
+  if(!uploadBox||!fileInput) return;
 
   async function handleFile(file){
     if(!file) return;
@@ -437,42 +445,44 @@ function initPdfUpload(){
     statusEl.textContent='Uploading…'; statusEl.className='admin-status';
     try{
       const url=await uploadPdfToGitHub(file);
-      urlInput.value=url;
-      statusEl.textContent='Uploaded! URL auto-filled.'; statusEl.className='admin-status ok';
+      if(urlInput) urlInput.value=url;
+      statusEl.textContent='Uploaded!'; statusEl.className='admin-status ok';
       uploadBox.classList.remove('uploading');
     } catch(err){
       statusEl.textContent=`Upload failed: ${err.message}`; statusEl.className='admin-status err';
       uploadBox.classList.remove('uploading','has-file');
-      labelText.textContent='Drop a PDF here or click to browse';
+      labelText.textContent=defaultLabel;
       fileInput.value='';
     }
   }
 
-  // File picker
   fileInput.addEventListener('change',()=>handleFile(fileInput.files[0]));
 
-  // Click anywhere on the box (but not on the label itself, which already triggers the input)
-  uploadBox.addEventListener('click', e=>{
-    if(e.target===uploadBox||e.target.classList.contains('upload-icon')||e.target.classList.contains('upload-sub')){
+  uploadBox.addEventListener('click',e=>{
+    if(e.target===uploadBox||e.target.classList.contains('upload-icon')||e.target.classList.contains('upload-sub'))
       fileInput.click();
-    }
   });
 
-  // Drag and drop
-  uploadBox.addEventListener('dragover', e=>{
-    e.preventDefault(); e.stopPropagation();
-    uploadBox.classList.add('drag-over');
-  });
-  uploadBox.addEventListener('dragleave', e=>{
+  uploadBox.addEventListener('dragover',e=>{ e.preventDefault(); e.stopPropagation(); uploadBox.classList.add('drag-over'); });
+  uploadBox.addEventListener('dragleave',e=>{ e.preventDefault(); e.stopPropagation(); uploadBox.classList.remove('drag-over'); });
+  uploadBox.addEventListener('drop',e=>{
     e.preventDefault(); e.stopPropagation();
     uploadBox.classList.remove('drag-over');
+    handleFile(e.dataTransfer.files[0]);
   });
-  uploadBox.addEventListener('drop', e=>{
-    e.preventDefault(); e.stopPropagation();
-    uploadBox.classList.remove('drag-over');
-    const file=e.dataTransfer.files[0];
-    handleFile(file);
+
+  return { reset(){ uploadBox.classList.remove('has-file','uploading'); labelText.textContent=defaultLabel; fileInput.value=''; statusEl.textContent=''; statusEl.className='admin-status'; } };
+}
+
+function initPdfUpload(){
+  const box=initUploadBox({
+    boxId:'upload-box', fileId:'score-file',
+    labelId:'upload-label-text', statusId:'upload-status',
+    urlTargetId:'score-url',
+    defaultLabel:'Drop a PDF here or click to browse',
   });
+  // Expose reset for form clear after submit
+  window._uploadBoxReset=box?.reset;
 }
 
 // ── ADMIN FORMS ───────────────────────────────────────────
@@ -497,11 +507,7 @@ function initAdminForms(){
     saveAll();
     statusEl.textContent='Score added to library.'; statusEl.className='admin-status ok';
     e.target.reset();
-    // Reset upload box
-    const uploadBox=document.getElementById('upload-box');
-    const labelText=document.getElementById('upload-label-text');
-    if(uploadBox){ uploadBox.classList.remove('has-file','uploading'); }
-    if(labelText){ labelText.textContent='Drop a PDF here or click to browse'; }
+    if(window._uploadBoxReset) window._uploadBoxReset();
     buildTagChips(); renderLibrary(); renderThisWeek();
   });
 
@@ -549,6 +555,14 @@ function initAdminForms(){
     statusEl.textContent='Saved.'; statusEl.className='admin-status ok';
     setTimeout(closeEditModal,600);
     buildTagChips(); renderLibrary(); renderThisWeek();
+  });
+
+  // Edit modal — replace PDF upload box
+  initUploadBox({
+    boxId:'edit-upload-box', fileId:'edit-score-file',
+    labelId:'edit-upload-label', statusId:'edit-upload-status',
+    urlTargetId:'edit-url',
+    defaultLabel:'Replace PDF — drop here or click to browse',
   });
 
   document.getElementById('edit-modal-close').addEventListener('click',closeEditModal);
