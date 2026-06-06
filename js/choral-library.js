@@ -20,8 +20,6 @@ const TAG_CLASSES = {
 function tagClass(t){ return TAG_CLASSES[t]||'cat-other'; }
 
 // ── CONFIG ────────────────────────────────────────────────
-// After deploying the Cloudflare Worker, paste its URL here:
-const UPLOAD_WORKER_URL = 'https://rowan-acda-upload.YOUR-SUBDOMAIN.workers.dev/upload';
 
 // ── STATE ─────────────────────────────────────────────────
 let library  = []; // Score[]
@@ -354,13 +352,6 @@ function openEditModal(scoreIdx){
   setSelectOrOther('edit-instr','edit-instr-other',score.instrumentation,KNOWN_INSTRS);
   document.getElementById('edit-url').value=score.url;
   document.getElementById('edit-status').textContent='';
-  // Reset upload box
-  const eb=document.getElementById('edit-upload-box');
-  const el=document.getElementById('edit-upload-label');
-  if(eb){ eb.classList.remove('has-file','uploading'); }
-  if(el){ el.textContent='Replace PDF — drop here or click to browse'; }
-  const es=document.getElementById('edit-upload-status');
-  if(es){ es.textContent=''; es.className='admin-status'; }
   const sel=document.getElementById('edit-tags');
   Array.from(sel.options).forEach(o=>{ o.selected=score.tags.includes(o.value); });
   const modal=document.getElementById('edit-modal');
@@ -447,75 +438,9 @@ function initLockForms(){
   });
 }
 
-// ── UPLOAD VIA CLOUDFLARE WORKER ──────────────────────────
-async function uploadPdfToGitHub(file){
-  const form=new FormData();
-  form.append('file', file, file.name);
-  const res=await fetch(UPLOAD_WORKER_URL,{ method:'POST', body:form });
-  const data=await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error(data.error||`Upload failed (${res.status})`);
-  return data.url;
-}
+function initGhToken(){ /* no-op */ }
 
-function initGhToken(){ /* no-op — token lives in Cloudflare Worker secret */ }
-
-function initUploadBox({ boxId, fileId, labelId, statusId, urlTargetId, defaultLabel }){
-  const uploadBox=document.getElementById(boxId);
-  const fileInput=document.getElementById(fileId);
-  const labelText=document.getElementById(labelId);
-  const statusEl=document.getElementById(statusId);
-  const urlInput=document.getElementById(urlTargetId);
-  if(!uploadBox||!fileInput) return;
-
-  async function handleFile(file){
-    if(!file) return;
-    if(file.type!=='application/pdf'&&!file.name.endsWith('.pdf')){
-      statusEl.textContent='Please select a PDF file.'; statusEl.className='admin-status err'; return;
-    }
-    labelText.textContent=file.name;
-    uploadBox.classList.add('has-file','uploading');
-    statusEl.textContent='Uploading…'; statusEl.className='admin-status';
-    try{
-      const url=await uploadPdfToGitHub(file);
-      if(urlInput) urlInput.value=url;
-      statusEl.textContent='Uploaded!'; statusEl.className='admin-status ok';
-      uploadBox.classList.remove('uploading');
-    } catch(err){
-      statusEl.textContent=`Upload failed: ${err.message}`; statusEl.className='admin-status err';
-      uploadBox.classList.remove('uploading','has-file');
-      labelText.textContent=defaultLabel;
-      fileInput.value='';
-    }
-  }
-
-  fileInput.addEventListener('change',()=>handleFile(fileInput.files[0]));
-
-  uploadBox.addEventListener('click',e=>{
-    if(e.target===uploadBox||e.target.classList.contains('upload-icon')||e.target.classList.contains('upload-sub'))
-      fileInput.click();
-  });
-
-  uploadBox.addEventListener('dragover',e=>{ e.preventDefault(); e.stopPropagation(); uploadBox.classList.add('drag-over'); });
-  uploadBox.addEventListener('dragleave',e=>{ e.preventDefault(); e.stopPropagation(); uploadBox.classList.remove('drag-over'); });
-  uploadBox.addEventListener('drop',e=>{
-    e.preventDefault(); e.stopPropagation();
-    uploadBox.classList.remove('drag-over');
-    handleFile(e.dataTransfer.files[0]);
-  });
-
-  return { reset(){ uploadBox.classList.remove('has-file','uploading'); labelText.textContent=defaultLabel; fileInput.value=''; statusEl.textContent=''; statusEl.className='admin-status'; } };
-}
-
-function initPdfUpload(){
-  const box=initUploadBox({
-    boxId:'upload-box', fileId:'score-file',
-    labelId:'upload-label-text', statusId:'upload-status',
-    urlTargetId:'score-url',
-    defaultLabel:'Drop a PDF here or click to browse',
-  });
-  // Expose reset for form clear after submit
-  window._uploadBoxReset=box?.reset;
-}
+function initPdfUpload(){ /* no-op — using path input */ }
 
 // ── ADMIN FORMS ───────────────────────────────────────────
 function initAdminForms(){
@@ -539,7 +464,6 @@ function initAdminForms(){
     saveAll();
     statusEl.textContent='Score added to library.'; statusEl.className='admin-status ok';
     e.target.reset();
-    if(window._uploadBoxReset) window._uploadBoxReset();
     buildTagChips(); renderLibrary(); renderThisWeek();
   });
 
@@ -587,14 +511,6 @@ function initAdminForms(){
     statusEl.textContent='Saved.'; statusEl.className='admin-status ok';
     setTimeout(closeEditModal,600);
     buildTagChips(); renderLibrary(); renderThisWeek();
-  });
-
-  // Edit modal — replace PDF upload box
-  initUploadBox({
-    boxId:'edit-upload-box', fileId:'edit-score-file',
-    labelId:'edit-upload-label', statusId:'edit-upload-status',
-    urlTargetId:'edit-url',
-    defaultLabel:'Replace PDF — drop here or click to browse',
   });
 
   document.getElementById('edit-modal-close').addEventListener('click',closeEditModal);

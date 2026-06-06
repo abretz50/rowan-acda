@@ -535,14 +535,10 @@
               </select>
               <span class="form-hint">Hold Ctrl / Cmd to select multiple</span>
             </div>
-            <input type="hidden" id="score-url"/>
-            <!-- Direct PDF upload -->
-            <div class="upload-box" id="upload-box">
-              <input type="file" id="score-file" accept=".pdf" style="display:none"/>
-              <span class="upload-icon">&#8679;</span>
-              <label class="upload-label" for="score-file" id="upload-label-text">Drop a PDF here or click to browse</label>
-              <p class="upload-sub">PDF files only · uploads to /assets/pdfs/uploads/</p>
-              <div class="admin-status" id="upload-status" style="margin-top:.5rem"></div>
+            <div class="form-group">
+              <label for="score-url">PDF Path *</label>
+              <input type="text" id="score-url" required placeholder="/assets/pdfs/uploads/filename.pdf"/>
+              <span class="form-hint">Upload the file to GitHub first, then paste the path here</span>
             </div>
             <button class="btn" type="submit">Add Score</button>
             <div class="admin-status" id="add-score-status"></div>
@@ -703,14 +699,10 @@
         </select>
         <span class="form-hint">Hold Ctrl / Cmd to select multiple</span>
       </div>
-      <input type="hidden" id="edit-url"/>
-      <!-- Upload replacement PDF -->
-      <div class="upload-box" id="edit-upload-box" style="margin-bottom:.25rem">
-        <input type="file" id="edit-score-file" accept=".pdf" style="display:none"/>
-        <span class="upload-icon">&#8679;</span>
-        <label class="upload-label" for="edit-score-file" id="edit-upload-label">Replace PDF — drop here or click to browse</label>
-        <p class="upload-sub">Leave empty to keep the existing PDF</p>
-        <div class="admin-status" id="edit-upload-status" style="margin-top:.5rem"></div>
+      <div class="form-group">
+        <label for="edit-url">PDF Path *</label>
+        <input type="text" id="edit-url" required placeholder="/assets/pdfs/uploads/filename.pdf"/>
+        <span class="form-hint">Upload to GitHub first, then paste the path here</span>
       </div>
       <div style="display:flex;gap:.5rem;margin-top:.25rem">
         <button class="btn" type="submit" style="flex:1">Save Changes</button>
