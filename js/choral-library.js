@@ -20,9 +20,8 @@ const TAG_CLASSES = {
 function tagClass(t){ return TAG_CLASSES[t]||'cat-other'; }
 
 // ── CONFIG ────────────────────────────────────────────────
-const GH_REPO   = 'abretz50/rowan-acda';
-const GH_BRANCH = 'main';
-const LS_GH_TOK = 'acda_gh_token';
+// After deploying the Cloudflare Worker, paste its URL here:
+const UPLOAD_WORKER_URL = 'https://rowan-acda-upload.YOUR-SUBDOMAIN.workers.dev/upload';
 
 // ── STATE ─────────────────────────────────────────────────
 let library  = []; // Score[]
@@ -409,64 +408,17 @@ function initLockForms(){
   });
 }
 
-// ── GITHUB UPLOAD ─────────────────────────────────────────
-function getGhToken(){ try{ return sessionStorage.getItem(LS_GH_TOK)||''; } catch{ return ''; } }
-function setGhToken(t){ try{ sessionStorage.setItem(LS_GH_TOK,t); } catch{} }
-
-function fileToBase64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res(r.result.split(',')[1]);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
-}
-
+// ── UPLOAD VIA CLOUDFLARE WORKER ──────────────────────────
 async function uploadPdfToGitHub(file){
-  const token=getGhToken();
-  if(!token) throw new Error('No GitHub token set — save one in the token field above.');
-  const path=`assets/pdfs/uploads/${file.name}`;
-  const base64=await fileToBase64(file);
-
-  // Check if file already exists (need SHA to overwrite)
-  let sha=null;
-  try{
-    const check=await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${path}`,{
-      headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}
-    });
-    if(check.ok){ const d=await check.json(); sha=d.sha; }
-  } catch{}
-
-  const body={message:`Upload ${file.name} via E-Board`,content:base64,branch:GH_BRANCH};
-  if(sha) body.sha=sha;
-
-  const res=await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${path}`,{
-    method:'PUT',
-    headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-    body:JSON.stringify(body),
-  });
-  if(!res.ok){
-    const err=await res.json().catch(()=>({}));
-    throw new Error(err.message||`GitHub API error ${res.status}`);
-  }
-  return `/assets/pdfs/uploads/${file.name}`;
+  const form=new FormData();
+  form.append('file', file, file.name);
+  const res=await fetch(UPLOAD_WORKER_URL,{ method:'POST', body:form });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error||`Upload failed (${res.status})`);
+  return data.url;
 }
 
-function initGhToken(){
-  const input=document.getElementById('gh-token');
-  const saveBtn=document.getElementById('gh-token-save');
-  const statusEl=document.getElementById('gh-token-status');
-  // Restore saved token
-  const saved=getGhToken();
-  if(saved){ input.value=saved; statusEl.textContent='Token loaded from session.'; statusEl.className='admin-status ok'; }
-
-  saveBtn.addEventListener('click',()=>{
-    const val=input.value.trim();
-    if(!val){ statusEl.textContent='Enter a token first.'; statusEl.className='admin-status err'; return; }
-    setGhToken(val);
-    statusEl.textContent='Token saved for this session.'; statusEl.className='admin-status ok';
-  });
-}
+function initGhToken(){ /* no-op — token lives in Cloudflare Worker secret */ }
 
 function initPdfUpload(){
   const fileInput=document.getElementById('score-file');
