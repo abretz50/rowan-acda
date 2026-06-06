@@ -475,29 +475,51 @@ function initPdfUpload(){
   const statusEl=document.getElementById('upload-status');
   const urlInput=document.getElementById('score-url');
 
-  // Click the hidden file input when the box label is clicked
-  uploadBox.querySelector('.upload-label').addEventListener('click',()=>fileInput.click());
-
-  fileInput.addEventListener('change',async()=>{
-    const file=fileInput.files[0];
+  async function handleFile(file){
     if(!file) return;
-    if(file.type!=='application/pdf'){ statusEl.textContent='Please select a PDF file.'; statusEl.className='admin-status err'; return; }
-
+    if(file.type!=='application/pdf'&&!file.name.endsWith('.pdf')){
+      statusEl.textContent='Please select a PDF file.'; statusEl.className='admin-status err'; return;
+    }
     labelText.textContent=file.name;
     uploadBox.classList.add('has-file','uploading');
     statusEl.textContent='Uploading…'; statusEl.className='admin-status';
-
     try{
       const url=await uploadPdfToGitHub(file);
       urlInput.value=url;
-      statusEl.textContent=`Uploaded! URL auto-filled below.`; statusEl.className='admin-status ok';
+      statusEl.textContent='Uploaded! URL auto-filled.'; statusEl.className='admin-status ok';
       uploadBox.classList.remove('uploading');
     } catch(err){
       statusEl.textContent=`Upload failed: ${err.message}`; statusEl.className='admin-status err';
       uploadBox.classList.remove('uploading','has-file');
-      labelText.textContent='Upload PDF directly to GitHub';
+      labelText.textContent='Drop a PDF here or click to browse';
       fileInput.value='';
     }
+  }
+
+  // File picker
+  fileInput.addEventListener('change',()=>handleFile(fileInput.files[0]));
+
+  // Click anywhere on the box (but not on the label itself, which already triggers the input)
+  uploadBox.addEventListener('click', e=>{
+    if(e.target===uploadBox||e.target.classList.contains('upload-icon')||e.target.classList.contains('upload-sub')){
+      fileInput.click();
+    }
+  });
+
+  // Drag and drop
+  uploadBox.addEventListener('dragover', e=>{
+    e.preventDefault(); e.stopPropagation();
+    uploadBox.classList.add('drag-over');
+  });
+  uploadBox.addEventListener('dragleave', e=>{
+    e.preventDefault(); e.stopPropagation();
+    uploadBox.classList.remove('drag-over');
+  });
+  uploadBox.addEventListener('drop', e=>{
+    e.preventDefault(); e.stopPropagation();
+    uploadBox.classList.remove('drag-over');
+    const file=e.dataTransfer.files[0];
+    handleFile(file);
   });
 }
 
@@ -527,7 +549,7 @@ function initAdminForms(){
     const uploadBox=document.getElementById('upload-box');
     const labelText=document.getElementById('upload-label-text');
     if(uploadBox){ uploadBox.classList.remove('has-file','uploading'); }
-    if(labelText){ labelText.textContent='Upload PDF directly to GitHub'; }
+    if(labelText){ labelText.textContent='Drop a PDF here or click to browse'; }
     buildTagChips(); renderLibrary(); renderThisWeek();
   });
 

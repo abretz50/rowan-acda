@@ -333,19 +333,25 @@
 
   /* ── PDF upload box ── */
   .upload-box {
-    border: 2px dashed var(--border); border-radius: .6rem;
-    padding: .6rem .8rem; background: var(--surface);
+    border: 2px dashed var(--border); border-radius: .75rem;
+    padding: 1.5rem 1rem; background: var(--surface);
+    text-align: center; cursor: pointer;
+    transition: border-color .15s, background .15s;
   }
+  .upload-box:hover, .upload-box.drag-over { border-color: var(--brand); background: #fdf5f5; }
+  .upload-icon { font-size: 2rem; line-height: 1; display: block; margin-bottom: .4rem; color: var(--muted); }
   .upload-label {
-    display: flex; align-items: center; gap: .5rem;
-    cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--muted);
+    display: block; cursor: pointer;
+    font-size: .88rem; font-weight: 600; color: var(--muted);
     transition: color .15s;
   }
-  .upload-label:hover { color: var(--brand); }
-  .upload-icon { font-size: 1.3rem; line-height: 1; }
+  .upload-box:hover .upload-label,
+  .upload-box.drag-over .upload-label { color: var(--brand); }
+  .upload-sub { font-size: .78rem; color: var(--muted); margin-top: .2rem; }
   .upload-box.has-file { border-color: var(--brand); background: #fdf5f5; }
+  .upload-box.has-file .upload-icon,
   .upload-box.has-file .upload-label { color: var(--brand); }
-  .upload-box.uploading { opacity: .7; pointer-events: none; }
+  .upload-box.uploading { opacity: .6; pointer-events: none; }
 
   /* ── Edit modal ── */
   #edit-modal .dialog {
@@ -522,12 +528,11 @@
             </div>
             <!-- Direct PDF upload -->
             <div class="upload-box" id="upload-box">
-              <label class="upload-label" for="score-file">
-                <span class="upload-icon">&#8679;</span>
-                <span id="upload-label-text">Upload PDF directly to GitHub</span>
-              </label>
               <input type="file" id="score-file" accept=".pdf" style="display:none"/>
-              <div class="admin-status" id="upload-status"></div>
+              <span class="upload-icon">&#8679;</span>
+              <label class="upload-label" for="score-file" id="upload-label-text">Drop a PDF here or click to browse</label>
+              <p class="upload-sub">PDF files only · uploads to /assets/pdfs/uploads/</p>
+              <div class="admin-status" id="upload-status" style="margin-top:.5rem"></div>
             </div>
             <button class="btn" type="submit">Add Score</button>
             <div class="admin-status" id="add-score-status"></div>
