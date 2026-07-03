@@ -68,6 +68,25 @@
   #home-events [data-action="signin"]{
     display: none !important;
   }
+
+  /* ===== T-Shirt merch card ===== */
+  .tshirt-card .meta{ padding:1rem; }
+  .tshirt-gallery img{
+    width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:.5rem; border:1px solid var(--border);
+  }
+  .tshirt-thumbs{ display:flex; gap:.5rem; margin-top:.5rem; }
+  .tshirt-thumb{
+    padding:0; border:2px solid transparent; border-radius:.4rem; background:none; cursor:pointer; overflow:hidden; line-height:0;
+  }
+  .tshirt-thumb img{ width:48px; height:48px; object-fit:cover; display:block; }
+  .tshirt-thumb.active{ border-color:var(--brand); }
+  .tshirt-price{ font-size:1.4rem; font-weight:800; color:var(--brand); margin:.6rem 0 0; }
+  .tshirt-form label{ display:block; font-size:.9rem; font-weight:600; margin:.6rem 0 .25rem; }
+  .tshirt-form select{
+    width:100%; padding:.55rem .6rem; border-radius:.5rem; border:1px solid var(--border); font:inherit;
+  }
+  .tshirt-form .btn{ width:100%; margin-top:.8rem; border:0; cursor:pointer; }
+  .tshirt-note{ font-size:.85rem; color:var(--muted); margin-top:.5rem; }
 </style>
 </head>
 <body>
@@ -202,24 +221,55 @@
     <div class="section-header">
       <h2 id="shop-h">Shop Rowan ACDA Merch</h2>
     </div>
-    <p class="kicker">All orders are print-on-demand and ship directly to you.</p>
+    <p class="kicker">Club-ordered with free campus pickup in Glassboro, NJ.</p>
     <div class="events-feature" style="margin-top:1rem">
-      <article class="card">
+      <article class="card tshirt-card">
         <div class="meta">
           <h3 style="margin-bottom:.5rem">T-Shirt</h3>
-          <div id='product-component-1769136492453'></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="meta">
-          <h3 style="margin-bottom:.5rem">Hoodie</h3>
-          <div id='product-component-1769136523855'></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="meta">
-          <h3 style="margin-bottom:.5rem">Sweatshirt</h3>
-          <div id='product-component-1769137089018'></div>
+          <div class="tshirt-gallery">
+            <img id="tshirt-main-img" src="/assets/img/merch-tshirt-model.jpg" alt="Rowan ACDA T-Shirt"/>
+            <div class="tshirt-thumbs">
+              <button type="button" class="tshirt-thumb active" data-src="/assets/img/merch-tshirt-model.jpg" aria-label="Show model photo">
+                <img src="/assets/img/merch-tshirt-model.jpg" alt=""/>
+              </button>
+              <button type="button" class="tshirt-thumb" data-src="/assets/img/merch-tshirt-flat.jpg" aria-label="Show flat-lay photo">
+                <img src="/assets/img/merch-tshirt-flat.jpg" alt=""/>
+              </button>
+              <button type="button" class="tshirt-thumb" data-src="/assets/img/merch-tshirt-folded.jpg" aria-label="Show folded photo">
+                <img src="/assets/img/merch-tshirt-folded.jpg" alt=""/>
+              </button>
+            </div>
+          </div>
+          <p class="tshirt-price">$15.00</p>
+          <form class="tshirt-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+            <input type="hidden" name="cmd" value="_xclick"/>
+            <input type="hidden" name="business" value="rowanacda1@gmail.com"/>
+            <input type="hidden" name="item_name" value="Rowan ACDA T-Shirt"/>
+            <input type="hidden" name="currency_code" value="USD"/>
+            <input type="hidden" name="no_shipping" value="2"/>
+            <input type="hidden" id="tshirt-amount" name="amount" value="15.00"/>
+            <input type="hidden" name="on0" value="Size"/>
+            <input type="hidden" name="on1" value="Delivery"/>
+
+            <label for="tshirt-size">Size</label>
+            <select id="tshirt-size" name="os0" required>
+              <option value="">Select size</option>
+              <option>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+              <option>X-Large</option>
+              <option>XX-Large</option>
+            </select>
+
+            <label for="tshirt-delivery">Delivery</label>
+            <select id="tshirt-delivery" name="os1">
+              <option value="Pick up on campus (Glassboro, NJ)" data-fee="0">Pick up on campus — Free</option>
+              <option value="Ship to me" data-fee="2.61">Ship to me — +$2.61 shipping</option>
+            </select>
+
+            <button class="btn" type="submit">Buy Now — PayPal</button>
+          </form>
+          <p class="tshirt-note">Orders ship in bulk to Rowan (Glassboro, NJ) for free campus pickup. Need it mailed to you instead? Choose "Ship to me" — shipping is billed at our exact cost, no markup.</p>
         </div>
       </article>
     </div>
@@ -332,67 +382,26 @@
 })();
 </script>
 
-<!-- Shopify Buy Button -->
+<!-- T-Shirt merch card: gallery + dynamic PayPal amount -->
 <script>
 (function(){
-  const DOMAIN = 'wqjsdh-bj.myshopify.com';
-  const TOKEN  = 'f8e91c74b437bb4c808014ecae006a07';
-  const PRODUCTS = [
-    { id: '10198201630904', node: 'product-component-1769136492453' },
-    { id: '10198201729208', node: 'product-component-1769136523855' },
-    { id: '10198201565368', node: 'product-component-1769137089018' },
-  ];
-
-  const BTN_STYLES = {
-    "font-family": "Montserrat, sans-serif",
-    "font-weight": "bold",
-    ":hover":  { "background-color": "#941917" },
-    "background-color": "#a41c1a",
-    ":focus":  { "background-color": "#941917" }
-  };
-
-  function buildOptions(productId){
-    return {
-      product: {
-        styles: {
-          product: { "@media (min-width: 601px)": { "max-width": "calc(25% - 20px)", "margin-left": "20px", "margin-bottom": "50px" } },
-          button: BTN_STYLES
-        },
-        width: "280px",
-        text: { button: "Add to cart" },
-        googleFonts: ["Montserrat"]
-      },
-      productSet: { styles: { products: { "@media (min-width: 601px)": { "margin-left": "-20px" } } } },
-      modalProduct: {
-        contents: { img: false, imgWithCarousel: true, button: false, buttonWithQuantity: true },
-        styles: {
-          product: { "@media (min-width: 601px)": { "max-width": "100%", "margin-left": "0px", "margin-bottom": "0px" } },
-          button: BTN_STYLES
-        },
-        googleFonts: ["Montserrat"],
-        text: { button: "Add to cart" }
-      },
-      option: {},
-      cart: { styles: { button: BTN_STYLES }, text: { total: "Subtotal", button: "Checkout" }, googleFonts: ["Montserrat"] },
-      toggle: { styles: { toggle: { ...BTN_STYLES, "font-family": "Montserrat, sans-serif", "font-weight": "bold" } }, googleFonts: ["Montserrat"] }
-    };
-  }
-
-  function initAll(){
-    const client = ShopifyBuy.buildClient({ domain: DOMAIN, storefrontAccessToken: TOKEN });
-    ShopifyBuy.UI.onReady(client).then(ui => {
-      PRODUCTS.forEach(({ id, node }) => {
-        ui.createComponent('product', { id, node: document.getElementById(node), moneyFormat: '%24%7B%7Bamount%7D%7D', options: buildOptions(id) });
-      });
+  const BASE_PRICE = 15.00;
+  const mainImg = document.getElementById('tshirt-main-img');
+  const thumbs = document.querySelectorAll('.tshirt-thumb');
+  thumbs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      mainImg.src = btn.dataset.src;
+      thumbs.forEach(b => b.classList.toggle('active', b === btn));
     });
-  }
+  });
 
-  const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-  if(window.ShopifyBuy){
-    window.ShopifyBuy.UI ? initAll() : (function load(){ var s=document.createElement('script'); s.async=true; s.src=scriptURL; s.onload=initAll; document.head.appendChild(s); })();
-  } else {
-    var s=document.createElement('script'); s.async=true; s.src=scriptURL; s.onload=initAll;
-    (document.getElementsByTagName('head')[0]||document.body).appendChild(s);
+  const delivery = document.getElementById('tshirt-delivery');
+  const amount = document.getElementById('tshirt-amount');
+  if(delivery && amount){
+    delivery.addEventListener('change', () => {
+      const fee = parseFloat(delivery.selectedOptions[0].dataset.fee || '0');
+      amount.value = (BASE_PRICE + fee).toFixed(2);
+    });
   }
 })();
 </script>
