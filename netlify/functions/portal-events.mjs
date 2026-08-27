@@ -19,9 +19,24 @@ async function isLiveEboard(req) {
   return users.some(u => u.id === token.userId && u.active !== false);
 }
 
+// If nothing has been created yet, seed from the retired Google Sheet
+// snapshot — same auto-migrate pattern as portal-library.mjs/portal-content.mjs,
+// so events show up without anyone needing to be logged in to import them.
+async function loadEvents() {
+  const events = await getCollection('events', []);
+  if (events.length > 0) return events;
+  const seeded = parseEventsCsv(SEED_EVENTS_CSV).map(ev => ({
+    id: randomUUID(), ...ev,
+    checkinCode: generateCheckinCode(),
+    checkinOpensAt: '', checkinClosesAt: '',
+  }));
+  await setCollection('events', seeded);
+  return seeded;
+}
+
 export default async function handler(req) {
   if (req.method === 'GET') {
-    const events = await getCollection('events', []);
+    const events = await loadEvents();
     const authed = await isLiveEboard(req);
     return json({ ok: true, events: authed ? events : events.map(publicEvent) });
   }
@@ -29,7 +44,7 @@ export default async function handler(req) {
   const auth = await requireAuth(req);
   if (auth.deny) return auth.deny;
 
-  const events = await getCollection('events', []);
+  const events = await loadEvents();
 
   let body;
   try { body = req.method === 'DELETE' ? Object.fromEntries(new URL(req.url).searchParams) : await req.json(); }
