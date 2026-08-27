@@ -415,18 +415,7 @@
         <button class="btn" type="submit">Access Library</button>
         <div class="lock-error" id="lock-error" role="alert" aria-live="polite"></div>
       </form>
-
-      <hr class="lock-divider"/>
-      <div class="lock-secondary-label">E-Board login</div>
-      <button id="eboard-login-toggle" class="btn btn-outline" style="width:100%">Show E-Board Login</button>
-      <form class="lock-form" id="eboard-lock-form" novalidate style="display:none;margin-top:.75rem">
-        <div class="form-group">
-          <label for="eboard-pw">E-Board Password</label>
-          <input type="password" id="eboard-pw" placeholder="E-Board password" autocomplete="current-password" aria-label="E-Board password"/>
-        </div>
-        <button class="btn" type="submit">Access E-Board Panel</button>
-        <div class="lock-error" id="eboard-lock-error" role="alert" aria-live="polite"></div>
-      </form>
+      <p class="small muted" style="margin-top:.85rem">E-Board: manage scores and sets from the <a href="/portal.html">E-Board Portal</a>.</p>
     </div>
   </section>
 
@@ -436,7 +425,6 @@
     <div class="view-tabs" role="tablist">
       <button class="view-tab active" role="tab" aria-selected="true"  aria-controls="panel-week"    id="tab-week">Sessions</button>
       <button class="view-tab"        role="tab" aria-selected="false" aria-controls="panel-library" id="tab-library">Full Library</button>
-      <button class="view-tab"        role="tab" aria-selected="false" aria-controls="panel-eboard"  id="tab-eboard" style="display:none">E-Board</button>
     </div>
 
     <!-- Sessions panel -->
@@ -451,123 +439,6 @@
         <div class="cat-chips" id="cat-chips" role="group" aria-label="Filter by tag"></div>
       </div>
       <div id="lib-results" class="score-grid"></div>
-    </div>
-
-    <!-- E-Board panel -->
-    <div class="panel" id="panel-eboard" role="tabpanel" aria-labelledby="tab-eboard">
-      <div class="eboard-mode-bar">
-        <span class="mode-dot" aria-hidden="true"></span>
-        E-Board Management Mode
-      </div>
-
-
-      <div class="eboard-panel">
-
-        <!-- Add score -->
-        <div class="admin-card">
-          <h3>Add Score to Library</h3>
-          <form class="admin-form" id="add-score-form" novalidate>
-            <div class="form-group">
-              <label for="score-title">Title *</label>
-              <input type="text" id="score-title" required placeholder="e.g. Earth Song"/>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="score-cfirst">Composer First Name</label>
-                <input type="text" id="score-cfirst" placeholder="e.g. Frank"/>
-              </div>
-              <div class="form-group">
-                <label for="score-clast">Composer Last Name</label>
-                <input type="text" id="score-clast" placeholder="e.g. Ticheli"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="score-year">Year</label>
-                <input type="text" id="score-year" placeholder="e.g. 1993" maxlength="4"/>
-              </div>
-              <div class="form-group">
-                <label for="score-voicing">Voicing</label>
-                <select id="score-voicing">
-                  <option value="">— Select —</option>
-                  <option>SATB</option>
-                  <option>SATB divisi</option>
-                  <option>SAB</option>
-                  <option>SSA</option>
-                  <option>SSAA</option>
-                  <option>TTBB</option>
-                  <option>2-Part</option>
-                  <option>Unison</option>
-                  <option value="Other">Other…</option>
-                </select>
-                <input type="text" id="score-voicing-other" class="other-input" placeholder="Enter voicing…"/>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="score-instr">Instrumentation</label>
-              <select id="score-instr">
-                <option value="">— Select —</option>
-                <option>A Cappella</option>
-                <option>Piano</option>
-                <option>Organ</option>
-                <option>Guitar</option>
-                <option>Orchestra</option>
-                <option>Chamber Ensemble</option>
-                <option>Strings</option>
-                <option>Band</option>
-                <option>Brass</option>
-                <option value="Other">Other…</option>
-              </select>
-              <input type="text" id="score-instr-other" class="other-input" placeholder="Enter instrumentation…"/>
-            </div>
-            <div class="form-group">
-              <label for="score-tags">Tags *</label>
-              <select id="score-tags" multiple size="5" style="min-height:90px">
-                <option>Classical</option>
-                <option>Musical Theater</option>
-                <option>Church Music</option>
-                <option>Contemporary</option>
-                <option>Jazz &amp; Pop</option>
-                <option>Sacred</option>
-                <option>Secular</option>
-                <option>A Cappella</option>
-                <option>Folk</option>
-              </select>
-              <span class="form-hint">Hold Ctrl / Cmd to select multiple</span>
-            </div>
-            <div class="form-group">
-              <label for="score-url">PDF Path *</label>
-              <input type="text" id="score-url" required placeholder="/assets/pdfs/uploads/filename.pdf"/>
-              <span class="form-hint">Upload the file to GitHub first, then paste the path here</span>
-            </div>
-            <button class="btn" type="submit">Add Score</button>
-            <div class="admin-status" id="add-score-status"></div>
-          </form>
-        </div>
-
-        <!-- New set -->
-        <div class="admin-card">
-          <h3>Create New Set</h3>
-          <form class="admin-form" id="new-session-form" novalidate>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="sess-num">Set ID *</label>
-                <input type="text" id="sess-num" required placeholder="e.g. SS#10"/>
-              </div>
-              <div class="form-group">
-                <label for="sess-name">Name *</label>
-                <input type="text" id="sess-name" required placeholder="e.g. Musical Theater Day"/>
-              </div>
-            </div>
-            <button class="btn" type="submit">Create Set</button>
-            <div class="admin-status" id="new-session-status"></div>
-          </form>
-
-          <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>
-          <h3 style="margin:0 0 .65rem;border:none;padding:0">All Sets</h3>
-          <div id="admin-session-list" style="display:flex;flex-direction:column;gap:.35rem;max-height:280px;overflow-y:auto"></div>
-        </div>
-      </div>
     </div>
 
   </section>
@@ -622,96 +493,6 @@
     </div>
   </div>
 </footer>
-
-<!-- Edit Score Modal -->
-<div class="modal" id="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" hidden>
-  <div class="dialog">
-    <div class="modal-header">
-      <h3 id="edit-modal-title">Edit Score</h3>
-      <button class="modal-close-btn" id="edit-modal-close" aria-label="Close">&#10005;</button>
-    </div>
-    <form class="admin-form" id="edit-score-form" novalidate style="padding:.25rem 0 0">
-      <div class="form-group">
-        <label for="edit-title">Title *</label>
-        <input type="text" id="edit-title" required placeholder="Score title"/>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="edit-cfirst">Composer First Name</label>
-          <input type="text" id="edit-cfirst" placeholder="e.g. Frank"/>
-        </div>
-        <div class="form-group">
-          <label for="edit-clast">Composer Last Name</label>
-          <input type="text" id="edit-clast" placeholder="e.g. Ticheli"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="edit-year">Year</label>
-          <input type="text" id="edit-year" placeholder="e.g. 1993" maxlength="4"/>
-        </div>
-        <div class="form-group">
-          <label for="edit-voicing">Voicing</label>
-          <select id="edit-voicing">
-            <option value="">— Select —</option>
-            <option>SATB</option>
-            <option>SATB divisi</option>
-            <option>SAB</option>
-            <option>SSA</option>
-            <option>SSAA</option>
-            <option>TTBB</option>
-            <option>2-Part</option>
-            <option>Unison</option>
-            <option value="Other">Other…</option>
-          </select>
-          <input type="text" id="edit-voicing-other" class="other-input" placeholder="Enter voicing…"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="edit-instr">Instrumentation</label>
-        <select id="edit-instr">
-          <option value="">— Select —</option>
-          <option>A Cappella</option>
-          <option>Piano</option>
-          <option>Organ</option>
-          <option>Guitar</option>
-          <option>Orchestra</option>
-          <option>Chamber Ensemble</option>
-          <option>Strings</option>
-          <option>Band</option>
-          <option>Brass</option>
-          <option value="Other">Other…</option>
-        </select>
-        <input type="text" id="edit-instr-other" class="other-input" placeholder="Enter instrumentation…"/>
-      </div>
-      <div class="form-group">
-        <label for="edit-tags">Tags</label>
-        <select id="edit-tags" multiple size="5" style="min-height:90px">
-          <option>Classical</option>
-          <option>Musical Theater</option>
-          <option>Church Music</option>
-          <option>Contemporary</option>
-          <option>Jazz &amp; Pop</option>
-          <option>Sacred</option>
-          <option>Secular</option>
-          <option>A Cappella</option>
-          <option>Folk</option>
-        </select>
-        <span class="form-hint">Hold Ctrl / Cmd to select multiple</span>
-      </div>
-      <div class="form-group">
-        <label for="edit-url">PDF Path *</label>
-        <input type="text" id="edit-url" required placeholder="/assets/pdfs/uploads/filename.pdf"/>
-        <span class="form-hint">Upload to GitHub first, then paste the path here</span>
-      </div>
-      <div style="display:flex;gap:.5rem;margin-top:.25rem">
-        <button class="btn" type="submit" style="flex:1">Save Changes</button>
-        <button class="btn btn-outline" type="button" id="edit-modal-cancel">Cancel</button>
-      </div>
-      <div class="admin-status" id="edit-status"></div>
-    </form>
-  </div>
-</div>
 
 <script src="/js/choral-library.js" defer></script>
 <script src="/js/core.js" defer></script>

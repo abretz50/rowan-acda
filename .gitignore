@@ -1,1 +1,4 @@
 .claude/
+
+# Local Netlify folder
+.netlify

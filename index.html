@@ -137,44 +137,7 @@
   <section aria-labelledby="highlights-h">
     <h2 id="highlights-h">Chapter Highlights</h2>
     <div class="slideshow-wrap">
-      <div class="slideshow" aria-label="Chapter Highlights Slideshow" role="img">
-        <img src="/assets/img/Screenshot 2026-02-06 222534.png" alt="Chapter event, February 2026" loading="eager" class="active">
-        <img src="/assets/img/Screenshot 2026-02-06 222526.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222515.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222506.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222458.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222447.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222423.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222431.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222403.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222355.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222337.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222328.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222311.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222301.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222244.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222224.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222156.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/Screenshot 2026-02-06 222215.png" alt="Chapter event, February 2026" loading="lazy">
-        <img src="/assets/img/52854312589_d89aa02f51_o-scaled.jpg" alt="Rowan ACDA members performing" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094012.png" alt="Chapter event, September 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 093949.png" alt="Chapter event, September 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094001.png" alt="Chapter event, September 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094018.png" alt="Chapter event, September 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-09-24 094022.png" alt="Chapter event, September 2025" loading="lazy">
-        <img src="/assets/img/52854526795_0c57dd3603_o-1170x500.jpg" alt="Rowan ACDA choir" loading="lazy">
-        <img src="/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg" alt="Rowan ACDA members" loading="lazy">
-        <img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="Rowan ACDA chapter" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154922.png" alt="Chapter event, August 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154928.png" alt="Chapter event, August 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154950.png" alt="Chapter event, August 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 155003.png" alt="Chapter event, August 2025" loading="lazy">
-        <img src="/assets/img/Screenshot 2025-08-28 154905.png" alt="Chapter event, August 2025" loading="lazy">
-        <img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Rowan ACDA members" loading="lazy">
-        <img src="/assets/img/ext2_Screenshot 2025-08-28 154916.png" alt="Chapter event, August 2025" loading="lazy">
-        <img src="/assets/img/ext_gallery4.png" alt="Rowan ACDA gallery" loading="lazy">
-        <img src="/assets/img/members-banner.jpg" alt="Rowan ACDA member group photo" loading="lazy">
-      </div>
+      <div class="slideshow" aria-label="Chapter Highlights Slideshow" role="img"></div>
     </div>
   </section>
 
@@ -341,44 +304,55 @@
   </div>
 </footer>
 
-<!-- Fading slideshow JS -->
+<!-- Fading slideshow: images + curation come from the E-Board Portal gallery -->
 <script>
 (function(){
   const container = document.querySelector('.slideshow');
   if(!container) return;
-  const slides = Array.from(container.querySelectorAll('img'));
-  if(slides.length === 0) return;
 
-  let i = 0, timer = null, running = false;
-  const FADE_MS = 900;
-  const HOLD_MS = 2600;
-  const INTERVAL = FADE_MS + HOLD_MS;
+  const FALLBACK_IMAGES = [
+    '/assets/img/Screenshot 2026-02-06 222534.png',
+    '/assets/img/52854312589_d89aa02f51_o-scaled.jpg',
+    '/assets/img/Screenshot 2025-09-24 094012.png',
+    '/assets/img/52854526795_0c57dd3603_o-1170x500.jpg',
+    '/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg',
+    '/assets/img/members-banner.jpg',
+  ];
 
-  function show(n){
-    slides.forEach((img, idx)=> img.classList.toggle('active', idx === n));
-  }
-  function start(){
-    if(running || slides.length < 2) return;
-    running = true;
-    timer = setInterval(()=>{ i = (i+1) % slides.length; show(i); }, INTERVAL);
-  }
-  function stop(){
-    running = false;
-    if(timer){ clearInterval(timer); timer = null; }
+  function buildSlides(urls){
+    container.innerHTML = urls.map((url, i) =>
+      `<img src="${url}" alt="Rowan ACDA chapter highlight" loading="${i===0?'eager':'lazy'}" class="${i===0?'active':''}">`
+    ).join('');
+    return Array.from(container.querySelectorAll('img'));
   }
 
-  show(0);
+  function runCycle(slides){
+    if(slides.length === 0) return;
+    let i = 0, timer = null, running = false;
+    const FADE_MS = 900, HOLD_MS = 2600, INTERVAL = FADE_MS + HOLD_MS;
 
-  // Pause when off-screen or tab hidden
-  const io = new IntersectionObserver(([entry])=>{
-    entry.isIntersecting ? start() : stop();
-  }, { threshold: 0.2 });
-  io.observe(container);
+    function show(n){ slides.forEach((img, idx)=> img.classList.toggle('active', idx === n)); }
+    function start(){ if(running || slides.length < 2) return; running = true; timer = setInterval(()=>{ i=(i+1)%slides.length; show(i); }, INTERVAL); }
+    function stop(){ running = false; if(timer){ clearInterval(timer); timer = null; } }
 
-  document.addEventListener('visibilitychange', () => {
-    document.hidden ? stop() : start();
-  });
+    show(0);
+    const io = new IntersectionObserver(([entry])=> entry.isIntersecting ? start() : stop(), { threshold: 0.2 });
+    io.observe(container);
+    document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  }
 
+  async function init(){
+    let urls = [];
+    try{
+      const res = await fetch('/.netlify/functions/portal-gallery', { cache: 'no-store' });
+      const data = await res.json();
+      if(data.ok) urls = data.gallery.filter(g => g.inSlideshow).sort((a,b)=>a.order-b.order).map(g => g.url);
+    } catch { /* fall through to fallback */ }
+    if(!urls.length) urls = FALLBACK_IMAGES;
+    runCycle(buildSlides(urls));
+  }
+
+  init();
 })();
 </script>
 

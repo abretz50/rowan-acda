@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>E-Board Portal — Rowan ACDA</title>
+<meta name="description" content="Rowan ACDA E-Board portal — private."/>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/logo2.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/logo2.png" alt="ACDA logo"/>
+      <span>Rowan ACDA</span>
+    </a>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
+  <section class="banner-outer" role="region" aria-label="Portal header">
+    <div class="page-banner" style="--banner-img:url('/assets/img/eboard-header.jpg');">
+      <div class="container">
+        <h1 class="page-banner__title">E-Board Portal</h1>
+        <p class="page-banner__subtext">Manage events, members, attendance, the digital library, and site content</p>
+      </div>
+    </div>
+  </section>
+
+  <br>
+
+  <!-- ===== Sign-in screen ===== -->
+  <div id="login-section" class="lock-screen">
+    <div class="lock-screen-heading">
+      <h2 id="login-heading">Sign in</h2>
+      <p id="login-subtext">E-Board access only.</p>
+    </div>
+    <form class="lock-form" id="login-form">
+      <input type="text" id="login-name" placeholder="Your full name" autocomplete="name" style="display:none" />
+      <input type="text" id="login-username" placeholder="Username" autocomplete="username" required/>
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required/>
+      <input type="password" id="login-secret" placeholder="Setup secret (from site owner)" style="display:none" />
+      <button class="btn" type="submit" id="login-submit">Sign in</button>
+      <div class="lock-error" id="login-error"></div>
+    </form>
+  </div>
+
+  <!-- ===== Dashboard (hidden until signed in) ===== -->
+  <div id="dashboard-section" style="display:none">
+    <div class="eboard-mode-bar">
+      <span class="mode-dot"></span>
+      <span id="whoami"></span>
+      <button class="btn-sm outline" id="logout-btn" style="margin-left:auto">Log out</button>
+    </div>
+
+    <div class="view-tabs" role="tablist">
+      <button class="view-tab active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview">Overview</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-events" id="tab-events">Events</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-members" id="tab-members">Members</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-attendance" id="tab-attendance">Attendance</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-library" id="tab-library">Digital Library</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-content" id="tab-content">Site Content</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-gallery" id="tab-gallery">Gallery</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-users" id="tab-users" style="display:none">Users</button>
+    </div>
+
+    <div class="panel active" id="panel-overview">
+      <div class="admin-card">
+        <h3>Welcome</h3>
+        <p class="small muted">Events, Members, Attendance (via member self check-in), the Digital Library, Site Content, and Gallery/slideshow management are all live from this dashboard.</p>
+      </div>
+    </div>
+
+    <!-- ===== Events ===== -->
+    <div class="panel" id="panel-events">
+      <div class="eboard-panel">
+        <div class="admin-card">
+          <h3 id="event-form-heading">Create Event</h3>
+          <form class="admin-form" id="event-form" novalidate>
+            <input type="hidden" id="ev-id"/>
+            <div class="form-group">
+              <label for="ev-title">Title</label>
+              <input class="admin-input" type="text" id="ev-title" required/>
+            </div>
+            <div class="form-group">
+              <label for="ev-desc">Description</label>
+              <textarea class="admin-input" id="ev-desc" rows="2"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ev-start">Start</label>
+                <input class="admin-input" type="datetime-local" id="ev-start" required/>
+              </div>
+              <div class="form-group">
+                <label for="ev-end">End</label>
+                <input class="admin-input" type="datetime-local" id="ev-end"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="ev-location">Location</label>
+              <input class="admin-input" type="text" id="ev-location"/>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ev-tags">Tags (comma-separated)</label>
+                <input class="admin-input" type="text" id="ev-tags" placeholder="Social, Professional Development"/>
+              </div>
+              <div class="form-group">
+                <label for="ev-signin">RSVP link (optional)</label>
+                <input class="admin-input" type="url" id="ev-signin"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="ev-image">Image URL (optional)</label>
+              <input class="admin-input" type="text" id="ev-image"/>
+            </div>
+            <button class="btn-sm" type="submit" id="event-form-submit">Create event</button>
+            <button class="btn-sm outline" type="button" id="event-form-cancel" style="display:none">Cancel edit</button>
+            <div class="admin-status" id="event-form-status"></div>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3>Upcoming &amp; Past Events</h3>
+          <button class="btn-sm outline" id="import-sheet-btn" style="margin-bottom:.6rem">Import from Google Sheet</button>
+          <span class="admin-status" id="import-sheet-status"></span>
+          <div id="events-list"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Members ===== -->
+    <div class="panel" id="panel-members">
+      <div class="eboard-panel">
+        <div class="admin-card">
+          <h3>Add Member</h3>
+          <form class="admin-form" id="member-form" novalidate>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="mb-name" placeholder="Full name" required/>
+              <input class="admin-input" type="email" id="mb-email" placeholder="Email" required/>
+            </div>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="mb-year" placeholder="Year (e.g. Sophomore)"/>
+              <input class="admin-input" type="text" id="mb-voice" placeholder="Voice part (e.g. Soprano)"/>
+            </div>
+            <p class="form-hint">Members are also added automatically the first time they self check in to an event.</p>
+            <button class="btn-sm" type="submit">Add member</button>
+            <div class="admin-status" id="member-form-status"></div>
+          </form>
+        </div>
+        <div class="admin-card">
+          <h3>Roster</h3>
+          <div id="members-list"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Attendance ===== -->
+    <div class="panel" id="panel-attendance">
+      <div class="admin-card" style="margin-bottom:1rem">
+        <h3>By Event</h3>
+        <div class="form-row" style="margin-bottom:.6rem">
+          <select class="admin-input" id="att-event-select"><option value="">Choose an event…</option></select>
+          <a class="btn-sm outline" id="att-export-event" href="#" style="display:none">Export CSV</a>
+        </div>
+        <div id="att-event-detail"></div>
+      </div>
+      <div class="admin-card">
+        <h3>All-Time Totals <span class="small muted">(point tracking)</span></h3>
+        <a class="btn-sm outline" id="att-export-summary" href="/.netlify/functions/portal-attendance?summary=1&csv=1" style="margin-bottom:.6rem;display:inline-flex">Export CSV</a>
+        <div id="att-summary"><p class="small muted">Loading…</p></div>
+      </div>
+    </div>
+
+    <!-- ===== Digital Library ===== -->
+    <div class="panel" id="panel-library">
+      <div class="eboard-panel">
+        <div class="admin-card">
+          <h3 id="score-form-heading">Add Score</h3>
+          <form class="admin-form" id="score-form" novalidate>
+            <input type="hidden" id="sc-old-url"/>
+            <div class="form-group">
+              <label for="sc-title">Title *</label>
+              <input class="admin-input" type="text" id="sc-title" required/>
+            </div>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="sc-cfirst" placeholder="Composer first name"/>
+              <input class="admin-input" type="text" id="sc-clast" placeholder="Composer last name"/>
+            </div>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="sc-year" placeholder="Year" maxlength="4"/>
+              <div>
+                <select class="admin-input" id="sc-voicing">
+                  <option value="">Voicing — Select</option>
+                  <option>SATB</option><option>SATB divisi</option><option>SAB</option>
+                  <option>SSA</option><option>SSAA</option><option>TTBB</option>
+                  <option>2-Part</option><option>Unison</option><option value="Other">Other…</option>
+                </select>
+                <input class="admin-input" type="text" id="sc-voicing-other" placeholder="Enter voicing…" style="display:none;margin-top:.35rem"/>
+              </div>
+            </div>
+            <div>
+              <select class="admin-input" id="sc-instr">
+                <option value="">Instrumentation — Select</option>
+                <option>A Cappella</option><option>Piano</option><option>Organ</option>
+                <option>Guitar</option><option>Orchestra</option><option>Chamber Ensemble</option>
+                <option>Strings</option><option>Band</option><option>Brass</option><option value="Other">Other…</option>
+              </select>
+              <input class="admin-input" type="text" id="sc-instr-other" placeholder="Enter instrumentation…" style="display:none;margin-top:.35rem"/>
+            </div>
+            <div class="form-group">
+              <label for="sc-tags">Tags (hold Ctrl/Cmd to select multiple)</label>
+              <select class="admin-input" id="sc-tags" multiple size="5" style="min-height:90px">
+                <option>Classical</option><option>Musical Theater</option><option>Church Music</option>
+                <option>Contemporary</option><option>Jazz &amp; Pop</option><option>Sacred</option>
+                <option>Secular</option><option>A Cappella</option><option>Folk</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sc-url">PDF Path *</label>
+              <input class="admin-input" type="text" id="sc-url" required placeholder="/assets/pdfs/uploads/filename.pdf"/>
+              <span class="form-hint">Upload the file to GitHub first, then paste the path here.</span>
+            </div>
+            <button class="btn-sm" type="submit" id="score-form-submit">Add score</button>
+            <button class="btn-sm outline" type="button" id="score-form-cancel" style="display:none">Cancel edit</button>
+            <div class="admin-status" id="score-form-status"></div>
+          </form>
+        </div>
+        <div class="admin-card">
+          <h3>Library</h3>
+          <input class="admin-input" type="search" id="lib-manage-search" placeholder="Search…" style="margin-bottom:.5rem"/>
+          <div id="lib-manage-list" style="max-height:460px;overflow-y:auto"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+
+      <div class="eboard-panel" style="margin-top:1rem">
+        <div class="admin-card">
+          <h3>Create Set</h3>
+          <form class="admin-form" id="set-form" novalidate>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="set-num" placeholder="Set ID (e.g. SS#10)" required/>
+              <input class="admin-input" type="text" id="set-name" placeholder="Name" required/>
+            </div>
+            <button class="btn-sm" type="submit">Create set</button>
+            <div class="admin-status" id="set-form-status"></div>
+          </form>
+        </div>
+        <div class="admin-card">
+          <h3>Sets</h3>
+          <div id="sets-manage-list"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Site Content (E-Board roster) ===== -->
+    <div class="panel" id="panel-content">
+      <div class="eboard-panel">
+        <div class="admin-card">
+          <h3 id="eb-form-heading">Add E-Board Member</h3>
+          <form class="admin-form" id="eb-form" novalidate>
+            <input type="hidden" id="eb-id"/>
+            <input type="hidden" id="eb-photo-url"/>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="eb-name" placeholder="Full name" required/>
+              <input class="admin-input" type="text" id="eb-role" placeholder="Role (e.g. President)" required/>
+            </div>
+            <input class="admin-input" type="email" id="eb-email" placeholder="Email"/>
+            <div class="form-group">
+              <label for="eb-photo-file">Photo</label>
+              <input class="admin-input" type="file" id="eb-photo-file" accept="image/*"/>
+              <span class="form-hint" id="eb-photo-current"></span>
+            </div>
+            <input class="admin-input" type="text" id="eb-desc" placeholder="Short description (shown on the card)"/>
+            <textarea class="admin-input" id="eb-bio" rows="4" placeholder="Full bio (shown when their card is clicked)"></textarea>
+            <button class="btn-sm" type="submit" id="eb-form-submit">Add member</button>
+            <button class="btn-sm outline" type="button" id="eb-form-cancel" style="display:none">Cancel edit</button>
+            <div class="admin-status" id="eb-form-status"></div>
+          </form>
+        </div>
+        <div class="admin-card">
+          <h3>Current Roster</h3>
+          <div id="eb-list"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Gallery / Slideshow ===== -->
+    <div class="panel" id="panel-gallery">
+      <div class="admin-card">
+        <h3>Upload Photo</h3>
+        <form class="admin-form" id="gallery-upload-form" novalidate>
+          <input class="admin-input" type="file" id="gal-file" accept="image/*" required/>
+          <input class="admin-input" type="text" id="gal-caption" placeholder="Caption (optional)"/>
+          <button class="btn-sm" type="submit">Upload</button>
+          <div class="admin-status" id="gallery-upload-status"></div>
+        </form>
+      </div>
+      <div class="admin-card" style="margin-top:1rem">
+        <h3>Gallery <span class="small muted">— check "Slideshow" to feature on the homepage</span></h3>
+        <div id="gallery-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;margin-top:.6rem"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-users">
+      <div class="eboard-panel">
+        <div class="admin-card">
+          <h3>Add a User</h3>
+          <form class="admin-form" id="add-user-form" novalidate>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="nu-name" placeholder="Full name" required/>
+              <input class="admin-input" type="text" id="nu-username" placeholder="Username" required/>
+            </div>
+            <div class="form-row">
+              <input class="admin-input" type="password" id="nu-password" placeholder="Temporary password" required/>
+              <select class="admin-input" id="nu-role">
+                <option value="eboard">E-Board</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <p class="form-hint">Share the temporary password with them directly — they aren't emailed anything. Admins can manage other users' access; E-Board accounts cannot.</p>
+            <button class="btn-sm" type="submit">Create user</button>
+            <div class="admin-status" id="add-user-status"></div>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3>Current Users</h3>
+          <div id="users-list"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer acda-footer" role="contentinfo">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <div class="brand--footer">
+        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56">
+        <div class="brand-text">
+          <strong>Rowan ACDA</strong>
+          <div class="muted">Collegiate Chapter</div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:.75rem">
+        American Choral Directors Association at Rowan University. We sing, lead, and serve through choral music.
+      </p>
+    </div>
+    <nav aria-label="Footer" class="footer-nav">
+      <h4>Navigate</h4>
+      <ul class="list-unstyled">
+        <li><a href="/events.html">Events</a></li>
+        <li><a href="/members.html">Members</a></li>
+        <li><a href="/eboard.html">E-Board</a></li>
+        <li><a href="/resources.html">Resources</a></li>
+      </ul>
+    </nav>
+    <div class="footer-connect">
+      <h4>Connect</h4>
+      <ul class="list-unstyled">
+        <li><a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a></li>
+        <li><a href="https://www.instagram.com/rowanacda/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+      <p class="small muted footer-note">Site theme by Adam Bretz</p>
+      <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+<script defer src="/js/core.js"></script>
+<script defer src="/js/portal.js"></script>
+</body>
+</html>

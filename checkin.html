@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Check In — Rowan ACDA</title>
+<meta name="description" content="Check in to a Rowan ACDA event."/>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/logo2.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/logo2.png" alt="ACDA logo"/>
+      <span>Rowan ACDA</span>
+    </a>
+  </div>
+</header>
+
+<main class="container" role="main" style="padding:1.5rem 0 2rem">
+  <div class="lock-screen" style="max-width:420px">
+    <div class="admin-card" id="event-card" style="margin-bottom:1rem; display:none">
+      <h3 id="event-title"></h3>
+      <p class="small muted" id="event-meta"></p>
+    </div>
+
+    <div id="checkin-form-wrap">
+      <div class="lock-screen-heading">
+        <h2>Event Check-In</h2>
+        <p id="checkin-subtext">Enter the code you were given at the meeting, then your name and email.</p>
+      </div>
+      <form class="lock-form" id="checkin-form" novalidate>
+        <input type="text" id="ci-code" placeholder="Check-in code" maxlength="6" autocapitalize="characters" required/>
+        <input type="text" id="ci-name" placeholder="Full name" autocomplete="name" required/>
+        <input type="email" id="ci-email" placeholder="Email" autocomplete="email" required/>
+        <button class="btn" type="submit">Check In</button>
+        <div class="lock-error" id="checkin-error"></div>
+      </form>
+    </div>
+
+    <div id="checkin-success" class="admin-card" style="display:none; text-align:center">
+      <h3 id="success-title">You're checked in!</h3>
+      <p class="small muted" id="success-sub"></p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer acda-footer" role="contentinfo">
+  <div class="container" style="padding:1rem 0; text-align:center">
+    <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
+  </div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script defer src="/js/checkin.js"></script>
+</body>
+</html>
