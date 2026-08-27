@@ -17,7 +17,7 @@ export default async function handler(req) {
     return json({ ok: true, ...lib });
   }
 
-  const auth = await requireAuth(req);
+  const auth = await requireAuth(req, { perm: 'library' });
   if (auth.deny) return auth.deny;
 
   let body;

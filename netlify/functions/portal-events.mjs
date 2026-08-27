@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, getSessionUser, json } from './_lib/auth.mjs';
+import { loadMembers } from './_lib/loadMembers.mjs';
+import { hasPermission } from './_lib/permissions.mjs';
 import { generateCheckinCode } from './_lib/codes.mjs';
 import { parseEventsCsv } from './_lib/parseEventsCsv.mjs';
 import { SEED_EVENTS_CSV } from './_lib/eventsSeedCsv.mjs';
@@ -12,11 +14,15 @@ function publicEvent(ev) {
   return safe;
 }
 
-async function isLiveEboard(req) {
+// Only members who can actually manage events get the check-in code back —
+// otherwise any member account (not just event_coordinator/president) could
+// read and share codes meant to be handed out in person.
+async function canManageEvents(req) {
   const token = getSessionUser(req);
   if (!token) return false;
-  const users = await getCollection('users', []);
-  return users.some(u => u.id === token.userId && u.active !== false);
+  const members = await loadMembers();
+  const m = members.find(x => x.id === token.id && x.hasAccount && x.active !== false);
+  return m ? hasPermission(m.role, 'events') : false;
 }
 
 // If nothing has been created yet, seed from the retired Google Sheet
@@ -26,7 +32,7 @@ async function loadEvents() {
   const events = await getCollection('events', []);
   if (events.length > 0) return events;
   const seeded = parseEventsCsv(SEED_EVENTS_CSV).map(ev => ({
-    id: randomUUID(), ...ev,
+    id: randomUUID(), ...ev, points: 1,
     checkinCode: generateCheckinCode(),
     checkinOpensAt: '', checkinClosesAt: '',
   }));
@@ -37,11 +43,11 @@ async function loadEvents() {
 export default async function handler(req) {
   if (req.method === 'GET') {
     const events = await loadEvents();
-    const authed = await isLiveEboard(req);
+    const authed = await canManageEvents(req);
     return json({ ok: true, events: authed ? events : events.map(publicEvent) });
   }
 
-  const auth = await requireAuth(req);
+  const auth = await requireAuth(req, { perm: 'events' });
   if (auth.deny) return auth.deny;
 
   const events = await loadEvents();
@@ -59,7 +65,7 @@ export default async function handler(req) {
       if (existingKeys.has(key)) continue;
       existingKeys.add(key);
       events.push({
-        id: randomUUID(), ...ev,
+        id: randomUUID(), ...ev, points: 1,
         checkinCode: generateCheckinCode(),
         checkinOpensAt: '', checkinClosesAt: '',
       });
@@ -70,12 +76,13 @@ export default async function handler(req) {
   }
 
   if (req.method === 'POST') {
-    const { title, description, location, start, end, tags, signinLink, imageUrl, checkinOpensAt, checkinClosesAt } = body;
+    const { title, description, location, start, end, tags, signinLink, imageUrl, checkinOpensAt, checkinClosesAt, points } = body;
     if (!title || !start) return json({ ok: false, error: 'Title and start date/time are required.' }, 400);
     const event = {
       id: randomUUID(), title, description: description || '', location: location || '',
       start, end: end || start, tags: Array.isArray(tags) ? tags : [],
       signinLink: signinLink || '', imageUrl: imageUrl || '',
+      points: typeof points === 'number' ? points : 1,
       checkinCode: generateCheckinCode(),
       checkinOpensAt: checkinOpensAt || '', checkinClosesAt: checkinClosesAt || '',
     };
@@ -90,6 +97,7 @@ export default async function handler(req) {
     for (const f of ['title', 'description', 'location', 'start', 'end', 'signinLink', 'imageUrl', 'checkinOpensAt', 'checkinClosesAt']) {
       if (f in body) target[f] = body[f];
     }
+    if ('points' in body) target.points = Number(body.points);
     if ('tags' in body) target.tags = Array.isArray(body.tags) ? body.tags : [];
     if (body.regenerateCode) target.checkinCode = generateCheckinCode();
     await setCollection('events', events);

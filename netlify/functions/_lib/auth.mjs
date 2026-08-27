@@ -1,5 +1,6 @@
 import { scryptSync, randomBytes, timingSafeEqual, createHmac } from 'node:crypto';
-import { getCollection } from './blobs.mjs';
+import { loadMembers, accountMember } from './loadMembers.mjs';
+import { hasPermission } from './permissions.mjs';
 
 const COOKIE_NAME = 'acda_session';
 const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
@@ -78,24 +79,25 @@ export function getSessionUser(req) {
 }
 
 // ── Guard for protected functions ────────────────────────
-// Re-checks the *live* users collection on every call (not just the signed
-// cookie's snapshot) so a deactivation, role change, or removal takes effect
-// immediately instead of waiting out the old session's 30-day expiry.
-// Returns { user, users } on success ('user' is the live record, minus
+// Re-checks the *live* members collection on every call (not just the
+// signed cookie's snapshot) so a deactivation, role change, or account
+// removal takes effect immediately instead of waiting out the old
+// session's 30-day expiry. `perm` is a tab name from _lib/permissions.mjs
+// (e.g. 'events', 'points'); omit it to just require any signed-in account.
+// Returns { user, members } on success ('user' is the live record, minus
 // salt/hash), or { deny: Response } to return immediately.
-export async function requireAuth(req, { role } = {}) {
+export async function requireAuth(req, { perm } = {}) {
   const token = getSessionUser(req);
   if (!token) return { deny: json({ ok: false, error: 'Not authenticated.' }, 401) };
 
-  const users = await getCollection('users', []);
-  const live = users.find(u => u.id === token.userId && u.active !== false);
+  const members = await loadMembers();
+  const live = members.find(m => m.id === token.id && m.hasAccount && m.active !== false);
   if (!live) return { deny: json({ ok: false, error: 'Session no longer valid.' }, 401) };
 
-  if (role && live.role !== role && live.role !== 'admin') {
+  if (!hasPermission(live.role, perm)) {
     return { deny: json({ ok: false, error: 'Not authorized.' }, 403) };
   }
-  const { salt, hash, ...safeUser } = live;
-  return { user: safeUser, users };
+  return { user: accountMember(live), members };
 }
 
 export function json(data, status = 200, extraHeaders = {}) {

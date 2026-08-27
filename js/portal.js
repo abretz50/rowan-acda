@@ -6,20 +6,33 @@
 (() => {
 'use strict';
 
-const AUTH_URL       = '/.netlify/functions/portal-auth';
-const USERS_URL      = '/.netlify/functions/portal-users';
-const EVENTS_URL     = '/.netlify/functions/portal-events';
-const MEMBERS_URL    = '/.netlify/functions/portal-members';
-const ATTENDANCE_URL = '/.netlify/functions/portal-attendance';
-const LIBRARY_URL    = '/.netlify/functions/portal-library';
-const CONTENT_URL    = '/.netlify/functions/portal-content';
-const GALLERY_URL    = '/.netlify/functions/portal-gallery';
-const UPLOAD_URL     = '/.netlify/functions/portal-upload';
+const AUTH_URL     = '/.netlify/functions/portal-auth';
+const ACCOUNTS_URL = '/.netlify/functions/portal-accounts';
+const EVENTS_URL   = '/.netlify/functions/portal-events';
+const MEMBERS_URL  = '/.netlify/functions/portal-members';
+const POINTS_URL   = '/.netlify/functions/portal-points';
+const LIBRARY_URL  = '/.netlify/functions/portal-library';
+const CONTENT_URL  = '/.netlify/functions/portal-content';
+const GALLERY_URL  = '/.netlify/functions/portal-gallery';
+const UPLOAD_URL   = '/.netlify/functions/portal-upload';
+
+// Mirrors netlify/functions/_lib/permissions.mjs — client-side is just for
+// hiding tabs the user can't use; the server enforces the real boundary.
+const TAB_ROLES = {
+  events: ['event_coordinator'], members: ['secretary'], points: ['secretary'],
+  library: ['vice_president'], gallery: ['media'], content: [], accounts: [],
+};
+function canUse(tab) {
+  if (!me) return false;
+  if (me.role === 'president' || me.role === 'eboard_legacy') return true;
+  return (TAB_ROLES[tab] || []).includes(me.role);
+}
 
 let me = null;
 let needsBootstrap = false;
 let allEvents = [];
 let editingEventId = null;
+let allMembers = [];
 let libScores = [];
 let libSessions = [];
 let editingScoreUrl = null;
@@ -28,6 +41,11 @@ let editingEboardId = null;
 let galleryItems = [];
 const KNOWN_VOICINGS = ['','SATB','SATB divisi','SAB','SSA','SSAA','TTBB','2-Part','Unison','Other'];
 const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Chamber Ensemble','Strings','Band','Brass','Other'];
+const ROLE_LABELS = {
+  member: 'Member', president: 'President', vice_president: 'Vice President',
+  secretary: 'Secretary', treasurer: 'Treasurer', event_coordinator: 'Event Coordinator',
+  media: 'Social Media Coordinator', senator: 'Senator', eboard_legacy: 'E-Board (legacy)',
+};
 
 function toISOFromLocalInput(v){ return v ? new Date(v).toISOString() : ''; }
 function toLocalInputFromISO(iso){
@@ -75,17 +93,18 @@ function setBootstrapMode(on) {
   document.getElementById('login-name').required = on;
   document.getElementById('login-secret').style.display = on ? '' : 'none';
   document.getElementById('login-secret').required = on;
-  document.getElementById('login-heading').textContent = on ? 'Set up the first admin account' : 'Sign in';
+  document.getElementById('login-heading').textContent = on ? 'Set up the first president account' : 'Sign in';
   document.getElementById('login-subtext').textContent = on
-    ? 'No portal accounts exist yet. Create the first admin using the setup secret from whoever deployed the site.'
-    : 'E-Board access only.';
-  document.getElementById('login-submit').textContent = on ? 'Create admin account' : 'Sign in';
+    ? 'No president account exists yet. Create it using the setup secret from whoever deployed the site.'
+    : 'E-Board access only. Regular members should sign in at /account.html instead.';
+  document.getElementById('login-submit').textContent = on ? 'Create president account' : 'Sign in';
 }
 
 async function initLogin() {
   const { data } = await api(AUTH_URL, { method: 'GET' });
   if (data.ok) {
     me = data.user;
+    if (me.role === 'member') { location.replace('/account.html'); return; }
     showDashboard();
     return;
   }
@@ -118,7 +137,9 @@ function wireLoginForm() {
       body: JSON.stringify({ action: 'login', username, password }),
     });
     if (!ok) { errEl.textContent = data.error || 'Sign-in failed.'; return; }
-    me = data.user; showDashboard();
+    me = data.user;
+    if (me.role === 'member') { location.replace('/account.html'); return; }
+    showDashboard();
   });
 
   document.getElementById('logout-btn').addEventListener('click', async () => {
@@ -134,17 +155,22 @@ function wireLoginForm() {
 function showDashboard() {
   document.getElementById('login-section').style.display = 'none';
   document.getElementById('dashboard-section').style.display = '';
-  document.getElementById('whoami').textContent = `Signed in as ${me.name} (${me.role})`;
-  if (me.role === 'admin') {
-    document.getElementById('tab-users').style.display = '';
-    loadUsers();
-  }
-  loadEvents();
-  loadMembers();
-  loadAttendanceSummary();
-  loadLibrary();
-  loadEboardRoster();
-  loadGallery();
+  document.getElementById('whoami').textContent = `Signed in as ${me.name} (${ROLE_LABELS[me.role] || me.role})`;
+
+  Object.keys(TAB_ROLES).forEach(tab => {
+    const tabBtn = document.getElementById(`tab-${tab}`);
+    if (tabBtn) tabBtn.style.display = canUse(tab) ? '' : 'none';
+  });
+
+  if (canUse('accounts')) loadAccounts();
+  // loadEvents() populates the shared `allEvents` list, which the Points tab's
+  // "Event Point Values" section also needs — so load it for either permission.
+  if (canUse('events') || canUse('points')) loadEvents();
+  if (canUse('members')) loadMembers();
+  if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); }
+  if (canUse('library')) loadLibrary();
+  if (canUse('content')) loadEboardRoster();
+  if (canUse('gallery')) loadGallery();
 }
 
 function initTabs() {
@@ -158,73 +184,81 @@ function initTabs() {
   });
 }
 
-// ── Users tab ─────────────────────────────────────────────
-function userRowHTML(u) {
-  const roleBadge = `<span class="badge-role ${u.role}">${u.role}</span>`;
-  const inactiveBadge = u.active ? '' : `<span class="badge-role inactive">inactive</span>`;
-  const isSelf = me && u.id === me.id;
-  const canManage = me && me.role === 'admin';
-  return `<div class="admin-row" data-user-id="${escHtml(u.id)}">
+// ── Accounts tab (president-only) ────────────────────────
+function accountRowHTML(a) {
+  const roleBadge = `<span class="badge-role ${a.role === 'president' ? 'admin' : 'eboard'}">${ROLE_LABELS[a.role] || a.role}</span>`;
+  const inactiveBadge = a.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
+  const isSelf = me && a.id === me.id;
+  return `<div class="admin-row" data-account-id="${escHtml(a.id)}">
     <div>
-      <span class="name">${escHtml(u.name)}</span> ${roleBadge}${inactiveBadge}
-      <div class="meta">@${escHtml(u.username)}${isSelf ? ' · you' : ''}</div>
+      <span class="name">${escHtml(a.name)}</span> ${roleBadge}${inactiveBadge}
+      <div class="meta">@${escHtml(a.username)}${isSelf ? ' · you' : ''}</div>
     </div>
     <div class="actions">
-      ${canManage && !isSelf ? `<button class="btn-sm outline" data-toggle-active="${escHtml(u.id)}" data-next="${u.active ? 'false' : 'true'}">${u.active ? 'Deactivate' : 'Reactivate'}</button>` : ''}
-      ${canManage && !isSelf ? `<button class="btn-sm delete" data-remove-user="${escHtml(u.id)}">Remove</button>` : ''}
+      ${!isSelf ? `<select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">
+        ${Object.entries(ROLE_LABELS).filter(([k]) => k !== 'eboard_legacy').map(([k, label]) => `<option value="${k}" ${a.role === k ? 'selected' : ''}>${label}</option>`).join('')}
+      </select>` : ''}
+      ${!isSelf ? `<button class="btn-sm outline" data-toggle-active="${escHtml(a.id)}" data-next="${a.active === false ? 'true' : 'false'}">${a.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
+      ${!isSelf ? `<button class="btn-sm delete" data-remove-account="${escHtml(a.id)}">Revoke access</button>` : ''}
     </div>
   </div>`;
 }
 
-async function loadUsers() {
-  const listEl = document.getElementById('users-list');
-  const { ok, data } = await api(USERS_URL, { method: 'GET' });
-  if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load users.</p>`; return; }
-  listEl.innerHTML = data.users.map(userRowHTML).join('') || `<p class="small muted">No users yet.</p>`;
+async function loadAccounts() {
+  const listEl = document.getElementById('accounts-list');
+  const { ok, data } = await api(ACCOUNTS_URL, { method: 'GET' });
+  if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load accounts.</p>`; return; }
+  listEl.innerHTML = data.accounts.map(accountRowHTML).join('') || `<p class="small muted">No accounts yet.</p>`;
 }
 
-function wireUsersPanel() {
-  document.getElementById('add-user-form').addEventListener('submit', async (e) => {
+function wireAccountsPanel() {
+  document.getElementById('add-account-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const statusEl = document.getElementById('add-user-status');
+    const statusEl = document.getElementById('add-account-status');
     const name = document.getElementById('nu-name').value.trim();
+    const email = document.getElementById('nu-email').value.trim();
     const username = document.getElementById('nu-username').value.trim();
     const password = document.getElementById('nu-password').value;
     const role = document.getElementById('nu-role').value;
     if (!name || !username || !password) {
       statusEl.textContent = 'Name, username, and password are required.'; statusEl.className = 'admin-status err'; return;
     }
-    const { ok, data } = await api(USERS_URL, { method: 'POST', body: JSON.stringify({ name, username, password, role }) });
-    if (!ok) { statusEl.textContent = data.error || 'Could not create user.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = 'User created.'; statusEl.className = 'admin-status ok';
+    const { ok, data } = await api(ACCOUNTS_URL, { method: 'POST', body: JSON.stringify({ name, email, username, password, role }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not create account.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = 'Account created.'; statusEl.className = 'admin-status ok';
     e.target.reset();
-    loadUsers();
+    loadAccounts();
   });
 
-  document.getElementById('users-list').addEventListener('click', async (e) => {
+  document.getElementById('accounts-list').addEventListener('change', async (e) => {
+    const sel = e.target.closest('[data-role-select]');
+    if (!sel) return;
+    const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: sel.dataset.roleSelect, role: sel.value }) });
+    if (!ok) { alert(data.error || 'Could not update role.'); loadAccounts(); return; }
+    loadAccounts();
+  });
+
+  document.getElementById('accounts-list').addEventListener('click', async (e) => {
     const toggleBtn = e.target.closest('[data-toggle-active]');
     if (toggleBtn) {
-      const id = toggleBtn.dataset.toggleActive;
-      const next = toggleBtn.dataset.next === 'true';
-      const { ok, data } = await api(USERS_URL, { method: 'PATCH', body: JSON.stringify({ id, active: next }) });
-      if (!ok) { alert(data.error || 'Could not update user.'); return; }
-      loadUsers();
+      const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: toggleBtn.dataset.toggleActive, active: toggleBtn.dataset.next === 'true' }) });
+      if (!ok) { alert(data.error || 'Could not update account.'); return; }
+      loadAccounts();
       return;
     }
-    const removeBtn = e.target.closest('[data-remove-user]');
+    const removeBtn = e.target.closest('[data-remove-account]');
     if (removeBtn) {
-      const id = removeBtn.dataset.removeUser;
-      if (!confirm('Remove this user? They will immediately lose portal access.')) return;
-      const { ok, data } = await api(`${USERS_URL}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-      if (!ok) { alert(data.error || 'Could not remove user.'); return; }
-      loadUsers();
+      if (!confirm('Revoke this account\'s portal access? Their roster entry (name/email) is kept.')) return;
+      const { ok, data } = await api(`${ACCOUNTS_URL}?id=${encodeURIComponent(removeBtn.dataset.removeAccount)}`, { method: 'DELETE' });
+      if (!ok) { alert(data.error || 'Could not revoke access.'); return; }
+      loadAccounts();
     }
   });
 }
 
 // ── Events tab ────────────────────────────────────────────
 function eventRowHTML(ev) {
-  const link = `${location.origin}/checkin.html?code=${encodeURIComponent(ev.checkinCode)}`;
+  const link = `${location.origin}/account.html?code=${encodeURIComponent(ev.checkinCode)}`;
   return `<div class="admin-row" style="align-items:flex-start" data-event-id="${escHtml(ev.id)}">
     <div>
       <span class="name">${escHtml(ev.title)}</span>
@@ -246,7 +280,7 @@ async function loadEvents() {
   if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load events.</p>`; return; }
   allEvents = data.events.sort((a, b) => new Date(b.start) - new Date(a.start));
   listEl.innerHTML = allEvents.map(eventRowHTML).join('') || `<p class="small muted">No events yet.</p>`;
-  populateEventSelect();
+  if (canUse('points')) renderEventPointsList();
 }
 
 function resetEventForm() {
@@ -343,24 +377,27 @@ function wireEventsPanel() {
 // ── Members tab ───────────────────────────────────────────
 function memberRowHTML(m) {
   const inactiveBadge = m.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
+  const accountBadge = m.hasAccount ? `<span class="badge-role eboard">has account</span>` : '';
   return `<div class="admin-row" data-member-id="${escHtml(m.id)}">
     <div>
-      <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}
-      <div class="meta">${escHtml(m.email)}${m.year ? ' · ' + escHtml(m.year) : ''}${m.voicePart ? ' · ' + escHtml(m.voicePart) : ''}</div>
+      <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${accountBadge}
+      <div class="meta">${escHtml(m.email)}${m.year ? ' · ' + escHtml(m.year) : ''}</div>
     </div>
     <div class="actions">
+      <button class="btn-sm outline" data-view-points="${escHtml(m.id)}">Points history</button>
       <button class="btn-sm outline" data-toggle-member="${escHtml(m.id)}" data-next="${m.active === false ? 'true' : 'false'}">${m.active === false ? 'Reactivate' : 'Deactivate'}</button>
       <button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>
     </div>
-  </div>`;
+  </div>
+  <div class="member-points-panel" id="member-points-${escHtml(m.id)}" style="display:none;margin:.3rem 0 .7rem"></div>`;
 }
 
 async function loadMembers() {
   const listEl = document.getElementById('members-list');
   const { ok, data } = await api(MEMBERS_URL, { method: 'GET' });
   if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load members.</p>`; return; }
-  const members = data.members.sort((a, b) => a.name.localeCompare(b.name));
-  listEl.innerHTML = members.map(memberRowHTML).join('') || `<p class="small muted">No members yet — they'll also appear automatically once someone self check-ins to an event.</p>`;
+  allMembers = data.members.sort((a, b) => a.name.localeCompare(b.name));
+  listEl.innerHTML = allMembers.map(memberRowHTML).join('') || `<p class="small muted">No members yet — they'll also appear automatically once someone self check-ins to an event.</p>`;
 }
 
 function wireMembersPanel() {
@@ -370,9 +407,8 @@ function wireMembersPanel() {
     const name = document.getElementById('mb-name').value.trim();
     const email = document.getElementById('mb-email').value.trim();
     const year = document.getElementById('mb-year').value.trim();
-    const voicePart = document.getElementById('mb-voice').value.trim();
     if (!name || !email) { statusEl.textContent = 'Name and email are required.'; statusEl.className = 'admin-status err'; return; }
-    const { ok, data } = await api(MEMBERS_URL, { method: 'POST', body: JSON.stringify({ name, email, year, voicePart }) });
+    const { ok, data } = await api(MEMBERS_URL, { method: 'POST', body: JSON.stringify({ name, email, year }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not add member.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = 'Member added.'; statusEl.className = 'admin-status ok';
     e.target.reset();
@@ -380,6 +416,24 @@ function wireMembersPanel() {
   });
 
   document.getElementById('members-list').addEventListener('click', async (e) => {
+    const viewBtn = e.target.closest('[data-view-points]');
+    if (viewBtn) {
+      const panel = document.getElementById(`member-points-${viewBtn.dataset.viewPoints}`);
+      const visible = panel.style.display !== 'none';
+      panel.style.display = visible ? 'none' : '';
+      if (!visible) {
+        panel.innerHTML = '<p class="small muted">Loading…</p>';
+        const { ok, data } = await api(`${POINTS_URL}?memberId=${encodeURIComponent(viewBtn.dataset.viewPoints)}`, { method: 'GET' });
+        if (!ok) { panel.innerHTML = '<p class="small muted">Could not load points.</p>'; return; }
+        const total = data.points.filter(p => p.status === 'approved').reduce((s, p) => s + p.amount, 0);
+        panel.innerHTML = `<div class="admin-card" style="padding:.7rem"><strong>${total} approved point${total !== 1 ? 's' : ''}</strong>` +
+          data.points.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt)).map(p => `<div class="admin-row">
+            <div><span class="name">${escHtml(p.eventTitle || p.reason || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}</div></div>
+            <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
+          </div>`).join('') + `${!data.points.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
+      }
+      return;
+    }
     const toggleBtn = e.target.closest('[data-toggle-member]');
     if (toggleBtn) {
       const { ok, data } = await api(MEMBERS_URL, { method: 'PATCH', body: JSON.stringify({ id: toggleBtn.dataset.toggleMember, active: toggleBtn.dataset.next === 'true' }) });
@@ -389,7 +443,7 @@ function wireMembersPanel() {
     }
     const delBtn = e.target.closest('[data-delete-member]');
     if (delBtn) {
-      if (!confirm('Remove this member? Their past attendance history is kept.')) return;
+      if (!confirm('Remove this member? Their past points history is kept.')) return;
       const { ok, data } = await api(`${MEMBERS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteMember)}`, { method: 'DELETE' });
       if (!ok) { alert(data.error || 'Could not remove member.'); return; }
       loadMembers();
@@ -397,78 +451,121 @@ function wireMembersPanel() {
   });
 }
 
-// ── Attendance tab ────────────────────────────────────────
-function populateEventSelect() {
-  const sel = document.getElementById('att-event-select');
-  const current = sel.value;
-  sel.innerHTML = '<option value="">Choose an event…</option>' +
-    allEvents.map(ev => `<option value="${escHtml(ev.id)}">${escHtml(ev.title)} — ${escHtml(fmtDateRange(ev.start, ev.end))}</option>`).join('');
-  if (current) sel.value = current;
-}
-
-function attendanceRowHTML(a) {
-  return `<div class="admin-row" data-att-id="${escHtml(a.id)}">
+// ── Points tab ────────────────────────────────────────────
+function pendingRowHTML(p) {
+  return `<div class="admin-row" data-points-id="${escHtml(p.id)}">
     <div>
-      <span class="name">${escHtml(a.name)}</span>
-      <div class="meta">${escHtml(a.email)} · checked in ${new Date(a.checkedInAt).toLocaleString()}</div>
+      <span class="name">${escHtml(p.memberName)}</span>
+      <div class="meta">${escHtml(p.eventTitle || p.reason || '')} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
     </div>
-    <div class="actions"><button class="btn-sm delete" data-remove-att="${escHtml(a.id)}">Remove</button></div>
+    <div class="actions">
+      <input class="admin-input" type="number" min="0" value="${p.amount}" style="width:70px" data-amount-for="${escHtml(p.id)}"/>
+      <button class="btn-sm" data-approve="${escHtml(p.id)}">Approve</button>
+      <button class="btn-sm delete" data-deny="${escHtml(p.id)}">Deny</button>
+    </div>
+  </div>`;
+}
+function allEntryRowHTML(p) {
+  return `<div class="admin-row">
+    <div>
+      <span class="name">${escHtml(p.memberName)}</span>
+      <div class="meta">${escHtml(p.eventTitle || p.reason || '')} · ${p.amount} pt${p.amount !== 1 ? 's' : ''} · ${new Date(p.requestedAt).toLocaleDateString()}</div>
+    </div>
+    <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
   </div>`;
 }
 
-async function loadEventAttendance(eventId) {
-  const detailEl = document.getElementById('att-event-detail');
-  const exportLink = document.getElementById('att-export-event');
-  if (!eventId) { detailEl.innerHTML = ''; exportLink.style.display = 'none'; return; }
-  exportLink.href = `${ATTENDANCE_URL}?eventId=${encodeURIComponent(eventId)}&csv=1`;
-  exportLink.style.display = '';
-  const { ok, data } = await api(`${ATTENDANCE_URL}?eventId=${encodeURIComponent(eventId)}`, { method: 'GET' });
-  if (!ok) { detailEl.innerHTML = `<p class="small muted">Could not load attendance.</p>`; return; }
-  detailEl.innerHTML = `
-    <form class="admin-form" id="manual-att-form" style="margin-bottom:.75rem">
-      <div class="form-row">
-        <input class="admin-input" type="text" id="ma-name" placeholder="Full name"/>
-        <input class="admin-input" type="email" id="ma-email" placeholder="Email"/>
-      </div>
-      <button class="btn-sm" type="submit">Mark present</button>
-      <div class="admin-status" id="manual-att-status"></div>
-    </form>
-    ${data.attendance.map(attendanceRowHTML).join('') || '<p class="small muted">No check-ins yet for this event.</p>'}
-  `;
-  document.getElementById('manual-att-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const statusEl = document.getElementById('manual-att-status');
-    const name = document.getElementById('ma-name').value.trim();
-    const email = document.getElementById('ma-email').value.trim();
-    if (!name || !email) { statusEl.textContent = 'Name and email are required.'; statusEl.className = 'admin-status err'; return; }
-    const { ok, data: res } = await api(ATTENDANCE_URL, { method: 'POST', body: JSON.stringify({ eventId, name, email }) });
-    if (!ok) { statusEl.textContent = res.error || 'Could not add.'; statusEl.className = 'admin-status err'; return; }
-    loadEventAttendance(eventId);
-    loadAttendanceSummary();
+async function loadPointsPending() {
+  const el = document.getElementById('points-pending-list');
+  const { ok, data } = await api(`${POINTS_URL}?status=pending`, { method: 'GET' });
+  if (!ok) { el.innerHTML = '<p class="small muted">Could not load.</p>'; return; }
+  el.innerHTML = data.points.map(pendingRowHTML).join('') || '<p class="small muted">Nothing pending.</p>';
+}
+
+async function loadPointsAll() {
+  const el = document.getElementById('points-all-list');
+  const { ok, data } = await api(POINTS_URL, { method: 'GET' });
+  if (!ok) { el.innerHTML = '<p class="small muted">Could not load.</p>'; return; }
+  const rows = data.points.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt));
+  el.innerHTML = rows.map(allEntryRowHTML).join('') || '<p class="small muted">No points entries yet.</p>';
+}
+
+function renderEventPointsList() {
+  const el = document.getElementById('event-points-list');
+  if (!el) return;
+  el.innerHTML = allEvents.map(ev => `<div class="admin-row" data-event-points-row="${escHtml(ev.id)}">
+    <div><span class="name">${escHtml(ev.title)}</span><div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}</div></div>
+    <div class="actions">
+      <input class="admin-input" type="number" min="0" value="${ev.points ?? 1}" style="width:70px" data-event-points-input="${escHtml(ev.id)}"/>
+      <button class="btn-sm outline" data-save-event-points="${escHtml(ev.id)}">Save</button>
+    </div>
+  </div>`).join('') || '<p class="small muted">No events yet.</p>';
+}
+
+async function loadAllMembersForSearch() {
+  if (allMembers.length) return;
+  const { ok, data } = await api(MEMBERS_URL, { method: 'GET' });
+  if (ok) allMembers = data.members;
+}
+
+function wirePointsPanel() {
+  document.getElementById('points-pending-list').addEventListener('click', async (e) => {
+    const approveBtn = e.target.closest('[data-approve]');
+    const denyBtn = e.target.closest('[data-deny]');
+    const id = approveBtn?.dataset.approve || denyBtn?.dataset.deny;
+    if (!id) return;
+    const status = approveBtn ? 'approved' : 'denied';
+    const amountInput = document.querySelector(`[data-amount-for="${id}"]`);
+    const body = { id, status };
+    if (approveBtn && amountInput) body.amount = Number(amountInput.value);
+    const { ok, data } = await api(POINTS_URL, { method: 'PATCH', body: JSON.stringify(body) });
+    if (!ok) { alert(data.error || 'Could not update.'); return; }
+    loadPointsPending(); loadPointsAll();
   });
-}
 
-async function loadAttendanceSummary() {
-  const el = document.getElementById('att-summary');
-  const { ok, data } = await api(`${ATTENDANCE_URL}?summary=1`, { method: 'GET' });
-  if (!ok) { el.innerHTML = `<p class="small muted">Could not load totals.</p>`; return; }
-  if (!data.summary.length) { el.innerHTML = `<p class="small muted">No attendance recorded yet.</p>`; return; }
-  el.innerHTML = data.summary.map(s => `<div class="admin-row">
-    <div><span class="name">${escHtml(s.name)}</span><div class="meta">${escHtml(s.email)}</div></div>
-    <div class="actions"><span class="badge-role eboard">${s.count} event${s.count !== 1 ? 's' : ''}</span></div>
-  </div>`).join('');
-}
+  document.getElementById('event-points-list').addEventListener('click', async (e) => {
+    const saveBtn = e.target.closest('[data-save-event-points]');
+    if (!saveBtn) return;
+    const input = document.querySelector(`[data-event-points-input="${saveBtn.dataset.saveEventPoints}"]`);
+    const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'setEventPoints', eventId: saveBtn.dataset.saveEventPoints, points: Number(input.value) }) });
+    if (!ok) { alert(data.error || 'Could not save.'); return; }
+    const ev = allEvents.find(x => x.id === saveBtn.dataset.saveEventPoints);
+    if (ev) ev.points = data.event.points;
+  });
 
-function wireAttendancePanel() {
-  document.getElementById('att-event-select').addEventListener('change', (e) => loadEventAttendance(e.target.value));
-  document.getElementById('att-event-detail').addEventListener('click', async (e) => {
-    const removeBtn = e.target.closest('[data-remove-att]');
-    if (!removeBtn) return;
-    if (!confirm('Remove this attendance record?')) return;
-    const { ok, data } = await api(`${ATTENDANCE_URL}?id=${encodeURIComponent(removeBtn.dataset.removeAtt)}`, { method: 'DELETE' });
-    if (!ok) { alert(data.error || 'Could not remove record.'); return; }
-    loadEventAttendance(document.getElementById('att-event-select').value);
-    loadAttendanceSummary();
+  const searchInput = document.getElementById('ma-member-search');
+  const resultsEl = document.getElementById('ma-member-results');
+  searchInput.addEventListener('input', () => {
+    document.getElementById('ma-member-id').value = '';
+    const term = searchInput.value.trim().toLowerCase();
+    if (!term) { resultsEl.style.display = 'none'; return; }
+    const matches = allMembers.filter(m => m.name.toLowerCase().includes(term) || m.email.toLowerCase().includes(term)).slice(0, 8);
+    resultsEl.innerHTML = matches.map(m => `<div class="admin-row" style="cursor:pointer" data-pick-member="${escHtml(m.id)}" data-pick-name="${escHtml(m.name)}">
+      <div><span class="name">${escHtml(m.name)}</span><div class="meta">${escHtml(m.email)}</div></div>
+    </div>`).join('') || '<p class="small muted" style="padding:.4rem">No matches.</p>';
+    resultsEl.style.display = '';
+  });
+  resultsEl.addEventListener('click', (e) => {
+    const row = e.target.closest('[data-pick-member]');
+    if (!row) return;
+    document.getElementById('ma-member-id').value = row.dataset.pickMember;
+    searchInput.value = row.dataset.pickName;
+    resultsEl.style.display = 'none';
+  });
+
+  document.getElementById('manual-award-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById('manual-award-status');
+    const memberId = document.getElementById('ma-member-id').value;
+    const amount = document.getElementById('ma-amount').value;
+    const reason = document.getElementById('ma-reason').value.trim();
+    if (!memberId) { statusEl.textContent = 'Pick a member from the search results.'; statusEl.className = 'admin-status err'; return; }
+    if (!amount || !reason) { statusEl.textContent = 'Amount and reason are required.'; statusEl.className = 'admin-status err'; return; }
+    const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'manualAward', memberId, amount, reason }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not award points.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = 'Awarded.'; statusEl.className = 'admin-status ok';
+    e.target.reset();
+    loadPointsAll();
   });
 }
 
@@ -813,10 +910,10 @@ function wireGalleryPanel() {
 // ── Boot ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   wireLoginForm();
-  wireUsersPanel();
+  wireAccountsPanel();
   wireEventsPanel();
   wireMembersPanel();
-  wireAttendancePanel();
+  wirePointsPanel();
   wireLibraryPanel();
   wireContentPanel();
   wireGalleryPanel();

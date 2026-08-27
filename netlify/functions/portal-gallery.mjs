@@ -9,7 +9,7 @@ export default async function handler(req) {
     return json({ ok: true, gallery: [...gallery].sort((a, b) => a.order - b.order) });
   }
 
-  const auth = await requireAuth(req);
+  const auth = await requireAuth(req, { perm: 'gallery' });
   if (auth.deny) return auth.deny;
 
   let body;

@@ -3,6 +3,7 @@
 // PDF uploads, just moved here so it shares the portal's session auth
 // instead of needing its own separate secret/CORS setup.
 import { requireAuth, json } from './_lib/auth.mjs';
+import { hasPermission } from './_lib/permissions.mjs';
 
 const GH_REPO = 'abretz50/rowan-acda';
 const GH_BRANCH = 'main';
@@ -11,12 +12,15 @@ const CATEGORY_DIRS = {
   gallery: 'assets/img/gallery',
   eboard: 'assets/img/eboard',
   library: 'assets/pdfs/uploads',
+  events: 'assets/img/events',
 };
 const CATEGORY_ALLOWED_EXT = {
   gallery: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
   eboard: ['.jpg', '.jpeg', '.png', '.webp'],
   library: ['.pdf'],
+  events: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
 };
+const CATEGORY_PERM = { gallery: 'gallery', eboard: 'content', library: 'library', events: 'events' };
 
 function extOf(name) {
   const m = /\.[a-z0-9]+$/i.exec(name || '');
@@ -49,6 +53,9 @@ export default async function handler(req) {
   const category = formData.get('category');
   const dir = CATEGORY_DIRS[category];
   if (!file || !dir) return json({ ok: false, error: 'A file and a valid category are required.' }, 400);
+  if (!hasPermission(auth.user.role, CATEGORY_PERM[category])) {
+    return json({ ok: false, error: 'Not authorized for that upload category.' }, 403);
+  }
 
   const ext = extOf(file.name);
   if (!CATEGORY_ALLOWED_EXT[category].includes(ext)) {

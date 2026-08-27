@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>My Account — Rowan ACDA</title>
+<meta name="description" content="Sign in to your Rowan ACDA account, check in to events, and track your points."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="/assets/icons/logo2.png"/>
+<meta name="theme-color" content="#7A0A0A"/>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/layout.css"/>
+<link rel="stylesheet" href="/css/components.css"/>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Rowan ACDA Home">
+      <img src="/assets/icons/logo2.png" alt="ACDA logo"/>
+      <span>Rowan ACDA</span>
+    </a>
+    <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+    <nav id="site-nav" class="nav" role="navigation">
+      <a class="nav-link" data-nav href="/">Home</a>
+      <a class="nav-link" data-nav href="/events.html">Events</a>
+      <a class="nav-link" data-nav href="/members.html">Members</a>
+      <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
+      <a class="nav-link" data-nav href="/resources.html">Resources</a>
+      <a class="nav-link" data-nav href="/account.html">My Account</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container" role="main" style="padding:1.25rem 0 2rem">
+  <section class="banner-outer" role="region" aria-label="Account header">
+    <div class="page-banner" style="--banner-img:url('/assets/img/members-banner.jpg');">
+      <div class="container">
+        <h1 class="page-banner__title">My Account</h1>
+        <p class="page-banner__subtext">Sign in, check in to events, and track your points</p>
+      </div>
+    </div>
+  </section>
+
+  <br>
+
+  <!-- ===== Signed out ===== -->
+  <div id="signed-out" class="lock-screen">
+    <div class="view-tabs" role="tablist" style="margin-bottom:1rem">
+      <button class="view-tab active" id="tab-signin" role="tab">Sign In</button>
+      <button class="view-tab" id="tab-signup" role="tab">Create Account</button>
+    </div>
+
+    <form class="lock-form" id="signin-form">
+      <input type="text" id="si-username" placeholder="Username" autocomplete="username" required/>
+      <input type="password" id="si-password" placeholder="Password" autocomplete="current-password" required/>
+      <button class="btn" type="submit">Sign in</button>
+      <div class="lock-error" id="signin-error"></div>
+    </form>
+
+    <form class="lock-form" id="signup-form" style="display:none">
+      <input type="text" id="su-name" placeholder="Full name" autocomplete="name" required/>
+      <input type="email" id="su-email" placeholder="Email" autocomplete="email" required/>
+      <input type="text" id="su-username" placeholder="Choose a username" autocomplete="username" required/>
+      <input type="password" id="su-password" placeholder="Choose a password" autocomplete="new-password" required/>
+      <button class="btn" type="submit">Create account</button>
+      <div class="lock-error" id="signup-error"></div>
+    </form>
+  </div>
+
+  <!-- ===== Signed in ===== -->
+  <div id="signed-in" style="display:none">
+    <div class="eboard-mode-bar">
+      <span class="mode-dot"></span>
+      <span id="whoami"></span>
+      <a class="btn-sm outline" id="portal-link" href="/portal.html" style="display:none;margin-left:auto">Open E-Board Portal</a>
+      <button class="btn-sm outline" id="logout-btn" style="margin-left:auto">Log out</button>
+    </div>
+
+    <div class="eboard-panel">
+      <div class="admin-card">
+        <h3>Check In to an Event</h3>
+        <p class="small muted">Enter the code given to you at the meeting or event.</p>
+        <form class="admin-form" id="checkin-form" novalidate>
+          <input class="admin-input" type="text" id="ci-code" placeholder="Event code" maxlength="6" autocapitalize="characters" required/>
+          <button class="btn-sm" type="submit">Check In</button>
+          <div class="admin-status" id="checkin-status"></div>
+        </form>
+      </div>
+
+      <div class="admin-card">
+        <h3>My Profile</h3>
+        <form class="admin-form" id="profile-form" novalidate>
+          <div class="form-row">
+            <input class="admin-input" type="text" id="pf-name" placeholder="Full name" required/>
+            <input class="admin-input" type="email" id="pf-email" placeholder="Email" required/>
+          </div>
+          <div class="form-row">
+            <input class="admin-input" type="text" id="pf-year" placeholder="Year (e.g. Sophomore)"/>
+            <input class="admin-input" type="text" id="pf-address" placeholder="Mailing address (optional)"/>
+          </div>
+          <button class="btn-sm" type="submit">Save profile</button>
+          <div class="admin-status" id="profile-status"></div>
+        </form>
+        <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>
+        <form class="admin-form" id="password-form" novalidate>
+          <div class="form-row">
+            <input class="admin-input" type="password" id="pw-current" placeholder="Current password" required/>
+            <input class="admin-input" type="password" id="pw-new" placeholder="New password" required/>
+          </div>
+          <button class="btn-sm outline" type="submit">Change password</button>
+          <div class="admin-status" id="password-status"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="admin-card" style="margin-top:1rem">
+      <h3>My Points <span class="small muted">(<span id="points-total">0</span> total)</span></h3>
+      <div id="points-list"><p class="small muted">Loading…</p></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer acda-footer" role="contentinfo">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <div class="brand--footer">
+        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56">
+        <div class="brand-text">
+          <strong>Rowan ACDA</strong>
+          <div class="muted">Collegiate Chapter</div>
+        </div>
+      </div>
+    </div>
+    <nav aria-label="Footer" class="footer-nav">
+      <h4>Navigate</h4>
+      <ul class="list-unstyled">
+        <li><a href="/events.html">Events</a></li>
+        <li><a href="/members.html">Members</a></li>
+        <li><a href="/eboard.html">E-Board</a></li>
+        <li><a href="/resources.html">Resources</a></li>
+      </ul>
+    </nav>
+    <div class="footer-connect">
+      <h4>Connect</h4>
+      <ul class="list-unstyled">
+        <li><a href="mailto:rowanacda1@gmail.com">rowanacda1@gmail.com</a></li>
+        <li><a href="https://www.instagram.com/rowanacda/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+      <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+<script defer src="/js/core.js"></script>
+<script defer src="/js/account.js"></script>
+</body>
+</html>

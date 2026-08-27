@@ -1,22 +1,19 @@
 import { randomUUID } from 'node:crypto';
-import { getCollection, setCollection } from './_lib/blobs.mjs';
+import { loadMembers, saveMembers, accountMember } from './_lib/loadMembers.mjs';
 import {
   hashPassword, verifyPassword, signSession,
   setSessionCookieHeader, clearSessionCookieHeader, getSessionUser, json,
 } from './_lib/auth.mjs';
 
-function publicUser(u) {
-  return { id: u.id, username: u.username, name: u.name, role: u.role };
-}
-
 export default async function handler(req) {
   if (req.method === 'GET') {
-    const users = await getCollection('users', []);
-    const sessionUser = getSessionUser(req);
-    if (!sessionUser) return json({ ok: false, needsBootstrap: users.length === 0 });
-    const u = users.find(x => x.id === sessionUser.userId && x.active !== false);
-    if (!u) return json({ ok: false, needsBootstrap: users.length === 0 });
-    return json({ ok: true, user: publicUser(u) });
+    const members = await loadMembers();
+    const sessionToken = getSessionUser(req);
+    const hasPresident = members.some(m => m.role === 'president' && m.hasAccount && m.active !== false);
+    if (!sessionToken) return json({ ok: false, needsBootstrap: !hasPresident });
+    const m = members.find(x => x.id === sessionToken.id && x.hasAccount && x.active !== false);
+    if (!m) return json({ ok: false, needsBootstrap: !hasPresident });
+    return json({ ok: true, user: accountMember(m) });
   }
 
   if (req.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405);
@@ -24,17 +21,37 @@ export default async function handler(req) {
   let body;
   try { body = await req.json(); } catch { return json({ ok: false, error: 'Bad JSON' }, 400); }
   const action = body?.action;
+  const members = await loadMembers();
 
   if (action === 'login') {
     const { username, password } = body;
     if (!username || !password) return json({ ok: false, error: 'Username and password required.' }, 400);
-    const users = await getCollection('users', []);
-    const u = users.find(x => x.username.toLowerCase() === String(username).toLowerCase());
-    if (!u || u.active === false || !verifyPassword(password, u.salt, u.hash)) {
+    const m = members.find(x => x.hasAccount && x.username?.toLowerCase() === String(username).toLowerCase());
+    if (!m || m.active === false || !verifyPassword(password, m.salt, m.hash)) {
       return json({ ok: false, error: 'Incorrect username or password.' }, 401);
     }
-    const token = signSession({ userId: u.id, role: u.role });
-    return json({ ok: true, user: publicUser(u) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
+    const token = signSession({ id: m.id });
+    return json({ ok: true, user: accountMember(m) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
+  }
+
+  if (action === 'register') {
+    const { name, email, username, password } = body;
+    if (!name || !email || !username || !password) {
+      return json({ ok: false, error: 'Name, email, username, and password are required.' }, 400);
+    }
+    if (members.some(x => x.hasAccount && x.username?.toLowerCase() === String(username).toLowerCase())) {
+      return json({ ok: false, error: 'That username is already taken.' }, 409);
+    }
+    const { salt, hash } = hashPassword(password);
+    const member = {
+      id: randomUUID(), name, email, year: '', mailingAddress: '',
+      role: 'member', hasAccount: true, username, salt, hash,
+      active: true, joinedAt: new Date().toISOString(),
+    };
+    members.push(member);
+    await saveMembers(members);
+    const token = signSession({ id: member.id });
+    return json({ ok: true, user: accountMember(member) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
   }
 
   if (action === 'logout') {
@@ -46,18 +63,23 @@ export default async function handler(req) {
     if (!process.env.BOOTSTRAP_SECRET || secret !== process.env.BOOTSTRAP_SECRET) {
       return json({ ok: false, error: 'Invalid setup secret.' }, 403);
     }
-    const users = await getCollection('users', []);
-    if (users.length > 0) {
-      return json({ ok: false, error: 'Setup already completed — an account already exists.' }, 409);
+    const hasPresident = members.some(m => m.role === 'president' && m.hasAccount && m.active !== false);
+    if (hasPresident) {
+      return json({ ok: false, error: 'Setup already completed — a president account already exists.' }, 409);
     }
     if (!username || !password || !name) {
       return json({ ok: false, error: 'Name, username, and password are required.' }, 400);
     }
     const { salt, hash } = hashPassword(password);
-    const admin = { id: randomUUID(), username, name, salt, hash, role: 'admin', active: true };
-    await setCollection('users', [admin]);
-    const token = signSession({ userId: admin.id, role: admin.role });
-    return json({ ok: true, user: publicUser(admin) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
+    const admin = {
+      id: randomUUID(), name, email: '', year: '', mailingAddress: '',
+      role: 'president', hasAccount: true, username, salt, hash,
+      active: true, joinedAt: new Date().toISOString(),
+    };
+    members.push(admin);
+    await saveMembers(members);
+    const token = signSession({ id: admin.id });
+    return json({ ok: true, user: accountMember(admin) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
   }
 
   return json({ ok: false, error: 'Unknown action.' }, 400);

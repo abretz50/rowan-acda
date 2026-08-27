@@ -29,6 +29,7 @@
       <a class="nav-link" data-nav href="/members.html">Members</a>
       <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
       <a class="nav-link" data-nav href="/resources.html">Resources</a>
+      <a class="nav-link" data-nav href="/account.html">My Account</a>
     </nav>
   </div>
 </header>
@@ -73,17 +74,17 @@
       <button class="view-tab active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview">Overview</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-events" id="tab-events">Events</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-members" id="tab-members">Members</button>
-      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-attendance" id="tab-attendance">Attendance</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-points" id="tab-points">Points</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-library" id="tab-library">Digital Library</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-content" id="tab-content">Site Content</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-gallery" id="tab-gallery">Gallery</button>
-      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-users" id="tab-users" style="display:none">Users</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none">Accounts</button>
     </div>
 
     <div class="panel active" id="panel-overview">
       <div class="admin-card">
         <h3>Welcome</h3>
-        <p class="small muted">Events, Members, Attendance (via member self check-in), the Digital Library, Site Content, and Gallery/slideshow management are all live from this dashboard.</p>
+        <p class="small muted" id="overview-welcome">Events, Members, Points, the Digital Library, Site Content, and Gallery/slideshow management are all live from this dashboard — only the tabs your role can use are shown.</p>
       </div>
     </div>
 
@@ -155,10 +156,7 @@
               <input class="admin-input" type="text" id="mb-name" placeholder="Full name" required/>
               <input class="admin-input" type="email" id="mb-email" placeholder="Email" required/>
             </div>
-            <div class="form-row">
-              <input class="admin-input" type="text" id="mb-year" placeholder="Year (e.g. Sophomore)"/>
-              <input class="admin-input" type="text" id="mb-voice" placeholder="Voice part (e.g. Soprano)"/>
-            </div>
+            <input class="admin-input" type="text" id="mb-year" placeholder="Year (e.g. Sophomore)"/>
             <p class="form-hint">Members are also added automatically the first time they self check in to an event.</p>
             <button class="btn-sm" type="submit">Add member</button>
             <div class="admin-status" id="member-form-status"></div>
@@ -171,20 +169,39 @@
       </div>
     </div>
 
-    <!-- ===== Attendance ===== -->
-    <div class="panel" id="panel-attendance">
+    <!-- ===== Points ===== -->
+    <div class="panel" id="panel-points">
       <div class="admin-card" style="margin-bottom:1rem">
-        <h3>By Event</h3>
-        <div class="form-row" style="margin-bottom:.6rem">
-          <select class="admin-input" id="att-event-select"><option value="">Choose an event…</option></select>
-          <a class="btn-sm outline" id="att-export-event" href="#" style="display:none">Export CSV</a>
-        </div>
-        <div id="att-event-detail"></div>
+        <h3>Pending Approval</h3>
+        <div id="points-pending-list"><p class="small muted">Loading…</p></div>
       </div>
-      <div class="admin-card">
-        <h3>All-Time Totals <span class="small muted">(point tracking)</span></h3>
-        <a class="btn-sm outline" id="att-export-summary" href="/.netlify/functions/portal-attendance?summary=1&csv=1" style="margin-bottom:.6rem;display:inline-flex">Export CSV</a>
-        <div id="att-summary"><p class="small muted">Loading…</p></div>
+
+      <div class="eboard-panel">
+        <div class="admin-card">
+          <h3>Award Points Manually</h3>
+          <p class="small muted">For volunteering or anything else that isn't tied to an event check-in. Awarded immediately (you're the approver).</p>
+          <form class="admin-form" id="manual-award-form" novalidate>
+            <input class="admin-input" type="text" id="ma-member-search" placeholder="Search member by name or email…" required/>
+            <input type="hidden" id="ma-member-id"/>
+            <div id="ma-member-results" style="display:none;max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:.5rem"></div>
+            <div class="form-row">
+              <input class="admin-input" type="number" id="ma-amount" placeholder="Points" min="1" required/>
+              <input class="admin-input" type="text" id="ma-reason" placeholder="Reason (e.g. Bake sale volunteer)" required/>
+            </div>
+            <button class="btn-sm" type="submit">Award points</button>
+            <div class="admin-status" id="manual-award-status"></div>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3>Event Point Values</h3>
+          <div id="event-points-list"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+
+      <div class="admin-card" style="margin-top:1rem">
+        <h3>All Entries</h3>
+        <div id="points-all-list"><p class="small muted">Loading…</p></div>
       </div>
     </div>
 
@@ -317,31 +334,38 @@
       </div>
     </div>
 
-    <div class="panel" id="panel-users">
+    <div class="panel" id="panel-accounts">
       <div class="eboard-panel">
         <div class="admin-card">
-          <h3>Add a User</h3>
-          <form class="admin-form" id="add-user-form" novalidate>
+          <h3>Create Account Directly</h3>
+          <form class="admin-form" id="add-account-form" novalidate>
             <div class="form-row">
               <input class="admin-input" type="text" id="nu-name" placeholder="Full name" required/>
-              <input class="admin-input" type="text" id="nu-username" placeholder="Username" required/>
+              <input class="admin-input" type="email" id="nu-email" placeholder="Email"/>
             </div>
             <div class="form-row">
+              <input class="admin-input" type="text" id="nu-username" placeholder="Username" required/>
               <input class="admin-input" type="password" id="nu-password" placeholder="Temporary password" required/>
-              <select class="admin-input" id="nu-role">
-                <option value="eboard">E-Board</option>
-                <option value="admin">Admin</option>
-              </select>
             </div>
-            <p class="form-hint">Share the temporary password with them directly — they aren't emailed anything. Admins can manage other users' access; E-Board accounts cannot.</p>
-            <button class="btn-sm" type="submit">Create user</button>
-            <div class="admin-status" id="add-user-status"></div>
+            <select class="admin-input" id="nu-role">
+              <option value="member">Member</option>
+              <option value="president">President</option>
+              <option value="vice_president">Vice President</option>
+              <option value="secretary">Secretary</option>
+              <option value="treasurer">Treasurer</option>
+              <option value="event_coordinator">Event Coordinator</option>
+              <option value="media">Social Media Coordinator</option>
+              <option value="senator">Senator</option>
+            </select>
+            <p class="form-hint">Anyone can also create their own account at /account.html — use this only when creating one on someone's behalf. Share the temporary password with them directly.</p>
+            <button class="btn-sm" type="submit">Create account</button>
+            <div class="admin-status" id="add-account-status"></div>
           </form>
         </div>
 
         <div class="admin-card">
-          <h3>Current Users</h3>
-          <div id="users-list"><p class="small muted">Loading…</p></div>
+          <h3>Current Accounts</h3>
+          <div id="accounts-list"><p class="small muted">Loading…</p></div>
         </div>
       </div>
     </div>
