@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -14,7 +14,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css"/>
+<link rel="stylesheet" href="/css/components.css?v=3"/>
 
 <style>
   :root{ --tap: 40px; }
@@ -481,7 +481,10 @@
       const data = await evRes.json();
       if(!data.ok) throw new Error('Events API returned an error');
       if(authRes){ try{ const authData = await authRes.json(); signedIn = !!authData.ok; }catch{} }
-      ALL_EVENTS = (data.events || []).map(normalize).filter(ev => ev.title);
+      const sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      ALL_EVENTS = (data.events || []).map(normalize)
+        .filter(ev => ev.title)
+        .filter(ev => ev.when !== 'past' || ev.endDateTime >= sixMonthsAgo);
       if(!ALL_EVENTS.length){
         listEl.innerHTML = '<p class="kicker">No events to show yet. Check back soon.</p>';
       } else {
@@ -497,6 +500,6 @@
 </script>
 
 
-<script src="/js/core.js" defer></script>
+<script src="/js/core.js?v=3" defer></script>
 </body>
 </html>
