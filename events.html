@@ -186,6 +186,17 @@
   </div>
 </div>
 
+<!-- Volunteer sign-up modal -->
+<div class="modal" id="volunteer-modal" role="dialog" aria-modal="true" aria-labelledby="volunteer-modal-title" hidden>
+  <div class="dialog" tabindex="-1">
+    <div class="modal-header">
+      <h3 class="modal-title" id="volunteer-modal-title">Sign Up to Volunteer</h3>
+      <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
+    </div>
+    <section id="volunteer-modal-body"><p>Loading…</p></section>
+  </div>
+</div>
+
 <footer class="site-footer acda-footer" role="contentinfo">
   <div class="container footer-grid">
     <!-- Brand / blurb -->
@@ -234,6 +245,7 @@
   const EVENTS_URL = '/.netlify/functions/portal-events';
   const AUTH_URL = '/.netlify/functions/portal-auth';
   const POINTS_URL = '/.netlify/functions/portal-points';
+  const VOLUNTEER_URL = '/.netlify/functions/portal-volunteer';
 
   const listEl = document.getElementById('eventsList');
   let signedIn = false;
@@ -271,6 +283,10 @@
 
   function checkinButtonHTML(ev){
     if(ev.when === 'past') return '';
+    if(ev.isVolunteer){
+      const label = !signedIn ? 'Sign In to Sign Up' : 'Sign Up';
+      return '<button class="btn btn-checkin" data-volunteer="'+ev.id+'">'+label+'</button>';
+    }
     const label = !signedIn ? 'Sign In to Check In' : (ev.checkinOpen ? 'Check In' : 'Check-In Not Open Yet');
     const disabled = signedIn && !ev.checkinOpen;
     const cls = 'btn btn-checkin' + (disabled ? ' btn-outline is-disabled' : '');
@@ -407,6 +423,88 @@
     handleCheckin(btn.getAttribute('data-checkin'), btn);
   });
 
+  /* ---------- Volunteer sign-up ---------- */
+  async function openVolunteerSignup(eventId){
+    if(!signedIn){
+      if(confirm('You need to sign in to sign up to volunteer. Go to the sign-in page now?')){
+        location.href = '/account.html';
+      }
+      return;
+    }
+    const bodyEl = document.getElementById('volunteer-modal-body');
+    bodyEl.innerHTML = '<p>Loading…</p>';
+    openModal(document.getElementById('volunteer-modal'));
+    await renderVolunteerModal(eventId);
+  }
+
+  async function renderVolunteerModal(eventId){
+    const bodyEl = document.getElementById('volunteer-modal-body');
+    let data;
+    try{
+      const res = await fetch(VOLUNTEER_URL + '?eventId=' + encodeURIComponent(eventId), { credentials: 'include' });
+      data = await res.json();
+    } catch { bodyEl.innerHTML = '<p>Network error — please try again.</p>'; return; }
+    if(!data.ok){ bodyEl.innerHTML = '<p>'+(data.error||'Could not load sign-up options.')+'</p>'; return; }
+
+    if(data.notConfigured){
+      bodyEl.innerHTML = '<p>This event hasn’t been set up for volunteer sign-up yet — check back soon, or ask an E-Board member.</p>';
+      return;
+    }
+
+    if(data.volunteerType === 'full_event'){
+      bodyEl.innerHTML = data.signedUp
+        ? '<p>You’re signed up for this event — thank you! The secretary will award your points afterward.</p>'
+        : '<p>This is a full-event volunteer signup — no time slots, just let us know you’re in. Points are awarded by the secretary afterward.</p>'
+          + '<button class="btn btn-checkin" data-vol-signup="full">Sign Up</button>';
+      return;
+    }
+
+    const slotRows = (data.slots||[]).map(s => {
+      const already = (data.mySlotLabels||[]).includes(s.label);
+      const full = s.remaining <= 0;
+      const label = already ? 'Signed Up' : (full ? 'Full' : 'Sign Up ('+s.remaining+' left)');
+      const disabled = already || full;
+      return '<div class="admin-row" style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid var(--border)">'
+        + '<span>'+s.label+' — '+data.pointsPerSlot+' pts</span>'
+        + '<button class="btn-sm'+(disabled?' btn-outline':'')+'" '+(disabled?'disabled':'')+' data-vol-signup="slot" data-vol-slot="'+s.label+'">'+label+'</button>'
+        + '</div>';
+    }).join('') || '<p>No slots available for this event.</p>';
+
+    const foodSection = data.volunteerType === 'bake_sale'
+      ? '<hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>'
+        + '<p>Bringing food instead of working a slot? Let us know — the secretary will review and set the final points (starts at 10).</p>'
+        + '<button class="btn'+(data.broughtFood?' btn-outline':'')+'" '+(data.broughtFood?'disabled':'')+' data-vol-signup="food">'+(data.broughtFood?'Already Signed Up to Bring Food':'I’ll Bring Food')+'</button>'
+      : '';
+
+    bodyEl.innerHTML = '<div style="text-align:left">'+slotRows+'</div>' + foodSection;
+  }
+
+  document.getElementById('volunteer-modal-body').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-vol-signup]');
+    if(!btn || btn.disabled) return;
+    const eventId = document.querySelector('#volunteer-modal').dataset.eventId;
+    const kind = btn.dataset.volSignup;
+    const slotLabel = btn.dataset.volSlot || undefined;
+    btn.disabled = true; btn.textContent = 'Signing up…';
+    try{
+      const res = await fetch(VOLUNTEER_URL, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId, kind, slotLabel })
+      });
+      const data = await res.json();
+      if(!data.ok){ alert(data.error || 'Could not sign up.'); }
+      await renderVolunteerModal(eventId);
+    } catch { alert('Network error — please try again.'); }
+  });
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-volunteer]');
+    if(!btn) return;
+    document.getElementById('volunteer-modal').dataset.eventId = btn.getAttribute('data-volunteer');
+    openVolunteerSignup(btn.getAttribute('data-volunteer'));
+  });
+
   function render(events){
     events.sort((a,b)=> a.startDateTime - b.startDateTime);
     listEl.innerHTML = events.map(cardHTML).join('\n') + '\n' + events.map(modalHTML).join('\n');
@@ -469,6 +567,8 @@
       signin_link: ev.signinLink || '',
       image_url: ev.imageUrl || '',
       checkinOpen: !!ev.checkinOpen,
+      isVolunteer: tags.includes('Volunteer'),
+      volunteerType: ev.volunteerType || '',
       when
     };
   }

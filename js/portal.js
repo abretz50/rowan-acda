@@ -211,7 +211,7 @@ function showDashboard() {
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
   if (canUse('members')) loadMembers();
-  if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); }
+  if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) loadEboardRoster();
   if (canUse('gallery')) loadGallery();
@@ -437,12 +437,24 @@ function resetEventForm() {
   document.getElementById('ev-image').value = '';
   document.getElementById('ev-image-current').textContent = '';
   document.getElementById('ev-clear-signin-wrap').style.display = 'none';
+  document.getElementById('ev-volunteer-wrap').style.display = 'none';
+  document.getElementById('ev-slot-capacity-wrap').style.display = 'none';
   document.getElementById('event-form-heading').textContent = 'Create Event';
   document.getElementById('event-form-submit').textContent = 'Create event';
   document.getElementById('event-form-cancel').style.display = 'none';
 }
 
+function updateVolunteerFieldsVisibility() {
+  const isVolunteer = document.getElementById('ev-tags').value === 'Volunteer';
+  document.getElementById('ev-volunteer-wrap').style.display = isVolunteer ? '' : 'none';
+  const type = document.getElementById('ev-volunteer-type').value;
+  document.getElementById('ev-slot-capacity-wrap').style.display = (isVolunteer && (type === 'bake_sale' || type === 'time_slot')) ? '' : 'none';
+}
+
 function wireEventsPanel() {
+  document.getElementById('ev-tags').addEventListener('change', updateVolunteerFieldsVisibility);
+  document.getElementById('ev-volunteer-type').addEventListener('change', updateVolunteerFieldsVisibility);
+
   document.getElementById('event-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('event-form-status');
@@ -454,15 +466,24 @@ function wireEventsPanel() {
       if (!up.ok) { statusEl.textContent = up.data.error || 'Image upload failed.'; statusEl.className = 'admin-status err'; return; }
       imageUrl = up.data.url;
     }
+    const tag = document.getElementById('ev-tags').value;
     const payload = {
       title: document.getElementById('ev-title').value.trim(),
       description: document.getElementById('ev-desc').value.trim(),
       start: toISOFromLocalInput(document.getElementById('ev-start').value),
       end: toISOFromLocalInput(document.getElementById('ev-end').value),
       location: document.getElementById('ev-location').value.trim(),
-      tags: [document.getElementById('ev-tags').value],
+      tags: [tag],
       imageUrl,
     };
+    if (tag === 'Volunteer') {
+      const volunteerType = document.getElementById('ev-volunteer-type').value;
+      if (!volunteerType) { statusEl.textContent = 'Choose a volunteer type.'; statusEl.className = 'admin-status err'; return; }
+      payload.volunteerType = volunteerType;
+      if (volunteerType === 'bake_sale' || volunteerType === 'time_slot') {
+        payload.slotCapacity = Number(document.getElementById('ev-slot-capacity').value) || 3;
+      }
+    }
     if (document.getElementById('ev-clear-signin').checked) payload.signinLink = '';
     if (!payload.title || !payload.start) {
       statusEl.textContent = 'Title and start are required.'; statusEl.className = 'admin-status err'; return;
@@ -490,6 +511,9 @@ function wireEventsPanel() {
       document.getElementById('ev-end').value = toLocalInputFromISO(ev.end);
       document.getElementById('ev-location').value = ev.location || '';
       document.getElementById('ev-tags').value = (ev.tags && ev.tags[0]) || 'Event';
+      document.getElementById('ev-volunteer-type').value = ev.volunteerType || '';
+      document.getElementById('ev-slot-capacity').value = ev.slotCapacity || 3;
+      updateVolunteerFieldsVisibility();
       document.getElementById('ev-image').value = ev.imageUrl || '';
       document.getElementById('ev-image-current').textContent = ev.imageUrl ? `Current image: ${ev.imageUrl} — choose a new one only to replace it.` : '';
       const clearSigninWrap = document.getElementById('ev-clear-signin-wrap');
@@ -570,7 +594,7 @@ function wireMembersPanel() {
               ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
               : '';
             return `<div class="admin-row">
-            <div><span class="name">${escHtml(p.eventTitle || p.reason || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
+            <div><span class="name">${escHtml(pointsLabel(p) || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
             <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
           </div>`;
           }).join('') + `${!data.points.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
@@ -595,11 +619,19 @@ function wireMembersPanel() {
 }
 
 // ── Points tab ────────────────────────────────────────────
+// Volunteer entries carry both an eventTitle and a more specific reason
+// (which slot, "brought food", etc.) — show both so the secretary can tell
+// them apart at a glance instead of just seeing the event name repeated.
+function pointsLabel(p) {
+  if (p.eventTitle && p.reason && p.reason !== p.eventTitle) return `${p.eventTitle} — ${p.reason}`;
+  return p.eventTitle || p.reason || '';
+}
+
 function pendingRowHTML(p) {
   return `<div class="admin-row" data-points-id="${escHtml(p.id)}">
     <div>
       <span class="name">${escHtml(p.memberName)}</span>
-      <div class="meta">${escHtml(p.eventTitle || p.reason || '')} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
+      <div class="meta">${escHtml(pointsLabel(p))} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
     </div>
     <div class="actions">
       <input class="admin-input" type="number" min="0" value="${p.amount}" style="width:70px" data-amount-for="${escHtml(p.id)}"/>
@@ -615,7 +647,7 @@ function allEntryRowHTML(p) {
   return `<div class="admin-row">
     <div>
       <span class="name">${escHtml(p.memberName)}</span>
-      <div class="meta">${escHtml(p.eventTitle || p.reason || '')} · ${p.amount} pt${p.amount !== 1 ? 's' : ''} · ${new Date(p.requestedAt).toLocaleDateString()}${decided}</div>
+      <div class="meta">${escHtml(pointsLabel(p))} · ${p.amount} pt${p.amount !== 1 ? 's' : ''} · ${new Date(p.requestedAt).toLocaleDateString()}${decided}</div>
     </div>
     <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
   </div>`;
@@ -690,15 +722,24 @@ function wirePointsPanel() {
 
   const searchInput = document.getElementById('ma-member-search');
   const resultsEl = document.getElementById('ma-member-results');
-  searchInput.addEventListener('input', () => {
-    document.getElementById('ma-member-id').value = '';
+  function renderMemberResults() {
     const term = searchInput.value.trim().toLowerCase();
-    if (!term) { resultsEl.style.display = 'none'; return; }
-    const matches = allMembers.filter(m => m.name.toLowerCase().includes(term) || m.email.toLowerCase().includes(term)).slice(0, 8);
+    const matches = (term
+      ? allMembers.filter(m => m.name.toLowerCase().includes(term) || m.email.toLowerCase().includes(term))
+      : allMembers.slice()
+    ).sort((a, b) => a.name.localeCompare(b.name)).slice(0, 50);
     resultsEl.innerHTML = matches.map(m => `<div class="admin-row" style="cursor:pointer" data-pick-member="${escHtml(m.id)}" data-pick-name="${escHtml(m.name)}">
       <div><span class="name">${escHtml(m.name)}</span><div class="meta">${escHtml(m.email)}</div></div>
     </div>`).join('') || '<p class="small muted" style="padding:.4rem">No matches.</p>';
     resultsEl.style.display = '';
+  }
+  searchInput.addEventListener('focus', renderMemberResults);
+  searchInput.addEventListener('input', () => {
+    document.getElementById('ma-member-id').value = '';
+    renderMemberResults();
+  });
+  document.addEventListener('click', (e) => {
+    if (e.target !== searchInput && !resultsEl.contains(e.target)) resultsEl.style.display = 'none';
   });
   resultsEl.addEventListener('click', (e) => {
     const row = e.target.closest('[data-pick-member]');
@@ -722,6 +763,31 @@ function wirePointsPanel() {
     e.target.reset();
     loadPointsAll();
   });
+
+  document.getElementById('event-defaults-list').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-save-default]');
+    if (!btn) return;
+    const input = document.querySelector(`[data-default-input="${btn.dataset.saveDefault}"]`);
+    const original = btn.textContent;
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'setEventDefault', tag: btn.dataset.saveDefault, points: Number(input.value) }) });
+    btn.disabled = false;
+    if (!ok) { alert(data.error || 'Could not save.'); btn.textContent = original; return; }
+    btn.textContent = 'Saved!'; setTimeout(() => { btn.textContent = original; }, 1200);
+  });
+}
+
+async function loadEventDefaults() {
+  const el = document.getElementById('event-defaults-list');
+  const { ok, data } = await api(`${POINTS_URL}?defaults=1`, { method: 'GET' });
+  if (!ok) { el.innerHTML = '<p class="small muted">Could not load defaults.</p>'; return; }
+  el.innerHTML = Object.entries(data.defaults).map(([tag, points]) => `<div class="admin-row">
+    <div><span class="name">${escHtml(tag)}</span></div>
+    <div class="actions">
+      <input class="admin-input" type="number" min="0" value="${points}" style="width:90px" data-default-input="${escHtml(tag)}"/>
+      <button class="btn-sm outline" data-save-default="${escHtml(tag)}">Save</button>
+    </div>
+  </div>`).join('');
 }
 
 // ── Digital Library tab ───────────────────────────────────

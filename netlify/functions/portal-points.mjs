@@ -3,6 +3,7 @@ import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
+import { loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS } from './_lib/eventDefaults.mjs';
 
 function withDeciderNames(rows, members) {
   const nameById = new Map(members.map(m => [m.id, m.name]));
@@ -26,6 +27,9 @@ export default async function handler(req) {
       const events = await getCollection('events', []);
       const event = events.find(e => e.id === body.eventId);
       if (!event) return json({ ok: false, error: 'Event not found.' }, 404);
+      if ((event.tags || []).includes('Volunteer')) {
+        return json({ ok: false, error: 'This is a volunteer event — sign up for it on the Events page instead of checking in.' }, 400);
+      }
       if (!isCheckinOpen(event)) return json({ ok: false, error: 'Check-in is not open for this event right now.' }, 403);
 
       const points = await getCollection('points', []);
@@ -59,6 +63,21 @@ export default async function handler(req) {
       return json({ ok: true, event });
     }
 
+    // ── Update one tag's default attendance points — Points tab's "Edit
+    // Event Defaults", scoped like setEventPoints above.
+    if (body.action === 'setEventDefault') {
+      const auth = await requireAuth(req, { perm: 'points' });
+      if (auth.deny) return auth.deny;
+      const { tag, points } = body;
+      if (!tag || !(tag in DEFAULT_EVENT_POINTS) || typeof points !== 'number') {
+        return json({ ok: false, error: 'A known tag and a numeric points value are required.' }, 400);
+      }
+      const defaults = await loadEventDefaults();
+      defaults[tag] = points;
+      await saveEventDefaults(defaults);
+      return json({ ok: true, defaults });
+    }
+
     // ── Manual award — secretary/president only, pre-approved ──
     if (body.action === 'manualAward') {
       const auth = await requireAuth(req, { perm: 'points' });
@@ -88,6 +107,11 @@ export default async function handler(req) {
 
   // ── Everything below requires the 'points' permission (secretary/president) ──
   if (req.method === 'GET') {
+    if (url.searchParams.get('defaults')) {
+      const auth = await requireAuth(req, { perm: 'points' });
+      if (auth.deny) return auth.deny;
+      return json({ ok: true, defaults: await loadEventDefaults() });
+    }
     if (url.searchParams.get('mine')) {
       const auth = await requireAuth(req);
       if (auth.deny) return auth.deny;

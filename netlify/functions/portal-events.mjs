@@ -6,6 +6,7 @@ import { hasPermission } from './_lib/permissions.mjs';
 import { parseEventsCsv } from './_lib/parseEventsCsv.mjs';
 import { SEED_EVENTS_CSV } from './_lib/eventsSeedCsv.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
+import { defaultPointsForTags } from './_lib/eventDefaults.mjs';
 
 function dedupeKey(title, start) { return `${title.trim().toLowerCase()}|${start}`; }
 
@@ -74,14 +75,20 @@ export default async function handler(req) {
   }
 
   if (req.method === 'POST') {
-    const { title, description, location, start, end, tags, signinLink, imageUrl, checkinOpensAt, checkinClosesAt, points } = body;
+    const {
+      title, description, location, start, end, tags, signinLink, imageUrl,
+      checkinOpensAt, checkinClosesAt, points, volunteerType, slotCapacity,
+    } = body;
     if (!title || !start) return json({ ok: false, error: 'Title and start date/time are required.' }, 400);
+    const finalTags = Array.isArray(tags) ? tags : [];
     const event = {
       id: randomUUID(), title, description: description || '', location: location || '',
-      start, end: end || start, tags: Array.isArray(tags) ? tags : [],
+      start, end: end || start, tags: finalTags,
       signinLink: signinLink || '', imageUrl: imageUrl || '',
-      points: typeof points === 'number' ? points : 1,
+      points: typeof points === 'number' ? points : await defaultPointsForTags(finalTags),
       checkinOpensAt: checkinOpensAt || '', checkinClosesAt: checkinClosesAt || '',
+      volunteerType: finalTags.includes('Volunteer') ? (volunteerType || '') : '',
+      slotCapacity: typeof slotCapacity === 'number' && slotCapacity > 0 ? slotCapacity : 3,
     };
     events.push(event);
     await setCollection('events', events);
@@ -91,11 +98,13 @@ export default async function handler(req) {
   if (req.method === 'PATCH') {
     const target = events.find(e => e.id === body.id);
     if (!target) return json({ ok: false, error: 'Event not found.' }, 404);
-    for (const f of ['title', 'description', 'location', 'start', 'end', 'signinLink', 'imageUrl', 'checkinOpensAt', 'checkinClosesAt']) {
+    for (const f of ['title', 'description', 'location', 'start', 'end', 'signinLink', 'imageUrl', 'checkinOpensAt', 'checkinClosesAt', 'volunteerType']) {
       if (f in body) target[f] = body[f];
     }
     if ('points' in body) target.points = Number(body.points);
     if ('tags' in body) target.tags = Array.isArray(body.tags) ? body.tags : [];
+    if ('slotCapacity' in body) target.slotCapacity = Number(body.slotCapacity) || 3;
+    if (!target.tags.includes('Volunteer')) target.volunteerType = '';
     await setCollection('events', events);
     return json({ ok: true, event: target });
   }

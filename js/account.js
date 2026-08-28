@@ -26,6 +26,13 @@ function fmtDashDate(iso) {
   const d = new Date(iso);
   return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${d.getFullYear()}`;
 }
+// Volunteer entries carry both an eventTitle and a more specific reason
+// (which slot, "brought food", etc.) — show both instead of just the event
+// name repeated.
+function pointsLabel(p) {
+  if (p.eventTitle && p.reason && p.reason !== p.eventTitle) return `${p.eventTitle} — ${p.reason}`;
+  return p.eventTitle || p.reason || '';
+}
 
 async function api(url, opts = {}) {
   const res = await fetch(url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
@@ -74,7 +81,7 @@ async function loadEventsHistory() {
         : '';
       return `<div class="admin-row">
       <div>
-        <span class="name">${escHtml(p.eventTitle || p.reason || 'Event')}</span>
+        <span class="name">${escHtml(pointsLabel(p) || 'Event')}</span>
         <div class="meta">${new Date(p.requestedAt).toLocaleDateString()}${decided}</div>
       </div>
       <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status === 'pending' ? 'pending review' : p.status}</span></div>
@@ -87,7 +94,9 @@ async function loadCheckinEvents() {
   const listEl = document.getElementById('checkin-events-list');
   const { ok, data } = await api(EVENTS_URL, { method: 'GET' });
   if (!ok) { listEl.innerHTML = '<p class="small muted">Could not load events.</p>'; return; }
-  const open = (data.events || []).filter(ev => ev.checkinOpen);
+  // Volunteer events don't use check-in at all — they're signed up for on
+  // the Events page instead (slots / bring food / full-event signup).
+  const open = (data.events || []).filter(ev => ev.checkinOpen && !(ev.tags || []).includes('Volunteer'));
   listEl.innerHTML = open.map(ev => {
     const already = myCheckedInEventIds.has(ev.id);
     return `<div class="admin-row">

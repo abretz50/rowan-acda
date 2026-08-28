@@ -145,6 +145,20 @@
                 <option value="Performance">Performance</option>
               </select>
             </div>
+            <div class="form-group" id="ev-volunteer-wrap" style="display:none">
+              <label for="ev-volunteer-type">Volunteer Type</label>
+              <select class="admin-input" id="ev-volunteer-type">
+                <option value="">Choose…</option>
+                <option value="bake_sale">Bake Sale (time slots + food signup)</option>
+                <option value="time_slot">Volunteer — Time Slot</option>
+                <option value="full_event">Volunteer — Full Event (e.g. a trip)</option>
+              </select>
+              <div id="ev-slot-capacity-wrap" style="display:none;margin-top:.5rem">
+                <label for="ev-slot-capacity">People per half-hour slot</label>
+                <input class="admin-input" type="number" min="1" id="ev-slot-capacity" value="3"/>
+              </div>
+              <p class="form-hint">Volunteer events don't use check-in — members sign up for a slot (25 pts each), bring food (10 pts, secretary reviews), or sign up for the full event (secretary sets points after).</p>
+            </div>
             <div class="form-group">
               <label for="ev-image-file">Image (optional)</label>
               <input class="admin-input" type="file" id="ev-image-file" accept="image/*"/>
@@ -203,9 +217,9 @@
           <h3>Award Points Manually</h3>
           <p class="small muted">For volunteering or anything else that isn't tied to an event check-in. Awarded immediately (you're the approver).</p>
           <form class="admin-form" id="manual-award-form" novalidate>
-            <input class="admin-input" type="text" id="ma-member-search" placeholder="Search member by name or email…" required/>
+            <input class="admin-input" type="text" id="ma-member-search" placeholder="Click to choose a member, or type to search…" autocomplete="off" required/>
             <input type="hidden" id="ma-member-id"/>
-            <div id="ma-member-results" style="display:none;max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:.5rem"></div>
+            <div id="ma-member-results" style="display:none;max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:.5rem"></div>
             <div class="form-row">
               <input class="admin-input" type="number" id="ma-amount" placeholder="Points" min="1" required/>
               <input class="admin-input" type="text" id="ma-reason" placeholder="Reason (e.g. Bake sale volunteer)" required/>
@@ -221,6 +235,12 @@
           <h3 style="margin-top:1rem">Past</h3>
           <div id="event-points-past"></div>
         </div>
+      </div>
+
+      <div class="admin-card" style="margin-top:1rem">
+        <h3>Edit Event Defaults</h3>
+        <p class="small muted">Default attendance points a new event gets based on its tag (Volunteer events aren't included — those are point-valued per signup instead).</p>
+        <div id="event-defaults-list"><p class="small muted">Loading…</p></div>
       </div>
 
       <div class="admin-card" style="margin-top:1rem">
@@ -454,6 +474,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=6"></script>
+<script defer src="/js/portal.js?v=7"></script>
 </body>
 </html>
