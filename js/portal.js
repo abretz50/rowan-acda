@@ -48,6 +48,12 @@ const ROLE_LABELS = {
 };
 const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy'];
 
+function fmtDashDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${d.getFullYear()}`;
+}
+
 function toISOFromLocalInput(v){ return v ? new Date(v).toISOString() : ''; }
 function toLocalInputFromISO(iso){
   if(!iso) return '';
@@ -144,7 +150,7 @@ function wireLoginForm() {
     e.preventDefault();
     const errEl = document.getElementById('login-error');
     errEl.textContent = '';
-    const username = document.getElementById('login-username').value.trim();
+    const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
 
     if (needsBootstrap) {
@@ -152,7 +158,7 @@ function wireLoginForm() {
       const secret = document.getElementById('login-secret').value;
       const { ok, data } = await api(AUTH_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'bootstrap', secret, name, username, password }),
+        body: JSON.stringify({ action: 'bootstrap', secret, name, email, password }),
       });
       if (!ok) { errEl.textContent = data.error || 'Setup failed.'; return; }
       me = data.user; needsBootstrap = false; showDashboard(); window.refreshAccountNavLink?.();
@@ -161,7 +167,7 @@ function wireLoginForm() {
 
     const { ok, data } = await api(AUTH_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'login', username, password }),
+      body: JSON.stringify({ action: 'login', email, password }),
     });
     if (!ok) { errEl.textContent = data.error || 'Sign-in failed.'; return; }
     me = data.user;
@@ -221,7 +227,7 @@ function accountRowHTML(a) {
   return `<div class="admin-row" data-account-id="${escHtml(a.id)}">
     <div>
       <span class="name">${escHtml(a.name)}</span> ${roleBadge}${inactiveBadge}
-      <div class="meta">@${escHtml(a.username)}${isSelf ? ' · you' : ''}</div>
+      <div class="meta">${escHtml(a.email || '')}${isSelf ? ' · you' : ''}</div>
     </div>
     <div class="actions">
       <select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">
@@ -246,13 +252,12 @@ function wireAccountsPanel() {
     const statusEl = document.getElementById('add-account-status');
     const name = document.getElementById('nu-name').value.trim();
     const email = document.getElementById('nu-email').value.trim();
-    const username = document.getElementById('nu-username').value.trim();
     const password = document.getElementById('nu-password').value;
     const role = document.getElementById('nu-role').value;
-    if (!name || !username || !password) {
-      statusEl.textContent = 'Name, username, and password are required.'; statusEl.className = 'admin-status err'; return;
+    if (!name || !email || !password) {
+      statusEl.textContent = 'Name, email, and password are required.'; statusEl.className = 'admin-status err'; return;
     }
-    const { ok, data } = await api(ACCOUNTS_URL, { method: 'POST', body: JSON.stringify({ name, email, username, password, role }) });
+    const { ok, data } = await api(ACCOUNTS_URL, { method: 'POST', body: JSON.stringify({ name, email, password, role }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not create account.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = 'Account created.'; statusEl.className = 'admin-status ok';
     e.target.reset();
@@ -287,16 +292,12 @@ function wireAccountsPanel() {
 
 // ── Events tab ────────────────────────────────────────────
 function eventRowHTML(ev) {
-  const link = `${location.origin}/account.html?code=${encodeURIComponent(ev.checkinCode)}`;
   return `<div class="admin-row" style="align-items:flex-start" data-event-id="${escHtml(ev.id)}">
     <div>
       <span class="name">${escHtml(ev.title)}</span>
       <div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}${ev.location ? ' · ' + escHtml(ev.location) : ''}</div>
-      <div class="meta" style="margin-top:.3rem">Check-in code: <strong style="letter-spacing:.08em">${escHtml(ev.checkinCode)}</strong></div>
     </div>
     <div class="actions">
-      <button class="btn-sm outline" data-copy-link="${escHtml(link)}">Copy check-in link</button>
-      <button class="btn-sm outline" data-regen-code="${escHtml(ev.id)}">New code</button>
       <button class="btn-sm edit" data-edit-event="${escHtml(ev.id)}">Edit</button>
       <button class="btn-sm delete" data-delete-event="${escHtml(ev.id)}">Delete</button>
     </div>
@@ -385,20 +386,6 @@ function wireEventsPanel() {
   document.getElementById('event-form-cancel').addEventListener('click', resetEventForm);
 
   const onEventsListClick = async (e) => {
-    const copyBtn = e.target.closest('[data-copy-link]');
-    if (copyBtn) {
-      try { await navigator.clipboard.writeText(copyBtn.dataset.copyLink); copyBtn.textContent = 'Copied!'; setTimeout(() => copyBtn.textContent = 'Copy check-in link', 1500); }
-      catch { prompt('Copy this link:', copyBtn.dataset.copyLink); }
-      return;
-    }
-    const regenBtn = e.target.closest('[data-regen-code]');
-    if (regenBtn) {
-      if (!confirm('Generate a new check-in code? The old code/link will stop working.')) return;
-      const { ok, data } = await api(EVENTS_URL, { method: 'PATCH', body: JSON.stringify({ id: regenBtn.dataset.regenCode, regenerateCode: true }) });
-      if (!ok) { alert(data.error || 'Could not regenerate code.'); return; }
-      loadEvents();
-      return;
-    }
     const editBtn = e.target.closest('[data-edit-event]');
     if (editBtn) {
       const ev = allEvents.find(x => x.id === editBtn.dataset.editEvent);
@@ -423,7 +410,7 @@ function wireEventsPanel() {
     }
     const delBtn = e.target.closest('[data-delete-event]');
     if (delBtn) {
-      if (!confirm('Delete this event? Its attendance history is kept, but the check-in link will stop working.')) return;
+      if (!confirm('Delete this event? Its attendance history is kept, but check-in for it will no longer be possible.')) return;
       const { ok, data } = await api(`${EVENTS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteEvent)}`, { method: 'DELETE' });
       if (!ok) { alert(data.error || 'Could not delete event.'); return; }
       loadEvents();
@@ -440,7 +427,7 @@ function memberRowHTML(m) {
   return `<div class="admin-row" data-member-id="${escHtml(m.id)}">
     <div>
       <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${accountBadge}
-      <div class="meta">${escHtml(m.email)}${m.year ? ' · ' + escHtml(m.year) : ''}</div>
+      <div class="meta">${escHtml(m.email)}</div>
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-view-points="${escHtml(m.id)}">Points history</button>
@@ -465,9 +452,8 @@ function wireMembersPanel() {
     const statusEl = document.getElementById('member-form-status');
     const name = document.getElementById('mb-name').value.trim();
     const email = document.getElementById('mb-email').value.trim();
-    const year = document.getElementById('mb-year').value.trim();
     if (!name || !email) { statusEl.textContent = 'Name and email are required.'; statusEl.className = 'admin-status err'; return; }
-    const { ok, data } = await api(MEMBERS_URL, { method: 'POST', body: JSON.stringify({ name, email, year }) });
+    const { ok, data } = await api(MEMBERS_URL, { method: 'POST', body: JSON.stringify({ name, email }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not add member.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = 'Member added.'; statusEl.className = 'admin-status ok';
     e.target.reset();
@@ -486,10 +472,15 @@ function wireMembersPanel() {
         if (!ok) { panel.innerHTML = '<p class="small muted">Could not load points.</p>'; return; }
         const total = data.points.filter(p => p.status === 'approved').reduce((s, p) => s + p.amount, 0);
         panel.innerHTML = `<div class="admin-card" style="padding:.7rem"><strong>${total} approved point${total !== 1 ? 's' : ''}</strong>` +
-          data.points.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt)).map(p => `<div class="admin-row">
-            <div><span class="name">${escHtml(p.eventTitle || p.reason || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}</div></div>
+          data.points.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt)).map(p => {
+            const decided = p.status !== 'pending' && p.decidedAt
+              ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
+              : '';
+            return `<div class="admin-row">
+            <div><span class="name">${escHtml(p.eventTitle || p.reason || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
             <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
-          </div>`).join('') + `${!data.points.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
+          </div>`;
+          }).join('') + `${!data.points.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
       }
       return;
     }
@@ -525,10 +516,13 @@ function pendingRowHTML(p) {
   </div>`;
 }
 function allEntryRowHTML(p) {
+  const decided = p.status !== 'pending' && p.decidedAt
+    ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
+    : '';
   return `<div class="admin-row">
     <div>
       <span class="name">${escHtml(p.memberName)}</span>
-      <div class="meta">${escHtml(p.eventTitle || p.reason || '')} · ${p.amount} pt${p.amount !== 1 ? 's' : ''} · ${new Date(p.requestedAt).toLocaleDateString()}</div>
+      <div class="meta">${escHtml(p.eventTitle || p.reason || '')} · ${p.amount} pt${p.amount !== 1 ? 's' : ''} · ${new Date(p.requestedAt).toLocaleDateString()}${decided}</div>
     </div>
     <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
   </div>`;

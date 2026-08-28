@@ -18,8 +18,6 @@ export default async function handler(req) {
   const target = members.find(m => m.id === me.id);
   if (body.name) target.name = body.name;
   if (body.email) target.email = body.email;
-  if ('mailingAddress' in body) target.mailingAddress = body.mailingAddress;
-  if ('year' in body) target.year = body.year;
 
   if (body.password) {
     if (!body.currentPassword || !verifyPassword(body.currentPassword, target.salt, target.hash)) {

@@ -18,13 +18,13 @@ export default async function handler(req) {
   catch { return json({ ok: false, error: 'Bad JSON' }, 400); }
 
   if (req.method === 'POST') {
-    const { name, email, year, mailingAddress } = body;
+    const { name, email } = body;
     if (!name || !email) return json({ ok: false, error: 'Name and email are required.' }, 400);
     if (members.some(m => normEmail(m.email) === normEmail(email))) {
       return json({ ok: false, error: 'A member with that email already exists.' }, 409);
     }
     const member = {
-      id: randomUUID(), name, email, year: year || '', mailingAddress: mailingAddress || '',
+      id: randomUUID(), name, email,
       role: 'member', hasAccount: false, active: true, joinedAt: new Date().toISOString(),
     };
     members.push(member);
@@ -37,8 +37,6 @@ export default async function handler(req) {
     if (!target) return json({ ok: false, error: 'Member not found.' }, 404);
     if (body.name) target.name = body.name;
     if (body.email) target.email = body.email;
-    if ('year' in body) target.year = body.year;
-    if ('mailingAddress' in body) target.mailingAddress = body.mailingAddress;
     if ('active' in body) target.active = !!body.active;
     await saveMembers(members);
     return json({ ok: true, member: publicMember(target) });

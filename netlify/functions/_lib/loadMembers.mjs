@@ -16,15 +16,18 @@ export async function loadMembers() {
   if (alreadyMigrated) return existing;
 
   const merged = (existing || []).map(m => ({
-    id: m.id, name: m.name, email: m.email || '', year: m.year || '',
-    mailingAddress: '', role: 'member', hasAccount: false,
+    id: m.id, name: m.name, email: m.email || '',
+    role: 'member', hasAccount: false,
     active: m.active !== false, joinedAt: m.joinedAt || new Date().toISOString(),
   }));
 
+  // Old login accounts only ever had a username, often no email — kept as
+  // `username` so login can still fall back to matching it (see
+  // portal-auth.mjs's findByIdentifier).
   const oldUsers = await getCollection('users', []);
   for (const u of oldUsers) {
     merged.push({
-      id: u.id, name: u.name, email: '', year: '', mailingAddress: '',
+      id: u.id, name: u.name, email: '',
       role: mapOldRole(u.role), hasAccount: true,
       username: u.username, salt: u.salt, hash: u.hash,
       active: u.active !== false, joinedAt: new Date().toISOString(),

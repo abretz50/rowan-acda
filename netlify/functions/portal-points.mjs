@@ -4,10 +4,9 @@ import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
 
-function normEmail(e) { return String(e || '').trim().toLowerCase(); }
-function findEventByCode(events, code) {
-  const c = String(code || '').trim().toUpperCase();
-  return events.find(e => e.checkinCode === c);
+function withDeciderNames(rows, members) {
+  const nameById = new Map(members.map(m => [m.id, m.name]));
+  return rows.map(p => p.decidedBy ? { ...p, decidedByName: nameById.get(p.decidedBy) || null } : p);
 }
 
 export default async function handler(req) {
@@ -23,13 +22,10 @@ export default async function handler(req) {
       if (auth.deny) return auth.deny;
       const { user: me } = auth;
 
+      if (!body.eventId) return json({ ok: false, error: 'eventId is required.' }, 400);
       const events = await getCollection('events', []);
-      // Two ways in: a code (typed at account.html, given out in person) or
-      // a direct eventId (clicking "Check In" on the public events page,
-      // where the code isn't exposed at all) — either way still gated by
-      // the check-in time window.
-      const event = body.eventId ? events.find(e => e.id === body.eventId) : findEventByCode(events, body.code);
-      if (!event) return json({ ok: false, error: body.eventId ? 'Event not found.' : 'Invalid check-in code.' }, 404);
+      const event = events.find(e => e.id === body.eventId);
+      if (!event) return json({ ok: false, error: 'Event not found.' }, 404);
       if (!isCheckinOpen(event)) return json({ ok: false, error: 'Check-in is not open for this event right now.' }, 403);
 
       const points = await getCollection('points', []);
@@ -95,18 +91,18 @@ export default async function handler(req) {
     if (url.searchParams.get('mine')) {
       const auth = await requireAuth(req);
       if (auth.deny) return auth.deny;
-      const points = await getCollection('points', []);
-      return json({ ok: true, points: points.filter(p => p.memberId === auth.user.id) });
+      const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
+      return json({ ok: true, points: withDeciderNames(points.filter(p => p.memberId === auth.user.id), members) });
     }
     const auth = await requireAuth(req, { perm: 'points' });
     if (auth.deny) return auth.deny;
-    const points = await getCollection('points', []);
+    const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
     const status = url.searchParams.get('status');
     const memberId = url.searchParams.get('memberId');
     let rows = points;
     if (status) rows = rows.filter(p => p.status === status);
     if (memberId) rows = rows.filter(p => p.memberId === memberId);
-    return json({ ok: true, points: rows });
+    return json({ ok: true, points: withDeciderNames(rows, members) });
   }
 
   const auth = await requireAuth(req, { perm: 'points' });

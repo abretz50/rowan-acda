@@ -6,10 +6,10 @@
 <title>Redirecting… — Rowan ACDA</title>
 <meta name="robots" content="noindex, nofollow"/>
 <script>
-  // Event check-in now happens from a signed-in account — carry the code
-  // (from an already-printed/shared QR code or link) over to /account.html.
-  var code = new URLSearchParams(location.search).get('code');
-  location.replace('/account.html' + (code ? ('?code=' + encodeURIComponent(code)) : ''));
+  // Event check-in now happens from a signed-in account on /account.html or
+  // directly on /events.html — this page is kept only for any old
+  // printed/shared links that still point here.
+  location.replace('/account.html');
 </script>
 </head>
 <body>

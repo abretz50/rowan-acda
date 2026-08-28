@@ -6,6 +6,7 @@ import { isValidRole, FULL_ACCESS_ROLES } from './_lib/permissions.mjs';
 function activeFullAccess(members) {
   return members.filter(m => FULL_ACCESS_ROLES.includes(m.role) && m.hasAccount && m.active !== false);
 }
+function normEmail(e) { return String(e || '').trim().toLowerCase(); }
 
 export default async function handler(req) {
   const auth = await requireAuth(req, { perm: 'accounts' });
@@ -22,16 +23,16 @@ export default async function handler(req) {
 
   // Create a brand-new person + account in one step.
   if (req.method === 'POST') {
-    const { name, email, username, password, role } = body;
-    if (!name || !username || !password) return json({ ok: false, error: 'Name, username, and password are required.' }, 400);
+    const { name, email, password, role } = body;
+    if (!name || !email || !password) return json({ ok: false, error: 'Name, email, and password are required.' }, 400);
     if (role && !isValidRole(role)) return json({ ok: false, error: 'Invalid role.' }, 400);
-    if (members.some(m => m.hasAccount && m.username?.toLowerCase() === String(username).toLowerCase())) {
-      return json({ ok: false, error: 'That username is already taken.' }, 409);
+    if (members.some(m => m.hasAccount && normEmail(m.email) === normEmail(email))) {
+      return json({ ok: false, error: 'An account with that email already exists.' }, 409);
     }
     const { salt, hash } = hashPassword(password);
     const member = {
-      id: randomUUID(), name, email: email || '', year: '', mailingAddress: '',
-      role: role || 'member', hasAccount: true, username, salt, hash,
+      id: randomUUID(), name, email,
+      role: role || 'member', hasAccount: true, salt, hash,
       active: true, joinedAt: new Date().toISOString(),
     };
     members.push(member);
@@ -53,24 +54,17 @@ export default async function handler(req) {
       target.role = body.role;
     }
 
-    if (body.username || body.newPassword) {
+    if (body.newPassword) {
       // Granting account access to a roster-only member, or resetting credentials.
+      // The identifier is always the member's email, so it must already be on file.
       if (!target.hasAccount) {
-        if (!body.username || !body.newPassword) {
-          return json({ ok: false, error: 'A username and password are required to grant account access.' }, 400);
+        if (!target.email) {
+          return json({ ok: false, error: 'This member needs an email on file before granting account access.' }, 400);
         }
-        if (members.some(m => m.hasAccount && m.id !== target.id && m.username?.toLowerCase() === String(body.username).toLowerCase())) {
-          return json({ ok: false, error: 'That username is already taken.' }, 409);
-        }
-        target.username = body.username;
         target.hasAccount = true;
-      } else if (body.username) {
-        target.username = body.username;
       }
-      if (body.newPassword) {
-        const { salt, hash } = hashPassword(body.newPassword);
-        target.salt = salt; target.hash = hash;
-      }
+      const { salt, hash } = hashPassword(body.newPassword);
+      target.salt = salt; target.hash = hash;
     }
 
     if ('active' in body) {
@@ -92,7 +86,7 @@ export default async function handler(req) {
       return json({ ok: false, error: 'Cannot remove the last full-access (president/admin) account.' }, 400);
     }
     target.hasAccount = false;
-    delete target.username; delete target.salt; delete target.hash;
+    delete target.username; delete target.salt; delete target.hash; // username: cleanup for any legacy accounts that still had one
     await saveMembers(members);
     return json({ ok: true });
   }

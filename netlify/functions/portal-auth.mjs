@@ -28,29 +28,41 @@ export default async function handler(req) {
   const action = body?.action;
   const members = await loadMembers();
 
+  // Accounts are identified by email, not a separate username — except
+  // legacy accounts created before this change, which may only have a
+  // `username` on file (and possibly no email at all), so login still
+  // falls back to matching that for backward compatibility.
+  function findByIdentifier(identifier) {
+    const norm = String(identifier || '').trim().toLowerCase();
+    return members.find(x => x.hasAccount && (
+      (x.email && x.email.trim().toLowerCase() === norm) ||
+      (x.username && x.username.toLowerCase() === norm)
+    ));
+  }
+
   if (action === 'login') {
-    const { username, password } = body;
-    if (!username || !password) return json({ ok: false, error: 'Username and password required.' }, 400);
-    const m = members.find(x => x.hasAccount && x.username?.toLowerCase() === String(username).toLowerCase());
+    const { email, password } = body;
+    if (!email || !password) return json({ ok: false, error: 'Email and password required.' }, 400);
+    const m = findByIdentifier(email);
     if (!m || m.active === false || !verifyPassword(password, m.salt, m.hash)) {
-      return json({ ok: false, error: 'Incorrect username or password.' }, 401);
+      return json({ ok: false, error: 'Incorrect email or password.' }, 401);
     }
     const token = signSession({ id: m.id });
     return json({ ok: true, user: accountMember(m) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
   }
 
   if (action === 'register') {
-    const { name, email, username, password } = body;
-    if (!name || !email || !username || !password) {
-      return json({ ok: false, error: 'Name, email, username, and password are required.' }, 400);
+    const { name, email, password } = body;
+    if (!name || !email || !password) {
+      return json({ ok: false, error: 'Name, email, and password are required.' }, 400);
     }
-    if (members.some(x => x.hasAccount && x.username?.toLowerCase() === String(username).toLowerCase())) {
-      return json({ ok: false, error: 'That username is already taken.' }, 409);
+    if (findByIdentifier(email)) {
+      return json({ ok: false, error: 'An account with that email already exists.' }, 409);
     }
     const { salt, hash } = hashPassword(password);
     const member = {
-      id: randomUUID(), name, email, year: '', mailingAddress: '',
-      role: 'member', hasAccount: true, username, salt, hash,
+      id: randomUUID(), name, email,
+      role: 'member', hasAccount: true, salt, hash,
       active: true, joinedAt: new Date().toISOString(),
     };
     members.push(member);
@@ -64,20 +76,20 @@ export default async function handler(req) {
   }
 
   if (action === 'bootstrap') {
-    const { secret, username, password, name } = body;
+    const { secret, email, password, name } = body;
     if (!process.env.BOOTSTRAP_SECRET || secret !== process.env.BOOTSTRAP_SECRET) {
       return json({ ok: false, error: 'Invalid setup secret.' }, 403);
     }
     if (hasFullAccessAccount(members)) {
       return json({ ok: false, error: 'Setup already completed — a full-access account already exists.' }, 409);
     }
-    if (!username || !password || !name) {
-      return json({ ok: false, error: 'Name, username, and password are required.' }, 400);
+    if (!email || !password || !name) {
+      return json({ ok: false, error: 'Name, email, and password are required.' }, 400);
     }
     const { salt, hash } = hashPassword(password);
     const admin = {
-      id: randomUUID(), name, email: '', year: '', mailingAddress: '',
-      role: 'president', hasAccount: true, username, salt, hash,
+      id: randomUUID(), name, email,
+      role: 'president', hasAccount: true, salt, hash,
       active: true, joinedAt: new Date().toISOString(),
     };
     members.push(admin);

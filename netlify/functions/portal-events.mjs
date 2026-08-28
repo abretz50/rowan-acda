@@ -3,24 +3,20 @@ import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, getSessionUser, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { hasPermission } from './_lib/permissions.mjs';
-import { generateCheckinCode } from './_lib/codes.mjs';
 import { parseEventsCsv } from './_lib/parseEventsCsv.mjs';
 import { SEED_EVENTS_CSV } from './_lib/eventsSeedCsv.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
 
 function dedupeKey(title, start) { return `${title.trim().toLowerCase()}|${start}`; }
 
-// Public visitors never see the code or the exact window boundaries (those
-// stay E-Board-only), but they do need to know whether check-in is open
-// right now so events.html can enable/disable its "Check In" button.
+// Public visitors never see the exact check-in window boundaries (those stay
+// E-Board-only), but they do need to know whether check-in is open right now
+// so events.html can enable/disable its "Check In" button.
 function publicEvent(ev) {
-  const { checkinCode, checkinOpensAt, checkinClosesAt, ...safe } = ev;
+  const { checkinOpensAt, checkinClosesAt, ...safe } = ev;
   return { ...safe, checkinOpen: isCheckinOpen(ev) };
 }
 
-// Only members who can actually manage events get the check-in code back —
-// otherwise any member account (not just event_coordinator/president) could
-// read and share codes meant to be handed out in person.
 async function canManageEvents(req) {
   const token = getSessionUser(req);
   if (!token) return false;
@@ -37,7 +33,6 @@ async function loadEvents() {
   if (events.length > 0) return events;
   const seeded = parseEventsCsv(SEED_EVENTS_CSV).map(ev => ({
     id: randomUUID(), ...ev, points: 1,
-    checkinCode: generateCheckinCode(),
     checkinOpensAt: '', checkinClosesAt: '',
   }));
   await setCollection('events', seeded);
@@ -70,7 +65,6 @@ export default async function handler(req) {
       existingKeys.add(key);
       events.push({
         id: randomUUID(), ...ev, points: 1,
-        checkinCode: generateCheckinCode(),
         checkinOpensAt: '', checkinClosesAt: '',
       });
       added++;
@@ -87,7 +81,6 @@ export default async function handler(req) {
       start, end: end || start, tags: Array.isArray(tags) ? tags : [],
       signinLink: signinLink || '', imageUrl: imageUrl || '',
       points: typeof points === 'number' ? points : 1,
-      checkinCode: generateCheckinCode(),
       checkinOpensAt: checkinOpensAt || '', checkinClosesAt: checkinClosesAt || '',
     };
     events.push(event);
@@ -103,7 +96,6 @@ export default async function handler(req) {
     }
     if ('points' in body) target.points = Number(body.points);
     if ('tags' in body) target.tags = Array.isArray(body.tags) ? body.tags : [];
-    if (body.regenerateCode) target.checkinCode = generateCheckinCode();
     await setCollection('events', events);
     return json({ ok: true, event: target });
   }

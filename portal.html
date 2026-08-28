@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=3"/>
+<link rel="stylesheet" href="/css/components.css?v=4"/>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -54,7 +54,7 @@
     </div>
     <form class="lock-form" id="login-form">
       <input type="text" id="login-name" placeholder="Your full name" autocomplete="name" style="display:none" />
-      <input type="text" id="login-username" placeholder="Username" autocomplete="username" required/>
+      <input type="email" id="login-email" placeholder="Email" autocomplete="email" required/>
       <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required/>
       <input type="password" id="login-secret" placeholder="Setup secret (from site owner)" style="display:none" />
       <button class="btn" type="submit" id="login-submit">Sign in</button>
@@ -162,7 +162,6 @@
               <input class="admin-input" type="text" id="mb-name" placeholder="Full name" required/>
               <input class="admin-input" type="email" id="mb-email" placeholder="Email" required/>
             </div>
-            <input class="admin-input" type="text" id="mb-year" placeholder="Year (e.g. Sophomore)"/>
             <p class="form-hint">Members are also added automatically the first time they self check in to an event.</p>
             <button class="btn-sm" type="submit">Add member</button>
             <div class="admin-status" id="member-form-status"></div>
@@ -350,10 +349,9 @@
           <form class="admin-form" id="add-account-form" novalidate>
             <div class="form-row">
               <input class="admin-input" type="text" id="nu-name" placeholder="Full name" required/>
-              <input class="admin-input" type="email" id="nu-email" placeholder="Email"/>
+              <input class="admin-input" type="email" id="nu-email" placeholder="Email" required/>
             </div>
             <div class="form-row">
-              <input class="admin-input" type="text" id="nu-username" placeholder="Username" required/>
               <input class="admin-input" type="password" id="nu-password" placeholder="Temporary password" required/>
             </div>
             <select class="admin-input" id="nu-role">
@@ -418,6 +416,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=3"></script>
+<script defer src="/js/portal.js?v=4"></script>
 </body>
 </html>
