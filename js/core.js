@@ -65,7 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // login/bootstrap) should call window.refreshAccountNavLink() right after
 // so this updates immediately instead of waiting for the next page load.
 window.refreshAccountNavLink = async function refreshAccountNavLink() {
-  const link = document.querySelector('.nav a[href="/account.html"]');
+  // Netlify's Pretty URLs post-processing strips ".html" from hrefs at
+  // deploy time, so production markup has href="/account" even though the
+  // source here says "/account.html" — match both so this doesn't silently
+  // stop finding the link if that setting ever changes either way.
+  const link = document.querySelector('.nav a[href="/account.html"], .nav a[href="/account"]');
   if (!link) return;
   link.classList.add('nav-link--account');
   try {

@@ -496,10 +496,14 @@
     }
   }
   window.addEventListener('DOMContentLoaded', init);
+  // Check-in windows open/close on a clock, not on user action — if someone
+  // loads this page before an event's window opens and just waits, re-fetch
+  // periodically so the button updates without a manual reload.
+  setInterval(init, 60 * 1000);
 })();
 </script>
 
 
-<script src="/js/core.js?v=3" defer></script>
+<script src="/js/core.js?v=4" defer></script>
 </body>
 </html>
