@@ -1281,6 +1281,19 @@ html, body{ background: var(--page-bg); }
 .stat-card .stat-label { display: block; font-size: .8rem; color: var(--muted); margin-top: .2rem; }
 .stat-card .stat-detail { display: block; font-size: .72rem; color: var(--muted); margin-top: .3rem; line-height: 1.3; }
 
+/* Category filter chips — shared between the public Digital Library
+   (sightsinging.html) and the portal's Digital Library tab, so the two
+   filtering UIs look and behave the same. */
+.cat-chips { display: flex; gap: .4rem; flex-wrap: wrap; }
+.cat-chip {
+  appearance: none; background: #fff; border: 1.5px solid var(--border);
+  border-radius: 999px; padding: .3rem .8rem; font-size: .83rem; font-weight: 700;
+  cursor: pointer; transition: background .15s, border-color .15s, color .15s;
+  color: var(--muted);
+}
+.cat-chip:hover { border-color: var(--brand); color: var(--brand); }
+.cat-chip.active { background: #f3eaea; border-color: var(--brand); color: var(--brand); }
+
 /* Site Content tab, sorted by which public page each section covers */
 .content-section-heading {
   margin: 1.5rem 0 .6rem; padding-bottom: .3rem;

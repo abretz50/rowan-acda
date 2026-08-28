@@ -31,6 +31,12 @@ let libSearchTerm = '';
 function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escAttr(s){ return String(s||'').replace(/"/g,'&quot;'); }
 function composerDisplay(s){ return [s.composer_first,s.composer_last].filter(Boolean).join(' '); }
+function arrangerDisplay(s){ return [s.arranger_first,s.arranger_last].filter(Boolean).join(' '); }
+function fullCreditDisplay(s){
+  const composer=composerDisplay(s), arranger=arrangerDisplay(s);
+  if(composer&&arranger) return `${composer} (arr. ${arranger})`;
+  return composer||(arranger?`arr. ${arranger}`:'');
+}
 function getScoreByUrl(url){ return library.find(s=>s.url===url); }
 function getSessionScores(sess){ return sess.scoreUrls.map(getScoreByUrl).filter(Boolean); }
 function pdfEmbedUrl(url){
@@ -58,7 +64,7 @@ function observePreviews(container){
 
 // ── SCORE CARD ────────────────────────────────────────────
 function scoreCardHTML(score){
-  const composer=composerDisplay(score);
+  const composer=fullCreditDisplay(score);
   const meta=[
     score.voicing&&escHtml(score.voicing),
     score.instrumentation&&escHtml(score.instrumentation),
@@ -152,7 +158,7 @@ function renderLibrary(){
   const filtered=library.filter(sc=>{
     const matchTag=activeTag==='all'||sc.tags.includes(activeTag);
     const matchTerm=!term||sc.title.toLowerCase().includes(term)||
-      composerDisplay(sc).toLowerCase().includes(term)||(sc.year||'').includes(term);
+      fullCreditDisplay(sc).toLowerCase().includes(term)||(sc.year||'').includes(term);
     return matchTag&&matchTerm;
   });
   el.innerHTML=filtered.map(scoreCardHTML).join('')||`<div class="empty-state" style="grid-column:1/-1"><p>No scores match your search.</p></div>`;

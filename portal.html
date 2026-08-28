@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=6"/>
+<link rel="stylesheet" href="/css/components.css?v=7"/>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -283,6 +283,10 @@
               <input class="admin-input" type="text" id="sc-clast" placeholder="Composer last name"/>
             </div>
             <div class="form-row">
+              <input class="admin-input" type="text" id="sc-afirst" placeholder="Arranger first name (optional)"/>
+              <input class="admin-input" type="text" id="sc-alast" placeholder="Arranger last name (optional)"/>
+            </div>
+            <div class="form-row">
               <input class="admin-input" type="text" id="sc-year" placeholder="Year" maxlength="4"/>
               <div>
                 <select class="admin-input" id="sc-voicing">
@@ -325,6 +329,7 @@
         <div class="admin-card">
           <h3>Library</h3>
           <input class="admin-input" type="search" id="lib-manage-search" placeholder="Search…" style="margin-bottom:.5rem"/>
+          <div class="cat-chips" id="lib-manage-chips" style="margin-bottom:.5rem"></div>
           <div id="lib-manage-list" style="max-height:460px;overflow-y:auto"><p class="small muted">Loading…</p></div>
         </div>
       </div>
@@ -346,10 +351,20 @@
           <div id="sets-manage-list"><p class="small muted">Loading…</p></div>
         </div>
       </div>
+
+      <div class="admin-card" style="margin-top:1rem">
+        <h3>Set Archives</h3>
+        <p class="small muted">Archived sets stay visible to everyone on the public library — this just keeps the main Sets list focused on what's current.</p>
+        <div id="sets-archive-list"><p class="small muted">Loading…</p></div>
+      </div>
     </div>
 
     <!-- ===== Site Content, sorted by which public page it covers ===== -->
     <div class="panel" id="panel-content">
+      <div class="admin-card" style="margin-bottom:1rem">
+        <p class="small muted">This site is managed by Adam Bretz. For any further questions, please email <a href="mailto:abretz50@gmail.com">abretz50@gmail.com</a>.</p>
+      </div>
+
       <h2 class="content-section-heading">Home Page</h2>
       <div class="admin-card"><p class="small muted">The homepage slideshow is managed from the <strong>Gallery</strong> tab.</p></div>
 
@@ -442,10 +457,9 @@
               <option value="event_coordinator">Event Coordinator</option>
               <option value="media">Social Media Coordinator</option>
               <option value="senator">Senator</option>
-              <option value="__other__">Other…</option>
+              <option value="eboard_access">E-Board Access</option>
             </select>
-            <input class="admin-input" type="text" id="nu-role-other" placeholder="Custom role title" style="display:none"/>
-            <p class="form-hint">Anyone can also create their own account at /account.html — use this only when creating one on someone's behalf. Share the temporary password with them directly. A custom "Other" role starts with no extra tab access — grant it below.</p>
+            <p class="form-hint">Anyone can also create their own account at /account.html — use this only when creating one on someone's behalf. Share the temporary password with them directly.</p>
             <button class="btn-sm" type="submit">Create account</button>
             <div class="admin-status" id="add-account-status"></div>
           </form>
@@ -459,7 +473,7 @@
 
       <div class="admin-card" id="permissions-section" style="margin-top:1rem;display:none">
         <h3>Permissions</h3>
-        <p class="small muted">Only President and Admin can see or change this. President and Admin always have every tab (not shown below, and can't be changed). Vice President defaults to every tab too, but — unlike President/Admin — it can be adjusted here.</p>
+        <p class="small muted">Only President and Admin can change this.</p>
         <div id="permissions-list"><p class="small muted">Loading…</p></div>
       </div>
     </div>
@@ -503,6 +517,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=8"></script>
+<script defer src="/js/portal.js?v=9"></script>
 </body>
 </html>

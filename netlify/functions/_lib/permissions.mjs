@@ -5,7 +5,7 @@ import { getCollection, setCollection } from './blobs.mjs';
 // actually holds that job in real life.
 export const ROLES = [
   'member', 'president', 'admin', 'vice_president', 'secretary',
-  'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_legacy',
+  'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_access', 'eboard_legacy',
 ];
 
 // Roles that always have every tab, no exceptions — not adjustable from the
@@ -37,13 +37,14 @@ export const MANAGEABLE_TABS = ['events', 'members', 'points', 'library', 'galle
 // compute a signed-in user's full tab list in one place.
 export const ALL_TABS = [...MANAGEABLE_TABS, 'content', 'accounts', 'permissions'];
 
-// Non-locked roles shown on the Permissions section by default (Vice
-// President is included since its manageable-tab access is now adjustable,
-// even though it keeps automatic content/accounts access above). A custom
-// role (created via the Accounts tab's "Other" option) is added to the
-// stored map the first time someone grants it anything, and then shows up
-// here too.
-export const BASE_ADJUSTABLE_ROLES = ['vice_president', 'secretary', 'treasurer', 'event_coordinator', 'media', 'senator'];
+// Non-locked roles shown on the Permissions section by default. Vice
+// President is included since its manageable-tab access is now adjustable
+// (even though it keeps automatic content/accounts access above).
+// eboard_access is a catch-all role for someone who needs some amount of
+// portal access without holding one of the specific named titles — it
+// starts with nothing granted, unlike the named officer roles below, which
+// come with a sensible starting set.
+export const BASE_ADJUSTABLE_ROLES = ['vice_president', 'secretary', 'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_access'];
 
 const DEFAULT_TAB_ROLES = {
   events: ['vice_president', 'event_coordinator', 'secretary', 'media', 'treasurer', 'senator'],
@@ -103,12 +104,6 @@ export async function computeCanUse(role) {
   return out;
 }
 
-// Fixed roles are always valid. Anything else is treated as a custom
-// E-Board title (the Accounts tab's "Other" option) — it just starts with
-// baseline access (able to sign into the portal and see the Overview tab,
-// nothing else) until granted more from the Permissions section.
 export function isValidRole(role) {
-  if (ROLES.includes(role)) return true;
-  const trimmed = String(role || '').trim();
-  return trimmed.length > 0 && trimmed.length <= 40;
+  return ROLES.includes(role);
 }

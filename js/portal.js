@@ -46,7 +46,8 @@ const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Ch
 const ROLE_LABELS = {
   member: 'Member', president: 'President', admin: 'Admin', vice_president: 'Vice President',
   secretary: 'Secretary', treasurer: 'Treasurer', event_coordinator: 'Event Coordinator',
-  media: 'Social Media Coordinator', senator: 'Senator', eboard_legacy: 'E-Board (legacy)',
+  media: 'Social Media Coordinator', senator: 'Senator', eboard_access: 'E-Board Access',
+  eboard_legacy: 'E-Board (legacy)',
 };
 const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy', 'vice_president'];
 
@@ -295,11 +296,13 @@ function accountRowHTML(a) {
   const roleBadge = `<span class="badge-role ${FULL_ACCESS_ROLES.includes(a.role) ? 'admin' : 'eboard'}">${ROLE_LABELS[a.role] || a.role}</span>`;
   const inactiveBadge = a.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
   const isSelf = me && a.id === me.id;
-  const isCustomRole = a.role !== 'eboard_legacy' && !Object.prototype.hasOwnProperty.call(ROLE_LABELS, a.role);
+  // Defensive fallback for any stray role value that isn't in ROLE_LABELS
+  // (shouldn't happen going forward, but keeps the dropdown from silently
+  // jumping to a different role if it ever does).
+  const isUnknownRole = a.role !== 'eboard_legacy' && !Object.prototype.hasOwnProperty.call(ROLE_LABELS, a.role);
   const options = Object.entries(ROLE_LABELS).filter(([k]) => k !== 'eboard_legacy')
     .map(([k, label]) => `<option value="${k}" ${a.role === k ? 'selected' : ''}>${label}</option>`).join('')
-    + (isCustomRole ? `<option value="${escHtml(a.role)}" selected>${escHtml(a.role)}</option>` : '')
-    + `<option value="__other__">Other…</option>`;
+    + (isUnknownRole ? `<option value="${escHtml(a.role)}" selected>${escHtml(a.role)}</option>` : '');
   return `<div class="admin-row" data-account-id="${escHtml(a.id)}">
     <div>
       <span class="name">${escHtml(a.name)}</span> ${roleBadge}${inactiveBadge}
@@ -323,40 +326,27 @@ async function loadAccounts() {
 }
 
 function wireAccountsPanel() {
-  document.getElementById('nu-role').addEventListener('change', (e) => {
-    document.getElementById('nu-role-other').style.display = e.target.value === '__other__' ? '' : 'none';
-  });
-
   document.getElementById('add-account-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('add-account-status');
     const name = document.getElementById('nu-name').value.trim();
     const email = document.getElementById('nu-email').value.trim();
     const password = document.getElementById('nu-password').value;
-    let role = document.getElementById('nu-role').value;
-    if (role === '__other__') role = document.getElementById('nu-role-other').value.trim();
+    const role = document.getElementById('nu-role').value;
     if (!name || !email || !password) {
       statusEl.textContent = 'Name, email, and password are required.'; statusEl.className = 'admin-status err'; return;
     }
-    if (!role) { statusEl.textContent = 'Enter a custom role title.'; statusEl.className = 'admin-status err'; return; }
     const { ok, data } = await api(ACCOUNTS_URL, { method: 'POST', body: JSON.stringify({ name, email, password, role }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not create account.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = 'Account created.'; statusEl.className = 'admin-status ok';
     e.target.reset();
-    document.getElementById('nu-role-other').style.display = 'none';
     loadAccounts();
   });
 
   document.getElementById('accounts-list').addEventListener('change', async (e) => {
     const sel = e.target.closest('[data-role-select]');
     if (!sel) return;
-    let role = sel.value;
-    if (role === '__other__') {
-      const custom = prompt('Custom role title (e.g. "Historian"):');
-      if (!custom || !custom.trim()) { loadAccounts(); return; }
-      role = custom.trim();
-    }
-    const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: sel.dataset.roleSelect, role }) });
+    const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: sel.dataset.roleSelect, role: sel.value }) });
     if (!ok) { alert(data.error || 'Could not update role.'); loadAccounts(); return; }
     loadAccounts();
   });
@@ -877,7 +867,16 @@ async function loadEventDefaults() {
 }
 
 // ── Digital Library tab ───────────────────────────────────
+const LIB_TAGS = ['Classical', 'Musical Theater', 'Church Music', 'Contemporary', 'Jazz & Pop', 'Sacred', 'Secular', 'A Cappella', 'Folk'];
+let libManageActiveTag = 'all';
+
 function composerDisplay(s){ return [s.composer_first, s.composer_last].filter(Boolean).join(' '); }
+function arrangerDisplay(s){ return [s.arranger_first, s.arranger_last].filter(Boolean).join(' '); }
+function fullCreditDisplay(s){
+  const composer = composerDisplay(s), arranger = arrangerDisplay(s);
+  if (composer && arranger) return `${composer} (arr. ${arranger})`;
+  return composer || (arranger ? `arr. ${arranger}` : '');
+}
 
 function getSelectOrOther(selectId, otherId) {
   const sel = document.getElementById(selectId), inp = document.getElementById(otherId);
@@ -898,29 +897,45 @@ function initOtherSelect(selectId, otherId) {
 }
 
 function scoreManageRowHTML(s) {
-  const composer = composerDisplay(s);
+  const credit = fullCreditDisplay(s);
   const meta = [s.voicing, s.instrumentation, s.year].filter(Boolean).join(' · ');
   return `<div class="admin-row" data-score-url="${escHtml(s.url)}">
     <div>
       <span class="name">${escHtml(s.title)}</span>
-      <div class="meta">${escHtml(composer)}${composer && meta ? ' · ' : ''}${escHtml(meta)}</div>
+      <div class="meta">${escHtml(credit)}${credit && meta ? ' · ' : ''}${escHtml(meta)}</div>
     </div>
     <div class="actions">
+      <a class="btn-sm outline" href="${escHtml(s.url)}" target="_blank" rel="noopener">View PDF</a>
       <button class="btn-sm edit" data-edit-score="${escHtml(s.url)}">Edit</button>
       <button class="btn-sm delete" data-delete-score="${escHtml(s.url)}">Delete</button>
     </div>
   </div>`;
 }
 
+function renderLibManageChips() {
+  const el = document.getElementById('lib-manage-chips');
+  const used = new Set(libScores.flatMap(s => s.tags || []));
+  el.innerHTML = `<button class="cat-chip ${libManageActiveTag === 'all' ? 'active' : ''}" data-lib-tag="all">All</button>` +
+    LIB_TAGS.filter(t => used.has(t)).map(t =>
+      `<button class="cat-chip ${libManageActiveTag === t ? 'active' : ''}" data-lib-tag="${escHtml(t)}">${escHtml(t)}</button>`
+    ).join('');
+}
+
 function renderLibManageList() {
   const el = document.getElementById('lib-manage-list');
   const term = (document.getElementById('lib-manage-search').value || '').toLowerCase();
-  const filtered = libScores.filter(s => !term || s.title.toLowerCase().includes(term) || composerDisplay(s).toLowerCase().includes(term));
+  const filtered = libScores.filter(s =>
+    (libManageActiveTag === 'all' || (s.tags || []).includes(libManageActiveTag)) &&
+    (!term || s.title.toLowerCase().includes(term) || fullCreditDisplay(s).toLowerCase().includes(term))
+  );
   el.innerHTML = filtered.map(scoreManageRowHTML).join('') || '<p class="small muted">No scores yet.</p>';
 }
 
 function setManageRowHTML(sess) {
   const count = sess.scoreUrls.length;
+  const archiveBtn = sess.archived
+    ? `<button class="btn-sm outline" data-unarchive-set="${escHtml(sess.num)}">Unarchive</button>`
+    : `<button class="btn-sm outline" data-archive-set="${escHtml(sess.num)}">Archive</button>`;
   return `<div class="admin-row" style="align-items:flex-start" data-set-num="${escHtml(sess.num)}">
     <div>
       <span class="name">${escHtml(sess.num)}: ${escHtml(sess.name)}</span>
@@ -928,6 +943,7 @@ function setManageRowHTML(sess) {
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-manage-set="${escHtml(sess.num)}">Manage scores</button>
+      ${archiveBtn}
       <button class="btn-sm delete" data-delete-set="${escHtml(sess.num)}">Delete</button>
     </div>
   </div>
@@ -943,12 +959,15 @@ function renderSetCurrentScores(sessNum) {
   if (!sess || !el) return;
   const scores = sess.scoreUrls.map(u => libScores.find(s => s.url === u)).filter(Boolean);
   el.innerHTML = scores.map(s => `<div class="admin-row">
-    <div><span class="name">${escHtml(s.title)}</span>${composerDisplay(s) ? `<div class="meta">${escHtml(composerDisplay(s))}</div>` : ''}</div>
+    <div><span class="name">${escHtml(s.title)}</span>${fullCreditDisplay(s) ? `<div class="meta">${escHtml(fullCreditDisplay(s))}</div>` : ''}</div>
     <div class="actions"><button class="btn-sm delete" data-remove-from-set="${escHtml(sessNum)}" data-url="${escHtml(s.url)}">Remove</button></div>
   </div>`).join('') || '<p class="small muted">No scores in this set yet.</p>';
 }
 function renderSetsManageList() {
-  document.getElementById('sets-manage-list').innerHTML = libSessions.map(setManageRowHTML).join('') || '<p class="small muted">No sets yet.</p>';
+  const active = libSessions.filter(s => !s.archived);
+  const archived = libSessions.filter(s => s.archived);
+  document.getElementById('sets-manage-list').innerHTML = active.map(setManageRowHTML).join('') || '<p class="small muted">No sets yet.</p>';
+  document.getElementById('sets-archive-list').innerHTML = archived.map(setManageRowHTML).join('') || '<p class="small muted">No archived sets.</p>';
 }
 
 async function loadLibrary() {
@@ -956,6 +975,7 @@ async function loadLibrary() {
   if (!ok) return;
   libScores = data.scores || [];
   libSessions = data.sessions || [];
+  renderLibManageChips();
   renderLibManageList();
   renderSetsManageList();
 }
@@ -997,6 +1017,8 @@ function wireLibraryPanel() {
       title, url,
       composer_first: document.getElementById('sc-cfirst').value.trim(),
       composer_last: document.getElementById('sc-clast').value.trim(),
+      arranger_first: document.getElementById('sc-afirst').value.trim(),
+      arranger_last: document.getElementById('sc-alast').value.trim(),
       year: document.getElementById('sc-year').value.trim(),
       voicing: getSelectOrOther('sc-voicing', 'sc-voicing-other'),
       instrumentation: getSelectOrOther('sc-instr', 'sc-instr-other'),
@@ -1010,10 +1032,17 @@ function wireLibraryPanel() {
     statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
     libScores = data.scores; libSessions = data.sessions;
     resetScoreForm();
-    renderLibManageList(); renderSetsManageList();
+    renderLibManageChips(); renderLibManageList(); renderSetsManageList();
   });
   document.getElementById('score-form-cancel').addEventListener('click', resetScoreForm);
   document.getElementById('lib-manage-search').addEventListener('input', renderLibManageList);
+  document.getElementById('lib-manage-chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('[data-lib-tag]');
+    if (!chip) return;
+    libManageActiveTag = chip.dataset.libTag;
+    renderLibManageChips();
+    renderLibManageList();
+  });
 
   document.getElementById('lib-manage-list').addEventListener('click', async (e) => {
     const editBtn = e.target.closest('[data-edit-score]');
@@ -1024,6 +1053,8 @@ function wireLibraryPanel() {
       document.getElementById('sc-title').value = s.title;
       document.getElementById('sc-cfirst').value = s.composer_first;
       document.getElementById('sc-clast').value = s.composer_last;
+      document.getElementById('sc-afirst').value = s.arranger_first || '';
+      document.getElementById('sc-alast').value = s.arranger_last || '';
       document.getElementById('sc-year').value = s.year;
       setSelectOrOther('sc-voicing', 'sc-voicing-other', s.voicing, KNOWN_VOICINGS);
       setSelectOrOther('sc-instr', 'sc-instr-other', s.instrumentation, KNOWN_INSTRS);
@@ -1042,7 +1073,7 @@ function wireLibraryPanel() {
       const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteScore', url: delBtn.dataset.deleteScore }) });
       if (!ok) { alert(data.error || 'Could not delete.'); return; }
       libScores = data.scores; libSessions = data.sessions;
-      renderLibManageList(); renderSetsManageList();
+      renderLibManageChips(); renderLibManageList(); renderSetsManageList();
     }
   });
 
@@ -1072,15 +1103,15 @@ function wireLibraryPanel() {
     const term = (input.value || '').trim().toLowerCase();
     if (!term) { resultsEl.style.display = 'none'; return; }
     const matches = libScores.filter(s => !sess.scoreUrls.includes(s.url) &&
-      (s.title.toLowerCase().includes(term) || composerDisplay(s).toLowerCase().includes(term))).slice(0, 10);
+      (s.title.toLowerCase().includes(term) || fullCreditDisplay(s).toLowerCase().includes(term))).slice(0, 10);
     resultsEl.innerHTML = matches.map(s => `<div class="admin-row">
-      <div><span class="name">${escHtml(s.title)}</span>${composerDisplay(s) ? `<div class="meta">${escHtml(composerDisplay(s))}</div>` : ''}</div>
+      <div><span class="name">${escHtml(s.title)}</span>${fullCreditDisplay(s) ? `<div class="meta">${escHtml(fullCreditDisplay(s))}</div>` : ''}</div>
       <div class="actions"><button class="btn-sm" data-add-to-set="${escHtml(num)}" data-url="${escHtml(s.url)}">+ Add</button></div>
     </div>`).join('') || '<p class="small muted" style="padding:.4rem">No matches.</p>';
     resultsEl.style.display = '';
   }
 
-  document.getElementById('sets-manage-list').addEventListener('click', async (e) => {
+  const onSetsListClick = async (e) => {
     const manageBtn = e.target.closest('[data-manage-set]');
     if (manageBtn) {
       const num = manageBtn.dataset.manageSet;
@@ -1116,6 +1147,22 @@ function wireLibraryPanel() {
       updateSetSummary(num);
       return;
     }
+    const archiveBtn = e.target.closest('[data-archive-set]');
+    if (archiveBtn) {
+      const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'setSessionArchived', num: archiveBtn.dataset.archiveSet, archived: true }) });
+      if (!ok) { alert(data.error || 'Could not archive.'); return; }
+      libScores = data.scores; libSessions = data.sessions;
+      renderSetsManageList();
+      return;
+    }
+    const unarchiveBtn = e.target.closest('[data-unarchive-set]');
+    if (unarchiveBtn) {
+      const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'setSessionArchived', num: unarchiveBtn.dataset.unarchiveSet, archived: false }) });
+      if (!ok) { alert(data.error || 'Could not unarchive.'); return; }
+      libScores = data.scores; libSessions = data.sessions;
+      renderSetsManageList();
+      return;
+    }
     const delBtn = e.target.closest('[data-delete-set]');
     if (delBtn) {
       if (!confirm('Delete this set? Scores stay in the library.')) return;
@@ -1124,12 +1171,16 @@ function wireLibraryPanel() {
       libScores = data.scores; libSessions = data.sessions;
       renderSetsManageList();
     }
-  });
+  };
+  document.getElementById('sets-manage-list').addEventListener('click', onSetsListClick);
+  document.getElementById('sets-archive-list').addEventListener('click', onSetsListClick);
 
-  document.getElementById('sets-manage-list').addEventListener('input', (e) => {
+  const onSetsListInput = (e) => {
     const input = e.target.closest('[data-set-search]');
     if (input) renderSetSearchResults(input.dataset.setSearch);
-  });
+  };
+  document.getElementById('sets-manage-list').addEventListener('input', onSetsListInput);
+  document.getElementById('sets-archive-list').addEventListener('input', onSetsListInput);
 }
 
 // ── Site Content (E-Board roster) tab ─────────────────────

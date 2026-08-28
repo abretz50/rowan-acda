@@ -33,6 +33,7 @@ export default async function handler(req) {
     lib.scores.push({
       title: s.title, url: s.url,
       composer_first: s.composer_first || '', composer_last: s.composer_last || '',
+      arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
       year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
       tags: Array.isArray(s.tags) ? s.tags : [],
     });
@@ -48,6 +49,7 @@ export default async function handler(req) {
     Object.assign(target, {
       title: s.title, url: s.url,
       composer_first: s.composer_first || '', composer_last: s.composer_last || '',
+      arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
       year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
       tags: Array.isArray(s.tags) ? s.tags : [],
     });
@@ -74,7 +76,15 @@ export default async function handler(req) {
     const { num, name } = body;
     if (!num || !name) return json({ ok: false, error: 'ID and name are required.' }, 400);
     if (lib.sessions.some(s => s.num === num)) return json({ ok: false, error: `${num} already exists.` }, 409);
-    lib.sessions.unshift({ num, name, scoreUrls: [] });
+    lib.sessions.unshift({ num, name, scoreUrls: [], archived: false });
+    await setCollection('library', lib);
+    return json({ ok: true, ...lib });
+  }
+
+  if (op === 'setSessionArchived') {
+    const sess = lib.sessions.find(s => s.num === body.num);
+    if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
+    sess.archived = !!body.archived;
     await setCollection('library', lib);
     return json({ ok: true, ...lib });
   }
