@@ -342,6 +342,7 @@ function resetEventForm() {
   document.getElementById('event-form').reset();
   document.getElementById('ev-image').value = '';
   document.getElementById('ev-image-current').textContent = '';
+  document.getElementById('ev-clear-signin-wrap').style.display = 'none';
   document.getElementById('event-form-heading').textContent = 'Create Event';
   document.getElementById('event-form-submit').textContent = 'Create event';
   document.getElementById('event-form-cancel').style.display = 'none';
@@ -368,6 +369,7 @@ function wireEventsPanel() {
       tags: [document.getElementById('ev-tags').value],
       imageUrl,
     };
+    if (document.getElementById('ev-clear-signin').checked) payload.signinLink = '';
     if (!payload.title || !payload.start) {
       statusEl.textContent = 'Title and start are required.'; statusEl.className = 'admin-status err'; return;
     }
@@ -410,6 +412,9 @@ function wireEventsPanel() {
       document.getElementById('ev-tags').value = (ev.tags && ev.tags[0]) || 'Event';
       document.getElementById('ev-image').value = ev.imageUrl || '';
       document.getElementById('ev-image-current').textContent = ev.imageUrl ? `Current image: ${ev.imageUrl} — choose a new one only to replace it.` : '';
+      const clearSigninWrap = document.getElementById('ev-clear-signin-wrap');
+      document.getElementById('ev-clear-signin').checked = false;
+      clearSigninWrap.style.display = ev.signinLink ? 'flex' : 'none';
       document.getElementById('event-form-heading').textContent = 'Edit Event';
       document.getElementById('event-form-submit').textContent = 'Save changes';
       document.getElementById('event-form-cancel').style.display = '';

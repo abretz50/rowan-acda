@@ -1,2 +1,13 @@
 [functions]
   node_bundler = "esbuild"
+
+# The portal changes fast enough (and correctness matters more than shaving
+# repeat-visit bandwidth on a low-traffic club site) that everything should
+# always be revalidated with the server rather than served straight from a
+# browser's local cache. Without this, an HTML page cached from before a
+# fix ships keeps pointing at old (possibly also-cached) JS/CSS forever,
+# no matter how many cache-busting query strings get added later.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
