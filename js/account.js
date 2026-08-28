@@ -9,7 +9,7 @@ const AUTH_URL   = '/.netlify/functions/portal-auth';
 const ME_URL     = '/.netlify/functions/portal-me';
 const POINTS_URL = '/.netlify/functions/portal-points';
 
-const EBOARD_ROLES = ['president', 'vice_president', 'secretary', 'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_legacy'];
+const EBOARD_ROLES = ['president', 'admin', 'vice_president', 'secretary', 'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_legacy'];
 
 let me = null;
 
