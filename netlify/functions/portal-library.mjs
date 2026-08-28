@@ -1,7 +1,9 @@
 import { getCollection, setCollection } from './_lib/blobs.mjs';
-import { requireAuth, json } from './_lib/auth.mjs';
+import { requireAuth, getSessionUser, json } from './_lib/auth.mjs';
 import { parseDat } from './_lib/parseDat.mjs';
 import { SEED_DAT_TEXT } from './_lib/librarySeed.mjs';
+import { loadMembers } from './_lib/loadMembers.mjs';
+import { hasPermission } from './_lib/permissions.mjs';
 
 async function loadLibrary() {
   const lib = await getCollection('library', null);
@@ -11,10 +13,22 @@ async function loadLibrary() {
   return seeded;
 }
 
+async function canManageLibrary(req) {
+  const token = getSessionUser(req);
+  if (!token) return false;
+  const members = await loadMembers();
+  const m = members.find(x => x.id === token.id && x.hasAccount && x.active !== false);
+  return m ? await hasPermission(m.role, 'library') : false;
+}
+
 export default async function handler(req) {
   if (req.method === 'GET') {
     const lib = await loadLibrary();
-    return json({ ok: true, ...lib });
+    const authed = await canManageLibrary(req);
+    // Archived sets are an E-Board-only organizational view — the public
+    // library only ever offers the current (non-archived) sets.
+    const sessions = authed ? lib.sessions : lib.sessions.filter(s => !s.archived);
+    return json({ ok: true, scores: lib.scores, sessions });
   }
 
   const auth = await requireAuth(req, { perm: 'library' });
@@ -76,7 +90,7 @@ export default async function handler(req) {
     const { num, name } = body;
     if (!num || !name) return json({ ok: false, error: 'ID and name are required.' }, 400);
     if (lib.sessions.some(s => s.num === num)) return json({ ok: false, error: `${num} already exists.` }, 409);
-    lib.sessions.unshift({ num, name, scoreUrls: [], archived: false });
+    lib.sessions.unshift({ num, name, scoreUrls: [], archived: false, archivedAt: null });
     await setCollection('library', lib);
     return json({ ok: true, ...lib });
   }
@@ -85,6 +99,7 @@ export default async function handler(req) {
     const sess = lib.sessions.find(s => s.num === body.num);
     if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
     sess.archived = !!body.archived;
+    sess.archivedAt = sess.archived ? new Date().toISOString() : null;
     await setCollection('library', lib);
     return json({ ok: true, ...lib });
   }

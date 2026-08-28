@@ -1126,10 +1126,11 @@ function setManageRowHTML(sess) {
   const archiveBtn = sess.archived
     ? `<button class="btn-sm outline" data-unarchive-set="${escHtml(sess.num)}">Unarchive</button>`
     : `<button class="btn-sm outline" data-archive-set="${escHtml(sess.num)}">Archive</button>`;
+  const archivedMeta = sess.archived && sess.archivedAt ? ` · archived ${fmtDashDate(sess.archivedAt)}` : '';
   return `<div class="admin-row" style="align-items:flex-start" data-set-num="${escHtml(sess.num)}">
     <div>
       <span class="name">${escHtml(sess.num)}: ${escHtml(sess.name)}</span>
-      <div class="meta">${count} score${count !== 1 ? 's' : ''}</div>
+      <div class="meta">${count} score${count !== 1 ? 's' : ''}${archivedMeta}</div>
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-manage-set="${escHtml(sess.num)}">Manage scores</button>
