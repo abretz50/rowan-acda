@@ -8,47 +8,75 @@ export const ROLES = [
   'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_legacy',
 ];
 
-// Roles with unconditional full access — a real club title (president, vice
-// president) or a site-maintainer account that shouldn't have to pose as
-// the president. President and admin are deliberately identical: either can
-// manage accounts, create new presidents/E-Board members, and do anything
-// else in the portal.
-export const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy', 'vice_president'];
+// Roles that always have every tab, no exceptions — not adjustable from the
+// Permissions section even for content/accounts. President and admin are
+// deliberately identical (either can manage accounts, create new
+// presidents/E-Board members, and do anything else); eboard_legacy is a
+// migration fallback for accounts created under the old flat admin/eboard
+// system, treated as full access until reassigned.
+export const LOCKED_FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy'];
 
-// Tabs whose access can be granted per-role from the portal's Permissions
-// tab. 'content' and 'accounts' are deliberately left out of this list —
-// managing the roster's public bios and managing who has portal accounts
-// stay full-access-only no matter what's configured here.
+// Roles that automatically get 'content' and 'accounts' (never exposed as
+// checkboxes, and not adjustable here) in addition to whatever's configured
+// for the manageable tabs below. Vice President keeps this "everything by
+// default" baseline for those two tabs, but — unlike the locked roles above
+// — their manageable-tab access can be individually unchecked.
+export const FULL_ACCESS_ROLES = [...LOCKED_FULL_ACCESS_ROLES, 'vice_president'];
+
+// Only these two can view or edit the Permissions section — not even Vice
+// President, despite otherwise having full access everywhere else.
+export const PERMISSIONS_MANAGERS = ['president', 'admin'];
+
+// Tabs whose access can be granted per-role from the Permissions section
+// (folded into the Accounts tab). 'content' and 'accounts' are deliberately
+// left out — managing the roster's public bios and managing who has portal
+// accounts stay full-access-only no matter what's configured here.
 export const MANAGEABLE_TABS = ['events', 'members', 'points', 'library', 'gallery', 'budget'];
 
 // Every tab the portal dashboard can show, manageable or not — used to
 // compute a signed-in user's full tab list in one place.
 export const ALL_TABS = [...MANAGEABLE_TABS, 'content', 'accounts', 'permissions'];
 
-// Non-full-access roles shown on the Permissions tab by default. A custom
+// Non-locked roles shown on the Permissions section by default (Vice
+// President is included since its manageable-tab access is now adjustable,
+// even though it keeps automatic content/accounts access above). A custom
 // role (created via the Accounts tab's "Other" option) is added to the
 // stored map the first time someone grants it anything, and then shows up
 // here too.
-export const BASE_ADJUSTABLE_ROLES = ['secretary', 'treasurer', 'event_coordinator', 'media', 'senator'];
+export const BASE_ADJUSTABLE_ROLES = ['vice_president', 'secretary', 'treasurer', 'event_coordinator', 'media', 'senator'];
 
 const DEFAULT_TAB_ROLES = {
-  events: ['event_coordinator', 'secretary', 'media', 'treasurer', 'senator'],
-  members: ['secretary', 'treasurer', 'event_coordinator'],
-  points: ['secretary', 'event_coordinator'],
-  library: [],
-  gallery: ['media'],
-  budget: ['treasurer'],
+  events: ['vice_president', 'event_coordinator', 'secretary', 'media', 'treasurer', 'senator'],
+  members: ['vice_president', 'secretary', 'treasurer', 'event_coordinator'],
+  points: ['vice_president', 'secretary', 'event_coordinator'],
+  library: ['vice_president'],
+  gallery: ['vice_president', 'media'],
+  budget: ['vice_president', 'treasurer'],
 };
 
 // Auto-seeds from DEFAULT_TAB_ROLES the first time this is read — same
 // pattern as the other Blobs collections in this app (library/content/
-// events/gallery), so the permissions system works out of the box and only
-// needs the Permissions tab once someone wants to change something.
+// events/gallery). Vice President used to bypass this store entirely (real
+// full access); now that its manageable-tab access is adjustable, any
+// already-seeded store gets a one-time backfill so existing deployments
+// don't suddenly lose VP's access to everything on this deploy.
 export async function loadTabRoles() {
   const existing = await getCollection('permissions', null);
-  if (existing) return existing;
-  await setCollection('permissions', DEFAULT_TAB_ROLES);
-  return DEFAULT_TAB_ROLES;
+  if (!existing) {
+    const seeded = { ...DEFAULT_TAB_ROLES, _vpMigrated: true };
+    await setCollection('permissions', seeded);
+    return seeded;
+  }
+  if (!existing._vpMigrated) {
+    for (const tab of MANAGEABLE_TABS) {
+      const roleSet = new Set(existing[tab] || []);
+      roleSet.add('vice_president');
+      existing[tab] = [...roleSet];
+    }
+    existing._vpMigrated = true;
+    await setCollection('permissions', existing);
+  }
+  return existing;
 }
 
 export async function saveTabRoles(tabRoles) {
@@ -56,9 +84,10 @@ export async function saveTabRoles(tabRoles) {
 }
 
 export async function hasPermission(role, tab) {
-  if (FULL_ACCESS_ROLES.includes(role)) return true;
   if (!tab) return true; // just needs to be a signed-in account
-  if (!MANAGEABLE_TABS.includes(tab)) return false; // content/accounts/permissions: full-access only
+  if (tab === 'permissions') return PERMISSIONS_MANAGERS.includes(role);
+  if (LOCKED_FULL_ACCESS_ROLES.includes(role)) return true;
+  if (!MANAGEABLE_TABS.includes(tab)) return FULL_ACCESS_ROLES.includes(role); // content/accounts
   const tabRoles = await loadTabRoles();
   return (tabRoles[tab] || []).includes(role);
 }
@@ -77,7 +106,7 @@ export async function computeCanUse(role) {
 // Fixed roles are always valid. Anything else is treated as a custom
 // E-Board title (the Accounts tab's "Other" option) — it just starts with
 // baseline access (able to sign into the portal and see the Overview tab,
-// nothing else) until granted more from the Permissions tab.
+// nothing else) until granted more from the Permissions section.
 export function isValidRole(role) {
   if (ROLES.includes(role)) return true;
   const trimmed = String(role || '').trim();

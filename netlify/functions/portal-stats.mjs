@@ -31,6 +31,41 @@ export default async function handler(req) {
     .sort((a, b) => b.total - a.total)
     .slice(0, 5);
 
+  // Attendance = one distinct member per event with any non-denied points
+  // entry tied to that event (a regular check-in, or any volunteer signup) —
+  // pending counts as "attended, awaiting approval" so the numbers don't lag
+  // behind reality while the secretary is still reviewing.
+  const attendeesByEvent = new Map(); // eventId -> Set(memberId)
+  for (const p of points) {
+    if (p.status === 'denied' || !p.eventId) continue;
+    if (!attendeesByEvent.has(p.eventId)) attendeesByEvent.set(p.eventId, new Set());
+    attendeesByEvent.get(p.eventId).add(p.memberId);
+  }
+
+  let mostAttendedEvent = null;
+  for (const [eventId, memberSet] of attendeesByEvent.entries()) {
+    const ev = events.find(e => e.id === eventId);
+    if (!ev) continue;
+    if (!mostAttendedEvent || memberSet.size > mostAttendedEvent.count) {
+      mostAttendedEvent = { title: ev.title, count: memberSet.size };
+    }
+  }
+
+  const totalAttendanceRecords = [...attendeesByEvent.values()].reduce((s, set) => s + set.size, 0);
+  const avgMemberAttendance = activeMembers.length ? totalAttendanceRecords / activeMembers.length : 0;
+
+  // Chart data: past events only (nothing to show for events that haven't
+  // happened yet), oldest to newest, capped to the most recent 20 so the
+  // chart stays readable.
+  const pastEvents = events
+    .filter(e => new Date(e.end || e.start) <= now)
+    .sort((a, b) => new Date(a.start) - new Date(b.start));
+  const attendanceByEvent = pastEvents.slice(-20).map(e => ({
+    title: e.title,
+    date: e.start,
+    count: (attendeesByEvent.get(e.id) || new Set()).size,
+  }));
+
   return json({
     ok: true,
     stats: {
@@ -40,6 +75,9 @@ export default async function handler(req) {
       totalApprovedPoints: approved.reduce((s, p) => s + p.amount, 0),
       pendingPointsCount: points.filter(p => p.status === 'pending').length,
       topEarners,
+      mostAttendedEvent,
+      avgMemberAttendance: Math.round(avgMemberAttendance * 10) / 10,
+      attendanceByEvent,
     },
   });
 }

@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=5"/>
+<link rel="stylesheet" href="/css/components.css?v=6"/>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -80,7 +80,6 @@
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-gallery" id="tab-gallery">Gallery</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-budget" id="tab-budget" style="display:none">Budget</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none">Accounts</button>
-      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-permissions" id="tab-permissions" style="display:none">Permissions</button>
     </div>
 
     <div class="panel active" id="panel-overview">
@@ -94,6 +93,11 @@
       <div class="admin-card" id="overview-top-earners-card" style="display:none">
         <h3>Top Point Earners</h3>
         <div id="overview-top-earners"></div>
+      </div>
+      <div class="admin-card" style="margin-top:1rem">
+        <h3>Attendance Over Time</h3>
+        <p class="small muted">Attendance per past event/meeting, most recent 20.</p>
+        <div id="overview-attendance-chart" style="overflow-x:auto"><p class="small muted">Loading…</p></div>
       </div>
     </div>
 
@@ -330,8 +334,18 @@
       </div>
     </div>
 
-    <!-- ===== Site Content (E-Board roster) ===== -->
+    <!-- ===== Site Content, sorted by which public page it covers ===== -->
     <div class="panel" id="panel-content">
+      <h2 class="content-section-heading">Home Page</h2>
+      <div class="admin-card"><p class="small muted">The homepage slideshow is managed from the <strong>Gallery</strong> tab.</p></div>
+
+      <h2 class="content-section-heading">Events Page</h2>
+      <div class="admin-card"><p class="small muted">Events are managed from the <strong>Events</strong> tab.</p></div>
+
+      <h2 class="content-section-heading">Members Page</h2>
+      <div class="admin-card"><p class="small muted">The member roster is managed from the <strong>Members</strong> tab.</p></div>
+
+      <h2 class="content-section-heading">E-Board Page</h2>
       <div class="eboard-panel">
         <div class="admin-card">
           <h3 id="eb-form-heading">Add E-Board Member</h3>
@@ -367,10 +381,13 @@
           </form>
         </div>
         <div class="admin-card">
-          <h3>Current Roster</h3>
+          <h3>Current E-Board Roster</h3>
           <div id="eb-list"><p class="small muted">Loading…</p></div>
         </div>
       </div>
+
+      <h2 class="content-section-heading">Resources Page</h2>
+      <div class="admin-card"><p class="small muted">Nothing is configurable here yet.</p></div>
     </div>
 
     <!-- ===== Gallery / Slideshow ===== -->
@@ -414,7 +431,7 @@
               <option value="__other__">Other…</option>
             </select>
             <input class="admin-input" type="text" id="nu-role-other" placeholder="Custom role title" style="display:none"/>
-            <p class="form-hint">Anyone can also create their own account at /account.html — use this only when creating one on someone's behalf. Share the temporary password with them directly. A custom "Other" role starts with no extra tab access — grant it from the Permissions tab.</p>
+            <p class="form-hint">Anyone can also create their own account at /account.html — use this only when creating one on someone's behalf. Share the temporary password with them directly. A custom "Other" role starts with no extra tab access — grant it below.</p>
             <button class="btn-sm" type="submit">Create account</button>
             <div class="admin-status" id="add-account-status"></div>
           </form>
@@ -425,12 +442,10 @@
           <div id="accounts-list"><p class="small muted">Loading…</p></div>
         </div>
       </div>
-    </div>
 
-    <div class="panel" id="panel-permissions">
-      <div class="admin-card">
+      <div class="admin-card" id="permissions-section" style="margin-top:1rem;display:none">
         <h3>Permissions</h3>
-        <p class="small muted">President, Admin, and Vice President always have full access and aren't shown here. Check the tabs each other role should be able to use.</p>
+        <p class="small muted">Only President and Admin can see or change this. President and Admin always have every tab (not shown below, and can't be changed). Vice President defaults to every tab too, but — unlike President/Admin — it can be adjusted here.</p>
         <div id="permissions-list"><p class="small muted">Loading…</p></div>
       </div>
     </div>
@@ -474,6 +489,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=7"></script>
+<script defer src="/js/portal.js?v=8"></script>
 </body>
 </html>

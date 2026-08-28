@@ -23,7 +23,7 @@ const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
 // every auth response — the client just reads that list instead of keeping
 // its own copy of the permission rules, so a change made on the Permissions
 // tab takes effect without needing a matching client-side edit.
-const PORTAL_TABS = ['events', 'members', 'points', 'library', 'content', 'gallery', 'budget', 'accounts', 'permissions'];
+const PORTAL_TABS = ['events', 'members', 'points', 'library', 'content', 'gallery', 'budget', 'accounts'];
 function canUse(tab) {
   if (!me) return false;
   return (me.canUse || []).includes(tab);
@@ -202,6 +202,7 @@ function showDashboard() {
 
   loadOverviewStats();
   if (canUse('accounts')) loadAccounts();
+  document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
   if (canUse('permissions')) loadPermissions();
   // loadEvents() populates the shared `allEvents` list, which the Points tab's
   // "Event Point Values" section also needs — so load it for either permission.
@@ -218,18 +219,46 @@ function showDashboard() {
 }
 
 // ── Overview tab ──────────────────────────────────────────
+function statCardHTML(number, label, detail) {
+  return `<div class="stat-card"><span class="stat-number">${number}</span><span class="stat-label">${escHtml(label)}</span>${detail ? `<span class="stat-detail">${escHtml(detail)}</span>` : ''}</div>`;
+}
+
+// Plain inline SVG bar chart — no charting library needed for a handful of
+// horizontal bars, and it keeps this dependency-free like the rest of the
+// site.
+function attendanceChartSVG(rows) {
+  if (!rows.length) return '<p class="small muted">No past events yet.</p>';
+  const max = Math.max(1, ...rows.map(r => r.count));
+  const rowH = 26, gap = 6, labelW = 190, barMaxW = 320, chartW = labelW + barMaxW + 50;
+  const totalH = rows.length * (rowH + gap);
+  const bars = rows.map((r, i) => {
+    const y = i * (rowH + gap);
+    const w = Math.max(2, (r.count / max) * barMaxW);
+    const title = r.title.length > 28 ? r.title.slice(0, 26) + '…' : r.title;
+    return `<g transform="translate(0,${y})">
+      <title>${escHtml(r.title)} — ${r.count}</title>
+      <text x="0" y="${rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--text, #333)">${escHtml(title)}</text>
+      <rect x="${labelW}" y="4" width="${w}" height="${rowH - 8}" rx="4" fill="var(--brand, #7A0A0A)"></rect>
+      <text x="${labelW + w + 6}" y="${rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--muted, #666)">${r.count}</text>
+    </g>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${chartW} ${totalH}" width="100%" style="max-width:640px;min-width:400px;font-family:inherit">${bars}</svg>`;
+}
+
 async function loadOverviewStats() {
   const gridEl = document.getElementById('overview-stats');
   const { ok, data } = await api(STATS_URL, { method: 'GET' });
   if (!ok) { gridEl.innerHTML = '<div class="admin-card"><p class="small muted">Could not load stats.</p></div>'; return; }
   const s = data.stats;
   gridEl.innerHTML = [
-    [s.memberCount, 'Members'],
-    [s.accountCount, 'Accounts'],
-    [s.upcomingEventCount, 'Upcoming Events'],
-    [s.totalApprovedPoints, 'Points Awarded'],
-    [s.pendingPointsCount, 'Pending Approvals'],
-  ].map(([n, label]) => `<div class="stat-card"><span class="stat-number">${n}</span><span class="stat-label">${label}</span></div>`).join('');
+    statCardHTML(s.memberCount, 'Members'),
+    statCardHTML(s.accountCount, 'Accounts'),
+    statCardHTML(s.upcomingEventCount, 'Upcoming Events'),
+    statCardHTML(s.totalApprovedPoints, 'Points Awarded'),
+    statCardHTML(s.pendingPointsCount, 'Pending Approvals'),
+    statCardHTML(s.mostAttendedEvent ? s.mostAttendedEvent.count : 0, 'Most Attended Event', s.mostAttendedEvent ? s.mostAttendedEvent.title : 'No data yet'),
+    statCardHTML(s.avgMemberAttendance, 'Avg. Events / Member'),
+  ].join('');
 
   const earnersCard = document.getElementById('overview-top-earners-card');
   const earnersEl = document.getElementById('overview-top-earners');
@@ -242,6 +271,8 @@ async function loadOverviewStats() {
   } else {
     earnersCard.style.display = 'none';
   }
+
+  document.getElementById('overview-attendance-chart').innerHTML = attendanceChartSVG(s.attendanceByEvent);
 }
 
 function initTabs() {
@@ -344,20 +375,20 @@ function wireAccountsPanel() {
   });
 }
 
-// ── Permissions tab (president/admin/VP-only) ─────────────
+// ── Permissions (folded into the Accounts tab, president/admin-only) ────
 const TAB_LABELS = {
   events: 'Events', members: 'Members', points: 'Points',
   library: 'Digital Library', gallery: 'Gallery', budget: 'Budget',
 };
 
-function permissionsRoleRowHTML(role, tabs, tabRoles) {
-  const checked = new Set(tabs.filter(t => (tabRoles[t] || []).includes(role)));
+function permissionsRoleRowHTML(role, tabs, tabRoles, locked) {
+  const checked = locked ? new Set(tabs) : new Set(tabs.filter(t => (tabRoles[t] || []).includes(role)));
   const boxes = tabs.map(t => `<label style="display:inline-flex;align-items:center;gap:.3rem;margin-right:.9rem;font-size:.85rem">
-    <input type="checkbox" data-perm-tab="${escHtml(t)}" ${checked.has(t) ? 'checked' : ''}/> ${escHtml(TAB_LABELS[t] || t)}
+    <input type="checkbox" data-perm-tab="${escHtml(t)}" ${checked.has(t) ? 'checked' : ''} ${locked ? 'disabled' : ''}/> ${escHtml(TAB_LABELS[t] || t)}
   </label>`).join('');
   return `<div class="admin-row" style="align-items:flex-start;flex-wrap:wrap" data-perm-role="${escHtml(role)}">
-    <div style="min-width:160px"><span class="name">${escHtml(ROLE_LABELS[role] || role)}</span></div>
-    <div class="actions" style="flex-wrap:wrap">${boxes}<button class="btn-sm outline" data-save-perms="${escHtml(role)}">Save</button></div>
+    <div style="min-width:160px"><span class="name">${escHtml(ROLE_LABELS[role] || role)}</span>${locked ? ' <span class="badge-role admin">always full access</span>' : ''}</div>
+    <div class="actions" style="flex-wrap:wrap">${boxes}${locked ? '' : `<button class="btn-sm outline" data-save-perms="${escHtml(role)}">Save</button>`}</div>
   </div>`;
 }
 
@@ -365,7 +396,9 @@ async function loadPermissions() {
   const el = document.getElementById('permissions-list');
   const { ok, data } = await api(PERMISSIONS_URL, { method: 'GET' });
   if (!ok) { el.innerHTML = '<p class="small muted">Could not load permissions.</p>'; return; }
-  el.innerHTML = data.roles.map(r => permissionsRoleRowHTML(r, data.tabs, data.tabRoles)).join('') || '<p class="small muted">No adjustable roles yet.</p>';
+  const lockedRows = data.lockedRoles.map(r => permissionsRoleRowHTML(r, data.tabs, data.tabRoles, true)).join('');
+  const adjustableRows = data.roles.map(r => permissionsRoleRowHTML(r, data.tabs, data.tabRoles, false)).join('');
+  el.innerHTML = lockedRows + adjustableRows || '<p class="small muted">No adjustable roles yet.</p>';
 }
 
 function wirePermissionsPanel() {
