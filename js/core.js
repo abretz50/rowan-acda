@@ -59,27 +59,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Account nav link: shows "Sign In" / "Sign Out" based on session state.
 // Signed-out click behaves like a normal link to /account.html; signed-in
-// click logs out immediately instead of navigating there.
-document.addEventListener('DOMContentLoaded', async () => {
+// click logs out immediately instead of navigating there. Pages that
+// change auth state without a full navigation (account.html's own sign-in
+// form, portal.html's login/bootstrap) should call
+// window.refreshAccountNavLink() right after so this updates immediately
+// instead of waiting for the next page load.
+window.refreshAccountNavLink = async function refreshAccountNavLink() {
   const link = document.querySelector('.nav a[href="/account.html"]');
   if (!link) return;
   link.classList.add('nav-link--account');
+  if (!link.dataset.wired) {
+    link.dataset.wired = '1';
+    link.addEventListener('click', async (e) => {
+      if (link.dataset.signedIn !== '1') return; // let the default navigation happen
+      e.preventDefault();
+      await fetch('/.netlify/functions/portal-auth', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout' }),
+      });
+      location.href = '/';
+    });
+  }
   try {
     const res = await fetch('/.netlify/functions/portal-auth', { credentials: 'include' });
     const data = await res.json();
-    if (data.ok) {
-      link.textContent = 'Sign Out';
-      link.addEventListener('click', async (e) => {
-        e.preventDefault();
-        await fetch('/.netlify/functions/portal-auth', {
-          method: 'POST', credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'logout' }),
-        });
-        location.href = '/';
-      });
-    } else {
-      link.textContent = 'Sign In';
-    }
-  } catch { /* leave default label */ }
-});
+    link.dataset.signedIn = data.ok ? '1' : '0';
+    link.textContent = data.ok ? 'Sign Out' : 'Sign In';
+  } catch { /* leave whatever label was already there */ }
+};
+document.addEventListener('DOMContentLoaded', window.refreshAccountNavLink);

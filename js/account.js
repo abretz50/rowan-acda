@@ -63,6 +63,23 @@ async function loadEventsHistory() {
     </div>`).join('') || '<p class="small muted">No events yet — check in to one to get started.</p>';
 }
 
+// If we arrived via a "sign in to check in" redirect from events.html
+// (?checkin=<eventId>), finish that check-in automatically once signed in.
+async function attemptPendingCheckin() {
+  const eventId = new URLSearchParams(location.search).get('checkin');
+  if (!eventId || !me) return;
+  const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'checkin', eventId }) });
+  const statusEl = document.getElementById('checkin-status');
+  if (statusEl) {
+    statusEl.textContent = ok
+      ? (data.alreadyCheckedIn ? 'Already checked in for that event.' : 'Checked in! Your points are pending E-Board approval.')
+      : (data.error || 'Could not check in.');
+    statusEl.className = ok ? 'admin-status ok' : 'admin-status err';
+  }
+  if (ok) loadEventsHistory();
+  history.replaceState(null, '', location.pathname);
+}
+
 async function init() {
   const { data } = await api(AUTH_URL, { method: 'GET' });
   if (data.ok) { me = data.user; showSignedIn(); } else { showSignedOut(); }
@@ -70,6 +87,8 @@ async function init() {
   const params = new URLSearchParams(location.search);
   const code = (params.get('code') || '').toUpperCase();
   if (code) document.getElementById('ci-code').value = code;
+
+  await attemptPendingCheckin();
 }
 
 // ── Sign in / up toggle ────────────────────────────────────
@@ -94,7 +113,7 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('si-password').value;
   const { ok, data } = await api(AUTH_URL, { method: 'POST', body: JSON.stringify({ action: 'login', username, password }) });
   if (!ok) { errEl.textContent = data.error || 'Sign-in failed.'; return; }
-  me = data.user; showSignedIn();
+  me = data.user; showSignedIn(); window.refreshAccountNavLink?.(); attemptPendingCheckin();
 });
 
 document.getElementById('signup-form').addEventListener('submit', async (e) => {
@@ -107,13 +126,14 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('su-password').value;
   const { ok, data } = await api(AUTH_URL, { method: 'POST', body: JSON.stringify({ action: 'register', name, email, username, password }) });
   if (!ok) { errEl.textContent = data.error || 'Could not create account.'; return; }
-  me = data.user; showSignedIn();
+  me = data.user; showSignedIn(); window.refreshAccountNavLink?.(); attemptPendingCheckin();
 });
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
   await api(AUTH_URL, { method: 'POST', body: JSON.stringify({ action: 'logout' }) });
   me = null;
   showSignedOut();
+  window.refreshAccountNavLink?.();
 });
 
 // ── Check-in ──────────────────────────────────────────────

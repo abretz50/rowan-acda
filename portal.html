@@ -117,19 +117,22 @@
               <label for="ev-location">Location</label>
               <input class="admin-input" type="text" id="ev-location"/>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="ev-tags">Tags (comma-separated)</label>
-                <input class="admin-input" type="text" id="ev-tags" placeholder="Social, Professional Development"/>
-              </div>
-              <div class="form-group">
-                <label for="ev-signin">RSVP link (optional)</label>
-                <input class="admin-input" type="url" id="ev-signin"/>
-              </div>
+            <div class="form-group">
+              <label for="ev-tags">Tag</label>
+              <select class="admin-input" id="ev-tags">
+                <option value="Event">Event</option>
+                <option value="Meeting">Meeting</option>
+                <option value="Professional Development">Professional Development</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Volunteer">Volunteer</option>
+                <option value="Performance">Performance</option>
+              </select>
             </div>
             <div class="form-group">
-              <label for="ev-image">Image URL (optional)</label>
-              <input class="admin-input" type="text" id="ev-image"/>
+              <label for="ev-image-file">Image (optional)</label>
+              <input class="admin-input" type="file" id="ev-image-file" accept="image/*"/>
+              <input type="hidden" id="ev-image"/>
+              <span class="form-hint" id="ev-image-current"></span>
             </div>
             <button class="btn-sm" type="submit" id="event-form-submit">Create event</button>
             <button class="btn-sm outline" type="button" id="event-form-cancel" style="display:none">Cancel edit</button>

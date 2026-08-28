@@ -24,8 +24,12 @@ export default async function handler(req) {
       const { user: me } = auth;
 
       const events = await getCollection('events', []);
-      const event = findEventByCode(events, body.code);
-      if (!event) return json({ ok: false, error: 'Invalid check-in code.' }, 404);
+      // Two ways in: a code (typed at account.html, given out in person) or
+      // a direct eventId (clicking "Check In" on the public events page,
+      // where the code isn't exposed at all) — either way still gated by
+      // the check-in time window.
+      const event = body.eventId ? events.find(e => e.id === body.eventId) : findEventByCode(events, body.code);
+      if (!event) return json({ ok: false, error: body.eventId ? 'Event not found.' : 'Invalid check-in code.' }, 404);
       if (!isCheckinOpen(event)) return json({ ok: false, error: 'Check-in is not open for this event right now.' }, 403);
 
       const points = await getCollection('points', []);

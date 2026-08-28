@@ -6,12 +6,16 @@ import { hasPermission } from './_lib/permissions.mjs';
 import { generateCheckinCode } from './_lib/codes.mjs';
 import { parseEventsCsv } from './_lib/parseEventsCsv.mjs';
 import { SEED_EVENTS_CSV } from './_lib/eventsSeedCsv.mjs';
+import { isCheckinOpen } from './_lib/checkinWindow.mjs';
 
 function dedupeKey(title, start) { return `${title.trim().toLowerCase()}|${start}`; }
 
+// Public visitors never see the code or the exact window boundaries (those
+// stay E-Board-only), but they do need to know whether check-in is open
+// right now so events.html can enable/disable its "Check In" button.
 function publicEvent(ev) {
   const { checkinCode, checkinOpensAt, checkinClosesAt, ...safe } = ev;
-  return safe;
+  return { ...safe, checkinOpen: isCheckinOpen(ev) };
 }
 
 // Only members who can actually manage events get the check-in code back —

@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-<link rel="preconnect" href="https://docs.google.com" crossorigin>
-<link rel="dns-prefetch" href="https://docs.google.com">
+
 
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -110,6 +108,9 @@
     background:#fff;
     font-weight:700;
   }
+
+  /* Check-in button state */
+  .btn-checkin.is-disabled{ opacity:.55; cursor:not-allowed; }
 </style>
 </head>
 <body>
@@ -151,7 +152,7 @@
     <div class="filters-bar">
       <div class="chips" role="toolbar" aria-label="Filter events by category">
         <button class="chip" data-filter="all" aria-pressed="true">All</button>
-        <button class="chip" data-filter="events" aria-pressed="false">Events</button>
+        <button class="chip" data-filter="event" aria-pressed="false">Events</button>
         <button class="chip" data-filter="meeting" aria-pressed="false">Meetings</button>
         <button class="chip" data-filter="professional-development" aria-pressed="false">Professional Developments</button>
         <button class="chip" data-filter="workshop" aria-pressed="false">Workshop</button>
@@ -180,7 +181,7 @@
       <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
     </div>
     <section>
-      <p>This form is not open yet. Check back closer to the event.</p>
+      <p id="notice-body">This form is not open yet. Check back closer to the event.</p>
     </section>
   </div>
 </div>
@@ -220,7 +221,7 @@
         <li><a href="https://www.instagram.com/rowanacda/" target="_blank" rel="noopener">Instagram</a></li>
       </ul>
       <p class="small muted footer-note">
-        Site theme by Adam Bretz 
+        Site theme by Adam Bretz
       </p>
       <p class="small muted">© <span id="year"></span> Rowan ACDA</p>
     </div>
@@ -228,127 +229,18 @@
 </footer>
 
 <script>
-/* Events logic + ACDA modal pattern */
+/* Events logic + ACDA modal pattern — sourced from the E-Board Portal */
 (function(){
-  // === CSV sources + robust fetch with fallback ===
-  const PRIMARY_CSV = "/assets/data/events.csv"; // mirrored copy
-  const BACKUP_CSV  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgnEZCsF6om55MFRpD3Dy3xLNF0nSO7U228ijGXkZGSGPpZMqGitInVmgi6y8cYF56mEK8GOuGl0D7/pub?gid=0&single=true&output=csv";
-
-  async function fetchCSV(){
-    const ctl = new AbortController();
-    const t = setTimeout(()=>ctl.abort(), 10000);
-
-    async function get(url){
-      const r = await fetch(url, { signal: ctl.signal, cache: "no-cache" });
-      if (!r.ok) throw new Error("HTTP "+r.status);
-      return r.text();
-    }
-
-    try {
-      const txt = await get(PRIMARY_CSV);
-      clearTimeout(t);
-      return txt;
-    } catch {
-      try { return await get(BACKUP_CSV); }
-      finally { clearTimeout(t); }
-    }
-  }
+  const EVENTS_URL = '/.netlify/functions/portal-events';
+  const AUTH_URL = '/.netlify/functions/portal-auth';
+  const POINTS_URL = '/.netlify/functions/portal-points';
 
   const listEl = document.getElementById('eventsList');
+  let signedIn = false;
   const chipsBar = document.querySelector('.filters .chips');
   const chipButtons = Array.from(chipsBar?.querySelectorAll('button[data-filter]') || []);
   const pastToggle = document.getElementById('togglePast');
   const activeFilters = new Set(); // empty = ALL
-
-  /* ---------- CSV helpers ---------- */
-  function parseCSV(text){
-    const rows = []; let i=0, field='', row=[], inQuotes=false;
-    while(i < text.length){
-      const c = text[i];
-      if(inQuotes){
-        if(c === '"'){ if(text[i+1] === '"'){ field += '"'; i++; } else inQuotes = false; }
-        else field += c;
-      } else {
-        if(c === '"') inQuotes = true;
-        else if(c === ','){ row.push(field); field=''; }
-        else if(c === '\n'){ row.push(field); field=''; rows.push(row); row=[]; }
-        else if(c === '\r'){ /* ignore */ }
-        else field += c;
-      }
-      i++;
-    }
-    if(field.length || row.length){ row.push(field); rows.push(row); }
-    return rows;
-  }
-  function toRecords(rows){
-    if(!rows.length) return [];
-    const header = rows.shift().map(h=>h.trim().toLowerCase());
-    return rows.map(r=>{ const o={}; header.forEach((h,i)=> o[h]=(r[i]||'').trim()); return o; });
-  }
-
-  /* ---------- Date/time helpers (ROBUST) ---------- */
-  function parseDate(dStr){
-    if(!dStr) return null;
-    const s = dStr.trim();
-    // allow M/D or M/D/YY or M/D/YYYY
-    const m = s.match(/^(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?$/);
-    if(!m) return null;
-    let mm=+m[1], dd=+m[2];
-    let yy = m[3] ? +m[3] : (new Date()).getFullYear();
-    if(yy<100) yy=2000+yy;
-    return new Date(yy, mm-1, dd);
-  }
-
-  // Accepts: 7 | 7pm | 7:30 | 7:30pm | 19:30 | 12 am/pm | noon | midnight
-  function parseTime(tStr){
-    if(!tStr) return null;
-    let s = String(tStr).trim().toLowerCase();
-    s = s.replace(/[\u2013\u2014]/g, '-'); // normalize dashes
-
-    if(/\bnoon\b/.test(s)) return {h:12, m:0};
-    if(/\bmidnight\b/.test(s)) return {h:0, m:0};
-
-    const m = s.match(/^\s*(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?\s*m\.?)?\s*$/i);
-    if(!m) return null;
-
-    let h = parseInt(m[1],10);
-    let mm = m[2] ? parseInt(m[2],10) : 0;
-    const ap = m[3] ? m[3].replace(/\./g,'').trim() : '';
-
-    if(ap){ // 12h
-      if(ap.startsWith('p') && h < 12) h += 12;
-      if(ap.startsWith('a') && h === 12) h = 0;
-    }
-    // 24h stays as-is
-    return {h, m:mm};
-  }
-
-  // Accepts: "6-8 pm", "6 pm - 8 pm", "6–8 PM"
-  function parseTimeRange(s){
-    if(!s) return null;
-    let str = String(s).toLowerCase().replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
-    const m = str.match(/^(.+?)\s*-\s*(.+)$/);
-    if(!m) return null;
-
-    let a = m[1].trim();
-    let b = m[2].trim();
-
-    // If only end has am/pm, inherit to start
-    const suffix = b.match(/\b([ap])\.?m\.?\b/);
-    if(suffix && !/\b([ap])\.?m\.?\b/.test(a)) a += ' ' + suffix[0];
-
-    const t1 = parseTime(a);
-    const t2 = parseTime(b);
-    if(!t1 || !t2) return null;
-    return {start: t1, end: t2};
-  }
-
-  function combineDateTime(d, t){
-    const dt = new Date(d);
-    const time = t || {h:0,m:0};
-    dt.setHours(time.h, time.m, 0, 0);
-    return dt;
-  }
 
   function formatDateRange(start, end){
     const dOpt={month:'long',day:'numeric',year:'numeric'};
@@ -361,16 +253,8 @@
   }
 
   function tagSlug(s){ return (s||'').toLowerCase().replace(/\s+/g,'-'); }
-  function normalizeTags(s){ return !s?[]: s.split(/[,;/|]+/).map(v=>v.trim()).filter(Boolean); }
 
   /* ---------- Labels & links ---------- */
-  function getBtnLabel(ev){
-    const tags = new Set((ev.tagSlugs||[]).map(String));
-    if (tags.has('volunteer')) return 'Sign up';
-    if (tags.has('performance') || tags.has('performances')) return 'Tickets';
-    if (tags.has('professional-development') || tags.has('event') || tags.has('events')) return 'Check in';
-    return 'Attendance';
-  }
   function gcalLink(ev){
     const text = encodeURIComponent(ev.title || 'ACDA Event');
     const details = encodeURIComponent((ev.details || ev.description || '') + (ev.signin_link ? '\n\nRSVP: ' + ev.signin_link : ''));
@@ -385,15 +269,21 @@
   }
   function badgeHTML(tags){ return (tags||[]).map(t=>'<span class="badge" data-tag="'+tagSlug(t)+'">'+t+'</span>').join(' '); }
 
+  function checkinButtonHTML(ev){
+    if(ev.when === 'past') return '';
+    const label = !signedIn ? 'Sign In to Check In' : (ev.checkinOpen ? 'Check In' : 'Check-In Not Open Yet');
+    const disabledClass = (signedIn && !ev.checkinOpen) ? ' is-disabled' : '';
+    return '<button class="btn btn-outline btn-checkin'+disabledClass+'" data-checkin="'+ev.id+'">'+label+'</button>';
+  }
+
   /* ---------- Card & modal templates ---------- */
   function cardHTML(ev){
     const hasLink = !!ev.signin_link;
-    const btnLabel = getBtnLabel(ev);
     const signinHref = hasLink ? ev.signin_link : '#';
     const img = ev.image_url || '/assets/img/about.png';
 
     return (
-      '<article class="card event-card" data-tags="'+ev.tagSlugs.join(' ')+'" data-when="'+ev.when+'">'+
+      '<article class="card event-card" data-tags="'+ev.tagSlugs.join(' ')+'" data-when="'+ev.when+'" data-event-id="'+ev.id+'">'+
         '<img class="event-photo" src="'+img+'" alt="'+(ev.title||'Event photo')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/assets/img/about.png\'">'+
         '<div class="card-body">'+
           '<h3>'+ (ev.title||'Untitled') +'</h3>'+
@@ -404,7 +294,8 @@
           '<div class="event-badges" style="margin:.4rem 0 .4rem">'+ badgeHTML(ev.tags) +'</div>'+
           (ev.description ? '<p>'+ev.description+'</p>' : '')+
           '<div class="event-actions">'+
-            '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+            checkinButtonHTML(ev)+
+            (hasLink ? '<a class="btn" href="'+signinHref+'" target="_blank" rel="noopener">RSVP</a>' : '')+
             '<button class="btn btn-outline" data-modal="modal-'+ev.id+'">Details</button>'+
           '</div>'+
         '</div>'+
@@ -414,7 +305,6 @@
 
   function modalHTML(ev){
     const hasLink = !!ev.signin_link;
-    const btnLabel = getBtnLabel(ev);
     const signinHref = hasLink ? ev.signin_link : '#';
     const img = ev.image_url || '/assets/img/about.png';
 
@@ -430,7 +320,8 @@
             '<p class="kicker event-meta"><strong>'+ (ev.datePretty||'') +'</strong>'+ (ev.location? ' • '+ev.location : '') +'</p>'+
             (ev.details ? '<p>'+ev.details+'</p>' : '')+
             '<div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1rem">'+
-              '<a class="btn" data-action="signin" data-has-link="'+(hasLink?'1':'0')+'" href="'+signinHref+'" target="_blank" rel="noopener">'+btnLabel+'</a>'+
+              checkinButtonHTML(ev)+
+              (hasLink ? '<a class="btn" href="'+signinHref+'" target="_blank" rel="noopener">RSVP</a>' : '')+
               '<a class="btn btn-outline" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
             '</div>'+
           '</section>'+
@@ -467,16 +358,52 @@
     });
   }
 
-  function showNotice(){ openModal(document.getElementById('notice-modal')); }
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[data-action="signin"]');
-    if (!a) return;
-    const hasLink = a.getAttribute('data-has-link') === '1';
-    const href = a.getAttribute('href');
-    if (!hasLink || !href || href === '#') {
-      e.preventDefault();
-      showNotice();
+  function showNotice(msg){
+    document.getElementById('notice-body').textContent = msg || 'This form is not open yet. Check back closer to the event.';
+    openModal(document.getElementById('notice-modal'));
+  }
+
+  async function handleCheckin(eventId, btn){
+    if(!signedIn){
+      if(confirm('You need to sign in to check in. Go to the sign-in page now?')){
+        location.href = '/account.html?checkin=' + encodeURIComponent(eventId);
+      }
+      return;
     }
+    const ev = ALL_EVENTS.find(e => e.id === eventId);
+    if(ev && !ev.checkinOpen){
+      showNotice('Check-in isn’t open for this event yet — try again closer to the start time.');
+      return;
+    }
+    const original = btn.textContent;
+    btn.textContent = 'Checking in…'; btn.disabled = true;
+    try{
+      const res = await fetch(POINTS_URL, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'checkin', eventId })
+      });
+      const data = await res.json();
+      if(!data.ok){
+        showNotice(data.error || 'Could not check in.');
+        btn.textContent = original; btn.disabled = false;
+        return;
+      }
+      btn.textContent = data.alreadyCheckedIn ? 'Already Checked In' : 'Checked In!';
+    } catch {
+      showNotice('Network error — please try again.');
+      btn.textContent = original; btn.disabled = false;
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-checkin]');
+    if(!btn) return;
+    if(btn.classList.contains('is-disabled')){
+      showNotice('Check-in isn’t open for this event yet — try again closer to the start time.');
+      return;
+    }
+    handleCheckin(btn.getAttribute('data-checkin'), btn);
   });
 
   function render(events){
@@ -495,12 +422,7 @@
   function matchesFilters(card){
     if(activeFilters.size===0) return true;
     const tags = (card.getAttribute('data-tags')||'').split(/\s+/);
-    function tagMatches(f){
-      if(f==='events') return (['workshop','convention','event','events'].some(t=>tags.includes(t)));
-      if(f==='performance') return (tags.includes('performance')||tags.includes('performances'));
-      return tags.includes(f);
-    }
-    for(const f of activeFilters) if(tagMatches(f)) return true;
+    for(const f of activeFilters) if(tags.includes(f)) return true;
     return false;
   }
   function applyFilters(){
@@ -523,72 +445,50 @@
   chipButtons.forEach(b => b.addEventListener('click', onChipClick));
   pastToggle?.addEventListener('click', () => { const p = pastToggle.getAttribute('aria-pressed')==='true'; pastToggle.setAttribute('aria-pressed', String(!p)); applyPastVisibility(); applyFilters(); });
 
-  /* ---------- Build & load (uses robust time parsing) ---------- */
-  function buildEvents(recs){
+  /* ---------- Build & load (from the E-Board Portal) ---------- */
+  let ALL_EVENTS = [];
+
+  function normalize(ev){
     const now = new Date();
-    return recs.map(r => {
-      const date = parseDate(r.date || r.day || r.event_date);
-
-      // Accept either separate start/end columns OR a single time range column
-      const stRaw = r.start_time || r.start || r.begin || '';
-      const etRaw = r.end_time   || r.end   || r.finish || '';
-      const rangeRaw = r.time || r.time_range || r.times || '';
-
-      let st = parseTime(stRaw);
-      let et = parseTime(etRaw);
-
-      if((!st || !et) && rangeRaw){
-        const rng = parseTimeRange(rangeRaw);
-        if(rng){ st = st || rng.start; et = et || rng.end; }
-      }
-
-      const start = date ? combineDateTime(date, st || {h:0,m:0}) : new Date();
-      let end = date ? (et ? combineDateTime(date, et) : new Date(start.getTime() + 60*60*1000))
-                     : new Date(start.getTime() + 60*60*1000);
-
-      // If end <= start, try treating it as crossing midnight when a range was present; otherwise default to +1h
-      if(end <= start){
-        if(rangeRaw){
-          end = new Date(end.getTime() + 24*60*60*1000);
-        } else {
-          end = new Date(start.getTime() + 60*60*1000);
-        }
-      }
-
-      const when = end < now ? 'past' : 'upcoming';
-      const tags = normalizeTags(r.tags);
-      const slugs = tags.map(tagSlug);
-
-      return {
-        id: Math.random().toString(36).slice(2),
-        title: r.title || r.name || '',
-        date: r.date,
-        start_time: r.start_time,
-        end_time: r.end_time,
-        startDateTime: start,
-        endDateTime: end,
-        datePretty: formatDateRange(start, end),
-        location: r.location || '',
-        tags,
-        tagSlugs: slugs,
-        description: r.description || '',
-        details: r.details || '',
-        signin_link: r.signin_link || r.rsvp || '',
-        image_url: r.image_url || r.image || '/assets/img/about.png',
-        when
-      };
-    });
+    const start = ev.start ? new Date(ev.start) : new Date();
+    const end = ev.end ? new Date(ev.end) : new Date(start.getTime()+60*60*1000);
+    const when = end < now ? 'past' : 'upcoming';
+    const tags = ev.tags || [];
+    return {
+      id: ev.id,
+      title: ev.title || '',
+      startDateTime: start,
+      endDateTime: end,
+      datePretty: formatDateRange(start, end),
+      location: ev.location || '',
+      tags,
+      tagSlugs: tags.map(tagSlug),
+      description: ev.description || '',
+      details: ev.description || '',
+      signin_link: ev.signinLink || '',
+      image_url: ev.imageUrl || '',
+      checkinOpen: !!ev.checkinOpen,
+      when
+    };
   }
 
   async function init(){
     try{
-      const txt = await fetchCSV(); // ← uses primary, falls back to Google Sheets
-      const recs = toRecords(parseCSV(txt));
-      const events = buildEvents(recs);
-      if(!events.length) throw new Error('No events parsed');
-      render(events);
+      const [evRes, authRes] = await Promise.all([
+        fetch(EVENTS_URL, { cache: 'no-store' }),
+        fetch(AUTH_URL, { credentials: 'include' }).catch(() => null),
+      ]);
+      const data = await evRes.json();
+      if(!data.ok) throw new Error('Events API returned an error');
+      if(authRes){ try{ const authData = await authRes.json(); signedIn = !!authData.ok; }catch{} }
+      ALL_EVENTS = (data.events || []).map(normalize).filter(ev => ev.title);
+      if(!ALL_EVENTS.length){
+        listEl.innerHTML = '<p class="kicker">No events to show yet. Check back soon.</p>';
+      } else {
+        render(ALL_EVENTS);
+      }
     } catch(err){
-      console.error('Events CSV load failed:', err);
+      console.error('Events load failed:', err);
       listEl.innerHTML = '<p class="kicker">Could not load events. Please try again later.</p>';
     }
   }

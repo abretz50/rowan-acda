@@ -155,7 +155,7 @@ function wireLoginForm() {
         body: JSON.stringify({ action: 'bootstrap', secret, name, username, password }),
       });
       if (!ok) { errEl.textContent = data.error || 'Setup failed.'; return; }
-      me = data.user; needsBootstrap = false; showDashboard();
+      me = data.user; needsBootstrap = false; showDashboard(); window.refreshAccountNavLink?.();
       return;
     }
 
@@ -165,6 +165,7 @@ function wireLoginForm() {
     });
     if (!ok) { errEl.textContent = data.error || 'Sign-in failed.'; return; }
     me = data.user;
+    window.refreshAccountNavLink?.();
     if (me.role === 'member') { location.replace('/account.html'); return; }
     showDashboard();
   });
@@ -175,6 +176,7 @@ function wireLoginForm() {
     document.getElementById('dashboard-section').style.display = 'none';
     document.getElementById('login-section').style.display = '';
     document.getElementById('login-form').reset();
+    window.refreshAccountNavLink?.();
   });
 }
 
@@ -338,6 +340,8 @@ async function loadEvents() {
 function resetEventForm() {
   editingEventId = null;
   document.getElementById('event-form').reset();
+  document.getElementById('ev-image').value = '';
+  document.getElementById('ev-image-current').textContent = '';
   document.getElementById('event-form-heading').textContent = 'Create Event';
   document.getElementById('event-form-submit').textContent = 'Create event';
   document.getElementById('event-form-cancel').style.display = 'none';
@@ -347,15 +351,22 @@ function wireEventsPanel() {
   document.getElementById('event-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('event-form-status');
+    let imageUrl = document.getElementById('ev-image').value.trim();
+    const file = document.getElementById('ev-image-file').files[0];
+    if (file) {
+      statusEl.textContent = 'Uploading image…'; statusEl.className = 'admin-status';
+      const up = await uploadFile(file, 'events');
+      if (!up.ok) { statusEl.textContent = up.data.error || 'Image upload failed.'; statusEl.className = 'admin-status err'; return; }
+      imageUrl = up.data.url;
+    }
     const payload = {
       title: document.getElementById('ev-title').value.trim(),
       description: document.getElementById('ev-desc').value.trim(),
       start: toISOFromLocalInput(document.getElementById('ev-start').value),
       end: toISOFromLocalInput(document.getElementById('ev-end').value),
       location: document.getElementById('ev-location').value.trim(),
-      tags: document.getElementById('ev-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-      signinLink: document.getElementById('ev-signin').value.trim(),
-      imageUrl: document.getElementById('ev-image').value.trim(),
+      tags: [document.getElementById('ev-tags').value],
+      imageUrl,
     };
     if (!payload.title || !payload.start) {
       statusEl.textContent = 'Title and start are required.'; statusEl.className = 'admin-status err'; return;
@@ -396,9 +407,9 @@ function wireEventsPanel() {
       document.getElementById('ev-start').value = toLocalInputFromISO(ev.start);
       document.getElementById('ev-end').value = toLocalInputFromISO(ev.end);
       document.getElementById('ev-location').value = ev.location || '';
-      document.getElementById('ev-tags').value = (ev.tags || []).join(', ');
-      document.getElementById('ev-signin').value = ev.signinLink || '';
+      document.getElementById('ev-tags').value = (ev.tags && ev.tags[0]) || 'Event';
       document.getElementById('ev-image').value = ev.imageUrl || '';
+      document.getElementById('ev-image-current').textContent = ev.imageUrl ? `Current image: ${ev.imageUrl} — choose a new one only to replace it.` : '';
       document.getElementById('event-form-heading').textContent = 'Edit Event';
       document.getElementById('event-form-submit').textContent = 'Save changes';
       document.getElementById('event-form-cancel').style.display = '';
