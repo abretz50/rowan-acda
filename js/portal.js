@@ -70,11 +70,15 @@ function academicYearLabel(dateStr){
   const y = d.getFullYear(), m = d.getMonth(); // 0-indexed, so Aug = 7
   return m >= 7 ? `${y}–${y+1}` : `${y-1}–${y}`;
 }
-// Splits events into { upcoming: [soonest...furthest], pastByYear: [{label, events}] }
+// Splits events into { upcoming: [soonest...furthest], pastByYear: [{label, events}] }.
+// An event stays "upcoming" (still shown up top) for 24h after it ends, so
+// it doesn't vanish from view the moment it's over — plenty of time for the
+// event coordinator to still find it there right after wrapping up.
+const PAST_GRACE_MS = 24 * 60 * 60 * 1000;
 function groupUpcomingPast(events){
-  const now = new Date();
+  const cutoff = new Date(Date.now() - PAST_GRACE_MS);
   const upcoming = [], past = [];
-  events.forEach(ev => (new Date(ev.end || ev.start) >= now ? upcoming : past).push(ev));
+  events.forEach(ev => (new Date(ev.end || ev.start) >= cutoff ? upcoming : past).push(ev));
   upcoming.sort((a,b) => new Date(a.start) - new Date(b.start));
   past.sort((a,b) => new Date(b.start) - new Date(a.start));
   const byYear = new Map();
@@ -418,10 +422,16 @@ function wirePermissionsPanel() {
 
 // ── Events tab ────────────────────────────────────────────
 function eventRowHTML(ev) {
+  const thumb = ev.imageUrl
+    ? `<img src="${escHtml(ev.imageUrl)}" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:.5rem;flex-shrink:0"/>`
+    : `<div style="width:44px;height:44px;border-radius:.5rem;background:var(--surface);border:1px solid var(--border);flex-shrink:0"></div>`;
   return `<div class="admin-row" style="align-items:flex-start" data-event-id="${escHtml(ev.id)}">
-    <div>
-      <span class="name">${escHtml(ev.title)}</span>
-      <div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}${ev.location ? ' · ' + escHtml(ev.location) : ''}</div>
+    <div style="display:flex;gap:.6rem;align-items:flex-start">
+      ${thumb}
+      <div>
+        <span class="name">${escHtml(ev.title)}</span>
+        <div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}${ev.location ? ' · ' + escHtml(ev.location) : ''}</div>
+      </div>
     </div>
     <div class="actions">
       <button class="btn-sm edit" data-edit-event="${escHtml(ev.id)}">Edit</button>
@@ -475,6 +485,7 @@ function resetEventForm() {
   document.getElementById('event-form-heading').textContent = 'Create Event';
   document.getElementById('event-form-submit').textContent = 'Create event';
   document.getElementById('event-form-cancel').style.display = 'none';
+  updateAllDayFieldsVisibility();
 }
 
 function updateVolunteerFieldsVisibility() {
@@ -484,15 +495,49 @@ function updateVolunteerFieldsVisibility() {
   document.getElementById('ev-slot-capacity-wrap').style.display = (isVolunteer && (type === 'bake_sale' || type === 'time_slot')) ? '' : 'none';
 }
 
+function updateAllDayFieldsVisibility() {
+  const allDay = document.getElementById('ev-all-day').checked;
+  document.getElementById('ev-time-fields').style.display = allDay ? 'none' : '';
+  document.getElementById('ev-date-fields').style.display = allDay ? '' : 'none';
+  document.getElementById('ev-start').required = !allDay;
+}
+
 function wireEventsPanel() {
   document.getElementById('ev-tags').addEventListener('change', updateVolunteerFieldsVisibility);
   document.getElementById('ev-volunteer-type').addEventListener('change', updateVolunteerFieldsVisibility);
+  document.getElementById('ev-all-day').addEventListener('change', updateAllDayFieldsVisibility);
 
   document.getElementById('event-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('event-form-status');
-    let imageUrl = document.getElementById('ev-image').value.trim();
+    const allDay = document.getElementById('ev-all-day').checked;
+
+    let start, end;
+    if (allDay) {
+      const startDate = document.getElementById('ev-start-date').value;
+      const endDate = document.getElementById('ev-end-date').value || startDate;
+      if (!startDate) { statusEl.textContent = 'Start date is required.'; statusEl.className = 'admin-status err'; return; }
+      if (endDate < startDate) { statusEl.textContent = 'End date can\'t be before the start date.'; statusEl.className = 'admin-status err'; return; }
+      start = toISOFromLocalInput(`${startDate}T00:00`);
+      end = toISOFromLocalInput(`${endDate}T23:59`);
+    } else {
+      const startVal = document.getElementById('ev-start').value;
+      const endVal = document.getElementById('ev-end').value;
+      if (endVal && endVal.slice(0, 10) !== startVal.slice(0, 10)) {
+        statusEl.textContent = 'Start and end must be on the same date — check "All-day / multi-day event" above if this event spans more than one day.';
+        statusEl.className = 'admin-status err';
+        return;
+      }
+      start = toISOFromLocalInput(startVal);
+      end = toISOFromLocalInput(endVal);
+    }
+
+    const existingImage = document.getElementById('ev-image').value.trim();
     const file = document.getElementById('ev-image-file').files[0];
+    if (!editingEventId && !file && !existingImage) {
+      statusEl.textContent = 'An image is required to create an event.'; statusEl.className = 'admin-status err'; return;
+    }
+    let imageUrl = existingImage;
     if (file) {
       statusEl.textContent = 'Uploading image…'; statusEl.className = 'admin-status';
       const up = await uploadFile(file, 'events');
@@ -503,8 +548,7 @@ function wireEventsPanel() {
     const payload = {
       title: document.getElementById('ev-title').value.trim(),
       description: document.getElementById('ev-desc').value.trim(),
-      start: toISOFromLocalInput(document.getElementById('ev-start').value),
-      end: toISOFromLocalInput(document.getElementById('ev-end').value),
+      start, end, allDay,
       location: document.getElementById('ev-location').value.trim(),
       tags: [tag],
       imageUrl,
@@ -540,8 +584,12 @@ function wireEventsPanel() {
       editingEventId = ev.id;
       document.getElementById('ev-title').value = ev.title;
       document.getElementById('ev-desc').value = ev.description || '';
+      document.getElementById('ev-all-day').checked = !!ev.allDay;
       document.getElementById('ev-start').value = toLocalInputFromISO(ev.start);
       document.getElementById('ev-end').value = toLocalInputFromISO(ev.end);
+      document.getElementById('ev-start-date').value = toLocalInputFromISO(ev.start).slice(0, 10);
+      document.getElementById('ev-end-date').value = toLocalInputFromISO(ev.end || ev.start).slice(0, 10);
+      updateAllDayFieldsVisibility();
       document.getElementById('ev-location').value = ev.location || '';
       document.getElementById('ev-tags').value = (ev.tags && ev.tags[0]) || 'Event';
       document.getElementById('ev-volunteer-type').value = ev.volunteerType || '';
@@ -810,12 +858,17 @@ function wirePointsPanel() {
   });
 }
 
+const EVENT_DEFAULT_LABELS = {
+  VolunteerSlot: 'Volunteer — per half-hour slot',
+  VolunteerFullDay: 'Volunteer — full day',
+};
+
 async function loadEventDefaults() {
   const el = document.getElementById('event-defaults-list');
   const { ok, data } = await api(`${POINTS_URL}?defaults=1`, { method: 'GET' });
   if (!ok) { el.innerHTML = '<p class="small muted">Could not load defaults.</p>'; return; }
   el.innerHTML = Object.entries(data.defaults).map(([tag, points]) => `<div class="admin-row">
-    <div><span class="name">${escHtml(tag)}</span></div>
+    <div><span class="name">${escHtml(EVENT_DEFAULT_LABELS[tag] || tag)}</span></div>
     <div class="actions">
       <input class="admin-input" type="number" min="0" value="${points}" style="width:90px" data-default-input="${escHtml(tag)}"/>
       <button class="btn-sm outline" data-save-default="${escHtml(tag)}">Save</button>

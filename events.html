@@ -547,11 +547,14 @@
   /* ---------- Build & load (from the E-Board Portal) ---------- */
   let ALL_EVENTS = [];
 
+  // An event stays out of "Past Events" for 24h after it ends, so it
+  // doesn't disappear from the upcoming list the moment it wraps up.
+  const PAST_GRACE_MS = 24 * 60 * 60 * 1000;
   function normalize(ev){
-    const now = new Date();
+    const cutoff = new Date(Date.now() - PAST_GRACE_MS);
     const start = ev.start ? new Date(ev.start) : new Date();
     const end = ev.end ? new Date(ev.end) : new Date(start.getTime()+60*60*1000);
-    const when = end < now ? 'past' : 'upcoming';
+    const when = end < cutoff ? 'past' : 'upcoming';
     const tags = ev.tags || [];
     return {
       id: ev.id,

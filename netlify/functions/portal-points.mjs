@@ -3,7 +3,12 @@ import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
-import { loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS } from './_lib/eventDefaults.mjs';
+import {
+  loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS,
+  VOLUNTEER_SLOT_KEY, VOLUNTEER_FULL_DAY_KEY,
+} from './_lib/eventDefaults.mjs';
+
+const EDITABLE_DEFAULT_KEYS = [...Object.keys(DEFAULT_EVENT_POINTS), VOLUNTEER_SLOT_KEY, VOLUNTEER_FULL_DAY_KEY];
 
 function withDeciderNames(rows, members) {
   const nameById = new Map(members.map(m => [m.id, m.name]));
@@ -69,7 +74,7 @@ export default async function handler(req) {
       const auth = await requireAuth(req, { perm: 'points' });
       if (auth.deny) return auth.deny;
       const { tag, points } = body;
-      if (!tag || !(tag in DEFAULT_EVENT_POINTS) || typeof points !== 'number') {
+      if (!tag || !EDITABLE_DEFAULT_KEYS.includes(tag) || typeof points !== 'number') {
         return json({ ok: false, error: 'A known tag and a numeric points value are required.' }, 400);
       }
       const defaults = await loadEventDefaults();

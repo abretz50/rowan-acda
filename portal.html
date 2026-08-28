@@ -124,7 +124,10 @@
               <label for="ev-desc">Description</label>
               <textarea class="admin-input" id="ev-desc" rows="2"></textarea>
             </div>
-            <div class="form-row">
+            <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;margin:.4rem 0">
+              <input type="checkbox" id="ev-all-day"/> All-day / multi-day event (no specific time — can span more than one day)
+            </label>
+            <div class="form-row" id="ev-time-fields">
               <div class="form-group">
                 <label for="ev-start">Start</label>
                 <input class="admin-input" type="datetime-local" id="ev-start" required/>
@@ -134,6 +137,17 @@
                 <input class="admin-input" type="datetime-local" id="ev-end"/>
               </div>
             </div>
+            <div class="form-row" id="ev-date-fields" style="display:none">
+              <div class="form-group">
+                <label for="ev-start-date">Start Date</label>
+                <input class="admin-input" type="date" id="ev-start-date"/>
+              </div>
+              <div class="form-group">
+                <label for="ev-end-date">End Date</label>
+                <input class="admin-input" type="date" id="ev-end-date"/>
+              </div>
+            </div>
+            <p class="form-hint">An event must start and end on the same date unless it's marked all-day/multi-day above — otherwise create a separate entry for each day.</p>
             <div class="form-group">
               <label for="ev-location">Location</label>
               <input class="admin-input" type="text" id="ev-location"/>
@@ -161,10 +175,10 @@
                 <label for="ev-slot-capacity">People per half-hour slot</label>
                 <input class="admin-input" type="number" min="1" id="ev-slot-capacity" value="3"/>
               </div>
-              <p class="form-hint">Volunteer events don't use check-in — members sign up for a slot (25 pts each), bring food (10 pts, secretary reviews), or sign up for the full event (secretary sets points after).</p>
+              <p class="form-hint">Volunteer events don't use check-in — members sign up for a slot, bring food, or sign up for the full event. Point defaults for each are set on the Points tab, always subject to secretary review.</p>
             </div>
             <div class="form-group">
-              <label for="ev-image-file">Image (optional)</label>
+              <label for="ev-image-file">Image (required)</label>
               <input class="admin-input" type="file" id="ev-image-file" accept="image/*"/>
               <input type="hidden" id="ev-image"/>
               <span class="form-hint" id="ev-image-current"></span>

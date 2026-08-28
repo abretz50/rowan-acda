@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, getSessionUser, json } from './_lib/auth.mjs';
-import { generateSlots, POINTS_PER_SLOT } from './_lib/volunteerSlots.mjs';
+import { generateSlots } from './_lib/volunteerSlots.mjs';
+import { volunteerSlotPointsDefault, volunteerFullDayPointsDefault } from './_lib/eventDefaults.mjs';
 
 const FOOD_DEFAULT_POINTS = 10;
 
@@ -42,7 +43,7 @@ export default async function handler(req) {
       ok: true,
       volunteerType: event.volunteerType,
       slots,
-      pointsPerSlot: POINTS_PER_SLOT,
+      pointsPerSlot: await volunteerSlotPointsDefault(),
       mySlotLabels: myEntries.filter(p => p.source === 'volunteer-slot').map(p => p.slotLabel),
       broughtFood: myEntries.some(p => p.source === 'volunteer-food'),
     });
@@ -86,7 +87,7 @@ export default async function handler(req) {
     if (alreadyHas('volunteer-slot', { slotLabel })) return json({ ok: true, alreadySignedUp: true });
     const taken = points.filter(p => p.eventId === eventId && p.slotLabel === slotLabel && p.source === 'volunteer-slot' && p.status !== 'denied').length;
     if (taken >= (event.slotCapacity || 3)) return json({ ok: false, error: 'That slot is full.' }, 409);
-    pushEntry({ source: 'volunteer-slot', slotLabel, amount: POINTS_PER_SLOT, reason: `Volunteer slot: ${slotLabel}` });
+    pushEntry({ source: 'volunteer-slot', slotLabel, amount: await volunteerSlotPointsDefault(), reason: `Volunteer slot: ${slotLabel}` });
     await setCollection('points', points);
     return json({ ok: true, alreadySignedUp: false });
   }
@@ -102,7 +103,7 @@ export default async function handler(req) {
   if (kind === 'full') {
     if (event.volunteerType !== 'full_event') return json({ ok: false, error: 'This event does not use full-day signup.' }, 400);
     if (alreadyHas('volunteer-full')) return json({ ok: true, alreadySignedUp: true });
-    pushEntry({ source: 'volunteer-full', amount: 0, reason: 'Volunteered — amount to be set by secretary' });
+    pushEntry({ source: 'volunteer-full', amount: await volunteerFullDayPointsDefault(), reason: 'Full-day volunteer signup' });
     await setCollection('points', points);
     return json({ ok: true, alreadySignedUp: false });
   }

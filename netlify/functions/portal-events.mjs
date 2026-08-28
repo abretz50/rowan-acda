@@ -10,6 +10,14 @@ import { defaultPointsForTags } from './_lib/eventDefaults.mjs';
 
 function dedupeKey(title, start) { return `${title.trim().toLowerCase()}|${start}`; }
 
+// Compares calendar dates in Eastern time (not the raw UTC ISO string,
+// which can roll over to the next date for a late-evening Eastern time) —
+// used to enforce "start and end must be the same day unless it's an
+// all-day/multi-day event".
+function easternDate(iso) {
+  return new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
+
 // Public visitors never see the exact check-in window boundaries (those stay
 // E-Board-only), but they do need to know whether check-in is open right now
 // so events.html can enable/disable its "Check In" button.
@@ -77,14 +85,18 @@ export default async function handler(req) {
   if (req.method === 'POST') {
     const {
       title, description, location, start, end, tags, signinLink, imageUrl,
-      checkinOpensAt, checkinClosesAt, points, volunteerType, slotCapacity,
+      checkinOpensAt, checkinClosesAt, points, volunteerType, slotCapacity, allDay,
     } = body;
     if (!title || !start) return json({ ok: false, error: 'Title and start date/time are required.' }, 400);
+    if (!imageUrl) return json({ ok: false, error: 'An image is required to create an event.' }, 400);
+    if (!allDay && end && easternDate(end) !== easternDate(start)) {
+      return json({ ok: false, error: 'Start and end must be on the same date unless allDay is set.' }, 400);
+    }
     const finalTags = Array.isArray(tags) ? tags : [];
     const event = {
       id: randomUUID(), title, description: description || '', location: location || '',
-      start, end: end || start, tags: finalTags,
-      signinLink: signinLink || '', imageUrl: imageUrl || '',
+      start, end: end || start, allDay: !!allDay, tags: finalTags,
+      signinLink: signinLink || '', imageUrl,
       points: typeof points === 'number' ? points : await defaultPointsForTags(finalTags),
       checkinOpensAt: checkinOpensAt || '', checkinClosesAt: checkinClosesAt || '',
       volunteerType: finalTags.includes('Volunteer') ? (volunteerType || '') : '',
@@ -98,9 +110,11 @@ export default async function handler(req) {
   if (req.method === 'PATCH') {
     const target = events.find(e => e.id === body.id);
     if (!target) return json({ ok: false, error: 'Event not found.' }, 404);
+    if ('imageUrl' in body && !body.imageUrl) return json({ ok: false, error: 'An event must have an image.' }, 400);
     for (const f of ['title', 'description', 'location', 'start', 'end', 'signinLink', 'imageUrl', 'checkinOpensAt', 'checkinClosesAt', 'volunteerType']) {
       if (f in body) target[f] = body[f];
     }
+    if ('allDay' in body) target.allDay = !!body.allDay;
     if ('points' in body) target.points = Number(body.points);
     if ('tags' in body) target.tags = Array.isArray(body.tags) ? body.tags : [];
     if ('slotCapacity' in body) target.slotCapacity = Number(body.slotCapacity) || 3;

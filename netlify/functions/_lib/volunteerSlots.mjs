@@ -2,7 +2,6 @@
 // generated from the event's own start/end window rather than entered by
 // hand — an event that runs 9am-11am automatically gets four slots.
 const SLOT_MS = 30 * 60 * 1000;
-export const POINTS_PER_SLOT = 25;
 
 function fmtTime(d) {
   return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
