@@ -16,11 +16,11 @@ export const ROLES = [
 // system, treated as full access until reassigned.
 export const LOCKED_FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy'];
 
-// Roles that automatically get 'content' and 'accounts' (never exposed as
-// checkboxes, and not adjustable here) in addition to whatever's configured
-// for the manageable tabs below. Vice President keeps this "everything by
-// default" baseline for those two tabs, but — unlike the locked roles above
-// — their manageable-tab access can be individually unchecked.
+// Roles that automatically get 'accounts' (never exposed as a checkbox, and
+// not adjustable here) in addition to whatever's configured for the
+// manageable tabs below. Vice President keeps this baseline for accounts,
+// but — unlike the locked roles above — its manageable-tab access
+// (including Site Content, see below) can be individually unchecked.
 export const FULL_ACCESS_ROLES = [...LOCKED_FULL_ACCESS_ROLES, 'vice_president'];
 
 // Only these two can view or edit the Permissions section — not even Vice
@@ -28,14 +28,21 @@ export const FULL_ACCESS_ROLES = [...LOCKED_FULL_ACCESS_ROLES, 'vice_president']
 export const PERMISSIONS_MANAGERS = ['president', 'admin'];
 
 // Tabs whose access can be granted per-role from the Permissions section
-// (folded into the Accounts tab). 'content' and 'accounts' are deliberately
-// left out — managing the roster's public bios and managing who has portal
-// accounts stay full-access-only no matter what's configured here.
-export const MANAGEABLE_TABS = ['events', 'members', 'points', 'library', 'gallery', 'budget'];
+// (folded into the Accounts tab). 'accounts' is deliberately left out —
+// managing who has portal accounts stays full-access-only no matter what's
+// configured here. 'content' (Site Content) used to be full-access-only
+// too, but can now be handed to any other role since it's just editing the
+// public roster/bio page, not anything sensitive.
+export const MANAGEABLE_TABS = ['events', 'members', 'points', 'library', 'gallery', 'budget', 'content'];
+
+// What President/Admin's "always full access" row displays as checked on
+// the Permissions section — every manageable tab plus 'accounts', which
+// isn't itself adjustable but is still true for them.
+export const LOCKED_DISPLAY_TABS = [...MANAGEABLE_TABS, 'accounts'];
 
 // Every tab the portal dashboard can show, manageable or not — used to
 // compute a signed-in user's full tab list in one place.
-export const ALL_TABS = [...MANAGEABLE_TABS, 'content', 'accounts', 'permissions'];
+export const ALL_TABS = [...MANAGEABLE_TABS, 'accounts', 'permissions'];
 
 // Non-locked roles shown on the Permissions section by default. Vice
 // President is included since its manageable-tab access is now adjustable
@@ -53,21 +60,23 @@ const DEFAULT_TAB_ROLES = {
   library: ['vice_president'],
   gallery: ['vice_president', 'media'],
   budget: ['vice_president', 'treasurer'],
+  content: ['vice_president'],
 };
 
 // Auto-seeds from DEFAULT_TAB_ROLES the first time this is read — same
 // pattern as the other Blobs collections in this app (library/content/
-// events/gallery). Vice President used to bypass this store entirely (real
-// full access); now that its manageable-tab access is adjustable, any
-// already-seeded store gets a one-time backfill so existing deployments
-// don't suddenly lose VP's access to everything on this deploy.
+// events/gallery). Vice President and (more recently) Site Content used to
+// bypass or exclude this store entirely; each time the shape of what's
+// adjustable changes, an already-seeded store gets a one-time backfill so
+// existing deployments don't suddenly lose access on deploy.
 export async function loadTabRoles() {
   const existing = await getCollection('permissions', null);
   if (!existing) {
-    const seeded = { ...DEFAULT_TAB_ROLES, _vpMigrated: true };
+    const seeded = { ...DEFAULT_TAB_ROLES, _vpMigrated: true, _contentMigrated: true };
     await setCollection('permissions', seeded);
     return seeded;
   }
+  let changed = false;
   if (!existing._vpMigrated) {
     for (const tab of MANAGEABLE_TABS) {
       const roleSet = new Set(existing[tab] || []);
@@ -75,8 +84,14 @@ export async function loadTabRoles() {
       existing[tab] = [...roleSet];
     }
     existing._vpMigrated = true;
-    await setCollection('permissions', existing);
+    changed = true;
   }
+  if (!existing._contentMigrated) {
+    existing.content = [...new Set([...(existing.content || []), 'vice_president'])];
+    existing._contentMigrated = true;
+    changed = true;
+  }
+  if (changed) await setCollection('permissions', existing);
   return existing;
 }
 
@@ -88,7 +103,7 @@ export async function hasPermission(role, tab) {
   if (!tab) return true; // just needs to be a signed-in account
   if (tab === 'permissions') return PERMISSIONS_MANAGERS.includes(role);
   if (LOCKED_FULL_ACCESS_ROLES.includes(role)) return true;
-  if (!MANAGEABLE_TABS.includes(tab)) return FULL_ACCESS_ROLES.includes(role); // content/accounts
+  if (!MANAGEABLE_TABS.includes(tab)) return FULL_ACCESS_ROLES.includes(role); // accounts
   const tabRoles = await loadTabRoles();
   return (tabRoles[tab] || []).includes(role);
 }

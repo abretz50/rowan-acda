@@ -29,7 +29,7 @@ export default async function handler(req) {
   const topEarners = [...totalsByMember.entries()]
     .map(([id, total]) => ({ name: nameById.get(id) || 'Unknown', total }))
     .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
+    .slice(0, 10);
 
   // Attendance = one distinct member per event with any non-denied points
   // entry tied to that event (a regular check-in, or any volunteer signup) —
@@ -54,30 +54,37 @@ export default async function handler(req) {
   const totalAttendanceRecords = [...attendeesByEvent.values()].reduce((s, set) => s + set.size, 0);
   const avgMemberAttendance = activeMembers.length ? totalAttendanceRecords / activeMembers.length : 0;
 
-  // Chart data: past events only (nothing to show for events that haven't
-  // happened yet), oldest to newest, capped to the most recent 20 so the
-  // chart stays readable.
-  const pastEvents = events
-    .filter(e => new Date(e.end || e.start) <= now)
-    .sort((a, b) => new Date(a.start) - new Date(b.start));
-  const attendanceByEvent = pastEvents.slice(-20).map(e => ({
-    title: e.title,
-    date: e.start,
-    count: (attendeesByEvent.get(e.id) || new Set()).size,
-  }));
+  // Chart data: total attendance per calendar month (not one bar per
+  // event) — an actual trend over time rather than a long list of
+  // individual meetings.
+  const pastEvents = events.filter(e => new Date(e.end || e.start) <= now);
+  const attendanceByMonth = new Map(); // "YYYY-MM" -> count
+  for (const ev of pastEvents) {
+    const count = (attendeesByEvent.get(ev.id) || new Set()).size;
+    if (!count) continue;
+    const d = new Date(ev.start);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    attendanceByMonth.set(key, (attendanceByMonth.get(key) || 0) + count);
+  }
+  const monthLabel = (key) => {
+    const [y, m] = key.split('-').map(Number);
+    return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+  };
+  const attendanceOverTime = [...attendanceByMonth.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, count]) => ({ label: monthLabel(key), count }));
 
   return json({
     ok: true,
     stats: {
       memberCount: activeMembers.length,
-      accountCount: activeMembers.filter(m => m.hasAccount).length,
       upcomingEventCount,
       totalApprovedPoints: approved.reduce((s, p) => s + p.amount, 0),
       pendingPointsCount: points.filter(p => p.status === 'pending').length,
       topEarners,
       mostAttendedEvent,
       avgMemberAttendance: Math.round(avgMemberAttendance * 10) / 10,
-      attendanceByEvent,
+      attendanceOverTime,
     },
   });
 }

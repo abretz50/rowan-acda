@@ -34,6 +34,8 @@ let needsBootstrap = false;
 let allEvents = [];
 let editingEventId = null;
 let allMembers = [];
+let selectedMemberId = null;
+let lastMemberStats = null;
 let libScores = [];
 let libSessions = [];
 let editingScoreUrl = null;
@@ -230,19 +232,18 @@ function statCardHTML(number, label, detail) {
 
 // Plain inline SVG bar chart — no charting library needed for a handful of
 // horizontal bars, and it keeps this dependency-free like the rest of the
-// site.
-function attendanceChartSVG(rows) {
-  if (!rows.length) return '<p class="small muted">No past events yet.</p>';
+// site. Rows: [{label, count}].
+function barChartSVG(rows, emptyMsg) {
+  if (!rows.length) return `<p class="small muted">${escHtml(emptyMsg || 'No data yet.')}</p>`;
   const max = Math.max(1, ...rows.map(r => r.count));
-  const rowH = 26, gap = 6, labelW = 190, barMaxW = 320, chartW = labelW + barMaxW + 50;
+  const rowH = 26, gap = 6, labelW = 130, barMaxW = 320, chartW = labelW + barMaxW + 50;
   const totalH = rows.length * (rowH + gap);
   const bars = rows.map((r, i) => {
     const y = i * (rowH + gap);
     const w = Math.max(2, (r.count / max) * barMaxW);
-    const title = r.title.length > 28 ? r.title.slice(0, 26) + '…' : r.title;
     return `<g transform="translate(0,${y})">
-      <title>${escHtml(r.title)} — ${r.count}</title>
-      <text x="0" y="${rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--text, #333)">${escHtml(title)}</text>
+      <title>${escHtml(r.label)} — ${r.count}</title>
+      <text x="0" y="${rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--text, #333)">${escHtml(r.label)}</text>
       <rect x="${labelW}" y="4" width="${w}" height="${rowH - 8}" rx="4" fill="var(--brand, #7A0A0A)"></rect>
       <text x="${labelW + w + 6}" y="${rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--muted, #666)">${r.count}</text>
     </g>`;
@@ -257,7 +258,6 @@ async function loadOverviewStats() {
   const s = data.stats;
   gridEl.innerHTML = [
     statCardHTML(s.memberCount, 'Members'),
-    statCardHTML(s.accountCount, 'Accounts'),
     statCardHTML(s.upcomingEventCount, 'Upcoming Events'),
     statCardHTML(s.totalApprovedPoints, 'Points Awarded'),
     statCardHTML(s.pendingPointsCount, 'Pending Approvals'),
@@ -277,7 +277,7 @@ async function loadOverviewStats() {
     earnersCard.style.display = 'none';
   }
 
-  document.getElementById('overview-attendance-chart').innerHTML = attendanceChartSVG(s.attendanceByEvent);
+  document.getElementById('overview-attendance-chart').innerHTML = barChartSVG(s.attendanceOverTime, 'No attendance yet.');
 }
 
 function initTabs() {
@@ -373,6 +373,7 @@ function wireAccountsPanel() {
 const TAB_LABELS = {
   events: 'Events', members: 'Members', points: 'Points',
   library: 'Digital Library', gallery: 'Gallery', budget: 'Budget',
+  content: 'Site Content', accounts: 'Accounts',
 };
 
 function permissionsRoleRowHTML(role, tabs, tabRoles, locked) {
@@ -390,7 +391,7 @@ async function loadPermissions() {
   const el = document.getElementById('permissions-list');
   const { ok, data } = await api(PERMISSIONS_URL, { method: 'GET' });
   if (!ok) { el.innerHTML = '<p class="small muted">Could not load permissions.</p>'; return; }
-  const lockedRows = data.lockedRoles.map(r => permissionsRoleRowHTML(r, data.tabs, data.tabRoles, true)).join('');
+  const lockedRows = data.lockedRoles.map(r => permissionsRoleRowHTML(r, data.lockedTabs, data.tabRoles, true)).join('');
   const adjustableRows = data.roles.map(r => permissionsRoleRowHTML(r, data.tabs, data.tabRoles, false)).join('');
   el.innerHTML = lockedRows + adjustableRows || '<p class="small muted">No adjustable roles yet.</p>';
 }
@@ -612,7 +613,8 @@ function wireEventsPanel() {
 function memberRowHTML(m) {
   const inactiveBadge = m.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
   const accountBadge = m.hasAccount ? `<span class="badge-role eboard">has account</span>` : '';
-  return `<div class="admin-row" data-member-id="${escHtml(m.id)}">
+  const selected = m.id === selectedMemberId ? ' admin-row--selected' : '';
+  return `<div class="admin-row${selected}" style="cursor:pointer" data-member-id="${escHtml(m.id)}">
     <div>
       <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${accountBadge}
       <div class="meta">${escHtml(m.email)}</div>
@@ -622,8 +624,62 @@ function memberRowHTML(m) {
       <button class="btn-sm outline" data-toggle-member="${escHtml(m.id)}" data-next="${m.active === false ? 'true' : 'false'}">${m.active === false ? 'Reactivate' : 'Deactivate'}</button>
       <button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>
     </div>
-  </div>
-  <div class="member-points-panel" id="member-points-${escHtml(m.id)}" style="display:none;margin:.3rem 0 .7rem"></div>`;
+  </div>`;
+}
+
+function memberStatsCardsHTML(stats) {
+  return [
+    statCardHTML(stats.avgMeetingAttendance, 'Avg. Meetings / Member'),
+    statCardHTML(stats.highestAttendance ? `${stats.highestAttendance.pct}%` : '—', 'Highest Meeting Attendance', stats.highestAttendance ? stats.highestAttendance.name : 'No meetings yet'),
+    statCardHTML(stats.lowestAttendance ? `${stats.lowestAttendance.pct}%` : '—', 'Lowest Meeting Attendance', stats.lowestAttendance ? stats.lowestAttendance.name : 'No meetings yet'),
+    statCardHTML(stats.recurringMemberCount, 'Recurring Members', 'Attended 4+ meetings this school year'),
+  ].join('');
+}
+
+function showMembershipGraph() {
+  selectedMemberId = null;
+  document.querySelectorAll('#members-list [data-member-id]').forEach(row => row.classList.remove('admin-row--selected'));
+  document.getElementById('members-graph-heading').textContent = 'Membership Over Time';
+  document.getElementById('members-graph-reset').style.display = 'none';
+  document.getElementById('members-graph-chart').innerHTML = barChartSVG(lastMemberStats?.membershipOverTime || [], 'No membership data yet.');
+  document.getElementById('members-graph-detail').innerHTML = '';
+}
+
+async function selectMemberPoints(memberId) {
+  selectedMemberId = memberId;
+  document.querySelectorAll('#members-list [data-member-id]').forEach(row => {
+    row.classList.toggle('admin-row--selected', row.dataset.memberId === memberId);
+  });
+  const member = allMembers.find(m => m.id === memberId);
+  document.getElementById('members-graph-heading').textContent = member ? `${member.name}'s Points History` : 'Points History';
+  document.getElementById('members-graph-reset').style.display = '';
+  const chartEl = document.getElementById('members-graph-chart');
+  const detailEl = document.getElementById('members-graph-detail');
+  chartEl.innerHTML = '<p class="small muted">Loading…</p>';
+  detailEl.innerHTML = '';
+
+  const { ok, data } = await api(`${POINTS_URL}?memberId=${encodeURIComponent(memberId)}`, { method: 'GET' });
+  if (!ok) { chartEl.innerHTML = '<p class="small muted">Could not load points.</p>'; return; }
+
+  const sorted = data.points.slice().sort((a, b) => new Date(a.requestedAt) - new Date(b.requestedAt));
+  let running = 0;
+  const chartRows = sorted.filter(p => p.status === 'approved').map(p => {
+    running += p.amount;
+    return { label: fmtDashDate(p.decidedAt || p.requestedAt), count: running };
+  });
+  chartEl.innerHTML = barChartSVG(chartRows, 'No approved points yet.');
+
+  const total = running;
+  detailEl.innerHTML = `<div class="admin-card" style="padding:.7rem;margin-top:.6rem"><strong>${total} approved point${total !== 1 ? 's' : ''}</strong>` +
+    sorted.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt)).map(p => {
+      const decided = p.status !== 'pending' && p.decidedAt
+        ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
+        : '';
+      return `<div class="admin-row">
+        <div><span class="name">${escHtml(pointsLabel(p) || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
+        <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
+      </div>`;
+    }).join('') + `${!sorted.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
 }
 
 async function loadMembers() {
@@ -632,46 +688,17 @@ async function loadMembers() {
   if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load members.</p>`; return; }
   allMembers = data.members.sort((a, b) => a.name.localeCompare(b.name));
   listEl.innerHTML = allMembers.map(memberRowHTML).join('') || `<p class="small muted">No members yet — they'll also appear automatically once someone self check-ins to an event.</p>`;
+  document.getElementById('members-stats').innerHTML = memberStatsCardsHTML(data.stats);
+  lastMemberStats = data.stats;
+  if (!selectedMemberId || !allMembers.some(m => m.id === selectedMemberId)) showMembershipGraph();
 }
 
 function wireMembersPanel() {
-  document.getElementById('member-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const statusEl = document.getElementById('member-form-status');
-    const name = document.getElementById('mb-name').value.trim();
-    const email = document.getElementById('mb-email').value.trim();
-    if (!name || !email) { statusEl.textContent = 'Name and email are required.'; statusEl.className = 'admin-status err'; return; }
-    const { ok, data } = await api(MEMBERS_URL, { method: 'POST', body: JSON.stringify({ name, email }) });
-    if (!ok) { statusEl.textContent = data.error || 'Could not add member.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = 'Member added.'; statusEl.className = 'admin-status ok';
-    e.target.reset();
-    loadMembers();
-  });
+  document.getElementById('members-graph-reset').addEventListener('click', showMembershipGraph);
 
   document.getElementById('members-list').addEventListener('click', async (e) => {
     const viewBtn = e.target.closest('[data-view-points]');
-    if (viewBtn) {
-      const panel = document.getElementById(`member-points-${viewBtn.dataset.viewPoints}`);
-      const visible = panel.style.display !== 'none';
-      panel.style.display = visible ? 'none' : '';
-      if (!visible) {
-        panel.innerHTML = '<p class="small muted">Loading…</p>';
-        const { ok, data } = await api(`${POINTS_URL}?memberId=${encodeURIComponent(viewBtn.dataset.viewPoints)}`, { method: 'GET' });
-        if (!ok) { panel.innerHTML = '<p class="small muted">Could not load points.</p>'; return; }
-        const total = data.points.filter(p => p.status === 'approved').reduce((s, p) => s + p.amount, 0);
-        panel.innerHTML = `<div class="admin-card" style="padding:.7rem"><strong>${total} approved point${total !== 1 ? 's' : ''}</strong>` +
-          data.points.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt)).map(p => {
-            const decided = p.status !== 'pending' && p.decidedAt
-              ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
-              : '';
-            return `<div class="admin-row">
-            <div><span class="name">${escHtml(pointsLabel(p) || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
-            <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
-          </div>`;
-          }).join('') + `${!data.points.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
-      }
-      return;
-    }
+    if (viewBtn) { selectMemberPoints(viewBtn.dataset.viewPoints); return; }
     const toggleBtn = e.target.closest('[data-toggle-member]');
     if (toggleBtn) {
       const { ok, data } = await api(MEMBERS_URL, { method: 'PATCH', body: JSON.stringify({ id: toggleBtn.dataset.toggleMember, active: toggleBtn.dataset.next === 'true' }) });
@@ -685,7 +712,10 @@ function wireMembersPanel() {
       const { ok, data } = await api(`${MEMBERS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteMember)}`, { method: 'DELETE' });
       if (!ok) { alert(data.error || 'Could not remove member.'); return; }
       loadMembers();
+      return;
     }
+    const row = e.target.closest('[data-member-id]');
+    if (row) selectMemberPoints(row.dataset.memberId);
   });
 }
 
@@ -849,8 +879,8 @@ function wirePointsPanel() {
 }
 
 const EVENT_DEFAULT_LABELS = {
-  VolunteerSlot: 'Volunteer — per half-hour slot',
-  VolunteerFullDay: 'Volunteer — full day',
+  VolunteerSlot: 'Volunteer: per half-hour slot',
+  VolunteerFullDay: 'Volunteer: full day',
 };
 
 async function loadEventDefaults() {

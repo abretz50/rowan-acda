@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=7"/>
+<link rel="stylesheet" href="/css/components.css?v=8"/>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -76,10 +76,10 @@
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-members" id="tab-members">Members</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-points" id="tab-points">Points</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-library" id="tab-library">Digital Library</button>
-      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-content" id="tab-content">Site Content</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-gallery" id="tab-gallery">Gallery</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-budget" id="tab-budget" style="display:none">Budget</button>
-      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none">Accounts</button>
+      <button class="view-tab view-tab--admin" role="tab" aria-selected="false" aria-controls="panel-content" id="tab-content" style="margin-left:auto">Site Content</button>
+      <button class="view-tab view-tab--admin" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none;margin-left:auto">Accounts</button>
     </div>
 
     <div class="panel active" id="panel-overview">
@@ -96,7 +96,7 @@
       </div>
       <div class="admin-card" style="margin-top:1rem">
         <h3>Attendance Over Time</h3>
-        <p class="small muted">Attendance per past event/meeting, most recent 20.</p>
+        <p class="small muted">Total attendance across all events, by month.</p>
         <div id="overview-attendance-chart" style="overflow-x:auto"><p class="small muted">Loading…</p></div>
       </div>
     </div>
@@ -124,9 +124,6 @@
               <label for="ev-desc">Description</label>
               <textarea class="admin-input" id="ev-desc" rows="2"></textarea>
             </div>
-            <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;margin:.4rem 0">
-              <input type="checkbox" id="ev-all-day"/> All-day / multi-day event (no specific time — can span more than one day)
-            </label>
             <div class="form-row" id="ev-time-fields">
               <div class="form-group">
                 <label for="ev-start">Start</label>
@@ -147,21 +144,28 @@
                 <input class="admin-input" type="date" id="ev-end-date"/>
               </div>
             </div>
-            <p class="form-hint">An event must start and end on the same date unless it's marked all-day/multi-day above — otherwise create a separate entry for each day.</p>
+            <p class="form-hint">An event must start and end on the same day unless it is checked as an all day event.</p>
             <div class="form-group">
               <label for="ev-location">Location</label>
               <input class="admin-input" type="text" id="ev-location"/>
             </div>
-            <div class="form-group">
-              <label for="ev-tags">Tag</label>
-              <select class="admin-input" id="ev-tags">
-                <option value="Event">Event</option>
-                <option value="Meeting">Meeting</option>
-                <option value="Professional Development">Professional Development</option>
-                <option value="Workshop">Workshop</option>
-                <option value="Volunteer">Volunteer</option>
-                <option value="Performance">Performance</option>
-              </select>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ev-tags">Tag</label>
+                <select class="admin-input" id="ev-tags">
+                  <option value="Event">Event</option>
+                  <option value="Meeting">Meeting</option>
+                  <option value="Professional Development">Professional Development</option>
+                  <option value="Workshop">Workshop</option>
+                  <option value="Volunteer">Volunteer</option>
+                  <option value="Performance">Performance</option>
+                </select>
+              </div>
+              <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:.55rem">
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;margin:0">
+                  <input type="checkbox" id="ev-all-day" style="width:auto"/> All day
+                </label>
+              </div>
             </div>
             <div class="form-group" id="ev-volunteer-wrap" style="display:none">
               <label for="ev-volunteer-type">Volunteer Type</label>
@@ -203,22 +207,22 @@
 
     <!-- ===== Members ===== -->
     <div class="panel" id="panel-members">
+      <p class="small muted">New members are added from the <strong>Accounts</strong> tab, or automatically the first time they self check in to an event.</p>
+      <div class="stat-grid" id="members-stats">
+        <div class="admin-card"><p class="small muted">Loading stats…</p></div>
+      </div>
       <div class="eboard-panel">
-        <div class="admin-card">
-          <h3>Add Member</h3>
-          <form class="admin-form" id="member-form" novalidate>
-            <div class="form-row">
-              <input class="admin-input" type="text" id="mb-name" placeholder="Full name" required/>
-              <input class="admin-input" type="email" id="mb-email" placeholder="Email" required/>
-            </div>
-            <p class="form-hint">Members are also added automatically the first time they self check in to an event.</p>
-            <button class="btn-sm" type="submit">Add member</button>
-            <div class="admin-status" id="member-form-status"></div>
-          </form>
-        </div>
         <div class="admin-card">
           <h3>Roster</h3>
           <div id="members-list"><p class="small muted">Loading…</p></div>
+        </div>
+        <div class="admin-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem">
+            <h3 id="members-graph-heading" style="border:none;padding:0;margin:0">Membership Over Time</h3>
+            <button class="btn-sm outline" id="members-graph-reset" style="display:none">Show Overview</button>
+          </div>
+          <div id="members-graph-chart" style="margin-top:.6rem"><p class="small muted">Loading…</p></div>
+          <div id="members-graph-detail"></div>
         </div>
       </div>
     </div>
@@ -517,6 +521,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=9"></script>
+<script defer src="/js/portal.js?v=10"></script>
 </body>
 </html>

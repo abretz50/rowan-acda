@@ -1,7 +1,7 @@
 import { requireAuth, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import {
-  loadTabRoles, saveTabRoles, MANAGEABLE_TABS, BASE_ADJUSTABLE_ROLES,
+  loadTabRoles, saveTabRoles, MANAGEABLE_TABS, LOCKED_DISPLAY_TABS, BASE_ADJUSTABLE_ROLES,
   LOCKED_FULL_ACCESS_ROLES, PERMISSIONS_MANAGERS,
 } from './_lib/permissions.mjs';
 
@@ -24,7 +24,7 @@ export default async function handler(req) {
     // eboard_legacy is also locked full-access, but it's an internal
     // migration fallback, not a role anyone should see or think about —
     // only show president/admin as the "always full access" display rows.
-    return json({ ok: true, tabs: MANAGEABLE_TABS, roles, lockedRoles: ['president', 'admin'], tabRoles });
+    return json({ ok: true, tabs: MANAGEABLE_TABS, lockedTabs: LOCKED_DISPLAY_TABS, roles, lockedRoles: ['president', 'admin'], tabRoles });
   }
 
   if (req.method !== 'PATCH') return json({ ok: false, error: 'Method not allowed' }, 405);

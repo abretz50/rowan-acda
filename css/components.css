@@ -1153,6 +1153,11 @@ html, body{ background: var(--page-bg); }
 }
 .view-tab:hover { color: var(--brand); }
 .view-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+/* Site Content / Accounts — grouped on the right in a darker red so the
+   "manage the site itself" tabs read as distinct from the day-to-day ones. */
+.view-tab--admin { color: var(--brand-ink); }
+.view-tab--admin:hover { color: var(--brand-ink); filter: brightness(1.4); }
+.view-tab--admin.active { color: var(--brand-ink); border-bottom-color: var(--brand-ink); }
 .panel { display: none; }
 .panel.active { display: block; }
 
@@ -1280,6 +1285,7 @@ html, body{ background: var(--page-bg); }
 .stat-card .stat-number { display: block; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.8rem; color: var(--brand); }
 .stat-card .stat-label { display: block; font-size: .8rem; color: var(--muted); margin-top: .2rem; }
 .stat-card .stat-detail { display: block; font-size: .72rem; color: var(--muted); margin-top: .3rem; line-height: 1.3; }
+.admin-row--selected { background: var(--surface); border-radius: .5rem; box-shadow: inset 3px 0 0 var(--brand); }
 
 /* Category filter chips — shared between the public Digital Library
    (sightsinging.html) and the portal's Digital Library tab, so the two
