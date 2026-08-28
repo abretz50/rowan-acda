@@ -1245,23 +1245,22 @@ html, body{ background: var(--page-bg); }
 .session-body { display: none; padding: .75rem; background: var(--surface); border-top: 1px solid var(--border); }
 .session-group.open .session-body { display: block; }
 
-/* My Account nav link — a very light, mostly-white pink tint so it still
-   stands out from the plain white/ghost nav links but reads as part of the
-   site's palette instead of a bright pink pill. */
+/* My Account nav link — white pill with the brand's red text, so it stands
+   out against the red desktop bar without introducing a new accent color. */
 .nav-link--account {
-  background: #fdf3f6 !important;
+  background: #fff !important;
   color: var(--brand-ink) !important;
   box-shadow: none !important;
   border: 1.5px solid #f0d5dd !important;
   font-weight: 800 !important;
 }
 .nav-link--account:hover, .nav-link--account:focus-visible {
-  background: #f9e7ec !important;
+  background: #fdf3f6 !important;
   border-color: #e6bdc9 !important;
   color: var(--brand-ink) !important;
 }
 .nav-link--account[aria-current="page"] {
-  background: #f9e7ec !important;
+  background: #fdf3f6 !important;
   color: var(--brand-ink) !important;
   box-shadow: none !important;
 }
@@ -1269,8 +1268,14 @@ html, body{ background: var(--page-bg); }
   .site-header #site-nav a.nav-link--account,
   .site-header #site-nav a.nav-link--account:link,
   .site-header #site-nav a.nav-link--account:visited {
-    background: #fdf3f6 !important;
+    background: #fff !important;
     color: var(--brand-ink) !important;
     border: 1.5px solid #f0d5dd !important;
   }
 }
+
+/* Overview tab stat cards */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; margin: 1rem 0; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; text-align: center; }
+.stat-card .stat-number { display: block; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.8rem; color: var(--brand); }
+.stat-card .stat-label { display: block; font-size: .8rem; color: var(--muted); margin-top: .2rem; }

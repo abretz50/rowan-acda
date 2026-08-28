@@ -7,8 +7,8 @@
 (() => {
 'use strict';
 
-const MEMBER_PASS = 'acda2025';
 const LIBRARY_URL = '/.netlify/functions/portal-library';
+const AUTH_URL = '/.netlify/functions/portal-auth';
 
 const ALL_TAGS = ['Classical','Musical Theater','Church Music','Contemporary',
   'Jazz & Pop','Sacred','Secular','A Cappella','Folk'];
@@ -26,8 +26,6 @@ let sessions = []; // {num, name, scoreUrls: string[]}
 let memberUnlocked = false;
 let activeTag = 'all';
 let libSearchTerm = '';
-
-const LS_MB = 'acda_lib_member';
 
 // ── HELPERS ───────────────────────────────────────────────
 function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -177,9 +175,13 @@ function closePDF(){
   document.body.style.overflow='';
 }
 
-// ── AUTH (member-level view gate) ─────────────────────────
-function checkSavedAuth(){
-  try{ if(sessionStorage.getItem(LS_MB)==='1') memberUnlocked=true; }catch{}
+// ── AUTH (any signed-in member/E-Board account) ───────────
+async function checkAuth(){
+  try{
+    const res=await fetch(AUTH_URL,{credentials:'include'});
+    const data=await res.json();
+    memberUnlocked=!!data.ok;
+  }catch{ memberUnlocked=false; }
 }
 function showLibrary(){
   document.getElementById('lock-section').style.display='none';
@@ -196,19 +198,6 @@ function initTabs(){
       tab.classList.add('active'); tab.setAttribute('aria-selected','true');
       document.getElementById(tab.getAttribute('aria-controls'))?.classList.add('active');
     });
-  });
-}
-
-// ── LOCK FORM ─────────────────────────────────────────────
-function initLockForm(){
-  document.getElementById('lock-form').addEventListener('submit',e=>{
-    e.preventDefault();
-    const pw=document.getElementById('lock-pw').value.trim();
-    const errEl=document.getElementById('lock-error');
-    if(pw===MEMBER_PASS){
-      memberUnlocked=true; try{sessionStorage.setItem(LS_MB,'1')}catch{}
-      errEl.textContent=''; showLibrary();
-    } else { errEl.textContent='Incorrect password.'; }
   });
 }
 
@@ -239,9 +228,8 @@ async function init(){
     const data=await res.json();
     if(data.ok){ library=data.scores||[]; sessions=data.sessions||[]; }
   } catch{}
-  checkSavedAuth();
-  initPreviewObserver(); initTabs(); initDelegates();
-  initLockForm(); initSearch();
+  await checkAuth();
+  initPreviewObserver(); initTabs(); initDelegates(); initSearch();
   if(memberUnlocked) showLibrary();
 }
 

@@ -6,21 +6,24 @@ export const ROLES = [
   'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_legacy',
 ];
 
-// Roles with unconditional full access — a real club title (president) or a
-// site-maintainer account that shouldn't have to pose as the president.
-export const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy'];
+// Roles with unconditional full access — a real club title (president,
+// vice president) or a site-maintainer account that shouldn't have to pose
+// as the president.
+export const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy', 'vice_president'];
 
-// tab -> roles allowed (besides 'president', who can always do everything,
-// and 'eboard_legacy' — a migration fallback for accounts created under the
-// old flat admin/eboard system, treated as full access until reassigned).
+// tab -> roles allowed (besides the FULL_ACCESS_ROLES above, who can always
+// do everything). 'eboard_legacy' is a migration fallback for accounts
+// created under the old flat admin/eboard system, treated as full access
+// until reassigned.
 const TAB_ROLES = {
-  events: ['event_coordinator'],
-  members: ['secretary'],
+  events: ['event_coordinator', 'secretary', 'media', 'treasurer'],
+  members: ['secretary', 'treasurer'],
   points: ['secretary'],
-  library: ['vice_president'],
+  library: [],
   gallery: ['media'],
   content: [],
   accounts: [],
+  budget: ['treasurer'],
 };
 
 export function hasPermission(role, tab) {

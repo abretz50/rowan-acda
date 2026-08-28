@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=4"/>
+<link rel="stylesheet" href="/css/components.css?v=5"/>
 
 <style>
   /* ── View tabs ── */
@@ -406,16 +406,9 @@
     <div class="lock-screen">
       <div class="lock-screen-heading">
         <h2>Member Access</h2>
-        <p>Enter the session password to browse scores and open PDFs.</p>
+        <p>Sign in with your Rowan ACDA account to browse scores and open PDFs.</p>
       </div>
-      <form class="lock-form" id="lock-form" novalidate>
-        <div class="form-group">
-          <label for="lock-pw">Password</label>
-          <input type="password" id="lock-pw" placeholder="Session password" autocomplete="current-password" aria-label="Password"/>
-        </div>
-        <button class="btn" type="submit">Access Library</button>
-        <div class="lock-error" id="lock-error" role="alert" aria-live="polite"></div>
-      </form>
+      <a class="btn" href="/account.html" style="display:inline-flex">Sign In</a>
       <p class="small muted" style="margin-top:.85rem">E-Board: manage scores and sets from the <a href="/portal.html">E-Board Portal</a>.</p>
     </div>
   </section>
@@ -495,7 +488,7 @@
   </div>
 </footer>
 
-<script src="/js/choral-library.js" defer></script>
+<script src="/js/choral-library.js?v=2" defer></script>
 <script src="/js/core.js?v=4" defer></script>
 </body>
 </html>

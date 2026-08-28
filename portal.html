@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=4"/>
+<link rel="stylesheet" href="/css/components.css?v=5"/>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -78,6 +78,7 @@
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-library" id="tab-library">Digital Library</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-content" id="tab-content">Site Content</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-gallery" id="tab-gallery">Gallery</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-budget" id="tab-budget" style="display:none">Budget</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none">Accounts</button>
     </div>
 
@@ -85,6 +86,21 @@
       <div class="admin-card">
         <h3>Welcome</h3>
         <p class="small muted" id="overview-welcome">Events, Members, Points, the Digital Library, Site Content, and Gallery/slideshow management are all live from this dashboard — only the tabs your role can use are shown.</p>
+      </div>
+      <div class="stat-grid" id="overview-stats">
+        <div class="admin-card"><p class="small muted">Loading stats…</p></div>
+      </div>
+      <div class="admin-card" id="overview-top-earners-card" style="display:none">
+        <h3>Top Point Earners</h3>
+        <div id="overview-top-earners"></div>
+      </div>
+    </div>
+
+    <!-- ===== Budget (placeholder) ===== -->
+    <div class="panel" id="panel-budget">
+      <div class="admin-card">
+        <h3>Budget</h3>
+        <p class="small muted">A budget tracking tool is coming soon.</p>
       </div>
     </div>
 
@@ -416,6 +432,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=4"></script>
+<script defer src="/js/portal.js?v=5"></script>
 </body>
 </html>

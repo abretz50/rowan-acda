@@ -15,16 +15,18 @@ const LIBRARY_URL  = '/.netlify/functions/portal-library';
 const CONTENT_URL  = '/.netlify/functions/portal-content';
 const GALLERY_URL  = '/.netlify/functions/portal-gallery';
 const UPLOAD_URL   = '/.netlify/functions/portal-upload';
+const STATS_URL    = '/.netlify/functions/portal-stats';
 
 // Mirrors netlify/functions/_lib/permissions.mjs — client-side is just for
 // hiding tabs the user can't use; the server enforces the real boundary.
 const TAB_ROLES = {
-  events: ['event_coordinator'], members: ['secretary'], points: ['secretary'],
-  library: ['vice_president'], gallery: ['media'], content: [], accounts: [],
+  events: ['event_coordinator', 'secretary', 'media', 'treasurer'],
+  members: ['secretary', 'treasurer'], points: ['secretary'],
+  library: [], gallery: ['media'], content: [], accounts: [], budget: ['treasurer'],
 };
 function canUse(tab) {
   if (!me) return false;
-  if (['president', 'admin', 'eboard_legacy'].includes(me.role)) return true;
+  if (FULL_ACCESS_ROLES.includes(me.role)) return true;
   return (TAB_ROLES[tab] || []).includes(me.role);
 }
 
@@ -39,6 +41,7 @@ let editingScoreUrl = null;
 let eboardRoster = [];
 let editingEboardId = null;
 let galleryItems = [];
+let eventsRefreshTimer = null;
 const KNOWN_VOICINGS = ['','SATB','SATB divisi','SAB','SSA','SSAA','TTBB','2-Part','Unison','Other'];
 const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Chamber Ensemble','Strings','Band','Brass','Other'];
 const ROLE_LABELS = {
@@ -46,7 +49,7 @@ const ROLE_LABELS = {
   secretary: 'Secretary', treasurer: 'Treasurer', event_coordinator: 'Event Coordinator',
   media: 'Social Media Coordinator', senator: 'Senator', eboard_legacy: 'E-Board (legacy)',
 };
-const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy'];
+const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy', 'vice_president'];
 
 function fmtDashDate(iso) {
   if (!iso) return '';
@@ -179,6 +182,7 @@ function wireLoginForm() {
   document.getElementById('logout-btn').addEventListener('click', async () => {
     await api(AUTH_URL, { method: 'POST', body: JSON.stringify({ action: 'logout' }) });
     me = null;
+    clearInterval(eventsRefreshTimer);
     document.getElementById('dashboard-section').style.display = 'none';
     document.getElementById('login-section').style.display = '';
     document.getElementById('login-form').reset();
@@ -197,15 +201,47 @@ function showDashboard() {
     if (tabBtn) tabBtn.style.display = canUse(tab) ? '' : 'none';
   });
 
+  loadOverviewStats();
   if (canUse('accounts')) loadAccounts();
   // loadEvents() populates the shared `allEvents` list, which the Points tab's
   // "Event Point Values" section also needs — so load it for either permission.
-  if (canUse('events') || canUse('points')) loadEvents();
+  if (canUse('events') || canUse('points')) {
+    loadEvents();
+    clearInterval(eventsRefreshTimer);
+    eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
+  }
   if (canUse('members')) loadMembers();
   if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) loadEboardRoster();
   if (canUse('gallery')) loadGallery();
+}
+
+// ── Overview tab ──────────────────────────────────────────
+async function loadOverviewStats() {
+  const gridEl = document.getElementById('overview-stats');
+  const { ok, data } = await api(STATS_URL, { method: 'GET' });
+  if (!ok) { gridEl.innerHTML = '<div class="admin-card"><p class="small muted">Could not load stats.</p></div>'; return; }
+  const s = data.stats;
+  gridEl.innerHTML = [
+    [s.memberCount, 'Members'],
+    [s.accountCount, 'Accounts'],
+    [s.upcomingEventCount, 'Upcoming Events'],
+    [s.totalApprovedPoints, 'Points Awarded'],
+    [s.pendingPointsCount, 'Pending Approvals'],
+  ].map(([n, label]) => `<div class="stat-card"><span class="stat-number">${n}</span><span class="stat-label">${label}</span></div>`).join('');
+
+  const earnersCard = document.getElementById('overview-top-earners-card');
+  const earnersEl = document.getElementById('overview-top-earners');
+  if (s.topEarners.length) {
+    earnersCard.style.display = '';
+    earnersEl.innerHTML = s.topEarners.map((e, i) => `<div class="admin-row">
+      <div><span class="name">${i + 1}. ${escHtml(e.name)}</span></div>
+      <div class="actions"><span class="badge-role eboard">${e.total} pt${e.total !== 1 ? 's' : ''}</span></div>
+    </div>`).join('');
+  } else {
+    earnersCard.style.display = 'none';
+  }
 }
 
 function initTabs() {

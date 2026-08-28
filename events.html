@@ -14,7 +14,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=4"/>
+<link rel="stylesheet" href="/css/components.css?v=5"/>
 
 <style>
   :root{ --tap: 40px; }
@@ -272,8 +272,9 @@
   function checkinButtonHTML(ev){
     if(ev.when === 'past') return '';
     const label = !signedIn ? 'Sign In to Check In' : (ev.checkinOpen ? 'Check In' : 'Check-In Not Open Yet');
-    const disabledClass = (signedIn && !ev.checkinOpen) ? ' is-disabled' : '';
-    return '<button class="btn btn-outline btn-checkin'+disabledClass+'" data-checkin="'+ev.id+'">'+label+'</button>';
+    const disabled = signedIn && !ev.checkinOpen;
+    const cls = 'btn btn-checkin' + (disabled ? ' btn-outline is-disabled' : '');
+    return '<button class="'+cls+'" data-checkin="'+ev.id+'">'+label+'</button>';
   }
 
   /* ---------- Card & modal templates ---------- */
