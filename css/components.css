@@ -1287,6 +1287,22 @@ html, body{ background: var(--page-bg); }
 .stat-card .stat-detail { display: block; font-size: .72rem; color: var(--muted); margin-top: .3rem; line-height: 1.3; }
 .admin-row--selected { background: var(--surface); border-radius: .5rem; box-shadow: inset 3px 0 0 var(--brand); }
 
+/* Digital Library score list and Sets lists: always stack the action
+   buttons on their own row below the title/meta, instead of only wrapping
+   down when a longer title happens to run out of room — so every row looks
+   the same regardless of how much text it has. */
+#lib-manage-list .admin-row,
+#sets-manage-list .admin-row,
+#sets-archive-list .admin-row {
+  flex-direction: column;
+  align-items: flex-start;
+}
+#lib-manage-list .admin-row .actions,
+#sets-manage-list .admin-row .actions,
+#sets-archive-list .admin-row .actions {
+  width: 100%;
+}
+
 /* Category filter chips — shared between the public Digital Library
    (sightsinging.html) and the portal's Digital Library tab, so the two
    filtering UIs look and behave the same. */
@@ -1307,3 +1323,10 @@ html, body{ background: var(--page-bg); }
   color: var(--brand); border-bottom: 2px solid var(--border);
 }
 .content-section-heading:first-child { margin-top: 0; }
+
+/* Tasks tab — color-coded by priority via a left accent bar */
+.task-priority-low { box-shadow: inset 3px 0 0 #2f9e44; }
+.task-priority-medium { box-shadow: inset 3px 0 0 #e8a317; }
+.task-priority-high { box-shadow: inset 3px 0 0 #c0392b; }
+.task-done { opacity: .6; }
+.task-done .name { text-decoration: line-through; }

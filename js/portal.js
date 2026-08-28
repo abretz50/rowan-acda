@@ -17,6 +17,8 @@ const GALLERY_URL  = '/.netlify/functions/portal-gallery';
 const UPLOAD_URL   = '/.netlify/functions/portal-upload';
 const STATS_URL    = '/.netlify/functions/portal-stats';
 const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
+const TASKS_URL = '/.netlify/functions/portal-tasks';
+const COMMENTS_URL = '/.netlify/functions/portal-comments';
 
 // The server computes exactly which tabs a signed-in user can use (see
 // _lib/permissions.mjs's computeCanUse) and sends it back as `canUse` on
@@ -36,6 +38,10 @@ let editingEventId = null;
 let allMembers = [];
 let selectedMemberId = null;
 let lastMemberStats = null;
+let allTasks = [];
+let taskAssignableMembers = [];
+let taskViewMode = 'board';
+let editingTaskId = null;
 let libScores = [];
 let libSessions = [];
 let editingScoreUrl = null;
@@ -208,6 +214,7 @@ function showDashboard() {
   });
 
   loadOverviewStats();
+  loadTasks(); // Tasks is open to any E-Board account, not permission-gated
   if (canUse('accounts')) loadAccounts();
   document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
   if (canUse('permissions')) loadPermissions();
@@ -218,7 +225,7 @@ function showDashboard() {
     clearInterval(eventsRefreshTimer);
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
-  if (canUse('members')) loadMembers();
+  if (canUse('members')) { loadMembers(); loadRecentComments(); }
   if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) loadEboardRoster();
@@ -408,6 +415,159 @@ function wirePermissionsPanel() {
     btn.disabled = false;
     if (!ok) { alert(data.error || 'Could not save permissions.'); btn.textContent = original; return; }
     btn.textContent = 'Saved!'; setTimeout(() => { btn.textContent = original; }, 1200);
+  });
+}
+
+// ── Tasks tab (open to any E-Board account) ───────────────
+function resetTaskForm() {
+  editingTaskId = null;
+  document.getElementById('task-form').reset();
+  document.getElementById('task-priority').value = 'medium';
+  document.getElementById('task-form-heading').textContent = 'New Task';
+  document.getElementById('task-form-submit').textContent = 'Create task';
+  document.getElementById('task-form-cancel').style.display = 'none';
+}
+
+function populateTaskAssigneeSelect() {
+  const sel = document.getElementById('task-assignee');
+  const current = sel.value;
+  sel.innerHTML = taskAssignableMembers.map(m => `<option value="${escHtml(m.id)}">${escHtml(m.name)}</option>`).join('');
+  if (taskAssignableMembers.some(m => m.id === current)) sel.value = current;
+}
+
+function taskRowHTML(t) {
+  const overdue = t.status === 'open' && t.dueDate && new Date(t.dueDate) < new Date(new Date().toDateString());
+  const priorityBadge = `<span class="badge-role ${t.priority === 'high' ? 'inactive' : t.priority === 'medium' ? 'admin' : 'eboard'}">${t.priority}</span>`;
+  const isMine = me && t.assignedToId === me.id;
+  return `<div class="admin-row task-priority-${escHtml(t.priority)}${t.status === 'done' ? ' task-done' : ''}" data-task-id="${escHtml(t.id)}">
+    <div>
+      <span class="name">${escHtml(t.title)}</span> ${priorityBadge}${overdue ? ' <span class="badge-role inactive">overdue</span>' : ''}${isMine ? ' <span class="badge-role eboard">mine</span>' : ''}
+      <div class="meta">For ${escHtml(t.assignedToName)} · assigned by ${escHtml(t.assignedByName)}${t.dueDate ? ' · due ' + fmtDashDate(t.dueDate) : ''}</div>
+      ${t.description ? `<p class="small" style="margin:.35rem 0 0;white-space:pre-wrap">${escHtml(t.description)}</p>` : ''}
+    </div>
+    <div class="actions">
+      <button class="btn-sm outline" data-toggle-task="${escHtml(t.id)}" data-next="${t.status === 'done' ? 'open' : 'done'}">${t.status === 'done' ? 'Reopen' : 'Mark Done'}</button>
+      <button class="btn-sm edit" data-edit-task="${escHtml(t.id)}">Edit</button>
+      <button class="btn-sm delete" data-delete-task="${escHtml(t.id)}">Delete</button>
+    </div>
+  </div>`;
+}
+
+function renderTasksList() {
+  const el = document.getElementById('tasks-list');
+  const visible = taskViewMode === 'mine' ? allTasks.filter(t => me && t.assignedToId === me.id) : allTasks;
+  const sorted = visible.slice().sort((a, b) => {
+    if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
+    if (!a.dueDate && !b.dueDate) return 0;
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return new Date(a.dueDate) - new Date(b.dueDate);
+  });
+  el.innerHTML = sorted.map(taskRowHTML).join('') || `<p class="small muted">${taskViewMode === 'mine' ? 'No tasks assigned to you.' : 'No tasks yet.'}</p>`;
+}
+
+async function loadTasks() {
+  const { ok, data } = await api(TASKS_URL, { method: 'GET' });
+  if (!ok) { document.getElementById('tasks-list').innerHTML = '<p class="small muted">Could not load tasks.</p>'; return; }
+  allTasks = data.tasks;
+  taskAssignableMembers = data.assignableMembers;
+  populateTaskAssigneeSelect();
+  renderTasksList();
+}
+
+function wireTasksPanel() {
+  document.querySelectorAll('[data-task-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      taskViewMode = btn.dataset.taskView;
+      document.querySelectorAll('[data-task-view]').forEach(b => {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-selected', String(b === btn));
+      });
+      renderTasksList();
+    });
+  });
+
+  document.getElementById('task-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById('task-form-status');
+    const payload = {
+      title: document.getElementById('task-title').value.trim(),
+      description: document.getElementById('task-desc').value.trim(),
+      assignedToId: document.getElementById('task-assignee').value,
+      dueDate: document.getElementById('task-due').value,
+      priority: document.getElementById('task-priority').value,
+    };
+    if (!payload.title || !payload.assignedToId) {
+      statusEl.textContent = 'Title and an assignee are required.'; statusEl.className = 'admin-status err'; return;
+    }
+    const { ok, data } = editingTaskId
+      ? await api(TASKS_URL, { method: 'PATCH', body: JSON.stringify({ id: editingTaskId, ...payload }) })
+      : await api(TASKS_URL, { method: 'POST', body: JSON.stringify(payload) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not save task.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
+    resetTaskForm();
+    loadTasks();
+  });
+  document.getElementById('task-form-cancel').addEventListener('click', resetTaskForm);
+
+  document.getElementById('tasks-list').addEventListener('click', async (e) => {
+    const toggleBtn = e.target.closest('[data-toggle-task]');
+    if (toggleBtn) {
+      const { ok, data } = await api(TASKS_URL, { method: 'PATCH', body: JSON.stringify({ id: toggleBtn.dataset.toggleTask, status: toggleBtn.dataset.next }) });
+      if (!ok) { alert(data.error || 'Could not update task.'); return; }
+      loadTasks();
+      return;
+    }
+    const editBtn = e.target.closest('[data-edit-task]');
+    if (editBtn) {
+      const t = allTasks.find(x => x.id === editBtn.dataset.editTask);
+      if (!t) return;
+      editingTaskId = t.id;
+      document.getElementById('task-title').value = t.title;
+      document.getElementById('task-desc').value = t.description || '';
+      populateTaskAssigneeSelect();
+      document.getElementById('task-assignee').value = t.assignedToId;
+      document.getElementById('task-due').value = t.dueDate || '';
+      document.getElementById('task-priority').value = t.priority;
+      document.getElementById('task-form-heading').textContent = 'Edit Task';
+      document.getElementById('task-form-submit').textContent = 'Save changes';
+      document.getElementById('task-form-cancel').style.display = '';
+      document.getElementById('task-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    const delBtn = e.target.closest('[data-delete-task]');
+    if (delBtn) {
+      if (!confirm('Delete this task?')) return;
+      const { ok, data } = await api(`${TASKS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteTask)}`, { method: 'DELETE' });
+      if (!ok) { alert(data.error || 'Could not delete task.'); return; }
+      loadTasks();
+    }
+  });
+}
+
+// ── Recent Comments (shown on the Members tab) ────────────
+async function loadRecentComments() {
+  const el = document.getElementById('recent-comments-list');
+  const { ok, data } = await api(COMMENTS_URL, { method: 'GET' });
+  if (!ok) { el.innerHTML = '<p class="small muted">Could not load comments.</p>'; return; }
+  el.innerHTML = data.comments.map(c => `<div class="admin-row">
+    <div>
+      <span class="name">${escHtml(c.memberName)}</span>
+      <div class="meta">on "${escHtml(c.eventTitle)}" · ${new Date(c.createdAt).toLocaleDateString()}</div>
+      <p class="small" style="margin:.3rem 0 0">${escHtml(c.text)}</p>
+    </div>
+    <div class="actions"><button class="btn-sm delete" data-delete-comment="${escHtml(c.id)}">Delete</button></div>
+  </div>`).join('') || '<p class="small muted">No comments yet.</p>';
+}
+
+function wireRecentCommentsPanel() {
+  document.getElementById('recent-comments-list').addEventListener('click', async (e) => {
+    const delBtn = e.target.closest('[data-delete-comment]');
+    if (!delBtn) return;
+    if (!confirm('Delete this comment?')) return;
+    const { ok, data } = await api(`${COMMENTS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteComment)}`, { method: 'DELETE' });
+    if (!ok) { alert(data.error || 'Could not delete comment.'); return; }
+    loadRecentComments();
   });
 }
 
@@ -1396,6 +1556,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireLoginForm();
   wireAccountsPanel();
   wirePermissionsPanel();
+  wireTasksPanel();
+  wireRecentCommentsPanel();
   wireEventsPanel();
   wireMembersPanel();
   wirePointsPanel();

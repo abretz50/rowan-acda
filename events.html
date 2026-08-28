@@ -14,7 +14,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=8"/>
+<link rel="stylesheet" href="/css/components.css?v=9"/>
 
 <style>
   :root{ --tap: 40px; }
@@ -246,6 +246,11 @@
   const AUTH_URL = '/.netlify/functions/portal-auth';
   const POINTS_URL = '/.netlify/functions/portal-points';
   const VOLUNTEER_URL = '/.netlify/functions/portal-volunteer';
+  const COMMENTS_URL = '/.netlify/functions/portal-comments';
+
+  // Comments are member-entered text, unlike the rest of this page's
+  // content (which comes from trusted E-Board input) — escape it.
+  function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   const listEl = document.getElementById('eventsList');
   let signedIn = false;
@@ -342,6 +347,14 @@
               '<a class="btn btn-outline" href="'+ gcalLink(ev) +'" target="_blank" rel="noopener">Add to Calendar</a>'+
             '</div>'+
           '</section>'+
+          '<section style="text-align:left;border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1rem">'+
+            '<h4 style="margin:0 0 .6rem">Comments</h4>'+
+            '<div id="comments-'+ev.id+'" data-comments-for="'+ev.id+'"><p class="small muted">Loading…</p></div>'+
+            '<form data-comment-form="'+ev.id+'" style="margin-top:.6rem;display:flex;gap:.5rem">'+
+              '<input type="text" class="admin-input" placeholder="Ask a question or leave feedback…" data-comment-input="'+ev.id+'" style="flex:1" maxlength="1000"/>'+
+              '<button class="btn-sm" type="submit">Post</button>'+
+            '</form>'+
+          '</section>'+
         '</div>'+
       '</div>'
     );
@@ -354,7 +367,55 @@
     m.classList.add('open');
     document.body.style.overflow = 'hidden';
     const dlg = m.querySelector('.dialog'); if(dlg) dlg.focus({preventScroll:true});
+    if(m.id.indexOf('modal-')===0) loadComments(m.id.slice(6));
   }
+
+  /* ---------- Comments ---------- */
+  async function loadComments(eventId){
+    const container = document.querySelector('[data-comments-for="'+eventId+'"]');
+    if(!container) return;
+    container.innerHTML = '<p class="small muted">Loading…</p>';
+    try{
+      const res = await fetch(COMMENTS_URL + '?eventId=' + encodeURIComponent(eventId));
+      const data = await res.json();
+      if(!data.ok){ container.innerHTML = '<p class="small muted">Could not load comments.</p>'; return; }
+      container.innerHTML = data.comments.length
+        ? data.comments.map(c => '<div class="admin-row"><div>'
+            + '<span class="name">'+escHtml(c.memberName)+'</span>'
+            + '<div class="meta">'+new Date(c.createdAt).toLocaleDateString()+'</div>'
+            + '<p class="small" style="margin:.3rem 0 0">'+escHtml(c.text)+'</p>'
+            + '</div></div>').join('')
+        : '<p class="small muted">No comments yet — be the first to ask a question!</p>';
+    } catch { container.innerHTML = '<p class="small muted">Could not load comments.</p>'; }
+  }
+
+  document.addEventListener('submit', async (e) => {
+    const form = e.target.closest('[data-comment-form]');
+    if(!form) return;
+    e.preventDefault();
+    const eventId = form.getAttribute('data-comment-form');
+    const input = document.querySelector('[data-comment-input="'+eventId+'"]');
+    const text = (input.value||'').trim();
+    if(!text) return;
+    if(!signedIn){
+      if(confirm('You need to sign in to comment. Go to the sign-in page now?')) location.href = '/account.html';
+      return;
+    }
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    try{
+      const res = await fetch(COMMENTS_URL, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId, text })
+      });
+      const data = await res.json();
+      if(!data.ok){ alert(data.error || 'Could not post comment.'); btn.disabled = false; return; }
+      input.value = '';
+      loadComments(eventId);
+    } catch { alert('Network error — please try again.'); }
+    btn.disabled = false;
+  });
   function closeModal(m){
     if(!m) return;
     m.classList.remove('open');

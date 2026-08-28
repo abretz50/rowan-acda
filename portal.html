@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=8"/>
+<link rel="stylesheet" href="/css/components.css?v=9"/>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -72,6 +72,7 @@
 
     <div class="view-tabs" role="tablist">
       <button class="view-tab active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview">Overview</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-tasks" id="tab-tasks">Tasks</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-events" id="tab-events">Events</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-members" id="tab-members">Members</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-points" id="tab-points">Points</button>
@@ -98,6 +99,54 @@
         <h3>Attendance Over Time</h3>
         <p class="small muted">Total attendance across all events, by month.</p>
         <div id="overview-attendance-chart" style="overflow-x:auto"><p class="small muted">Loading…</p></div>
+      </div>
+    </div>
+
+    <!-- ===== Tasks (open to any E-Board account, not permission-gated) ===== -->
+    <div class="panel" id="panel-tasks">
+      <div class="eboard-panel">
+        <div class="admin-card">
+          <h3 id="task-form-heading">New Task</h3>
+          <form class="admin-form" id="task-form" novalidate>
+            <input type="hidden" id="task-id"/>
+            <div class="form-group">
+              <label for="task-title">Title</label>
+              <input class="admin-input" type="text" id="task-title" required/>
+            </div>
+            <div class="form-group">
+              <label for="task-desc">Description</label>
+              <textarea class="admin-input" id="task-desc" rows="3" placeholder="Any details about how to do it…"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="task-assignee">Assign To</label>
+                <select class="admin-input" id="task-assignee" required></select>
+              </div>
+              <div class="form-group">
+                <label for="task-due">Due Date</label>
+                <input class="admin-input" type="date" id="task-due"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="task-priority">Priority</label>
+              <select class="admin-input" id="task-priority">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            <button class="btn-sm" type="submit" id="task-form-submit">Create task</button>
+            <button class="btn-sm outline" type="button" id="task-form-cancel" style="display:none">Cancel edit</button>
+            <div class="admin-status" id="task-form-status"></div>
+          </form>
+        </div>
+        <div class="admin-card">
+          <div class="view-tabs" role="tablist" style="margin-bottom:.75rem">
+            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-task-view="board">Task Board</button>
+            <button class="view-tab" type="button" role="tab" aria-selected="false" data-task-view="mine">My Tasks</button>
+          </div>
+          <div id="tasks-list"><p class="small muted">Loading…</p></div>
+        </div>
       </div>
     </div>
 
@@ -224,6 +273,12 @@
           <div id="members-graph-chart" style="margin-top:.6rem"><p class="small muted">Loading…</p></div>
           <div id="members-graph-detail"></div>
         </div>
+      </div>
+
+      <div class="admin-card" style="margin-top:1rem">
+        <h3>Recent Comments</h3>
+        <p class="small muted">Latest comments/questions members have left on events.</p>
+        <div id="recent-comments-list"><p class="small muted">Loading…</p></div>
       </div>
     </div>
 
@@ -521,6 +576,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=10"></script>
+<script defer src="/js/portal.js?v=11"></script>
 </body>
 </html>
