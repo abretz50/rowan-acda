@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import { loadMembers, saveMembers, accountMember } from './_lib/loadMembers.mjs';
 import { hashPassword, requireAuth, json } from './_lib/auth.mjs';
-import { isValidRole } from './_lib/permissions.mjs';
+import { isValidRole, FULL_ACCESS_ROLES } from './_lib/permissions.mjs';
 
-function activePresidents(members) {
-  return members.filter(m => m.role === 'president' && m.hasAccount && m.active !== false);
+function activeFullAccess(members) {
+  return members.filter(m => FULL_ACCESS_ROLES.includes(m.role) && m.hasAccount && m.active !== false);
 }
 
 export default async function handler(req) {
@@ -47,8 +47,8 @@ export default async function handler(req) {
 
     if ('role' in body) {
       if (!isValidRole(body.role)) return json({ ok: false, error: 'Invalid role.' }, 400);
-      if (target.role === 'president' && body.role !== 'president' && activePresidents(members).length <= 1) {
-        return json({ ok: false, error: 'Cannot demote the last president.' }, 400);
+      if (FULL_ACCESS_ROLES.includes(target.role) && !FULL_ACCESS_ROLES.includes(body.role) && activeFullAccess(members).length <= 1) {
+        return json({ ok: false, error: 'Cannot remove the last full-access (president/admin) account.' }, 400);
       }
       target.role = body.role;
     }
@@ -74,8 +74,8 @@ export default async function handler(req) {
     }
 
     if ('active' in body) {
-      if (target.role === 'president' && body.active === false && activePresidents(members).length <= 1) {
-        return json({ ok: false, error: 'Cannot deactivate the last president.' }, 400);
+      if (FULL_ACCESS_ROLES.includes(target.role) && body.active === false && activeFullAccess(members).length <= 1) {
+        return json({ ok: false, error: 'Cannot deactivate the last full-access (president/admin) account.' }, 400);
       }
       target.active = !!body.active;
     }
@@ -88,8 +88,8 @@ export default async function handler(req) {
   if (req.method === 'DELETE') {
     const target = members.find(m => m.id === body.id);
     if (!target) return json({ ok: false, error: 'Member not found.' }, 404);
-    if (target.role === 'president' && activePresidents(members).length <= 1) {
-      return json({ ok: false, error: 'Cannot remove the last president.' }, 400);
+    if (FULL_ACCESS_ROLES.includes(target.role) && activeFullAccess(members).length <= 1) {
+      return json({ ok: false, error: 'Cannot remove the last full-access (president/admin) account.' }, 400);
     }
     target.hasAccount = false;
     delete target.username; delete target.salt; delete target.hash;

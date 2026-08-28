@@ -29,7 +29,7 @@
       <a class="nav-link" data-nav href="/members.html">Members</a>
       <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
       <a class="nav-link" data-nav href="/resources.html">Resources</a>
-      <a class="nav-link" data-nav href="/account.html">My Account</a>
+      <a class="nav-link" data-nav href="/account.html">Sign In</a>
     </nav>
   </div>
 </header>
@@ -138,10 +138,10 @@
         </div>
 
         <div class="admin-card">
-          <h3>Upcoming &amp; Past Events</h3>
-          <button class="btn-sm outline" id="import-sheet-btn" style="margin-bottom:.6rem">Import from Google Sheet</button>
-          <span class="admin-status" id="import-sheet-status"></span>
-          <div id="events-list"><p class="small muted">Loading…</p></div>
+          <h3>Upcoming Events</h3>
+          <div id="events-upcoming-list"><p class="small muted">Loading…</p></div>
+          <h3 style="margin-top:1.25rem">Past Events</h3>
+          <div id="events-past-list"></div>
         </div>
       </div>
     </div>
@@ -195,7 +195,9 @@
 
         <div class="admin-card">
           <h3>Event Point Values</h3>
-          <div id="event-points-list"><p class="small muted">Loading…</p></div>
+          <div id="event-points-upcoming"><p class="small muted">Loading…</p></div>
+          <h3 style="margin-top:1rem">Past</h3>
+          <div id="event-points-past"></div>
         </div>
       </div>
 
@@ -250,9 +252,10 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="sc-url">PDF Path *</label>
-              <input class="admin-input" type="text" id="sc-url" required placeholder="/assets/pdfs/uploads/filename.pdf"/>
-              <span class="form-hint">Upload the file to GitHub first, then paste the path here.</span>
+              <label for="sc-file">PDF *</label>
+              <input class="admin-input" type="file" id="sc-file" accept="application/pdf"/>
+              <input type="hidden" id="sc-url"/>
+              <span class="form-hint" id="sc-file-current"></span>
             </div>
             <button class="btn-sm" type="submit" id="score-form-submit">Add score</button>
             <button class="btn-sm outline" type="button" id="score-form-cancel" style="display:none">Cancel edit</button>

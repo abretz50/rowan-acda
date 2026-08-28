@@ -100,7 +100,7 @@
       <a class="nav-link" data-nav href="/members.html">Members</a>
       <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
       <a class="nav-link" data-nav href="/resources.html">Resources</a>
-      <a class="nav-link" data-nav href="/account.html">My Account</a>
+      <a class="nav-link" data-nav href="/account.html">Sign In</a>
     </nav>
   </div>
 </header>
@@ -185,8 +185,8 @@
   function cardHTML(p){
     return `<article class="card" data-modal="m-${esc(p.id)}">
       <img src="${esc(p.photo||'/assets/img/about.png')}" alt="${esc(p.name)} portrait" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'"/>
-      <p class="small role">${esc(p.role)}</p>
-      <h3>${esc(p.name)}</h3>
+      <h3>${esc(p.role)}</h3>
+      <p class="small role">${esc(p.name)}</p>
       <p class="muted desc">${esc(p.desc)}</p>
       <p class="muted contact">${p.email ? `<a href="mailto:${esc(p.email)}">${esc(p.email)}</a>` : ''}</p>
     </article>`;
@@ -197,9 +197,9 @@
         <button class="modal-close" type="button" aria-label="Close dialog">×</button>
         <div class="title-row">
           <img class="contact-photo" src="${esc(p.photo||'/assets/img/about.png')}" alt="Headshot of ${esc(p.name)}" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'">
-          <h3 id="m-${esc(p.id)}-title">${esc(p.name)}</h3>
+          <h3 id="m-${esc(p.id)}-title">${esc(p.role)}</h3>
         </div>
-        <p class="meta-line"><span class="role">${esc(p.role)}</span> ${p.email ? `<span aria-hidden="true">|</span> <a href="mailto:${esc(p.email)}">${esc(p.email)}</a>` : ''}</p>
+        <p class="meta-line"><span class="role">${esc(p.name)}</span> ${p.email ? `<span aria-hidden="true">|</span> <a href="mailto:${esc(p.email)}">${esc(p.email)}</a>` : ''}</p>
         <section><p>${esc(p.bio || p.desc)}</p></section>
       </div>
     </div>`;

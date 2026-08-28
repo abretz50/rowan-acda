@@ -27,33 +27,40 @@ function showSignedOut() {
   document.getElementById('signed-in').style.display = 'none';
 }
 
+function fillProfileView() {
+  document.getElementById('view-name').textContent = me.name || '—';
+  document.getElementById('view-email').textContent = me.email || '—';
+  document.getElementById('view-year').textContent = me.year || '—';
+  document.getElementById('view-address').textContent = me.mailingAddress || '—';
+}
+
 function showSignedIn() {
   document.getElementById('signed-out').style.display = 'none';
   document.getElementById('signed-in').style.display = '';
   document.getElementById('whoami').textContent = `Signed in as ${me.name}`;
   document.getElementById('portal-link').style.display = EBOARD_ROLES.includes(me.role) ? '' : 'none';
+  document.getElementById('checkin-card').style.display = EBOARD_ROLES.includes(me.role) ? 'none' : '';
+  fillProfileView();
   document.getElementById('pf-name').value = me.name || '';
   document.getElementById('pf-email').value = me.email || '';
   document.getElementById('pf-year').value = me.year || '';
   document.getElementById('pf-address').value = me.mailingAddress || '';
-  loadPoints();
+  loadEventsHistory();
 }
 
-async function loadPoints() {
+async function loadEventsHistory() {
   const { ok, data } = await api(`${POINTS_URL}?mine=1`, { method: 'GET' });
-  const listEl = document.getElementById('points-list');
-  if (!ok) { listEl.innerHTML = '<p class="small muted">Could not load points.</p>'; return; }
-  const approved = data.points.filter(p => p.status === 'approved');
-  document.getElementById('points-total').textContent = approved.reduce((sum, p) => sum + p.amount, 0);
+  const listEl = document.getElementById('events-history-list');
+  if (!ok) { listEl.innerHTML = '<p class="small muted">Could not load.</p>'; return; }
   listEl.innerHTML = data.points
     .slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt))
     .map(p => `<div class="admin-row">
       <div>
-        <span class="name">${escHtml(p.eventTitle || p.reason || 'Points')}</span>
-        <div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}</div>
+        <span class="name">${escHtml(p.eventTitle || p.reason || 'Event')}</span>
+        <div class="meta">${new Date(p.requestedAt).toLocaleDateString()}</div>
       </div>
-      <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
-    </div>`).join('') || '<p class="small muted">No points yet — check in to an event to get started.</p>';
+      <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status === 'pending' ? 'pending review' : p.status}</span></div>
+    </div>`).join('') || '<p class="small muted">No events yet — check in to one to get started.</p>';
 }
 
 async function init() {
@@ -119,10 +126,27 @@ document.getElementById('checkin-form').addEventListener('submit', async (e) => 
   statusEl.textContent = data.alreadyCheckedIn ? 'Already checked in for this event.' : 'Checked in! Your points are pending E-Board approval.';
   statusEl.className = 'admin-status ok';
   document.getElementById('checkin-form').reset();
-  loadPoints();
+  loadEventsHistory();
 });
 
-// ── Profile ───────────────────────────────────────────────
+// ── Profile (view / edit toggle) ──────────────────────────
+function showProfileView() {
+  document.getElementById('profile-view').style.display = '';
+  document.getElementById('profile-form').style.display = 'none';
+  document.getElementById('profile-edit-btn').style.display = '';
+}
+function showProfileForm() {
+  document.getElementById('profile-view').style.display = 'none';
+  document.getElementById('profile-form').style.display = '';
+  document.getElementById('profile-edit-btn').style.display = 'none';
+  document.getElementById('pf-name').value = me.name || '';
+  document.getElementById('pf-email').value = me.email || '';
+  document.getElementById('pf-year').value = me.year || '';
+  document.getElementById('pf-address').value = me.mailingAddress || '';
+}
+document.getElementById('profile-edit-btn').addEventListener('click', showProfileForm);
+document.getElementById('profile-cancel-btn').addEventListener('click', showProfileView);
+
 document.getElementById('profile-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const statusEl = document.getElementById('profile-status');
@@ -137,6 +161,8 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
   me = data.user;
   statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
   document.getElementById('whoami').textContent = `Signed in as ${me.name}`;
+  fillProfileView();
+  showProfileView();
 });
 
 document.getElementById('password-form').addEventListener('submit', async (e) => {

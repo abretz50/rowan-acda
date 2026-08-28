@@ -24,7 +24,7 @@ const TAB_ROLES = {
 };
 function canUse(tab) {
   if (!me) return false;
-  if (me.role === 'president' || me.role === 'eboard_legacy') return true;
+  if (['president', 'admin', 'eboard_legacy'].includes(me.role)) return true;
   return (TAB_ROLES[tab] || []).includes(me.role);
 }
 
@@ -42,10 +42,11 @@ let galleryItems = [];
 const KNOWN_VOICINGS = ['','SATB','SATB divisi','SAB','SSA','SSAA','TTBB','2-Part','Unison','Other'];
 const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Chamber Ensemble','Strings','Band','Brass','Other'];
 const ROLE_LABELS = {
-  member: 'Member', president: 'President', vice_president: 'Vice President',
+  member: 'Member', president: 'President', admin: 'Admin', vice_president: 'Vice President',
   secretary: 'Secretary', treasurer: 'Treasurer', event_coordinator: 'Event Coordinator',
   media: 'Social Media Coordinator', senator: 'Senator', eboard_legacy: 'E-Board (legacy)',
 };
+const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy'];
 
 function toISOFromLocalInput(v){ return v ? new Date(v).toISOString() : ''; }
 function toLocalInputFromISO(iso){
@@ -54,6 +55,32 @@ function toLocalInputFromISO(iso){
   const pad = n => String(n).padStart(2,'0');
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
+// School-year label for a date, e.g. Sept 2025 or Mar 2026 -> "2025–2026"
+// (boundary: Aug 1). Used to fold past events into year folders.
+function academicYearLabel(dateStr){
+  const d = new Date(dateStr);
+  const y = d.getFullYear(), m = d.getMonth(); // 0-indexed, so Aug = 7
+  return m >= 7 ? `${y}–${y+1}` : `${y-1}–${y}`;
+}
+// Splits events into { upcoming: [soonest...furthest], pastByYear: [{label, events}] }
+function groupUpcomingPast(events){
+  const now = new Date();
+  const upcoming = [], past = [];
+  events.forEach(ev => (new Date(ev.end || ev.start) >= now ? upcoming : past).push(ev));
+  upcoming.sort((a,b) => new Date(a.start) - new Date(b.start));
+  past.sort((a,b) => new Date(b.start) - new Date(a.start));
+  const byYear = new Map();
+  past.forEach(ev => {
+    const label = academicYearLabel(ev.start);
+    if (!byYear.has(label)) byYear.set(label, []);
+    byYear.get(label).push(ev);
+  });
+  const pastByYear = Array.from(byYear.entries())
+    .sort((a,b) => b[0].localeCompare(a[0]))
+    .map(([label, evs]) => ({ label, events: evs }));
+  return { upcoming, pastByYear };
+}
+
 function fmtDateRange(startStr, endStr){
   const start = new Date(startStr); const end = endStr ? new Date(endStr) : start;
   if (isNaN(start)) return '';
@@ -186,7 +213,7 @@ function initTabs() {
 
 // ── Accounts tab (president-only) ────────────────────────
 function accountRowHTML(a) {
-  const roleBadge = `<span class="badge-role ${a.role === 'president' ? 'admin' : 'eboard'}">${ROLE_LABELS[a.role] || a.role}</span>`;
+  const roleBadge = `<span class="badge-role ${FULL_ACCESS_ROLES.includes(a.role) ? 'admin' : 'eboard'}">${ROLE_LABELS[a.role] || a.role}</span>`;
   const inactiveBadge = a.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
   const isSelf = me && a.id === me.id;
   return `<div class="admin-row" data-account-id="${escHtml(a.id)}">
@@ -195,9 +222,9 @@ function accountRowHTML(a) {
       <div class="meta">@${escHtml(a.username)}${isSelf ? ' · you' : ''}</div>
     </div>
     <div class="actions">
-      ${!isSelf ? `<select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">
+      <select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">
         ${Object.entries(ROLE_LABELS).filter(([k]) => k !== 'eboard_legacy').map(([k, label]) => `<option value="${k}" ${a.role === k ? 'selected' : ''}>${label}</option>`).join('')}
-      </select>` : ''}
+      </select>
       ${!isSelf ? `<button class="btn-sm outline" data-toggle-active="${escHtml(a.id)}" data-next="${a.active === false ? 'true' : 'false'}">${a.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
       ${!isSelf ? `<button class="btn-sm delete" data-remove-account="${escHtml(a.id)}">Revoke access</button>` : ''}
     </div>
@@ -274,12 +301,37 @@ function eventRowHTML(ev) {
   </div>`;
 }
 
+function yearFolderHTML(group, rowFn) {
+  return `<div class="session-group" data-year-folder="${escHtml(group.label)}">
+    <div class="session-toggle-wrap">
+      <button class="session-toggle" aria-expanded="false" type="button">
+        <span class="session-toggle-left"><span>${escHtml(group.label)}</span><span class="session-date">${group.events.length} event${group.events.length !== 1 ? 's' : ''}</span></span>
+        <span class="chevron" aria-hidden="true">&#9660;</span>
+      </button>
+    </div>
+    <div class="session-body"><div style="display:flex;flex-direction:column;gap:.5rem">${group.events.map(rowFn).join('')}</div></div>
+  </div>`;
+}
+function wireYearFolders(container) {
+  container.querySelectorAll('.session-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.session-group');
+      const open = group.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+}
+
 async function loadEvents() {
-  const listEl = document.getElementById('events-list');
+  const upEl = document.getElementById('events-upcoming-list');
+  const pastEl = document.getElementById('events-past-list');
   const { ok, data } = await api(EVENTS_URL, { method: 'GET' });
-  if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load events.</p>`; return; }
-  allEvents = data.events.sort((a, b) => new Date(b.start) - new Date(a.start));
-  listEl.innerHTML = allEvents.map(eventRowHTML).join('') || `<p class="small muted">No events yet.</p>`;
+  if (!ok) { upEl.innerHTML = `<p class="small muted">Could not load events.</p>`; return; }
+  allEvents = data.events;
+  const { upcoming, pastByYear } = groupUpcomingPast(allEvents);
+  upEl.innerHTML = upcoming.map(eventRowHTML).join('') || `<p class="small muted">No upcoming events.</p>`;
+  pastEl.innerHTML = pastByYear.map(g => yearFolderHTML(g, eventRowHTML)).join('') || `<p class="small muted">No past events.</p>`;
+  wireYearFolders(pastEl);
   if (canUse('points')) renderEventPointsList();
 }
 
@@ -319,18 +371,7 @@ function wireEventsPanel() {
 
   document.getElementById('event-form-cancel').addEventListener('click', resetEventForm);
 
-  document.getElementById('import-sheet-btn').addEventListener('click', async () => {
-    const statusEl = document.getElementById('import-sheet-status');
-    if (!confirm('Import all events from the retired Google Sheet? Events already in the portal (matched by title + start time) are skipped, so this is safe to run more than once.')) return;
-    statusEl.textContent = 'Importing…'; statusEl.className = 'admin-status';
-    const { ok, data } = await api(EVENTS_URL, { method: 'POST', body: JSON.stringify({ op: 'importFromSheet' }) });
-    if (!ok) { statusEl.textContent = data.error || 'Import failed.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = `Imported ${data.added} event${data.added !== 1 ? 's' : ''}${data.skipped ? ` (${data.skipped} already existed)` : ''}.`;
-    statusEl.className = 'admin-status ok';
-    loadEvents();
-  });
-
-  document.getElementById('events-list').addEventListener('click', async (e) => {
+  const onEventsListClick = async (e) => {
     const copyBtn = e.target.closest('[data-copy-link]');
     if (copyBtn) {
       try { await navigator.clipboard.writeText(copyBtn.dataset.copyLink); copyBtn.textContent = 'Copied!'; setTimeout(() => copyBtn.textContent = 'Copy check-in link', 1500); }
@@ -371,7 +412,9 @@ function wireEventsPanel() {
       if (!ok) { alert(data.error || 'Could not delete event.'); return; }
       loadEvents();
     }
-  });
+  };
+  document.getElementById('events-upcoming-list').addEventListener('click', onEventsListClick);
+  document.getElementById('events-past-list').addEventListener('click', onEventsListClick);
 }
 
 // ── Members tab ───────────────────────────────────────────
@@ -490,16 +533,23 @@ async function loadPointsAll() {
   el.innerHTML = rows.map(allEntryRowHTML).join('') || '<p class="small muted">No points entries yet.</p>';
 }
 
-function renderEventPointsList() {
-  const el = document.getElementById('event-points-list');
-  if (!el) return;
-  el.innerHTML = allEvents.map(ev => `<div class="admin-row" data-event-points-row="${escHtml(ev.id)}">
+function eventPointsRowHTML(ev) {
+  return `<div class="admin-row" data-event-points-row="${escHtml(ev.id)}">
     <div><span class="name">${escHtml(ev.title)}</span><div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}</div></div>
     <div class="actions">
       <input class="admin-input" type="number" min="0" value="${ev.points ?? 1}" style="width:70px" data-event-points-input="${escHtml(ev.id)}"/>
       <button class="btn-sm outline" data-save-event-points="${escHtml(ev.id)}">Save</button>
     </div>
-  </div>`).join('') || '<p class="small muted">No events yet.</p>';
+  </div>`;
+}
+function renderEventPointsList() {
+  const upEl = document.getElementById('event-points-upcoming');
+  const pastEl = document.getElementById('event-points-past');
+  if (!upEl || !pastEl) return;
+  const { upcoming, pastByYear } = groupUpcomingPast(allEvents);
+  upEl.innerHTML = upcoming.map(eventPointsRowHTML).join('') || '<p class="small muted">No upcoming events.</p>';
+  pastEl.innerHTML = pastByYear.map(g => yearFolderHTML(g, eventPointsRowHTML)).join('') || '<p class="small muted">No past events.</p>';
+  wireYearFolders(pastEl);
 }
 
 async function loadAllMembersForSearch() {
@@ -523,7 +573,7 @@ function wirePointsPanel() {
     loadPointsPending(); loadPointsAll();
   });
 
-  document.getElementById('event-points-list').addEventListener('click', async (e) => {
+  const onEventPointsClick = async (e) => {
     const saveBtn = e.target.closest('[data-save-event-points]');
     if (!saveBtn) return;
     const input = document.querySelector(`[data-event-points-input="${saveBtn.dataset.saveEventPoints}"]`);
@@ -531,7 +581,9 @@ function wirePointsPanel() {
     if (!ok) { alert(data.error || 'Could not save.'); return; }
     const ev = allEvents.find(x => x.id === saveBtn.dataset.saveEventPoints);
     if (ev) ev.points = data.event.points;
-  });
+  };
+  document.getElementById('event-points-upcoming').addEventListener('click', onEventPointsClick);
+  document.getElementById('event-points-past').addEventListener('click', onEventPointsClick);
 
   const searchInput = document.getElementById('ma-member-search');
   const resultsEl = document.getElementById('ma-member-results');
@@ -625,14 +677,20 @@ function setManageRowHTML(sess) {
     </div>
   </div>
   <div class="set-manage-panel" id="set-manage-${escHtml(sess.num)}" style="display:none;margin:.4rem 0 .8rem;padding:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:.55rem">
-    <div style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:.25rem">
-      ${libScores.map(s => `<label style="display:flex;gap:.4rem;align-items:center;font-size:.85rem">
-        <input type="checkbox" class="set-score-check" value="${escHtml(s.url)}" ${sess.scoreUrls.includes(s.url) ? 'checked' : ''}/>
-        ${escHtml(s.title)}${composerDisplay(s) ? ' — ' + escHtml(composerDisplay(s)) : ''}
-      </label>`).join('') || '<p class="small muted">No scores in the library yet.</p>'}
-    </div>
-    <button class="btn-sm" data-save-set-scores="${escHtml(sess.num)}" style="margin-top:.5rem">Save</button>
+    <div id="set-current-${escHtml(sess.num)}" style="display:flex;flex-direction:column;gap:.25rem;margin-bottom:.5rem"></div>
+    <input class="admin-input" type="search" placeholder="Search the library to add a score…" data-set-search="${escHtml(sess.num)}"/>
+    <div id="set-search-results-${escHtml(sess.num)}" style="display:none;max-height:200px;overflow-y:auto;margin-top:.4rem;border:1px solid var(--border);border-radius:.5rem"></div>
   </div>`;
+}
+function renderSetCurrentScores(sessNum) {
+  const sess = libSessions.find(s => s.num === sessNum);
+  const el = document.getElementById(`set-current-${sessNum}`);
+  if (!sess || !el) return;
+  const scores = sess.scoreUrls.map(u => libScores.find(s => s.url === u)).filter(Boolean);
+  el.innerHTML = scores.map(s => `<div class="admin-row">
+    <div><span class="name">${escHtml(s.title)}</span>${composerDisplay(s) ? `<div class="meta">${escHtml(composerDisplay(s))}</div>` : ''}</div>
+    <div class="actions"><button class="btn-sm delete" data-remove-from-set="${escHtml(sessNum)}" data-url="${escHtml(s.url)}">Remove</button></div>
+  </div>`).join('') || '<p class="small muted">No scores in this set yet.</p>';
 }
 function renderSetsManageList() {
   document.getElementById('sets-manage-list').innerHTML = libSessions.map(setManageRowHTML).join('') || '<p class="small muted">No sets yet.</p>';
@@ -650,6 +708,8 @@ async function loadLibrary() {
 function resetScoreForm() {
   editingScoreUrl = null;
   document.getElementById('score-form').reset();
+  document.getElementById('sc-url').value = '';
+  document.getElementById('sc-file-current').textContent = '';
   document.getElementById('sc-voicing-other').style.display = 'none';
   document.getElementById('sc-instr-other').style.display = 'none';
   document.getElementById('score-form-heading').textContent = 'Add Score';
@@ -664,9 +724,22 @@ function wireLibraryPanel() {
   document.getElementById('score-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('score-form-status');
+    const title = document.getElementById('sc-title').value.trim();
+    const file = document.getElementById('sc-file').files[0];
+    let url = document.getElementById('sc-url').value.trim();
+
+    if (!title) { statusEl.textContent = 'Title is required.'; statusEl.className = 'admin-status err'; return; }
+    if (!file && !url) { statusEl.textContent = 'Choose a PDF to upload.'; statusEl.className = 'admin-status err'; return; }
+
+    if (file) {
+      statusEl.textContent = 'Uploading PDF…'; statusEl.className = 'admin-status';
+      const up = await uploadFile(file, 'library');
+      if (!up.ok) { statusEl.textContent = up.data.error || 'Upload failed.'; statusEl.className = 'admin-status err'; return; }
+      url = up.data.url;
+    }
+
     const score = {
-      title: document.getElementById('sc-title').value.trim(),
-      url: document.getElementById('sc-url').value.trim(),
+      title, url,
       composer_first: document.getElementById('sc-cfirst').value.trim(),
       composer_last: document.getElementById('sc-clast').value.trim(),
       year: document.getElementById('sc-year').value.trim(),
@@ -674,7 +747,6 @@ function wireLibraryPanel() {
       instrumentation: getSelectOrOther('sc-instr', 'sc-instr-other'),
       tags: Array.from(document.getElementById('sc-tags').selectedOptions).map(o => o.value),
     };
-    if (!score.title || !score.url) { statusEl.textContent = 'Title and PDF path are required.'; statusEl.className = 'admin-status err'; return; }
 
     const { ok, data } = editingScoreUrl
       ? await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'updateScore', oldUrl: editingScoreUrl, score }) })
@@ -701,6 +773,7 @@ function wireLibraryPanel() {
       setSelectOrOther('sc-voicing', 'sc-voicing-other', s.voicing, KNOWN_VOICINGS);
       setSelectOrOther('sc-instr', 'sc-instr-other', s.instrumentation, KNOWN_INSTRS);
       document.getElementById('sc-url').value = s.url;
+      document.getElementById('sc-file-current').textContent = `Current file: ${s.url} — choose a new PDF only if you want to replace it.`;
       Array.from(document.getElementById('sc-tags').options).forEach(o => { o.selected = s.tags.includes(o.value); });
       document.getElementById('score-form-heading').textContent = 'Edit Score';
       document.getElementById('score-form-submit').textContent = 'Save changes';
@@ -732,22 +805,60 @@ function wireLibraryPanel() {
     renderSetsManageList();
   });
 
+  function updateSetSummary(num) {
+    const sess = libSessions.find(s => s.num === num);
+    const row = document.querySelector(`[data-set-num="${num}"] .meta`);
+    if (sess && row) row.textContent = `${sess.scoreUrls.length} score${sess.scoreUrls.length !== 1 ? 's' : ''}`;
+  }
+  function renderSetSearchResults(num) {
+    const input = document.querySelector(`[data-set-search="${num}"]`);
+    const resultsEl = document.getElementById(`set-search-results-${num}`);
+    const sess = libSessions.find(s => s.num === num);
+    const term = (input.value || '').trim().toLowerCase();
+    if (!term) { resultsEl.style.display = 'none'; return; }
+    const matches = libScores.filter(s => !sess.scoreUrls.includes(s.url) &&
+      (s.title.toLowerCase().includes(term) || composerDisplay(s).toLowerCase().includes(term))).slice(0, 10);
+    resultsEl.innerHTML = matches.map(s => `<div class="admin-row">
+      <div><span class="name">${escHtml(s.title)}</span>${composerDisplay(s) ? `<div class="meta">${escHtml(composerDisplay(s))}</div>` : ''}</div>
+      <div class="actions"><button class="btn-sm" data-add-to-set="${escHtml(num)}" data-url="${escHtml(s.url)}">+ Add</button></div>
+    </div>`).join('') || '<p class="small muted" style="padding:.4rem">No matches.</p>';
+    resultsEl.style.display = '';
+  }
+
   document.getElementById('sets-manage-list').addEventListener('click', async (e) => {
     const manageBtn = e.target.closest('[data-manage-set]');
     if (manageBtn) {
-      const panel = document.getElementById(`set-manage-${manageBtn.dataset.manageSet}`);
-      if (panel) panel.style.display = panel.style.display === 'none' ? '' : 'none';
+      const num = manageBtn.dataset.manageSet;
+      const panel = document.getElementById(`set-manage-${num}`);
+      const opening = panel.style.display === 'none';
+      panel.style.display = opening ? '' : 'none';
+      if (opening) renderSetCurrentScores(num);
       return;
     }
-    const saveBtn = e.target.closest('[data-save-set-scores]');
-    if (saveBtn) {
-      const num = saveBtn.dataset.saveSetScores;
-      const panel = document.getElementById(`set-manage-${num}`);
-      const urls = Array.from(panel.querySelectorAll('.set-score-check:checked')).map(c => c.value);
+    const addBtn = e.target.closest('[data-add-to-set]');
+    if (addBtn) {
+      const num = addBtn.dataset.addToSet;
+      const sess = libSessions.find(s => s.num === num);
+      const urls = [...sess.scoreUrls, addBtn.dataset.url];
       const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'setSessionScores', num, urls }) });
-      if (!ok) { alert(data.error || 'Could not save.'); return; }
+      if (!ok) { alert(data.error || 'Could not add.'); return; }
       libScores = data.scores; libSessions = data.sessions;
-      renderSetsManageList();
+      renderSetCurrentScores(num);
+      renderSetSearchResults(num);
+      updateSetSummary(num);
+      return;
+    }
+    const removeBtn = e.target.closest('[data-remove-from-set]');
+    if (removeBtn) {
+      const num = removeBtn.dataset.removeFromSet;
+      const sess = libSessions.find(s => s.num === num);
+      const urls = sess.scoreUrls.filter(u => u !== removeBtn.dataset.url);
+      const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'setSessionScores', num, urls }) });
+      if (!ok) { alert(data.error || 'Could not remove.'); return; }
+      libScores = data.scores; libSessions = data.sessions;
+      renderSetCurrentScores(num);
+      renderSetSearchResults(num);
+      updateSetSummary(num);
       return;
     }
     const delBtn = e.target.closest('[data-delete-set]');
@@ -759,14 +870,19 @@ function wireLibraryPanel() {
       renderSetsManageList();
     }
   });
+
+  document.getElementById('sets-manage-list').addEventListener('input', (e) => {
+    const input = e.target.closest('[data-set-search]');
+    if (input) renderSetSearchResults(input.dataset.setSearch);
+  });
 }
 
 // ── Site Content (E-Board roster) tab ─────────────────────
 function eboardRowHTML(p) {
   return `<div class="admin-row" data-eb-id="${escHtml(p.id)}">
     <div>
-      <span class="name">${escHtml(p.name)}</span>
-      <div class="meta">${escHtml(p.role)}${p.email ? ' · ' + escHtml(p.email) : ''}</div>
+      <span class="name">${escHtml(p.role)}</span>
+      <div class="meta">${escHtml(p.name)}${p.email ? ' · ' + escHtml(p.email) : ''}</div>
     </div>
     <div class="actions">
       <button class="btn-sm edit" data-edit-eb="${escHtml(p.id)}">Edit</button>
@@ -862,14 +978,18 @@ function galleryItemHTML(g) {
     <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem">
       <input type="checkbox" class="gallery-slideshow-check" ${g.inSlideshow ? 'checked' : ''}/> Slideshow
     </label>
-    <button class="btn-sm delete" data-delete-gallery="${escHtml(g.id)}" style="margin-top:.4rem;width:100%">Delete</button>
+    <div style="display:flex;gap:.3rem;margin-top:.4rem">
+      <button class="btn-sm outline" data-move-gallery="up" data-gallery-move-id="${escHtml(g.id)}" title="Move earlier in the rotation">▲</button>
+      <button class="btn-sm outline" data-move-gallery="down" data-gallery-move-id="${escHtml(g.id)}" title="Move later in the rotation">▼</button>
+      <button class="btn-sm delete" data-delete-gallery="${escHtml(g.id)}" style="flex:1">Delete</button>
+    </div>
   </div>`;
 }
 
 async function loadGallery() {
   const { ok, data } = await api(GALLERY_URL, { method: 'GET' });
   if (!ok) return;
-  galleryItems = data.gallery || [];
+  galleryItems = (data.gallery || []).sort((a, b) => a.order - b.order);
   document.getElementById('gallery-list').innerHTML = galleryItems.map(galleryItemHTML).join('') || '<p class="small muted">No photos yet.</p>';
 }
 
@@ -898,6 +1018,19 @@ function wireGalleryPanel() {
   });
 
   document.getElementById('gallery-list').addEventListener('click', async (e) => {
+    const moveBtn = e.target.closest('[data-move-gallery]');
+    if (moveBtn) {
+      const id = moveBtn.dataset.galleryMoveId;
+      const idx = galleryItems.findIndex(g => g.id === id);
+      const swapWith = moveBtn.dataset.moveGallery === 'up' ? idx - 1 : idx + 1;
+      if (idx === -1 || swapWith < 0 || swapWith >= galleryItems.length) return;
+      const reordered = [...galleryItems];
+      [reordered[idx], reordered[swapWith]] = [reordered[swapWith], reordered[idx]];
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'reorder', ids: reordered.map(g => g.id) }) });
+      if (!ok) { alert(data.error || 'Could not reorder.'); return; }
+      loadGallery();
+      return;
+    }
     const delBtn = e.target.closest('[data-delete-gallery]');
     if (!delBtn) return;
     if (!confirm('Delete this photo? This removes it from the site (the file stays in GitHub history).')) return;

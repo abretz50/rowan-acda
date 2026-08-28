@@ -28,7 +28,7 @@
       <a class="nav-link" data-nav href="/members.html">Members</a>
       <a class="nav-link" data-nav href="/eboard.html">E-Board</a>
       <a class="nav-link" data-nav href="/resources.html">Resources</a>
-      <a class="nav-link" data-nav href="/account.html">My Account</a>
+      <a class="nav-link" data-nav href="/account.html">Sign In</a>
     </nav>
   </div>
 </header>
@@ -79,7 +79,7 @@
     </div>
 
     <div class="eboard-panel">
-      <div class="admin-card">
+      <div class="admin-card" id="checkin-card">
         <h3>Check In to an Event</h3>
         <p class="small muted">Enter the code given to you at the meeting or event.</p>
         <form class="admin-form" id="checkin-form" novalidate>
@@ -90,8 +90,17 @@
       </div>
 
       <div class="admin-card">
-        <h3>My Profile</h3>
-        <form class="admin-form" id="profile-form" novalidate>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <h3 style="border:none;padding:0;margin:0">My Profile</h3>
+          <button class="btn-sm outline" id="profile-edit-btn" type="button">Edit</button>
+        </div>
+        <div id="profile-view" class="kv" style="margin-top:.6rem">
+          <dt>Name</dt><dd id="view-name"></dd>
+          <dt>Email</dt><dd id="view-email"></dd>
+          <dt>Year</dt><dd id="view-year"></dd>
+          <dt>Mailing address</dt><dd id="view-address"></dd>
+        </div>
+        <form class="admin-form" id="profile-form" novalidate style="display:none;margin-top:.6rem">
           <div class="form-row">
             <input class="admin-input" type="text" id="pf-name" placeholder="Full name" required/>
             <input class="admin-input" type="email" id="pf-email" placeholder="Email" required/>
@@ -100,7 +109,8 @@
             <input class="admin-input" type="text" id="pf-year" placeholder="Year (e.g. Sophomore)"/>
             <input class="admin-input" type="text" id="pf-address" placeholder="Mailing address (optional)"/>
           </div>
-          <button class="btn-sm" type="submit">Save profile</button>
+          <button class="btn-sm" type="submit">Save changes</button>
+          <button class="btn-sm outline" type="button" id="profile-cancel-btn">Cancel</button>
           <div class="admin-status" id="profile-status"></div>
         </form>
         <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>
@@ -116,8 +126,8 @@
     </div>
 
     <div class="admin-card" style="margin-top:1rem">
-      <h3>My Points <span class="small muted">(<span id="points-total">0</span> total)</span></h3>
-      <div id="points-list"><p class="small muted">Loading…</p></div>
+      <h3>My Events</h3>
+      <div id="events-history-list"><p class="small muted">Loading…</p></div>
     </div>
   </div>
 </main>

@@ -1,9 +1,23 @@
 import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
+import { GALLERY_SEED_URLS } from './_lib/gallerySeed.mjs';
+
+// If nothing's been uploaded/curated yet, seed from the photos already live
+// on the homepage slideshow — same auto-migrate pattern as events/library/
+// content, so the tab shows real photos instead of starting empty.
+async function loadGallery() {
+  const gallery = await getCollection('gallery', []);
+  if (gallery.length > 0) return gallery;
+  const seeded = GALLERY_SEED_URLS.map((url, i) => ({
+    id: randomUUID(), url, caption: '', inSlideshow: true, order: i,
+  }));
+  await setCollection('gallery', seeded);
+  return seeded;
+}
 
 export default async function handler(req) {
-  const gallery = await getCollection('gallery', []);
+  const gallery = await loadGallery();
 
   if (req.method === 'GET') {
     return json({ ok: true, gallery: [...gallery].sort((a, b) => a.order - b.order) });

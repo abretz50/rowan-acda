@@ -56,3 +56,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (best) best.el.setAttribute('aria-current', 'page');
 });
+
+// Account nav link: shows "Sign In" / "Sign Out" based on session state.
+// Signed-out click behaves like a normal link to /account.html; signed-in
+// click logs out immediately instead of navigating there.
+document.addEventListener('DOMContentLoaded', async () => {
+  const link = document.querySelector('.nav a[href="/account.html"]');
+  if (!link) return;
+  link.classList.add('nav-link--account');
+  try {
+    const res = await fetch('/.netlify/functions/portal-auth', { credentials: 'include' });
+    const data = await res.json();
+    if (data.ok) {
+      link.textContent = 'Sign Out';
+      link.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await fetch('/.netlify/functions/portal-auth', {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'logout' }),
+        });
+        location.href = '/';
+      });
+    } else {
+      link.textContent = 'Sign In';
+    }
+  } catch { /* leave default label */ }
+});

@@ -1227,3 +1227,36 @@ html, body{ background: var(--page-bg); }
 .btn-sm.delete { background: #fff; color: #b91c1c; border-color: #fca5a5; }
 .btn-sm.delete:hover { background: #fef2f2; }
 .empty-state { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: .92rem; }
+
+/* Collapsible year folders (Events tab past events, Digital Library sets) */
+.session-group { border: 1px solid var(--border); border-radius: .9rem; overflow: hidden; margin-bottom: .5rem; }
+.session-toggle-wrap { display: flex; align-items: center; background: #fff; }
+.session-toggle {
+  display: flex; align-items: center; justify-content: space-between; flex: 1;
+  padding: .75rem 1rem; background: #fff; cursor: pointer;
+  appearance: none; border: none; text-align: left;
+  font-weight: 700; font-size: .92rem; gap: 1rem;
+}
+.session-toggle:hover { background: var(--surface); }
+.session-toggle-left { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.session-date { color: var(--muted); font-size: .8rem; font-weight: 400; }
+.chevron { transition: transform .2s ease; font-size: .72rem; color: var(--muted); }
+.session-group.open .chevron { transform: rotate(180deg); }
+.session-body { display: none; padding: .75rem; background: var(--surface); border-top: 1px solid var(--border); }
+.session-group.open .session-body { display: block; }
+
+/* Sign In / Sign Out nav link — visually distinct from plain nav links */
+.nav-link--account {
+  background: rgba(255,255,255,.16) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.55) !important;
+  font-weight: 800 !important;
+}
+.nav-link--account:hover, .nav-link--account:focus-visible {
+  background: rgba(255,255,255,.26) !important;
+}
+@media (max-width: 900px) {
+  .nav-link--account {
+    background: rgba(255,255,255,.14) !important;
+    border: 1.5px solid rgba(255,255,255,.4) !important;
+  }
+}

@@ -4,15 +4,20 @@ import {
   hashPassword, verifyPassword, signSession,
   setSessionCookieHeader, clearSessionCookieHeader, getSessionUser, json,
 } from './_lib/auth.mjs';
+import { FULL_ACCESS_ROLES } from './_lib/permissions.mjs';
+
+function hasFullAccessAccount(members) {
+  return members.some(m => FULL_ACCESS_ROLES.includes(m.role) && m.hasAccount && m.active !== false);
+}
 
 export default async function handler(req) {
   if (req.method === 'GET') {
     const members = await loadMembers();
     const sessionToken = getSessionUser(req);
-    const hasPresident = members.some(m => m.role === 'president' && m.hasAccount && m.active !== false);
-    if (!sessionToken) return json({ ok: false, needsBootstrap: !hasPresident });
+    const needsBootstrap = !hasFullAccessAccount(members);
+    if (!sessionToken) return json({ ok: false, needsBootstrap });
     const m = members.find(x => x.id === sessionToken.id && x.hasAccount && x.active !== false);
-    if (!m) return json({ ok: false, needsBootstrap: !hasPresident });
+    if (!m) return json({ ok: false, needsBootstrap });
     return json({ ok: true, user: accountMember(m) });
   }
 
@@ -63,9 +68,8 @@ export default async function handler(req) {
     if (!process.env.BOOTSTRAP_SECRET || secret !== process.env.BOOTSTRAP_SECRET) {
       return json({ ok: false, error: 'Invalid setup secret.' }, 403);
     }
-    const hasPresident = members.some(m => m.role === 'president' && m.hasAccount && m.active !== false);
-    if (hasPresident) {
-      return json({ ok: false, error: 'Setup already completed — a president account already exists.' }, 409);
+    if (hasFullAccessAccount(members)) {
+      return json({ ok: false, error: 'Setup already completed — a full-access account already exists.' }, 409);
     }
     if (!username || !password || !name) {
       return json({ ok: false, error: 'Name, username, and password are required.' }, 400);
