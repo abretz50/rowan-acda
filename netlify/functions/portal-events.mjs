@@ -22,7 +22,7 @@ async function canManageEvents(req) {
   if (!token) return false;
   const members = await loadMembers();
   const m = members.find(x => x.id === token.id && x.hasAccount && x.active !== false);
-  return m ? hasPermission(m.role, 'events') : false;
+  return m ? await hasPermission(m.role, 'events') : false;
 }
 
 // If nothing has been created yet, seed from the retired Google Sheet

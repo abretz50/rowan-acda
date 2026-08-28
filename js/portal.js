@@ -16,18 +16,17 @@ const CONTENT_URL  = '/.netlify/functions/portal-content';
 const GALLERY_URL  = '/.netlify/functions/portal-gallery';
 const UPLOAD_URL   = '/.netlify/functions/portal-upload';
 const STATS_URL    = '/.netlify/functions/portal-stats';
+const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
 
-// Mirrors netlify/functions/_lib/permissions.mjs — client-side is just for
-// hiding tabs the user can't use; the server enforces the real boundary.
-const TAB_ROLES = {
-  events: ['event_coordinator', 'secretary', 'media', 'treasurer'],
-  members: ['secretary', 'treasurer'], points: ['secretary'],
-  library: [], gallery: ['media'], content: [], accounts: [], budget: ['treasurer'],
-};
+// The server computes exactly which tabs a signed-in user can use (see
+// _lib/permissions.mjs's computeCanUse) and sends it back as `canUse` on
+// every auth response — the client just reads that list instead of keeping
+// its own copy of the permission rules, so a change made on the Permissions
+// tab takes effect without needing a matching client-side edit.
+const PORTAL_TABS = ['events', 'members', 'points', 'library', 'content', 'gallery', 'budget', 'accounts', 'permissions'];
 function canUse(tab) {
   if (!me) return false;
-  if (FULL_ACCESS_ROLES.includes(me.role)) return true;
-  return (TAB_ROLES[tab] || []).includes(me.role);
+  return (me.canUse || []).includes(tab);
 }
 
 let me = null;
@@ -139,7 +138,7 @@ function setBootstrapMode(on) {
 async function initLogin() {
   const { data } = await api(AUTH_URL, { method: 'GET' });
   if (data.ok) {
-    me = data.user;
+    me = { ...data.user, canUse: data.canUse || [] };
     if (me.role === 'member') { location.replace('/account.html'); return; }
     showDashboard();
     return;
@@ -164,7 +163,7 @@ function wireLoginForm() {
         body: JSON.stringify({ action: 'bootstrap', secret, name, email, password }),
       });
       if (!ok) { errEl.textContent = data.error || 'Setup failed.'; return; }
-      me = data.user; needsBootstrap = false; showDashboard(); window.refreshAccountNavLink?.();
+      me = { ...data.user, canUse: data.canUse || [] }; needsBootstrap = false; showDashboard(); window.refreshAccountNavLink?.();
       return;
     }
 
@@ -173,7 +172,7 @@ function wireLoginForm() {
       body: JSON.stringify({ action: 'login', email, password }),
     });
     if (!ok) { errEl.textContent = data.error || 'Sign-in failed.'; return; }
-    me = data.user;
+    me = { ...data.user, canUse: data.canUse || [] };
     window.refreshAccountNavLink?.();
     if (me.role === 'member') { location.replace('/account.html'); return; }
     showDashboard();
@@ -196,13 +195,14 @@ function showDashboard() {
   document.getElementById('dashboard-section').style.display = '';
   document.getElementById('whoami').textContent = `Signed in as ${me.name} (${ROLE_LABELS[me.role] || me.role})`;
 
-  Object.keys(TAB_ROLES).forEach(tab => {
+  PORTAL_TABS.forEach(tab => {
     const tabBtn = document.getElementById(`tab-${tab}`);
     if (tabBtn) tabBtn.style.display = canUse(tab) ? '' : 'none';
   });
 
   loadOverviewStats();
   if (canUse('accounts')) loadAccounts();
+  if (canUse('permissions')) loadPermissions();
   // loadEvents() populates the shared `allEvents` list, which the Points tab's
   // "Event Point Values" section also needs — so load it for either permission.
   if (canUse('events') || canUse('points')) {
@@ -260,6 +260,11 @@ function accountRowHTML(a) {
   const roleBadge = `<span class="badge-role ${FULL_ACCESS_ROLES.includes(a.role) ? 'admin' : 'eboard'}">${ROLE_LABELS[a.role] || a.role}</span>`;
   const inactiveBadge = a.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
   const isSelf = me && a.id === me.id;
+  const isCustomRole = a.role !== 'eboard_legacy' && !Object.prototype.hasOwnProperty.call(ROLE_LABELS, a.role);
+  const options = Object.entries(ROLE_LABELS).filter(([k]) => k !== 'eboard_legacy')
+    .map(([k, label]) => `<option value="${k}" ${a.role === k ? 'selected' : ''}>${label}</option>`).join('')
+    + (isCustomRole ? `<option value="${escHtml(a.role)}" selected>${escHtml(a.role)}</option>` : '')
+    + `<option value="__other__">Other…</option>`;
   return `<div class="admin-row" data-account-id="${escHtml(a.id)}">
     <div>
       <span class="name">${escHtml(a.name)}</span> ${roleBadge}${inactiveBadge}
@@ -267,7 +272,7 @@ function accountRowHTML(a) {
     </div>
     <div class="actions">
       <select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">
-        ${Object.entries(ROLE_LABELS).filter(([k]) => k !== 'eboard_legacy').map(([k, label]) => `<option value="${k}" ${a.role === k ? 'selected' : ''}>${label}</option>`).join('')}
+        ${options}
       </select>
       ${!isSelf ? `<button class="btn-sm outline" data-toggle-active="${escHtml(a.id)}" data-next="${a.active === false ? 'true' : 'false'}">${a.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
       ${!isSelf ? `<button class="btn-sm delete" data-remove-account="${escHtml(a.id)}">Revoke access</button>` : ''}
@@ -283,27 +288,40 @@ async function loadAccounts() {
 }
 
 function wireAccountsPanel() {
+  document.getElementById('nu-role').addEventListener('change', (e) => {
+    document.getElementById('nu-role-other').style.display = e.target.value === '__other__' ? '' : 'none';
+  });
+
   document.getElementById('add-account-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('add-account-status');
     const name = document.getElementById('nu-name').value.trim();
     const email = document.getElementById('nu-email').value.trim();
     const password = document.getElementById('nu-password').value;
-    const role = document.getElementById('nu-role').value;
+    let role = document.getElementById('nu-role').value;
+    if (role === '__other__') role = document.getElementById('nu-role-other').value.trim();
     if (!name || !email || !password) {
       statusEl.textContent = 'Name, email, and password are required.'; statusEl.className = 'admin-status err'; return;
     }
+    if (!role) { statusEl.textContent = 'Enter a custom role title.'; statusEl.className = 'admin-status err'; return; }
     const { ok, data } = await api(ACCOUNTS_URL, { method: 'POST', body: JSON.stringify({ name, email, password, role }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not create account.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = 'Account created.'; statusEl.className = 'admin-status ok';
     e.target.reset();
+    document.getElementById('nu-role-other').style.display = 'none';
     loadAccounts();
   });
 
   document.getElementById('accounts-list').addEventListener('change', async (e) => {
     const sel = e.target.closest('[data-role-select]');
     if (!sel) return;
-    const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: sel.dataset.roleSelect, role: sel.value }) });
+    let role = sel.value;
+    if (role === '__other__') {
+      const custom = prompt('Custom role title (e.g. "Historian"):');
+      if (!custom || !custom.trim()) { loadAccounts(); return; }
+      role = custom.trim();
+    }
+    const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: sel.dataset.roleSelect, role }) });
     if (!ok) { alert(data.error || 'Could not update role.'); loadAccounts(); return; }
     loadAccounts();
   });
@@ -323,6 +341,45 @@ function wireAccountsPanel() {
       if (!ok) { alert(data.error || 'Could not revoke access.'); return; }
       loadAccounts();
     }
+  });
+}
+
+// ── Permissions tab (president/admin/VP-only) ─────────────
+const TAB_LABELS = {
+  events: 'Events', members: 'Members', points: 'Points',
+  library: 'Digital Library', gallery: 'Gallery', budget: 'Budget',
+};
+
+function permissionsRoleRowHTML(role, tabs, tabRoles) {
+  const checked = new Set(tabs.filter(t => (tabRoles[t] || []).includes(role)));
+  const boxes = tabs.map(t => `<label style="display:inline-flex;align-items:center;gap:.3rem;margin-right:.9rem;font-size:.85rem">
+    <input type="checkbox" data-perm-tab="${escHtml(t)}" ${checked.has(t) ? 'checked' : ''}/> ${escHtml(TAB_LABELS[t] || t)}
+  </label>`).join('');
+  return `<div class="admin-row" style="align-items:flex-start;flex-wrap:wrap" data-perm-role="${escHtml(role)}">
+    <div style="min-width:160px"><span class="name">${escHtml(ROLE_LABELS[role] || role)}</span></div>
+    <div class="actions" style="flex-wrap:wrap">${boxes}<button class="btn-sm outline" data-save-perms="${escHtml(role)}">Save</button></div>
+  </div>`;
+}
+
+async function loadPermissions() {
+  const el = document.getElementById('permissions-list');
+  const { ok, data } = await api(PERMISSIONS_URL, { method: 'GET' });
+  if (!ok) { el.innerHTML = '<p class="small muted">Could not load permissions.</p>'; return; }
+  el.innerHTML = data.roles.map(r => permissionsRoleRowHTML(r, data.tabs, data.tabRoles)).join('') || '<p class="small muted">No adjustable roles yet.</p>';
+}
+
+function wirePermissionsPanel() {
+  document.getElementById('permissions-list').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-save-perms]');
+    if (!btn) return;
+    const row = btn.closest('[data-perm-role]');
+    const tabs = [...row.querySelectorAll('[data-perm-tab]:checked')].map(cb => cb.dataset.permTab);
+    const original = btn.textContent;
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    const { ok, data } = await api(PERMISSIONS_URL, { method: 'PATCH', body: JSON.stringify({ role: btn.dataset.savePerms, tabs }) });
+    btn.disabled = false;
+    if (!ok) { alert(data.error || 'Could not save permissions.'); btn.textContent = original; return; }
+    btn.textContent = 'Saved!'; setTimeout(() => { btn.textContent = original; }, 1200);
   });
 }
 
@@ -949,17 +1006,25 @@ function resetEboardForm() {
   document.getElementById('eb-form').reset();
   document.getElementById('eb-photo-url').value = '';
   document.getElementById('eb-photo-current').textContent = '';
+  document.getElementById('eb-role-other').style.display = 'none';
   document.getElementById('eb-form-heading').textContent = 'Add E-Board Member';
   document.getElementById('eb-form-submit').textContent = 'Add member';
   document.getElementById('eb-form-cancel').style.display = 'none';
 }
 
+const KNOWN_EBOARD_ROLES = ['President', 'Vice President', 'Secretary', 'Treasurer', 'Event Coordinator', 'Social Media Coordinator', 'Senator'];
+
 function wireContentPanel() {
+  document.getElementById('eb-role').addEventListener('change', (e) => {
+    document.getElementById('eb-role-other').style.display = e.target.value === '__other__' ? '' : 'none';
+  });
+
   document.getElementById('eb-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('eb-form-status');
     const name = document.getElementById('eb-name').value.trim();
-    const role = document.getElementById('eb-role').value.trim();
+    let role = document.getElementById('eb-role').value;
+    if (role === '__other__') role = document.getElementById('eb-role-other').value.trim();
     if (!name || !role) { statusEl.textContent = 'Name and role are required.'; statusEl.className = 'admin-status err'; return; }
 
     let photoUrl = document.getElementById('eb-photo-url').value;
@@ -994,7 +1059,14 @@ function wireContentPanel() {
       if (!p) return;
       editingEboardId = p.id;
       document.getElementById('eb-name').value = p.name;
-      document.getElementById('eb-role').value = p.role;
+      if (KNOWN_EBOARD_ROLES.includes(p.role)) {
+        document.getElementById('eb-role').value = p.role;
+        document.getElementById('eb-role-other').style.display = 'none';
+      } else {
+        document.getElementById('eb-role').value = '__other__';
+        document.getElementById('eb-role-other').style.display = '';
+        document.getElementById('eb-role-other').value = p.role;
+      }
       document.getElementById('eb-email').value = p.email || '';
       document.getElementById('eb-photo-url').value = p.photo || '';
       document.getElementById('eb-photo-current').textContent = p.photo ? `Current: ${p.photo}` : '';
@@ -1090,6 +1162,7 @@ function wireGalleryPanel() {
 document.addEventListener('DOMContentLoaded', async () => {
   wireLoginForm();
   wireAccountsPanel();
+  wirePermissionsPanel();
   wireEventsPanel();
   wireMembersPanel();
   wirePointsPanel();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>E-Board Portal — Rowan ACDA</title>
+<title>E-Board Portal | Rowan ACDA</title>
 <meta name="description" content="Rowan ACDA E-Board portal — private."/>
 <meta name="robots" content="noindex, nofollow"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -80,6 +80,7 @@
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-gallery" id="tab-gallery">Gallery</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-budget" id="tab-budget" style="display:none">Budget</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none">Accounts</button>
+      <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-permissions" id="tab-permissions" style="display:none">Permissions</button>
     </div>
 
     <div class="panel active" id="panel-overview">
@@ -319,8 +320,19 @@
             <input type="hidden" id="eb-photo-url"/>
             <div class="form-row">
               <input class="admin-input" type="text" id="eb-name" placeholder="Full name" required/>
-              <input class="admin-input" type="text" id="eb-role" placeholder="Role (e.g. President)" required/>
+              <select class="admin-input" id="eb-role" required>
+                <option value="">Role…</option>
+                <option value="President">President</option>
+                <option value="Vice President">Vice President</option>
+                <option value="Secretary">Secretary</option>
+                <option value="Treasurer">Treasurer</option>
+                <option value="Event Coordinator">Event Coordinator</option>
+                <option value="Social Media Coordinator">Social Media Coordinator</option>
+                <option value="Senator">Senator</option>
+                <option value="__other__">Other…</option>
+              </select>
             </div>
+            <input class="admin-input" type="text" id="eb-role-other" placeholder="Custom role title" style="display:none"/>
             <input class="admin-input" type="email" id="eb-email" placeholder="Email"/>
             <div class="form-group">
               <label for="eb-photo-file">Photo</label>
@@ -379,8 +391,10 @@
               <option value="event_coordinator">Event Coordinator</option>
               <option value="media">Social Media Coordinator</option>
               <option value="senator">Senator</option>
+              <option value="__other__">Other…</option>
             </select>
-            <p class="form-hint">Anyone can also create their own account at /account.html — use this only when creating one on someone's behalf. Share the temporary password with them directly.</p>
+            <input class="admin-input" type="text" id="nu-role-other" placeholder="Custom role title" style="display:none"/>
+            <p class="form-hint">Anyone can also create their own account at /account.html — use this only when creating one on someone's behalf. Share the temporary password with them directly. A custom "Other" role starts with no extra tab access — grant it from the Permissions tab.</p>
             <button class="btn-sm" type="submit">Create account</button>
             <div class="admin-status" id="add-account-status"></div>
           </form>
@@ -390,6 +404,14 @@
           <h3>Current Accounts</h3>
           <div id="accounts-list"><p class="small muted">Loading…</p></div>
         </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-permissions">
+      <div class="admin-card">
+        <h3>Permissions</h3>
+        <p class="small muted">President, Admin, and Vice President always have full access and aren't shown here. Check the tabs each other role should be able to use.</p>
+        <div id="permissions-list"><p class="small muted">Loading…</p></div>
       </div>
     </div>
   </div>
@@ -432,6 +454,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=5"></script>
+<script defer src="/js/portal.js?v=6"></script>
 </body>
 </html>

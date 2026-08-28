@@ -94,7 +94,7 @@ export async function requireAuth(req, { perm } = {}) {
   const live = members.find(m => m.id === token.id && m.hasAccount && m.active !== false);
   if (!live) return { deny: json({ ok: false, error: 'Session no longer valid.' }, 401) };
 
-  if (!hasPermission(live.role, perm)) {
+  if (!(await hasPermission(live.role, perm))) {
     return { deny: json({ ok: false, error: 'Not authorized.' }, 403) };
   }
   return { user: accountMember(live), members };

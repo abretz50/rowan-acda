@@ -4,7 +4,7 @@ import {
   hashPassword, verifyPassword, signSession,
   setSessionCookieHeader, clearSessionCookieHeader, getSessionUser, json,
 } from './_lib/auth.mjs';
-import { FULL_ACCESS_ROLES } from './_lib/permissions.mjs';
+import { FULL_ACCESS_ROLES, computeCanUse } from './_lib/permissions.mjs';
 
 function hasFullAccessAccount(members) {
   return members.some(m => FULL_ACCESS_ROLES.includes(m.role) && m.hasAccount && m.active !== false);
@@ -18,7 +18,7 @@ export default async function handler(req) {
     if (!sessionToken) return json({ ok: false, needsBootstrap });
     const m = members.find(x => x.id === sessionToken.id && x.hasAccount && x.active !== false);
     if (!m) return json({ ok: false, needsBootstrap });
-    return json({ ok: true, user: accountMember(m) });
+    return json({ ok: true, user: accountMember(m), canUse: await computeCanUse(m.role) });
   }
 
   if (req.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405);
@@ -48,7 +48,7 @@ export default async function handler(req) {
       return json({ ok: false, error: 'Incorrect email or password.' }, 401);
     }
     const token = signSession({ id: m.id });
-    return json({ ok: true, user: accountMember(m) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
+    return json({ ok: true, user: accountMember(m), canUse: await computeCanUse(m.role) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
   }
 
   if (action === 'register') {
@@ -95,7 +95,7 @@ export default async function handler(req) {
     members.push(admin);
     await saveMembers(members);
     const token = signSession({ id: admin.id });
-    return json({ ok: true, user: accountMember(admin) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
+    return json({ ok: true, user: accountMember(admin), canUse: await computeCanUse(admin.role) }, 200, { 'Set-Cookie': setSessionCookieHeader(token) });
   }
 
   return json({ ok: false, error: 'Unknown action.' }, 400);

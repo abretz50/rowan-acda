@@ -10,7 +10,11 @@ const ME_URL     = '/.netlify/functions/portal-me';
 const POINTS_URL = '/.netlify/functions/portal-points';
 const EVENTS_URL = '/.netlify/functions/portal-events';
 
-const EBOARD_ROLES = ['president', 'admin', 'vice_president', 'secretary', 'treasurer', 'event_coordinator', 'media', 'senator', 'eboard_legacy'];
+// Any role other than plain 'member' counts as E-Board for this page's
+// purposes — including a custom "Other" role created from the portal's
+// Accounts tab, which starts with baseline access but is still an E-Board
+// account, not a checking-in club member.
+function isEboardRole(role) { return role && role !== 'member'; }
 
 let me = null;
 let myCheckedInEventIds = new Set();
@@ -44,13 +48,13 @@ function showSignedIn() {
   document.getElementById('signed-out').style.display = 'none';
   document.getElementById('signed-in').style.display = '';
   document.getElementById('whoami').textContent = `Signed in as ${me.name}`;
-  document.getElementById('portal-link').style.display = EBOARD_ROLES.includes(me.role) ? '' : 'none';
-  document.getElementById('checkin-card').style.display = EBOARD_ROLES.includes(me.role) ? 'none' : '';
+  document.getElementById('portal-link').style.display = isEboardRole(me.role) ? '' : 'none';
+  document.getElementById('checkin-card').style.display = isEboardRole(me.role) ? 'none' : '';
   fillProfileView();
   document.getElementById('pf-name').value = me.name || '';
   document.getElementById('pf-email').value = me.email || '';
   const historyLoaded = loadEventsHistory();
-  if (!EBOARD_ROLES.includes(me.role)) {
+  if (!isEboardRole(me.role)) {
     historyLoaded.then(loadCheckinEvents);
     clearInterval(checkinRefreshTimer);
     checkinRefreshTimer = setInterval(loadCheckinEvents, 60 * 1000);

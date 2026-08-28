@@ -53,7 +53,7 @@ export default async function handler(req) {
   const category = formData.get('category');
   const dir = CATEGORY_DIRS[category];
   if (!file || !dir) return json({ ok: false, error: 'A file and a valid category are required.' }, 400);
-  if (!hasPermission(auth.user.role, CATEGORY_PERM[category])) {
+  if (!(await hasPermission(auth.user.role, CATEGORY_PERM[category]))) {
     return json({ ok: false, error: 'Not authorized for that upload category.' }, 403);
   }
 
