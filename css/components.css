@@ -1245,32 +1245,32 @@ html, body{ background: var(--page-bg); }
 .session-body { display: none; padding: .75rem; background: var(--surface); border-top: 1px solid var(--border); }
 .session-group.open .session-body { display: block; }
 
-/* Sign In / Sign Out nav link — a real, unmissable pink pill, distinct from
-   the plain white/ghost nav links whether on the red desktop bar or the
-   white mobile dropdown. */
+/* My Account nav link — a soft pastel-pink pill, distinct from the plain
+   white/ghost nav links whether on the red desktop bar or the white mobile
+   dropdown, without clashing the way a hot pink did. */
 .nav-link--account {
-  background: #ec4899 !important;
-  color: #fff !important;
+  background: #fbdbe8 !important;
+  color: var(--brand-ink) !important;
   box-shadow: none !important;
-  border: 1.5px solid #ec4899 !important;
+  border: 1.5px solid #f3b6d1 !important;
   font-weight: 800 !important;
 }
 .nav-link--account:hover, .nav-link--account:focus-visible {
-  background: #db2777 !important;
-  border-color: #db2777 !important;
-  color: #fff !important;
+  background: #f6c3d9 !important;
+  border-color: #ec9dc0 !important;
+  color: var(--brand-ink) !important;
 }
 .nav-link--account[aria-current="page"] {
-  background: #db2777 !important;
-  color: #fff !important;
+  background: #f6c3d9 !important;
+  color: var(--brand-ink) !important;
   box-shadow: none !important;
 }
 @media (max-width: 900px) {
   .site-header #site-nav a.nav-link--account,
   .site-header #site-nav a.nav-link--account:link,
   .site-header #site-nav a.nav-link--account:visited {
-    background: #ec4899 !important;
-    color: #fff !important;
-    border: 1.5px solid #ec4899 !important;
+    background: #fbdbe8 !important;
+    color: var(--brand-ink) !important;
+    border: 1.5px solid #f3b6d1 !important;
   }
 }
