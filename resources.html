@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="/css/layout.css"/>
   <link rel="stylesheet" href="/css/components.css?v=12"/>
 <script defer src="/js/live-images.js?v=1"></script>
+<script defer src="/js/site-text.js?v=1"></script>
 
   <!-- Minimal styles just for the modal close "X" -->
   <style>
@@ -193,6 +194,7 @@
           <li>TB: Perry — <em>Answers</em></li>
           <li>Seasonal: Lauridsen — <em>O Magnum Mysterium</em></li>
         </ul>
+        <ul id="show-and-tell-list"></ul>
       </div>
     </div>
 
@@ -213,6 +215,8 @@
           <li><a href="https://www.youtube.com/watch?v=2v-QrN-nvY0" target="_blank" rel="noopener">Echoing solfege from piano in sets of three, then sets of four</a></li>
           <li><a href="https://www.youtube.com/watch?v=YD99WFXEm5Y" target="_blank" rel="noopener">Body Scale Simon — demonstrated by first, second, and third graders</a></li>
         </ul>
+        <h4>More PD Resources</h4>
+        <ul id="pd-resources-list"></ul>
       </div>
     </div>
     
@@ -261,6 +265,22 @@
 </footer>
 
 
+  <script defer>
+    window.siteContentReady && window.siteContentReady.then((data) => {
+      if (!data || !data.resources) return;
+      function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+      function renderList(elId, items) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.innerHTML = items.map(r => {
+          const label = r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title);
+          return `<li>${label}${r.note ? ' — ' + esc(r.note) : ''}</li>`;
+        }).join('');
+      }
+      renderList('pd-resources-list', data.resources.pd || []);
+      renderList('show-and-tell-list', data.resources.showAndTell || []);
+    });
+  </script>
   <script defer src="/js/core.js?v=4"></script>
 
   <!-- Tiny modal controller: open via [data-modal], close via X, backdrop, or Esc -->

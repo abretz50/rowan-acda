@@ -2,6 +2,30 @@
 // so the first read of the 'content' blob (see portal-content.mjs) carries
 // over the real bios instead of starting blank.
 export const CONTENT_SEED = {
+  siteText: {
+    'home.whatIs.heading': 'What is Rowan ACDA?',
+    'home.whatIs.description': "The Rowan American Choral Directors Association's mission is to create opportunities for students to learn more about an array of different choral techniques and aspects that will enrich and supplement their education. This includes fundraising, holding events and activities that either interest or inform members, and bringing in presenters from on and off-campus to hold workshops and masterclasses. Our goal is to allow everyone to learn about and experience choral music while acquiring various choral directing skills.",
+    'home.choralEngagement.description': "Did you love choir in High School? Want to sing in a growing choral community of many majors? Join Rowan's own \"Choir Club\"! Rowan's chapter of the American Choral Directors Association is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107!",
+    'home.sightReading.description': "Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval!",
+    'home.development.description': "In sessions coordinated by our Vice President, industry professionals will present development sessions on varying relevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs.",
+    'events.bannerSubtext': 'Performances, Volunteer Opportunities, Meetings, and Workshops',
+    'members.join.description': 'Open to all Rowan students who love choral music. Join on ProfLink to get involved!',
+    'members.about.description': "Rowan ACDA is a student-run community where singers, future educators, and developing musicians grow together. We rehearse, read new music, host conducting labs, and invite guest clinicians to share practical tools you can use in choral career.\n\nWhether you're preparing for a career in music or simply love to sing, you'll find welcoming rehearsals, hands-on workshops, and plenty of ways to serve the campus and local community.",
+    'members.mission.description': 'To cultivate choral artistry, leadership, and service by providing inclusive music-making, practical training, and professional connections for all Rowan students.',
+    'members.eventsActivities.description': 'We plan a balanced mix of artistry, growth, and service throughout the year:',
+  },
+  resources: {
+    pd: [],
+    showAndTell: [],
+  },
+  merch: [
+    {
+      id: 'tshirt-original', name: 'T-Shirt', price: 15.00,
+      sizes: ['Small', 'Medium', 'Large', 'X-Large', 'XX-Large'],
+      photos: ['/assets/img/merch-tshirt-model.jpg', '/assets/img/merch-tshirt-flat.jpg', '/assets/img/merch-tshirt-folded.jpg'],
+      active: true,
+    },
+  ],
   eboard: [
     {
       id: 'makayli-matias', name: 'Makayli Matias', role: 'President',

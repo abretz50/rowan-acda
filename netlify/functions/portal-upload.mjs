@@ -14,6 +14,7 @@ const CATEGORY_DIRS = {
   library: 'assets/pdfs/uploads',
   events: 'assets/img/events',
   profile: 'assets/img/profiles',
+  merch: 'assets/img/merch',
 };
 const CATEGORY_ALLOWED_EXT = {
   gallery: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
@@ -21,10 +22,11 @@ const CATEGORY_ALLOWED_EXT = {
   library: ['.pdf'],
   events: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
   profile: ['.jpg', '.jpeg', '.png', '.webp'],
+  merch: ['.jpg', '.jpeg', '.png', '.webp'],
 };
 // `profile` has no entry here — hasPermission(role, undefined) just requires
 // being signed in, which is right for uploading your own profile picture.
-const CATEGORY_PERM = { gallery: 'gallery', eboard: 'content', library: 'library', events: 'events' };
+const CATEGORY_PERM = { gallery: 'gallery', eboard: 'content', library: 'library', events: 'events', merch: 'content' };
 
 function extOf(name) {
   const m = /\.[a-z0-9]+$/i.exec(name || '');

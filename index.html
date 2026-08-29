@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css?v=12"/>
 <script defer src="/js/live-images.js?v=1"></script>
+<script defer src="/js/site-text.js?v=1"></script>
 
 <style>
   /* Inline red "Add to Calendar" link */
@@ -122,8 +123,8 @@
   </section>
 
   <section>
-    <h2>What is Rowan ACDA?</h2>
-    <p>The Rowan American Choral Directors Association's mission is to create opportunities for students to learn more about an array of different choral techniques and aspects that will enrich and supplement their education. This includes fundraising, holding events and activities that either interest or inform members, and bringing in presenters from on and off-campus to hold workshops and masterclasses. Our goal is to allow everyone to learn about and experience choral music while acquiring various choral directing skills.</p>
+    <h2 data-live-text="home.whatIs.heading">What is Rowan ACDA?</h2>
+    <p data-live-text="home.whatIs.description">The Rowan American Choral Directors Association's mission is to create opportunities for students to learn more about an array of different choral techniques and aspects that will enrich and supplement their education. This includes fundraising, holding events and activities that either interest or inform members, and bringing in presenters from on and off-campus to hold workshops and masterclasses. Our goal is to allow everyone to learn about and experience choral music while acquiring various choral directing skills.</p>
     <p><a class="btn btn-outline" href="/members.html">Read More</a></p>
   </section>
 
@@ -155,7 +156,7 @@
         <img src="/assets/img/about2.png" alt="Choral Engagement" loading="lazy" data-live-img="choralEngagement">
         <div class="meta">
           <h3>Choral Engagement</h3>
-          <p>Did you love choir in High School? Want to sing in a growing choral community of many majors? Join Rowan's own "Choir Club"! Rowan's chapter of the American Choral Directors Association is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107!</p>
+          <p data-live-text="home.choralEngagement.description">Did you love choir in High School? Want to sing in a growing choral community of many majors? Join Rowan's own "Choir Club"! Rowan's chapter of the American Choral Directors Association is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107!</p>
         </div>
       </article>
 
@@ -164,7 +165,7 @@
         <img src="/assets/img/about1.png" alt="Sightreading" loading="lazy" data-live-img="sightReading">
         <div class="meta">
           <h3>Sightreading</h3>
-          <p>Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval!</p>
+          <p data-live-text="home.sightReading.description">Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval!</p>
         </div>
       </article>
 
@@ -173,7 +174,7 @@
         <img src="/assets/img/about.png" alt="Development" loading="lazy" data-live-img="development">
         <div class="meta">
           <h3>Development</h3>
-          <p>In sessions coordinated by our Vice President, industry professionals will present development sessions on varying relevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs.</p>
+          <p data-live-text="home.development.description">In sessions coordinated by our Vice President, industry professionals will present development sessions on varying relevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs.</p>
         </div>
       </article>
     </div>
@@ -184,57 +185,7 @@
       <h2 id="shop-h">Shop Rowan ACDA Merch</h2>
     </div>
     <p class="kicker">Club-ordered with free campus pickup in Glassboro, NJ.</p>
-    <div class="events-feature" style="margin-top:1rem">
-      <article class="card tshirt-card">
-        <div class="meta">
-          <h3 style="margin-bottom:.5rem">T-Shirt</h3>
-          <div class="tshirt-gallery">
-            <img id="tshirt-main-img" src="/assets/img/merch-tshirt-model.jpg" alt="Rowan ACDA T-Shirt"/>
-            <div class="tshirt-thumbs">
-              <button type="button" class="tshirt-thumb active" data-src="/assets/img/merch-tshirt-model.jpg" aria-label="Show model photo">
-                <img src="/assets/img/merch-tshirt-model.jpg" alt=""/>
-              </button>
-              <button type="button" class="tshirt-thumb" data-src="/assets/img/merch-tshirt-flat.jpg" aria-label="Show flat-lay photo">
-                <img src="/assets/img/merch-tshirt-flat.jpg" alt=""/>
-              </button>
-              <button type="button" class="tshirt-thumb" data-src="/assets/img/merch-tshirt-folded.jpg" aria-label="Show folded photo">
-                <img src="/assets/img/merch-tshirt-folded.jpg" alt=""/>
-              </button>
-            </div>
-          </div>
-          <p class="tshirt-price">$15.00</p>
-          <form class="tshirt-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-            <input type="hidden" name="cmd" value="_xclick"/>
-            <input type="hidden" name="business" value="rowanacda1@gmail.com"/>
-            <input type="hidden" name="item_name" value="Rowan ACDA T-Shirt"/>
-            <input type="hidden" name="currency_code" value="USD"/>
-            <input type="hidden" name="no_shipping" value="2"/>
-            <input type="hidden" id="tshirt-amount" name="amount" value="15.00"/>
-            <input type="hidden" name="on0" value="Size"/>
-            <input type="hidden" name="on1" value="Delivery"/>
-
-            <label for="tshirt-size">Size</label>
-            <select id="tshirt-size" name="os0" required>
-              <option value="">Select size</option>
-              <option>Small</option>
-              <option>Medium</option>
-              <option>Large</option>
-              <option>X-Large</option>
-              <option>XX-Large</option>
-            </select>
-
-            <label for="tshirt-delivery">Delivery</label>
-            <select id="tshirt-delivery" name="os1">
-              <option value="Pick up on campus (Glassboro, NJ)" data-fee="0">Pick up on campus — Free</option>
-              <option value="Ship to me" data-fee="2.61">Ship to me — +$2.61 shipping</option>
-            </select>
-
-            <button class="btn" type="submit">Buy Now — PayPal</button>
-          </form>
-          <p class="tshirt-note">Orders ship in bulk to Rowan (Glassboro, NJ) for free campus pickup. Need it mailed to you instead? Choose "Ship to me" — shipping is billed at our exact cost, no markup.</p>
-        </div>
-      </article>
-    </div>
+    <div class="events-feature" id="merch-list" style="margin-top:1rem"></div>
   </section>
 
   <section aria-labelledby="contact-h">
@@ -355,27 +306,75 @@
 })();
 </script>
 
-<!-- T-Shirt merch card: gallery + dynamic PayPal amount -->
-<script>
+<!-- Merch cards: rendered from Site Content > Home Page > Merch -->
+<script defer>
 (function(){
-  const BASE_PRICE = 15.00;
-  const mainImg = document.getElementById('tshirt-main-img');
-  const thumbs = document.querySelectorAll('.tshirt-thumb');
-  thumbs.forEach(btn => {
-    btn.addEventListener('click', () => {
-      mainImg.src = btn.dataset.src;
-      thumbs.forEach(b => b.classList.toggle('active', b === btn));
-    });
+  function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function merchCardHTML(item){
+    const photos = (item.photos && item.photos.length) ? item.photos : ['/assets/img/about.png'];
+    const price = Number(item.price) || 0;
+    const thumbs = photos.map((p, j) => `
+      <button type="button" class="tshirt-thumb${j === 0 ? ' active' : ''}" data-src="${esc(p)}" aria-label="Show photo ${j + 1}">
+        <img src="${esc(p)}" alt=""/>
+      </button>`).join('');
+    const sizeField = item.sizes && item.sizes.length ? `
+      <input type="hidden" name="on0" value="Size"/>
+      <label>Size</label>
+      <select class="merch-size" name="os0" required>
+        <option value="">Select size</option>
+        ${item.sizes.map(s => `<option>${esc(s)}</option>`).join('')}
+      </select>` : '';
+    return `<article class="card tshirt-card" data-merch-id="${esc(item.id)}">
+      <div class="meta">
+        <h3 style="margin-bottom:.5rem">${esc(item.name)}</h3>
+        <div class="tshirt-gallery">
+          <img class="merch-main-img" src="${esc(photos[0])}" alt="${esc(item.name)}"/>
+          <div class="tshirt-thumbs">${thumbs}</div>
+        </div>
+        <p class="tshirt-price">$${price.toFixed(2)}</p>
+        <form class="tshirt-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+          <input type="hidden" name="cmd" value="_xclick"/>
+          <input type="hidden" name="business" value="rowanacda1@gmail.com"/>
+          <input type="hidden" name="item_name" value="Rowan ACDA ${esc(item.name)}"/>
+          <input type="hidden" name="currency_code" value="USD"/>
+          <input type="hidden" name="no_shipping" value="2"/>
+          <input type="hidden" class="merch-amount" name="amount" value="${price.toFixed(2)}"/>
+          ${sizeField}
+          <input type="hidden" name="on1" value="Delivery"/>
+          <label>Delivery</label>
+          <select class="merch-delivery" name="os1">
+            <option value="Pick up on campus (Glassboro, NJ)" data-fee="0">Pick up on campus — Free</option>
+            <option value="Ship to me" data-fee="2.61">Ship to me — +$2.61 shipping</option>
+          </select>
+          <button class="btn" type="submit">Buy Now — PayPal</button>
+        </form>
+      </div>
+    </article>`;
+  }
+
+  window.siteContentReady.then((data) => {
+    const list = document.getElementById('merch-list');
+    if (!list) return;
+    const items = (data && data.merch || []).filter(m => m.active !== false);
+    if (!items.length) { list.closest('section').style.display = 'none'; return; }
+    list.innerHTML = items.map(merchCardHTML).join('');
   });
 
-  const delivery = document.getElementById('tshirt-delivery');
-  const amount = document.getElementById('tshirt-amount');
-  if(delivery && amount){
-    delivery.addEventListener('change', () => {
-      const fee = parseFloat(delivery.selectedOptions[0].dataset.fee || '0');
-      amount.value = (BASE_PRICE + fee).toFixed(2);
-    });
-  }
+  document.addEventListener('click', (e) => {
+    const thumb = e.target.closest('.tshirt-thumb');
+    if (!thumb) return;
+    const card = thumb.closest('.tshirt-card');
+    card.querySelector('.merch-main-img').src = thumb.dataset.src;
+    card.querySelectorAll('.tshirt-thumb').forEach(b => b.classList.toggle('active', b === thumb));
+  });
+
+  document.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('merch-delivery')) return;
+    const card = e.target.closest('.tshirt-card');
+    const base = parseFloat(card.querySelector('.tshirt-price').textContent.replace('$', '')) || 0;
+    const fee = parseFloat(e.target.selectedOptions[0].dataset.fee || '0');
+    card.querySelector('.merch-amount').value = (base + fee).toFixed(2);
+  });
 })();
 </script>
 

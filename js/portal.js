@@ -53,6 +53,13 @@ let libSessions = [];
 let editingScoreUrl = null;
 let eboardRoster = [];
 let editingEboardId = null;
+let siteTextData = {};
+let merchItems = [];
+let editingMerchId = null;
+let merchSelectedSizes = [];
+let resourcesData = { pd: [], showAndTell: [] };
+let editingResourceId = null;
+let editingResourceCategory = null;
 let galleryFolders = [];
 let galleryImages = [];
 let galleryCurrentFolderId = null;
@@ -248,7 +255,7 @@ function showDashboard() {
   if (canUse('members')) loadMembers();
   if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); }
   if (canUse('library')) loadLibrary();
-  if (canUse('content')) loadEboardRoster();
+  if (canUse('content')) { loadEboardRoster(); loadSiteContentExtras(); }
   if (canUse('gallery')) loadGallery();
   if (canUse('budget')) loadBudget();
 }
@@ -1700,6 +1707,230 @@ function wireContentPanel() {
   });
 }
 
+// ── Site Content: page text, merch, resources ─────────────
+async function loadSiteContentExtras() {
+  const { ok, data } = await api(CONTENT_URL, { method: 'GET' });
+  if (!ok) return;
+  siteTextData = data.siteText || {};
+  merchItems = data.merch || [];
+  resourcesData = data.resources || { pd: [], showAndTell: [] };
+  document.querySelectorAll('[data-text-key]').forEach(el => {
+    const v = siteTextData[el.dataset.textKey];
+    if (v !== undefined) el.value = v;
+  });
+  renderMerchAdminList();
+  renderResourceList('pd');
+  renderResourceList('showAndTell');
+}
+
+async function saveSiteTextForm(formEl, statusEl) {
+  const inputs = formEl.querySelectorAll('[data-text-key]');
+  statusEl.textContent = 'Saving…'; statusEl.className = 'admin-status';
+  for (const el of inputs) {
+    const { ok, data } = await api(CONTENT_URL, { method: 'POST', body: JSON.stringify({ op: 'updateSiteText', key: el.dataset.textKey, value: el.value }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not save.'; statusEl.className = 'admin-status err'; return; }
+    siteTextData = data.siteText;
+  }
+  statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
+}
+
+function merchRowHTML(item) {
+  const sizes = (item.sizes || []).join(', ') || 'No sizes';
+  return `<div class="admin-row" data-merch-row="${escHtml(item.id)}">
+    <div>
+      <span class="name">${escHtml(item.name)}${item.active === false ? ' <span class="small muted">(inactive)</span>' : ''}</span>
+      <div class="meta">$${Number(item.price).toFixed(2)} · ${escHtml(sizes)} · ${(item.photos || []).length} photo(s)</div>
+    </div>
+    <div class="actions">
+      <button class="btn-sm edit" data-edit-merch="${escHtml(item.id)}">Edit</button>
+      <button class="btn-sm delete" data-delete-merch="${escHtml(item.id)}">Delete</button>
+    </div>
+  </div>`;
+}
+
+function renderMerchAdminList() {
+  const el = document.getElementById('merch-list-admin');
+  if (!el) return;
+  el.innerHTML = merchItems.map(merchRowHTML).join('') || '<p class="small muted">No merch items yet.</p>';
+}
+
+function resetMerchForm() {
+  editingMerchId = null;
+  merchSelectedSizes = [];
+  document.getElementById('merch-form').reset();
+  document.getElementById('merch-id').value = '';
+  document.getElementById('merch-photo-urls').value = '';
+  document.getElementById('merch-photos-current').textContent = '';
+  document.getElementById('merch-active').checked = true;
+  document.querySelectorAll('#merch-sizes-chips .cat-chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('merch-form-heading').textContent = 'Add Merch Item';
+  document.getElementById('merch-form-submit').textContent = 'Add item';
+  document.getElementById('merch-form-cancel').style.display = 'none';
+}
+
+function resourceRowHTML(r, category) {
+  return `<div class="admin-row" data-resource-row="${escHtml(r.id)}">
+    <div>
+      <span class="name">${escHtml(r.title)}</span>
+      <div class="meta">${r.url ? escHtml(r.url) : ''}${r.note ? ' · ' + escHtml(r.note) : ''}</div>
+    </div>
+    <div class="actions">
+      <button class="btn-sm edit" data-edit-resource="${escHtml(r.id)}" data-resource-category="${category}">Edit</button>
+      <button class="btn-sm delete" data-delete-resource="${escHtml(r.id)}" data-resource-category="${category}">Delete</button>
+    </div>
+  </div>`;
+}
+
+function renderResourceList(category) {
+  const elId = category === 'pd' ? 'pd-resource-list' : 'showtell-resource-list';
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const items = resourcesData[category] || [];
+  el.innerHTML = items.map(r => resourceRowHTML(r, category)).join('') || '<p class="small muted">Nothing added yet.</p>';
+}
+
+function resetResourceForm(category) {
+  const prefix = category === 'pd' ? 'pd-resource' : 'showtell-resource';
+  editingResourceId = null;
+  editingResourceCategory = null;
+  document.getElementById(`${prefix}-id`).value = '';
+  document.getElementById(`${prefix}-title`).value = '';
+  document.getElementById(`${prefix}-url`).value = '';
+  document.getElementById(`${prefix}-note`).value = '';
+  document.getElementById(`${prefix}-submit`).textContent = category === 'pd' ? 'Add resource' : 'Add item';
+  document.getElementById(`${prefix}-cancel`).style.display = 'none';
+}
+
+function wireResourceForm(category) {
+  const prefix = category === 'pd' ? 'pd-resource' : 'showtell-resource';
+  document.getElementById(`${prefix}-form`).addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById(`${prefix}-status`);
+    const title = document.getElementById(`${prefix}-title`).value.trim();
+    if (!title) { statusEl.textContent = 'A title is required.'; statusEl.className = 'admin-status err'; return; }
+    const body = {
+      category,
+      title,
+      url: document.getElementById(`${prefix}-url`).value.trim(),
+      note: document.getElementById(`${prefix}-note`).value.trim(),
+    };
+    const isEdit = editingResourceId && editingResourceCategory === category;
+    const { ok, data } = isEdit
+      ? await api(CONTENT_URL, { method: 'POST', body: JSON.stringify({ op: 'updateResource', id: editingResourceId, ...body }) })
+      : await api(CONTENT_URL, { method: 'POST', body: JSON.stringify({ op: 'addResource', ...body }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not save.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
+    resourcesData = data.resources;
+    resetResourceForm(category);
+    renderResourceList(category);
+  });
+  document.getElementById(`${prefix}-cancel`).addEventListener('click', () => resetResourceForm(category));
+  document.getElementById(category === 'pd' ? 'pd-resource-list' : 'showtell-resource-list').addEventListener('click', async (e) => {
+    const editBtn = e.target.closest('[data-edit-resource]');
+    if (editBtn) {
+      const r = (resourcesData[category] || []).find(x => x.id === editBtn.dataset.editResource);
+      if (!r) return;
+      editingResourceId = r.id;
+      editingResourceCategory = category;
+      document.getElementById(`${prefix}-id`).value = r.id;
+      document.getElementById(`${prefix}-title`).value = r.title;
+      document.getElementById(`${prefix}-url`).value = r.url || '';
+      document.getElementById(`${prefix}-note`).value = r.note || '';
+      document.getElementById(`${prefix}-submit`).textContent = 'Save changes';
+      document.getElementById(`${prefix}-cancel`).style.display = '';
+      return;
+    }
+    const delBtn = e.target.closest('[data-delete-resource]');
+    if (delBtn) {
+      if (!confirm('Remove this item?')) return;
+      const { ok, data } = await api(CONTENT_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteResource', category, id: delBtn.dataset.deleteResource }) });
+      if (!ok) { alert(data.error || 'Could not remove.'); return; }
+      resourcesData = data.resources;
+      renderResourceList(category);
+    }
+  });
+}
+
+function wireSiteContentExtras() {
+  document.getElementById('sitetext-home-form').addEventListener('submit', (e) => { e.preventDefault(); saveSiteTextForm(e.target, document.getElementById('sitetext-home-status')); });
+  document.getElementById('sitetext-events-form').addEventListener('submit', (e) => { e.preventDefault(); saveSiteTextForm(e.target, document.getElementById('sitetext-events-status')); });
+  document.getElementById('sitetext-members-form').addEventListener('submit', (e) => { e.preventDefault(); saveSiteTextForm(e.target, document.getElementById('sitetext-members-status')); });
+
+  document.getElementById('merch-sizes-chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('.cat-chip');
+    if (!chip) return;
+    chip.classList.toggle('active');
+    const size = chip.dataset.size;
+    merchSelectedSizes = chip.classList.contains('active')
+      ? [...merchSelectedSizes, size]
+      : merchSelectedSizes.filter(s => s !== size);
+  });
+
+  document.getElementById('merch-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById('merch-form-status');
+    const name = document.getElementById('merch-name').value.trim();
+    const price = parseFloat(document.getElementById('merch-price').value);
+    if (!name || !(price >= 0)) { statusEl.textContent = 'A name and valid price are required.'; statusEl.className = 'admin-status err'; return; }
+
+    let photos = document.getElementById('merch-photo-urls').value ? JSON.parse(document.getElementById('merch-photo-urls').value) : [];
+    const files = Array.from(document.getElementById('merch-photos').files).slice(0, 3);
+    if (files.length) {
+      statusEl.textContent = 'Uploading photos…'; statusEl.className = 'admin-status';
+      photos = [];
+      for (const file of files) {
+        const up = await uploadFile(file, 'merch');
+        if (!up.ok) { statusEl.textContent = up.data.error || 'Photo upload failed.'; statusEl.className = 'admin-status err'; return; }
+        photos.push(up.data.url);
+      }
+    }
+
+    const item = { name, price, sizes: merchSelectedSizes, photos, active: document.getElementById('merch-active').checked };
+    const { ok, data } = editingMerchId
+      ? await api(CONTENT_URL, { method: 'POST', body: JSON.stringify({ op: 'updateMerchItem', id: editingMerchId, item }) })
+      : await api(CONTENT_URL, { method: 'POST', body: JSON.stringify({ op: 'addMerchItem', item }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not save.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
+    merchItems = data.merch;
+    resetMerchForm();
+    renderMerchAdminList();
+  });
+  document.getElementById('merch-form-cancel').addEventListener('click', resetMerchForm);
+
+  document.getElementById('merch-list-admin').addEventListener('click', async (e) => {
+    const editBtn = e.target.closest('[data-edit-merch]');
+    if (editBtn) {
+      const item = merchItems.find(x => x.id === editBtn.dataset.editMerch);
+      if (!item) return;
+      editingMerchId = item.id;
+      merchSelectedSizes = [...(item.sizes || [])];
+      document.getElementById('merch-id').value = item.id;
+      document.getElementById('merch-name').value = item.name;
+      document.getElementById('merch-price').value = item.price;
+      document.getElementById('merch-photo-urls').value = JSON.stringify(item.photos || []);
+      document.getElementById('merch-photos-current').textContent = (item.photos || []).length ? `Current: ${item.photos.length} photo(s) (choose new files to replace)` : '';
+      document.getElementById('merch-active').checked = item.active !== false;
+      document.querySelectorAll('#merch-sizes-chips .cat-chip').forEach(c => c.classList.toggle('active', merchSelectedSizes.includes(c.dataset.size)));
+      document.getElementById('merch-form-heading').textContent = 'Edit Merch Item';
+      document.getElementById('merch-form-submit').textContent = 'Save changes';
+      document.getElementById('merch-form-cancel').style.display = '';
+      document.getElementById('merch-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    const delBtn = e.target.closest('[data-delete-merch]');
+    if (delBtn) {
+      if (!confirm('Remove this merch item from the homepage?')) return;
+      const { ok, data } = await api(CONTENT_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteMerchItem', id: delBtn.dataset.deleteMerch }) });
+      if (!ok) { alert(data.error || 'Could not remove.'); return; }
+      merchItems = data.merch;
+      renderMerchAdminList();
+    }
+  });
+
+  wireResourceForm('pd');
+  wireResourceForm('showAndTell');
+}
+
 // ── Gallery tab (Google-Drive-style folders) ──────────────
 function galleryFolderPath(folderId) {
   const path = [];
@@ -2563,6 +2794,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wirePointsPanel();
   wireLibraryPanel();
   wireContentPanel();
+  wireSiteContentExtras();
   wireGalleryPanel();
   wireBudgetPanel();
   document.getElementById('budget-txn-date').value = new Date().toISOString().slice(0, 10);
