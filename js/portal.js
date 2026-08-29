@@ -154,7 +154,7 @@ function setBootstrapMode(on) {
   document.getElementById('login-heading').textContent = on ? 'Set up the first president account' : 'Sign in';
   document.getElementById('login-subtext').textContent = on
     ? 'No president account exists yet. Create it using the setup secret from whoever deployed the site.'
-    : 'E-Board access only. Regular members should sign in at /account.html instead.';
+    : 'E-Board access only.';
   document.getElementById('login-submit').textContent = on ? 'Create president account' : 'Sign in';
 }
 
