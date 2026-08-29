@@ -84,6 +84,15 @@
           <h3 style="border:none;padding:0;margin:0">My Profile</h3>
           <button class="btn-sm outline" id="profile-edit-btn" type="button">Edit</button>
         </div>
+        <div style="display:flex;align-items:center;gap:.8rem;margin-top:.6rem">
+          <img id="profile-photo-preview" src="" alt="" style="display:none;width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>
+          <div id="profile-photo-placeholder" style="width:64px;height:64px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--muted)">👤</div>
+          <div>
+            <input type="file" id="pf-photo" accept="image/*" style="display:none"/>
+            <button class="btn-sm outline" type="button" id="pf-photo-btn">Upload photo</button>
+            <div class="admin-status" id="photo-status"></div>
+          </div>
+        </div>
         <div id="profile-view" class="kv" style="margin-top:.6rem">
           <dt>Name</dt><dd id="view-name"></dd>
           <dt>Email</dt><dd id="view-email"></dd>
@@ -98,12 +107,14 @@
           <div class="admin-status" id="profile-status"></div>
         </form>
         <hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>
-        <form class="admin-form" id="password-form" novalidate>
+        <button class="btn-sm outline" type="button" id="password-toggle-btn">Change password</button>
+        <form class="admin-form" id="password-form" novalidate style="display:none;margin-top:.6rem">
           <div class="form-row">
             <input class="admin-input" type="password" id="pw-current" placeholder="Current password" required/>
             <input class="admin-input" type="password" id="pw-new" placeholder="New password" required/>
           </div>
-          <button class="btn-sm outline" type="submit">Change password</button>
+          <button class="btn-sm outline" type="submit">Save new password</button>
+          <button class="btn-sm outline" type="button" id="password-cancel-btn">Cancel</button>
           <div class="admin-status" id="password-status"></div>
         </form>
       </div>
@@ -158,6 +169,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/account.js?v=6"></script>
+<script defer src="/js/account.js?v=7"></script>
 </body>
 </html>

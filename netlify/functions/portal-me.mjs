@@ -18,6 +18,7 @@ export default async function handler(req) {
   const target = members.find(m => m.id === me.id);
   if (body.name) target.name = body.name;
   if (body.email) target.email = body.email;
+  if ('photoUrl' in body) target.photoUrl = body.photoUrl;
 
   if (body.password) {
     if (!body.currentPassword || !verifyPassword(body.currentPassword, target.salt, target.hash)) {

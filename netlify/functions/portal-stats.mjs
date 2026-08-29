@@ -37,8 +37,9 @@ export default async function handler(req) {
     totalsByMember.set(p.memberId, (totalsByMember.get(p.memberId) || 0) + p.amount);
   }
   const nameById = new Map(members.map(m => [m.id, m.name]));
+  const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
   const topEarners = [...totalsByMember.entries()]
-    .map(([id, total]) => ({ name: nameById.get(id) || 'Unknown', total }))
+    .map(([id, total]) => ({ name: nameById.get(id) || 'Unknown', photoUrl: photoById.get(id) || null, total }))
     .sort((a, b) => b.total - a.total)
     .slice(0, 5);
 

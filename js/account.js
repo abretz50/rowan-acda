@@ -49,6 +49,25 @@ function showSignedOut() {
 function fillProfileView() {
   document.getElementById('view-name').textContent = me.name || '—';
   document.getElementById('view-email').textContent = me.email || '—';
+  const img = document.getElementById('profile-photo-preview');
+  const placeholder = document.getElementById('profile-photo-placeholder');
+  if (me.photoUrl) {
+    img.src = me.photoUrl; img.style.display = '';
+    placeholder.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = '';
+  }
+}
+
+async function uploadFile(file, category) {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('category', category);
+  const res = await fetch('/.netlify/functions/portal-upload', { method: 'POST', credentials: 'include', body: form });
+  let data = {};
+  try { data = await res.json(); } catch {}
+  return { ok: res.ok && data.ok !== false, data };
 }
 
 function showSignedIn() {
@@ -86,7 +105,7 @@ async function loadEventsHistory() {
       </div>
       <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status === 'pending' ? 'pending review' : p.status}</span></div>
     </div>`;
-    }).join('') || '<p class="small muted">No events yet — check in to one to get started.</p>';
+    }).join('') || '<p class="small muted">No Events yet, see the events page to attend your first event!</p>';
 }
 
 // ── Check into an event (no code — just events open right now) ──────────
@@ -232,6 +251,38 @@ document.getElementById('password-form').addEventListener('submit', async (e) =>
   if (!ok) { statusEl.textContent = data.error || 'Could not change password.'; statusEl.className = 'admin-status err'; return; }
   statusEl.textContent = 'Password changed.'; statusEl.className = 'admin-status ok';
   document.getElementById('password-form').reset();
+});
+
+// Password fields stay hidden until "Change password" is clicked, so the
+// profile card isn't cluttered with password inputs by default.
+document.getElementById('password-toggle-btn').addEventListener('click', () => {
+  document.getElementById('password-form').style.display = '';
+  document.getElementById('password-toggle-btn').style.display = 'none';
+});
+document.getElementById('password-cancel-btn').addEventListener('click', () => {
+  document.getElementById('password-form').reset();
+  document.getElementById('password-status').textContent = '';
+  document.getElementById('password-form').style.display = 'none';
+  document.getElementById('password-toggle-btn').style.display = '';
+});
+
+// Profile photo upload
+document.getElementById('pf-photo-btn').addEventListener('click', () => {
+  document.getElementById('pf-photo').click();
+});
+document.getElementById('pf-photo').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('photo-status');
+  statusEl.textContent = 'Uploading…'; statusEl.className = 'admin-status';
+  const up = await uploadFile(file, 'profile');
+  if (!up.ok) { statusEl.textContent = up.data.error || 'Upload failed.'; statusEl.className = 'admin-status err'; return; }
+  const { ok, data } = await api(ME_URL, { method: 'PATCH', body: JSON.stringify({ photoUrl: up.data.url }) });
+  if (!ok) { statusEl.textContent = data.error || 'Could not save photo.'; statusEl.className = 'admin-status err'; return; }
+  me = data.user;
+  fillProfileView();
+  statusEl.textContent = 'Photo updated.'; statusEl.className = 'admin-status ok';
+  e.target.value = '';
 });
 
 document.addEventListener('DOMContentLoaded', init);

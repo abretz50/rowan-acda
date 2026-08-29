@@ -372,6 +372,38 @@
   }
 
   /* ---------- Comments ---------- */
+  function commentAvatarHTML(photoUrl){
+    return photoUrl
+      ? '<img src="'+escHtml(photoUrl)+'" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem">'
+      : '<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#f3f4f6;border:1px solid var(--border);vertical-align:middle;margin-right:.4rem;font-size:14px">👤</span>';
+  }
+  function commentRowHTML(c, eventId, isReply){
+    const replyUI = isReply ? '' :
+      '<button type="button" class="btn-sm outline" style="margin-top:.35rem" data-reply-toggle="'+c.id+'">Reply</button>'
+      + '<form data-comment-form="'+eventId+'" data-parent-id="'+c.id+'" data-reply-form="'+c.id+'" style="display:none;margin-top:.5rem;gap:.5rem">'
+      +   '<input type="text" class="admin-input" placeholder="Write a reply…" style="flex:1" maxlength="1000"/>'
+      +   '<button class="btn-sm" type="submit">Reply</button>'
+      + '</form>';
+    return '<div class="admin-row" style="'+(isReply ? 'margin-left:2rem' : '')+'"><div>'
+      + commentAvatarHTML(c.photoUrl)
+      + '<span class="name">'+escHtml(c.memberName)+'</span>'
+      + '<div class="meta">'+new Date(c.createdAt).toLocaleDateString()+'</div>'
+      + '<p class="small" style="margin:.3rem 0 0">'+escHtml(c.text)+'</p>'
+      + replyUI
+      + '</div></div>';
+  }
+  function renderCommentThread(comments, eventId){
+    const topLevel = comments.filter(c => !c.parentId).sort((a,b) => new Date(a.createdAt)-new Date(b.createdAt));
+    const repliesByParent = new Map();
+    comments.filter(c => c.parentId).forEach(c => {
+      if(!repliesByParent.has(c.parentId)) repliesByParent.set(c.parentId, []);
+      repliesByParent.get(c.parentId).push(c);
+    });
+    return topLevel.map(c => {
+      const replies = (repliesByParent.get(c.id) || []).sort((a,b) => new Date(a.createdAt)-new Date(b.createdAt));
+      return commentRowHTML(c, eventId, false) + replies.map(r => commentRowHTML(r, eventId, true)).join('');
+    }).join('');
+  }
   async function loadComments(eventId){
     const container = document.querySelector('[data-comments-for="'+eventId+'"]');
     if(!container) return;
@@ -380,22 +412,27 @@
       const res = await fetch(COMMENTS_URL + '?eventId=' + encodeURIComponent(eventId));
       const data = await res.json();
       if(!data.ok){ container.innerHTML = '<p class="small muted">Could not load comments.</p>'; return; }
-      container.innerHTML = data.comments.length
-        ? data.comments.map(c => '<div class="admin-row"><div>'
-            + '<span class="name">'+escHtml(c.memberName)+'</span>'
-            + '<div class="meta">'+new Date(c.createdAt).toLocaleDateString()+'</div>'
-            + '<p class="small" style="margin:.3rem 0 0">'+escHtml(c.text)+'</p>'
-            + '</div></div>').join('')
-        : '<p class="small muted">No comments yet — be the first to ask a question!</p>';
+      container.innerHTML = data.comments.length ? renderCommentThread(data.comments, eventId) : '<p class="small muted">No Comments Yet!</p>';
     } catch { container.innerHTML = '<p class="small muted">Could not load comments.</p>'; }
   }
+
+  document.addEventListener('click', (e) => {
+    const toggleBtn = e.target.closest('[data-reply-toggle]');
+    if(!toggleBtn) return;
+    const form = document.querySelector('[data-reply-form="'+toggleBtn.getAttribute('data-reply-toggle')+'"]');
+    if(!form) return;
+    const opening = form.style.display === 'none';
+    form.style.display = opening ? 'flex' : 'none';
+    if(opening){ if(!signedIn){ if(confirm('You need to sign in to reply. Go to the sign-in page now?')) location.href = '/account.html'; form.style.display = 'none'; return; } form.querySelector('input').focus(); }
+  });
 
   document.addEventListener('submit', async (e) => {
     const form = e.target.closest('[data-comment-form]');
     if(!form) return;
     e.preventDefault();
     const eventId = form.getAttribute('data-comment-form');
-    const input = document.querySelector('[data-comment-input="'+eventId+'"]');
+    const parentId = form.getAttribute('data-parent-id') || null;
+    const input = parentId ? form.querySelector('input') : document.querySelector('[data-comment-input="'+eventId+'"]');
     const text = (input.value||'').trim();
     if(!text) return;
     if(!signedIn){
@@ -408,7 +445,7 @@
       const res = await fetch(COMMENTS_URL, {
         method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ eventId, text })
+        body: JSON.stringify({ eventId, text, parentId })
       });
       const data = await res.json();
       if(!data.ok){ alert(data.error || 'Could not post comment.'); btn.disabled = false; return; }

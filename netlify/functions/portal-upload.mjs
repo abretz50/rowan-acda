@@ -13,13 +13,17 @@ const CATEGORY_DIRS = {
   eboard: 'assets/img/eboard',
   library: 'assets/pdfs/uploads',
   events: 'assets/img/events',
+  profile: 'assets/img/profiles',
 };
 const CATEGORY_ALLOWED_EXT = {
   gallery: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
   eboard: ['.jpg', '.jpeg', '.png', '.webp'],
   library: ['.pdf'],
   events: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
+  profile: ['.jpg', '.jpeg', '.png', '.webp'],
 };
+// `profile` has no entry here — hasPermission(role, undefined) just requires
+// being signed in, which is right for uploading your own profile picture.
 const CATEGORY_PERM = { gallery: 'gallery', eboard: 'content', library: 'library', events: 'events' };
 
 function extOf(name) {

@@ -240,6 +240,15 @@ function showDashboard() {
 }
 
 // ── Overview tab ──────────────────────────────────────────
+// Small round avatar (profile photo, or a generic placeholder) used
+// anywhere a member's name shows up — Top Earners, Recent Comments.
+function avatarHTML(photoUrl, size) {
+  const s = size || 26;
+  return photoUrl
+    ? `<img src="${escHtml(photoUrl)}" alt="" style="width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem"/>`
+    : `<span style="display:inline-flex;align-items:center;justify-content:center;width:${s}px;height:${s}px;border-radius:50%;background:var(--surface);border:1px solid var(--border);vertical-align:middle;margin-right:.4rem;font-size:${Math.round(s * 0.55)}px">👤</span>`;
+}
+
 function statCardHTML(number, label, detail) {
   return `<div class="stat-card"><span class="stat-number">${number}</span><span class="stat-label">${escHtml(label)}</span>${detail ? `<span class="stat-detail">${escHtml(detail)}</span>` : ''}</div>`;
 }
@@ -300,7 +309,7 @@ async function loadOverviewStats() {
   if (s.topEarners.length) {
     earnersCard.style.display = '';
     earnersEl.innerHTML = s.topEarners.map((e, i) => `<div class="admin-row">
-      <div><span class="name">${i + 1}. ${escHtml(e.name)}</span></div>
+      <div>${avatarHTML(e.photoUrl)}<span class="name">${i + 1}. ${escHtml(e.name)}</span></div>
       <div class="actions"><span class="badge-role eboard">${e.total} pt${e.total !== 1 ? 's' : ''}</span></div>
     </div>`).join('');
   } else {
@@ -605,12 +614,12 @@ async function loadRecentComments() {
   if (!ok) { el.innerHTML = '<p class="small muted">Could not load comments.</p>'; return; }
   el.innerHTML = data.comments.map(c => `<div class="admin-row">
     <div>
-      <span class="name">${escHtml(c.memberName)}</span>
+      ${avatarHTML(c.photoUrl)}<span class="name">${escHtml(c.memberName)}</span>${c.parentId ? ' <span class="badge-role inactive">reply</span>' : ''}
       <div class="meta">Posted ${new Date(c.createdAt).toLocaleString()} on "${escHtml(c.eventTitle)}"</div>
       <p class="small" style="margin:.3rem 0 0">${escHtml(c.text)}</p>
     </div>
     <div class="actions"><button class="btn-sm delete" data-delete-comment="${escHtml(c.id)}">Delete</button></div>
-  </div>`).join('') || '<p class="small muted">No comments yet.</p>';
+  </div>`).join('') || '<p class="small muted">No Comments Yet!</p>';
 }
 
 function wireRecentCommentsPanel() {
