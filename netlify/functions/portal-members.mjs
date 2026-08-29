@@ -25,21 +25,26 @@ async function computeMemberStats(members) {
   const totalMeetings = meetings.length;
 
   const attendedByMember = new Map(); // memberId -> Set(eventId)
+  const attendeesByMeeting = new Map(); // eventId -> Set(memberId)
   for (const p of points) {
     if (p.status === 'denied' || !meetingIds.has(p.eventId)) continue;
     if (!attendedByMember.has(p.memberId)) attendedByMember.set(p.memberId, new Set());
     attendedByMember.get(p.memberId).add(p.eventId);
+    if (!attendeesByMeeting.has(p.eventId)) attendeesByMeeting.set(p.eventId, new Set());
+    attendeesByMeeting.get(p.eventId).add(p.memberId);
   }
 
   const counts = activeMembers.map(m => (attendedByMember.get(m.id) || new Set()).size);
   const avgMeetingAttendance = activeMembers.length ? counts.reduce((a, b) => a + b, 0) / activeMembers.length : 0;
 
+  // Highest/lowest attendance are per-MEETING (which meeting had the
+  // biggest/smallest share of active members show up), not per-member.
   let highestAttendance = null, lowestAttendance = null;
-  if (totalMeetings > 0) {
-    for (const m of activeMembers) {
-      const pct = ((attendedByMember.get(m.id) || new Set()).size / totalMeetings) * 100;
-      if (!highestAttendance || pct > highestAttendance.pct) highestAttendance = { name: m.name, pct };
-      if (!lowestAttendance || pct < lowestAttendance.pct) lowestAttendance = { name: m.name, pct };
+  if (activeMembers.length > 0) {
+    for (const meeting of meetings) {
+      const pct = ((attendeesByMeeting.get(meeting.id) || new Set()).size / activeMembers.length) * 100;
+      if (!highestAttendance || pct > highestAttendance.pct) highestAttendance = { name: meeting.title, pct };
+      if (!lowestAttendance || pct < lowestAttendance.pct) lowestAttendance = { name: meeting.title, pct };
     }
   }
 

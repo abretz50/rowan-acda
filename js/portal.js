@@ -946,12 +946,39 @@ async function loadPointsPending() {
   el.innerHTML = data.points.map(pendingRowHTML).join('') || '<p class="small muted">Nothing pending.</p>';
 }
 
+let lastPointsAllRows = [];
+
 async function loadPointsAll() {
   const el = document.getElementById('points-all-list');
   const { ok, data } = await api(POINTS_URL, { method: 'GET' });
   if (!ok) { el.innerHTML = '<p class="small muted">Could not load.</p>'; return; }
   const rows = data.points.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt));
+  lastPointsAllRows = rows;
   el.innerHTML = rows.map(allEntryRowHTML).join('') || '<p class="small muted">No points entries yet.</p>';
+}
+
+// Excel opens an .xls-named file containing an HTML table just fine, so
+// this needs no spreadsheet library — same dependency-free approach as
+// the inline SVG charts elsewhere in this file.
+function exportPointsAllXls() {
+  const headers = ['Member', 'Event / Reason', 'Amount', 'Status', 'Requested', 'Decided By', 'Decided At'];
+  const cell = (v) => `<td>${escHtml(String(v ?? ''))}</td>`;
+  const rowsHtml = lastPointsAllRows.map(p => `<tr>${[
+    cell(p.memberName),
+    cell(pointsLabel(p)),
+    cell(p.amount),
+    cell(p.status),
+    cell(new Date(p.requestedAt).toLocaleDateString()),
+    cell(p.decidedByName || ''),
+    cell(p.decidedAt ? fmtDashDate(p.decidedAt) : ''),
+  ].join('')}</tr>`).join('');
+  const html = `<html><head><meta charset="utf-8"></head><body><table border="1"><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr>${rowsHtml}</table></body></html>`;
+  const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `points-entries-${new Date().toISOString().slice(0, 10)}.xls`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
 }
 
 function eventPointsRowHTML(ev) {
@@ -980,6 +1007,8 @@ async function loadAllMembersForSearch() {
 }
 
 function wirePointsPanel() {
+  document.getElementById('points-all-export').addEventListener('click', exportPointsAllXls);
+
   document.getElementById('points-pending-list').addEventListener('click', async (e) => {
     const approveBtn = e.target.closest('[data-approve]');
     const denyBtn = e.target.closest('[data-deny]');

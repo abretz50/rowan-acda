@@ -256,7 +256,6 @@
 
     <!-- ===== Members ===== -->
     <div class="panel" id="panel-members">
-      <p class="small muted">New members are added from the <strong>Accounts</strong> tab, or automatically the first time they self check in to an event.</p>
       <div class="stat-grid" id="members-stats">
         <div class="admin-card"><p class="small muted">Loading stats…</p></div>
       </div>
@@ -291,8 +290,7 @@
 
       <div class="eboard-panel">
         <div class="admin-card">
-          <h3>Award Points Manually</h3>
-          <p class="small muted">For volunteering or anything else that isn't tied to an event check-in. Awarded immediately (you're the approver).</p>
+          <h3>Manual Point Correction or Awards</h3>
           <form class="admin-form" id="manual-award-form" novalidate>
             <input class="admin-input" type="text" id="ma-member-search" placeholder="Click to choose a member, or type to search…" autocomplete="off" required/>
             <input type="hidden" id="ma-member-id"/>
@@ -316,13 +314,16 @@
 
       <div class="admin-card" style="margin-top:1rem">
         <h3>Edit Event Defaults</h3>
-        <p class="small muted">Default attendance points a new event gets based on its tag (Volunteer events aren't included — those are point-valued per signup instead).</p>
+        <p class="small muted">Default attendance points for new events.</p>
         <div id="event-defaults-list"><p class="small muted">Loading…</p></div>
       </div>
 
       <div class="admin-card" style="margin-top:1rem">
-        <h3>All Entries</h3>
-        <div id="points-all-list"><p class="small muted">Loading…</p></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem">
+          <h3 style="border:none;padding:0;margin:0">All Entries</h3>
+          <button class="btn-sm outline" id="points-all-export">Download XLS</button>
+        </div>
+        <div id="points-all-list" style="max-height:420px;overflow-y:auto;margin-top:.6rem"><p class="small muted">Loading…</p></div>
       </div>
     </div>
 
@@ -349,7 +350,7 @@
               <input class="admin-input" type="text" id="sc-year" placeholder="Year" maxlength="4"/>
               <div>
                 <select class="admin-input" id="sc-voicing">
-                  <option value="">Voicing — Select</option>
+                  <option value="">Voicing</option>
                   <option>SATB</option><option>SATB divisi</option><option>SAB</option>
                   <option>SSA</option><option>SSAA</option><option>TTBB</option>
                   <option>2-Part</option><option>Unison</option><option value="Other">Other…</option>
@@ -359,7 +360,7 @@
             </div>
             <div>
               <select class="admin-input" id="sc-instr">
-                <option value="">Instrumentation — Select</option>
+                <option value="">Instrumentation</option>
                 <option>A Cappella</option><option>Piano</option><option>Organ</option>
                 <option>Guitar</option><option>Orchestra</option><option>Chamber Ensemble</option>
                 <option>Strings</option><option>Band</option><option>Brass</option><option value="Other">Other…</option>
@@ -576,6 +577,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=16"></script>
+<script defer src="/js/portal.js?v=17"></script>
 </body>
 </html>
