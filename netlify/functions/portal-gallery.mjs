@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { getCollection, setCollection } from './_lib/blobs.mjs';
+import { getCollection, updateCollection } from './_lib/blobs.mjs';
 import { requireAuth, getSessionUser, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { hasPermission } from './_lib/permissions.mjs';
@@ -76,21 +76,17 @@ function buildDefaultGalleryTree() {
 // folder unmarked) — upgrades in place by matching on the folder names the
 // seed always uses, without touching anything a person already renamed.
 function upgradeLegacyLiveTargets(tree) {
-  let changed = false;
   const alreadyUsed = new Set(tree.folders.filter(f => f.liveTarget).map(f => f.liveTarget));
   for (const f of tree.folders) {
     if (f.slideshowSource && !f.liveTarget) {
       f.liveTarget = 'homeSlideshow';
       delete f.slideshowSource;
       alreadyUsed.add('homeSlideshow');
-      changed = true;
     } else if (!f.liveTarget && NAME_TO_LIVE_TARGET[f.name] && !alreadyUsed.has(NAME_TO_LIVE_TARGET[f.name])) {
       f.liveTarget = NAME_TO_LIVE_TARGET[f.name];
       alreadyUsed.add(f.liveTarget);
-      changed = true;
     }
   }
-  return changed;
 }
 
 // Migrates the old flat inSlideshow/order array (from before folders existed)
@@ -124,7 +120,7 @@ function migrateOldGallery(oldArray) {
 // digging through the Website Data structure. Marked `isMasterGallery` so
 // this only ever gets created once, even if someone renames or empties it.
 function ensureGalleryFolder(tree) {
-  if (tree.folders.some(f => f.isMasterGallery)) return false;
+  if (tree.folders.some(f => f.isMasterGallery)) return;
   const id = randomUUID();
   tree.folders.push({ id, name: 'Gallery', parentId: null, isMasterGallery: true });
   const snapshot = tree.images.slice();
@@ -132,25 +128,31 @@ function ensureGalleryFolder(tree) {
   for (const img of snapshot) {
     tree.images.push({ id: randomUUID(), url: img.url, caption: img.caption, folderId: id, order: order++ });
   }
-  return true;
 }
 
-async function loadGallery() {
-  const stored = await getCollection('gallery', null);
-  let tree, changed;
-  if (!stored) {
-    tree = buildDefaultGalleryTree();
-    changed = true;
-  } else if (Array.isArray(stored)) {
-    tree = migrateOldGallery(stored);
-    changed = true;
-  } else {
-    tree = stored;
-    changed = upgradeLegacyLiveTargets(tree);
-  }
-  if (ensureGalleryFolder(tree)) changed = true;
-  if (changed) await setCollection('gallery', tree);
+// Pure: derives the fully-seeded/migrated tree from whatever's currently
+// stored (or nothing), without writing anything. Safe to call repeatedly —
+// used both for plain reads and inside updateCollection's retry loop.
+function deriveTree(stored) {
+  let tree;
+  if (!stored) tree = buildDefaultGalleryTree();
+  else if (Array.isArray(stored)) tree = migrateOldGallery(stored);
+  else { tree = stored; upgradeLegacyLiveTargets(tree); }
+  ensureGalleryFolder(tree);
   return tree;
+}
+
+// Reads don't need to go through the CAS-protected write path unless
+// something actually needs seeding/migrating (the very first load, or an
+// old shape) — that's rare, so the common case is a plain read with no
+// write at all instead of an unconditional write on every single GET.
+async function loadGalleryForRead() {
+  const stored = await getCollection('gallery', null);
+  if (stored && !Array.isArray(stored)) {
+    const probe = deriveTree(JSON.parse(JSON.stringify(stored)));
+    if (JSON.stringify(probe) === JSON.stringify(stored)) return probe;
+  }
+  return updateCollection('gallery', null, async (fresh) => deriveTree(fresh));
 }
 
 async function canManageGallery(req) {
@@ -194,13 +196,157 @@ function deepCloneFolder(tree, sourceId, destParentId) {
       tree.images.push({ id: randomUUID(), url: img.url, caption: img.caption, folderId: newFolderId, order: img.order });
     });
   }
-  return idMap.get(sourceId);
+}
+
+// Applies one mutating request to `tree` in place. Returns an error object
+// ({ message, status }) if the op is invalid/not found; returns null on
+// success. Must stay a pure function of (tree, method, body) — no requests,
+// no randomness beyond randomUUID — since updateCollection may re-run it
+// against a freshly re-read tree if a concurrent write is detected.
+function applyGalleryOp(tree, method, body) {
+  if (method === 'POST') {
+    const { op } = body;
+
+    if (op === 'createFolder') {
+      const name = String(body.name || '').trim();
+      if (!name) return { message: 'Folder name is required.', status: 400 };
+      const parentId = body.parentId || null;
+      if (parentId && !tree.folders.some(f => f.id === parentId)) return { message: 'Parent folder not found.', status: 404 };
+      tree.folders.push({ id: randomUUID(), name, parentId });
+      return null;
+    }
+
+    if (op === 'renameFolder') {
+      const target = tree.folders.find(f => f.id === body.id);
+      if (!target) return { message: 'Folder not found.', status: 404 };
+      const name = String(body.name || '').trim();
+      if (!name) return { message: 'Folder name is required.', status: 400 };
+      target.name = name;
+      return null;
+    }
+
+    if (op === 'moveFolder') {
+      const target = tree.folders.find(f => f.id === body.id);
+      if (!target) return { message: 'Folder not found.', status: 404 };
+      const newParentId = body.parentId || null;
+      if (newParentId) {
+        if (!tree.folders.some(f => f.id === newParentId)) return { message: 'Destination folder not found.', status: 404 };
+        const descendants = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
+        if (descendants.has(newParentId)) return { message: 'Cannot move a folder into its own subfolder.', status: 400 };
+      }
+      target.parentId = newParentId;
+      return null;
+    }
+
+    if (op === 'copyFolder') {
+      const target = tree.folders.find(f => f.id === body.id);
+      if (!target) return { message: 'Folder not found.', status: 404 };
+      const destParentId = body.parentId || null;
+      if (destParentId) {
+        if (!tree.folders.some(f => f.id === destParentId)) return { message: 'Destination folder not found.', status: 404 };
+        const descendants = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
+        if (descendants.has(destParentId)) return { message: 'Cannot copy a folder into its own subfolder.', status: 400 };
+      }
+      deepCloneFolder(tree, target.id, destParentId);
+      return null;
+    }
+
+    if (op === 'deleteFolder') {
+      const target = tree.folders.find(f => f.id === body.id);
+      if (!target) return { message: 'Folder not found.', status: 404 };
+      const idsToDelete = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
+      if ([...idsToDelete].some(id => tree.folders.find(f => f.id === id)?.liveTarget)) {
+        return { message: 'This folder feeds a live part of the site (or contains one that does) and cannot be deleted.', status: 400 };
+      }
+      tree.folders = tree.folders.filter(f => !idsToDelete.has(f.id));
+      tree.images = tree.images.filter(i => !idsToDelete.has(i.folderId));
+      return null;
+    }
+
+    if (op === 'addImage') {
+      const url = String(body.url || '').trim();
+      if (!url) return { message: 'Image URL is required.', status: 400 };
+      const folderId = body.folderId || null;
+      if (folderId && !tree.folders.some(f => f.id === folderId)) return { message: 'Folder not found.', status: 404 };
+      const maxOrder = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
+      tree.images.push({ id: randomUUID(), url, caption: String(body.caption || ''), folderId, order: maxOrder + 1 });
+      return null;
+    }
+
+    if (op === 'copyImage') {
+      const source = tree.images.find(i => i.id === body.id);
+      if (!source) return { message: 'Image not found.', status: 404 };
+      const folderId = body.folderId || null;
+      if (folderId && !tree.folders.some(f => f.id === folderId)) return { message: 'Folder not found.', status: 404 };
+      const maxOrder = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
+      tree.images.push({ id: randomUUID(), url: source.url, caption: source.caption, folderId, order: maxOrder + 1 });
+      return null;
+    }
+
+    if (op === 'moveImage') {
+      const target = tree.images.find(i => i.id === body.id);
+      if (!target) return { message: 'Image not found.', status: 404 };
+      const folderId = body.folderId || null;
+      if (folderId && !tree.folders.some(f => f.id === folderId)) return { message: 'Folder not found.', status: 404 };
+      const maxOrder = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
+      target.folderId = folderId;
+      target.order = maxOrder + 1;
+      return null;
+    }
+
+    if (op === 'bulkMoveImages' || op === 'bulkCopyImages') {
+      const ids = Array.isArray(body.ids) ? body.ids : [];
+      const folderId = body.folderId || null;
+      if (folderId && !tree.folders.some(f => f.id === folderId)) return { message: 'Folder not found.', status: 404 };
+      let order = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
+      for (const id of ids) {
+        const source = tree.images.find(i => i.id === id);
+        if (!source) continue;
+        if (op === 'bulkCopyImages') {
+          tree.images.push({ id: randomUUID(), url: source.url, caption: source.caption, folderId, order: ++order });
+        } else {
+          source.folderId = folderId;
+          source.order = ++order;
+        }
+      }
+      return null;
+    }
+
+    if (op === 'bulkDeleteImages') {
+      const ids = new Set(Array.isArray(body.ids) ? body.ids : []);
+      tree.images = tree.images.filter(i => !ids.has(i.id));
+      return null;
+    }
+
+    if (op === 'reorderImages') {
+      const ids = Array.isArray(body.ids) ? body.ids : [];
+      const byId = new Map(tree.images.map(i => [i.id, i]));
+      ids.forEach((id, i) => { const img = byId.get(id); if (img) img.order = i; });
+      return null;
+    }
+
+    return { message: 'Unknown operation.', status: 400 };
+  }
+
+  if (method === 'PATCH') {
+    const target = tree.images.find(i => i.id === body.id);
+    if (!target) return { message: 'Image not found.', status: 404 };
+    if ('caption' in body) target.caption = body.caption;
+    return null;
+  }
+
+  if (method === 'DELETE') {
+    if (!tree.images.some(i => i.id === body.id)) return { message: 'Image not found.', status: 404 };
+    tree.images = tree.images.filter(i => i.id !== body.id);
+    return null;
+  }
+
+  return { message: 'Method not allowed', status: 405 };
 }
 
 export default async function handler(req) {
-  const tree = await loadGallery();
-
   if (req.method === 'GET') {
+    const tree = await loadGalleryForRead();
     const wantsAdmin = new URL(req.url).searchParams.get('admin') === '1';
     const authed = wantsAdmin && await canManageGallery(req);
     if (authed) return json({ ok: true, folders: tree.folders, images: tree.images });
@@ -226,155 +372,19 @@ export default async function handler(req) {
   try { body = req.method === 'DELETE' ? Object.fromEntries(new URL(req.url).searchParams) : await req.json(); }
   catch { return json({ ok: false, error: 'Bad JSON' }, 400); }
 
-  if (req.method === 'POST') {
-    const { op } = body;
+  // Every mutation is applied inside updateCollection's retry loop, which
+  // re-reads the freshest stored tree right before each write attempt and
+  // retries applyGalleryOp against it if a concurrent request wrote first —
+  // this is what actually fixes the "moving one photo un-moves another"
+  // bug, not just a client-side workaround.
+  let opError = null;
+  const method = req.method;
+  const finalTree = await updateCollection('gallery', null, async (stored) => {
+    const tree = deriveTree(stored);
+    opError = applyGalleryOp(tree, method, body);
+    return tree;
+  });
 
-    if (op === 'createFolder') {
-      const name = String(body.name || '').trim();
-      if (!name) return json({ ok: false, error: 'Folder name is required.' }, 400);
-      const parentId = body.parentId || null;
-      if (parentId && !tree.folders.some(f => f.id === parentId)) return json({ ok: false, error: 'Parent folder not found.' }, 404);
-      tree.folders.push({ id: randomUUID(), name, parentId });
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'renameFolder') {
-      const target = tree.folders.find(f => f.id === body.id);
-      if (!target) return json({ ok: false, error: 'Folder not found.' }, 404);
-      const name = String(body.name || '').trim();
-      if (!name) return json({ ok: false, error: 'Folder name is required.' }, 400);
-      target.name = name;
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'moveFolder') {
-      const target = tree.folders.find(f => f.id === body.id);
-      if (!target) return json({ ok: false, error: 'Folder not found.' }, 404);
-      const newParentId = body.parentId || null;
-      if (newParentId) {
-        if (!tree.folders.some(f => f.id === newParentId)) return json({ ok: false, error: 'Destination folder not found.' }, 404);
-        const descendants = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
-        if (descendants.has(newParentId)) return json({ ok: false, error: 'Cannot move a folder into its own subfolder.' }, 400);
-      }
-      target.parentId = newParentId;
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'copyFolder') {
-      const target = tree.folders.find(f => f.id === body.id);
-      if (!target) return json({ ok: false, error: 'Folder not found.' }, 404);
-      const destParentId = body.parentId || null;
-      if (destParentId) {
-        if (!tree.folders.some(f => f.id === destParentId)) return json({ ok: false, error: 'Destination folder not found.' }, 404);
-        const descendants = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
-        if (descendants.has(destParentId)) return json({ ok: false, error: 'Cannot copy a folder into its own subfolder.' }, 400);
-      }
-      deepCloneFolder(tree, target.id, destParentId);
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'deleteFolder') {
-      const target = tree.folders.find(f => f.id === body.id);
-      if (!target) return json({ ok: false, error: 'Folder not found.' }, 404);
-      const idsToDelete = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
-      if ([...idsToDelete].some(id => tree.folders.find(f => f.id === id)?.liveTarget)) {
-        return json({ ok: false, error: 'This folder feeds a live part of the site (or contains one that does) and cannot be deleted.' }, 400);
-      }
-      tree.folders = tree.folders.filter(f => !idsToDelete.has(f.id));
-      tree.images = tree.images.filter(i => !idsToDelete.has(i.folderId));
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'addImage') {
-      const url = String(body.url || '').trim();
-      if (!url) return json({ ok: false, error: 'Image URL is required.' }, 400);
-      const folderId = body.folderId || null;
-      if (folderId && !tree.folders.some(f => f.id === folderId)) return json({ ok: false, error: 'Folder not found.' }, 404);
-      const maxOrder = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
-      tree.images.push({ id: randomUUID(), url, caption: String(body.caption || ''), folderId, order: maxOrder + 1 });
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'copyImage') {
-      const source = tree.images.find(i => i.id === body.id);
-      if (!source) return json({ ok: false, error: 'Image not found.' }, 404);
-      const folderId = body.folderId || null;
-      if (folderId && !tree.folders.some(f => f.id === folderId)) return json({ ok: false, error: 'Folder not found.' }, 404);
-      const maxOrder = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
-      tree.images.push({ id: randomUUID(), url: source.url, caption: source.caption, folderId, order: maxOrder + 1 });
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'moveImage') {
-      const target = tree.images.find(i => i.id === body.id);
-      if (!target) return json({ ok: false, error: 'Image not found.' }, 404);
-      const folderId = body.folderId || null;
-      if (folderId && !tree.folders.some(f => f.id === folderId)) return json({ ok: false, error: 'Folder not found.' }, 404);
-      const maxOrder = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
-      target.folderId = folderId;
-      target.order = maxOrder + 1;
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'bulkMoveImages' || op === 'bulkCopyImages') {
-      const ids = Array.isArray(body.ids) ? body.ids : [];
-      const folderId = body.folderId || null;
-      if (folderId && !tree.folders.some(f => f.id === folderId)) return json({ ok: false, error: 'Folder not found.' }, 404);
-      let order = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
-      for (const id of ids) {
-        const source = tree.images.find(i => i.id === id);
-        if (!source) continue;
-        if (op === 'bulkCopyImages') {
-          tree.images.push({ id: randomUUID(), url: source.url, caption: source.caption, folderId, order: ++order });
-        } else {
-          source.folderId = folderId;
-          source.order = ++order;
-        }
-      }
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'bulkDeleteImages') {
-      const ids = new Set(Array.isArray(body.ids) ? body.ids : []);
-      tree.images = tree.images.filter(i => !ids.has(i.id));
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    if (op === 'reorderImages') {
-      const ids = Array.isArray(body.ids) ? body.ids : [];
-      const byId = new Map(tree.images.map(i => [i.id, i]));
-      ids.forEach((id, i) => { const img = byId.get(id); if (img) img.order = i; });
-      await setCollection('gallery', tree);
-      return json({ ok: true, folders: tree.folders, images: tree.images });
-    }
-
-    return json({ ok: false, error: 'Unknown operation.' }, 400);
-  }
-
-  if (req.method === 'PATCH') {
-    const target = tree.images.find(i => i.id === body.id);
-    if (!target) return json({ ok: false, error: 'Image not found.' }, 404);
-    if ('caption' in body) target.caption = body.caption;
-    await setCollection('gallery', tree);
-    return json({ ok: true, folders: tree.folders, images: tree.images });
-  }
-
-  if (req.method === 'DELETE') {
-    if (!tree.images.some(i => i.id === body.id)) return json({ ok: false, error: 'Image not found.' }, 404);
-    tree.images = tree.images.filter(i => i.id !== body.id);
-    await setCollection('gallery', tree);
-    return json({ ok: true, folders: tree.folders, images: tree.images });
-  }
-
-  return json({ ok: false, error: 'Method not allowed' }, 405);
+  if (opError) return json({ ok: false, error: opError.message }, opError.status);
+  return json({ ok: true, folders: finalTree.folders, images: finalTree.images });
 }
