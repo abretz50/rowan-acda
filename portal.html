@@ -158,8 +158,83 @@
     <!-- ===== Budget (placeholder) ===== -->
     <div class="panel" id="panel-budget">
       <div class="admin-card">
-        <h3>Budget</h3>
-        <p class="small muted">A budget tracking tool is coming soon.</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+          <div class="cat-chips" id="budget-account-chips">
+            <button class="cat-chip active" type="button" data-budget-account="regular">Regular Account</button>
+            <button class="cat-chip" type="button" data-budget-account="fundraising">Fundraising / Extra Account</button>
+          </div>
+          <button class="btn-sm outline" id="budget-edit-target-btn">Edit Budget Target</button>
+        </div>
+      </div>
+
+      <div class="stat-grid" id="budget-stats">
+        <div class="admin-card"><p class="small muted">Loading…</p></div>
+      </div>
+
+      <div class="admin-card" style="margin-top:1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+          <h3 style="border:none;padding:0;margin:0">Category Breakdown</h3>
+          <button class="btn-sm outline" id="budget-new-category-btn">+ New Category</button>
+        </div>
+        <p class="small muted" id="budget-categories-hint" style="margin-top:.3rem">Adjust a category's planned amount any time your spending plan changes.</p>
+        <div id="budget-categories-list" style="margin-top:.6rem"><p class="small muted">Loading…</p></div>
+      </div>
+
+      <div class="admin-card" id="budget-category-form-card" style="display:none;margin-top:1rem">
+        <h3 id="budget-category-form-heading">New Category</h3>
+        <form class="admin-form" id="budget-category-form" novalidate>
+          <input type="hidden" id="budget-cat-id"/>
+          <div class="form-row">
+            <input class="admin-input" type="text" id="budget-cat-name" placeholder="Category name" required/>
+            <input class="admin-input" type="number" step="0.01" min="0" id="budget-cat-planned" placeholder="Planned amount ($)" required/>
+          </div>
+          <div class="form-group" id="budget-cat-revenue-group" style="display:none">
+            <label for="budget-cat-revenue">Planned Revenue ($)</label>
+            <input class="admin-input" type="number" step="0.01" min="0" id="budget-cat-revenue" placeholder="Expected revenue ($)"/>
+          </div>
+          <button class="btn-sm" type="submit" id="budget-category-submit">Save category</button>
+          <button class="btn-sm outline" type="button" id="budget-category-form-cancel">Cancel</button>
+          <button class="btn-sm delete" type="button" id="budget-category-delete-btn" style="display:none">Delete category</button>
+          <div class="admin-status" id="budget-category-status"></div>
+        </form>
+      </div>
+
+      <div class="eboard-panel" style="margin-top:1rem">
+        <div class="admin-card">
+          <h3 id="budget-txn-form-heading">Log a Purchase</h3>
+          <form class="admin-form" id="budget-txn-form" novalidate>
+            <input type="hidden" id="budget-txn-id"/>
+            <div class="cat-chips" id="budget-txn-type-chips">
+              <button class="cat-chip active" type="button" data-txn-type="expense">Expense</button>
+              <button class="cat-chip" type="button" data-txn-type="income" id="budget-income-chip" style="display:none">Fundraiser Income</button>
+            </div>
+            <div class="form-group">
+              <label for="budget-txn-category">Category</label>
+              <select class="admin-input" id="budget-txn-category"></select>
+            </div>
+            <div class="form-row">
+              <input class="admin-input" type="text" id="budget-txn-desc" placeholder="Description" required/>
+              <input class="admin-input" type="number" step="0.01" min="0.01" id="budget-txn-amount" placeholder="Amount ($)" required/>
+            </div>
+            <input class="admin-input" type="date" id="budget-txn-date"/>
+            <button class="btn-sm" type="submit" id="budget-txn-submit">Add expense</button>
+            <button class="btn-sm outline" type="button" id="budget-txn-cancel" style="display:none">Cancel edit</button>
+            <div class="admin-status" id="budget-txn-status"></div>
+          </form>
+        </div>
+        <div class="admin-card">
+          <h3>Spending Over Time</h3>
+          <p class="small muted">Cumulative expenses for this account, by date logged.</p>
+          <div id="budget-chart" style="overflow-x:auto"><p class="small muted">Loading…</p></div>
+        </div>
+      </div>
+
+      <div class="admin-card" style="margin-top:1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+          <h3 style="border:none;padding:0;margin:0">Transaction History</h3>
+          <button class="btn-sm outline" id="budget-export-btn">Download XLS</button>
+        </div>
+        <div id="budget-transactions-list" style="max-height:420px;overflow-y:auto;margin-top:.6rem"><p class="small muted">Loading…</p></div>
       </div>
     </div>
 
@@ -599,6 +674,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=36"></script>
+<script defer src="/js/portal.js?v=37"></script>
 </body>
 </html>
