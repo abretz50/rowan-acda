@@ -262,7 +262,7 @@ function barChartSVG(rows, emptyMsg) {
 // label, the event name itself is the small gray line underneath — the
 // event name varies in length far more than a stat number would.
 function mostAttendedCardHTML(eventTitle) {
-  return `<div class="stat-card"><span class="stat-number">Most Attended Event</span><span class="stat-label">${escHtml(eventTitle)}</span></div>`;
+  return `<div class="stat-card"><span class="stat-number" style="font-size:1.1rem;line-height:1.3">Most Attended Event</span><span class="stat-label">${escHtml(eventTitle)}</span></div>`;
 }
 
 async function loadOverviewStats() {
