@@ -52,7 +52,9 @@ let libSessions = [];
 let editingScoreUrl = null;
 let eboardRoster = [];
 let editingEboardId = null;
-let galleryItems = [];
+let galleryFolders = [];
+let galleryImages = [];
+let galleryCurrentFolderId = null;
 let eventsRefreshTimer = null;
 const KNOWN_VOICINGS = ['','SATB','SATB divisi','SAB','SSA','SSAA','TTBB','2-Part','Unison','Other'];
 const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Chamber Ensemble','Strings','Band','Brass','Other'];
@@ -67,7 +69,7 @@ const FULL_ACCESS_ROLES = ['president', 'admin', 'eboard_legacy', 'vice_presiden
 function fmtDashDate(iso) {
   if (!iso) return '';
   const d = new Date(iso);
-  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${d.getFullYear()}`;
+  return `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}`;
 }
 
 function toISOFromLocalInput(v){ return v ? new Date(v).toISOString() : ''; }
@@ -983,13 +985,13 @@ function pendingRowHTML(p) {
   </div>`;
 }
 function allEntryRowHTML(p) {
-  const decided = p.status !== 'pending' && p.decidedAt
-    ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
-    : '';
+  const decidedClause = p.status === 'pending'
+    ? ' Pending approval.'
+    : ` ${p.status === 'approved' ? 'Approved' : 'Denied'} by ${escHtml(p.decidedByName || 'Unknown')} on ${fmtDashDate(p.decidedAt)}.`;
   return `<div class="admin-row">
     <div>
-      <span class="name">${escHtml(p.memberName)}</span>
-      <div class="meta">${escHtml(pointsLabel(p))} · ${p.amount} pt${p.amount !== 1 ? 's' : ''} · ${new Date(p.requestedAt).toLocaleDateString()}${decided}</div>
+      <span class="name">${escHtml(pointsLabel(p) || 'Points')}</span>
+      <div class="meta">${p.amount} pt${Math.abs(p.amount) !== 1 ? 's' : ''} requested by ${escHtml(p.memberName)}.${decidedClause}</div>
     </div>
     <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
   </div>`;
@@ -1659,72 +1661,254 @@ function wireContentPanel() {
   });
 }
 
-// ── Gallery tab ───────────────────────────────────────────
-function galleryItemHTML(g) {
-  return `<div class="admin-card" style="padding:.6rem" data-gallery-id="${escHtml(g.id)}">
-    <img src="${escHtml(g.url)}" alt="${escHtml(g.caption)}" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:.5rem;margin-bottom:.4rem"/>
-    <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem">
-      <input type="checkbox" class="gallery-slideshow-check" ${g.inSlideshow ? 'checked' : ''}/> Slideshow
-    </label>
-    <div style="display:flex;gap:.3rem;margin-top:.4rem">
-      <button class="btn-sm outline" data-move-gallery="up" data-gallery-move-id="${escHtml(g.id)}" title="Move earlier in the rotation">▲</button>
-      <button class="btn-sm outline" data-move-gallery="down" data-gallery-move-id="${escHtml(g.id)}" title="Move later in the rotation">▼</button>
-      <button class="btn-sm delete" data-delete-gallery="${escHtml(g.id)}" style="flex:1">Delete</button>
+// ── Gallery tab (Google-Drive-style folders) ──────────────
+function galleryFolderPath(folderId) {
+  const path = [];
+  let cur = folderId;
+  while (cur) {
+    const f = galleryFolders.find(x => x.id === cur);
+    if (!f) break;
+    path.unshift(f);
+    cur = f.parentId;
+  }
+  return path;
+}
+
+function galleryDescendantIds(folderId) {
+  const ids = [folderId];
+  let frontier = [folderId];
+  while (frontier.length) {
+    const next = galleryFolders.filter(f => frontier.includes(f.parentId)).map(f => f.id);
+    ids.push(...next);
+    frontier = next;
+  }
+  return new Set(ids);
+}
+
+// Flat, indented "Website Root" + every folder (except excludeIds, so a
+// folder can't be moved into itself or its own subfolder) — a simple
+// dropdown stands in for a full tree picker given how few folders there'll
+// realistically be.
+function galleryFolderOptionsHTML(excludeIds) {
+  const eligible = galleryFolders.filter(f => !excludeIds.has(f.id));
+  const withPath = eligible.map(f => ({ f, path: galleryFolderPath(f.id) }));
+  withPath.sort((a, b) => a.path.map(x => x.name).join('/').localeCompare(b.path.map(x => x.name).join('/')));
+  const opts = withPath.map(({ f, path }) => `<option value="${escHtml(f.id)}">${'— '.repeat(path.length - 1)}${escHtml(f.name)}</option>`).join('');
+  return `<option value="">Website Root</option>${opts}`;
+}
+
+function renderGalleryBreadcrumb() {
+  const path = galleryFolderPath(galleryCurrentFolderId);
+  const crumbs = [`<a href="#" data-gallery-crumb="">Website Root</a>`, ...path.map(f => `<a href="#" data-gallery-crumb="${escHtml(f.id)}">${escHtml(f.name)}</a>`)];
+  document.getElementById('gallery-breadcrumb').innerHTML = crumbs.join(' <span class="muted">/</span> ');
+
+  const current = path[path.length - 1];
+  const noteEl = document.getElementById('gallery-folder-note');
+  if (current && current.slideshowSource) {
+    noteEl.style.display = '';
+    noteEl.textContent = 'Anything dropped in this folder is live on the homepage slideshow.';
+  } else if (current && current.note) {
+    noteEl.style.display = '';
+    noteEl.textContent = current.note;
+  } else {
+    noteEl.style.display = 'none';
+  }
+}
+
+function galleryFolderTileHTML(f) {
+  const childFolderCount = galleryFolders.filter(x => x.parentId === f.id).length;
+  const imageCount = galleryImages.filter(x => x.folderId === f.id).length;
+  const countLabel = [
+    childFolderCount ? `${childFolderCount} folder${childFolderCount !== 1 ? 's' : ''}` : '',
+    imageCount ? `${imageCount} photo${imageCount !== 1 ? 's' : ''}` : '',
+  ].filter(Boolean).join(', ') || 'Empty';
+  const badge = f.slideshowSource ? ' <span class="badge-role eboard">live</span>' : '';
+  return `<div class="admin-card" style="padding:.6rem" data-gallery-folder-tile="${escHtml(f.id)}">
+    <div style="cursor:pointer" data-gallery-open-folder="${escHtml(f.id)}">
+      <div style="font-size:2rem;text-align:center">📁</div>
+      <div class="name" style="text-align:center;word-break:break-word">${escHtml(f.name)}${badge}</div>
+      <div class="small muted" style="text-align:center">${countLabel}</div>
+    </div>
+    <div class="actions" style="justify-content:center;margin-top:.4rem">
+      <button class="btn-sm outline" data-gallery-rename-folder="${escHtml(f.id)}">Rename</button>
+      <button class="btn-sm outline" data-gallery-move-folder="${escHtml(f.id)}">Move</button>
+      <button class="btn-sm delete" data-gallery-delete-folder="${escHtml(f.id)}">Delete</button>
+    </div>
+    <div class="gallery-move-panel" id="gallery-move-folder-${escHtml(f.id)}" style="display:none;margin-top:.5rem">
+      <select class="admin-input" data-gallery-move-folder-select="${escHtml(f.id)}">${galleryFolderOptionsHTML(galleryDescendantIds(f.id))}</select>
+      <button class="btn-sm" data-gallery-confirm-move-folder="${escHtml(f.id)}" style="margin-top:.3rem;width:100%">Move here</button>
     </div>
   </div>`;
 }
 
+function galleryImageTileHTML(img, siblings) {
+  const idx = siblings.findIndex(s => s.id === img.id);
+  return `<div class="admin-card" style="padding:.5rem" data-gallery-image-tile="${escHtml(img.id)}">
+    <img src="${escHtml(img.url)}" alt="${escHtml(img.caption || '')}" style="width:100%;height:110px;object-fit:cover;border-radius:.5rem;display:block"/>
+    <div class="actions" style="justify-content:center;margin-top:.4rem;flex-wrap:wrap">
+      <button class="btn-sm outline" data-gallery-move-up="${escHtml(img.id)}" ${idx <= 0 ? 'disabled' : ''}>▲</button>
+      <button class="btn-sm outline" data-gallery-move-down="${escHtml(img.id)}" ${idx >= siblings.length - 1 ? 'disabled' : ''}>▼</button>
+      <button class="btn-sm outline" data-gallery-copy-move="${escHtml(img.id)}">Copy/Move</button>
+      <button class="btn-sm delete" data-gallery-delete-image="${escHtml(img.id)}">Delete</button>
+    </div>
+    <div class="gallery-move-panel" id="gallery-copy-move-${escHtml(img.id)}" style="display:none;margin-top:.5rem">
+      <select class="admin-input" data-gallery-dest-select="${escHtml(img.id)}">${galleryFolderOptionsHTML(new Set())}</select>
+      <div style="display:flex;gap:.35rem;margin-top:.3rem">
+        <button class="btn-sm outline" style="flex:1" data-gallery-do-copy="${escHtml(img.id)}">Copy here</button>
+        <button class="btn-sm" style="flex:1" data-gallery-do-move="${escHtml(img.id)}">Move here</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderGalleryGrid() {
+  const folders = galleryFolders.filter(f => f.parentId === galleryCurrentFolderId);
+  const images = galleryImages.filter(i => i.folderId === galleryCurrentFolderId).sort((a, b) => a.order - b.order);
+  const gridEl = document.getElementById('gallery-grid');
+  gridEl.innerHTML = folders.map(galleryFolderTileHTML).join('') + images.map(img => galleryImageTileHTML(img, images)).join('') || '<p class="small muted">This folder is empty.</p>';
+}
+
+function renderGalleryView() {
+  renderGalleryBreadcrumb();
+  renderGalleryGrid();
+}
+
 async function loadGallery() {
-  const { ok, data } = await api(GALLERY_URL, { method: 'GET' });
-  if (!ok) return;
-  galleryItems = (data.gallery || []).sort((a, b) => a.order - b.order);
-  document.getElementById('gallery-list').innerHTML = galleryItems.map(galleryItemHTML).join('') || '<p class="small muted">No photos yet.</p>';
+  const { ok, data } = await api(`${GALLERY_URL}?admin=1`, { method: 'GET' });
+  if (!ok) { document.getElementById('gallery-grid').innerHTML = '<p class="small muted">Could not load gallery.</p>'; return; }
+  galleryFolders = data.folders || [];
+  galleryImages = data.images || [];
+  if (galleryCurrentFolderId && !galleryFolders.some(f => f.id === galleryCurrentFolderId)) galleryCurrentFolderId = null;
+  renderGalleryView();
 }
 
 function wireGalleryPanel() {
+  document.getElementById('gallery-new-folder-btn').addEventListener('click', async () => {
+    const name = prompt('Folder name?');
+    if (!name || !name.trim()) return;
+    const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'createFolder', name: name.trim(), parentId: galleryCurrentFolderId }) });
+    if (!ok) { alert(data.error || 'Could not create folder.'); return; }
+    galleryFolders = data.folders; galleryImages = data.images;
+    renderGalleryView();
+  });
+
+  document.getElementById('gallery-breadcrumb').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-gallery-crumb]');
+    if (!a) return;
+    e.preventDefault();
+    galleryCurrentFolderId = a.dataset.galleryCrumb || null;
+    renderGalleryView();
+  });
+
   document.getElementById('gallery-upload-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('gallery-upload-status');
     const file = document.getElementById('gal-file').files[0];
+    const caption = document.getElementById('gal-caption').value.trim();
     if (!file) { statusEl.textContent = 'Choose a photo.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = 'Uploading…'; statusEl.className = 'admin-status';
     const up = await uploadFile(file, 'gallery');
     if (!up.ok) { statusEl.textContent = up.data.error || 'Upload failed.'; statusEl.className = 'admin-status err'; return; }
-    const caption = document.getElementById('gal-caption').value.trim();
-    const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ url: up.data.url, caption }) });
+    const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'addImage', url: up.data.url, caption, folderId: galleryCurrentFolderId }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not save.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = 'Uploaded. It will appear on the site shortly.'; statusEl.className = 'admin-status ok';
+    statusEl.textContent = 'Uploaded.'; statusEl.className = 'admin-status ok';
     e.target.reset();
-    loadGallery();
+    galleryFolders = data.folders; galleryImages = data.images;
+    renderGalleryView();
   });
 
-  document.getElementById('gallery-list').addEventListener('change', async (e) => {
-    if (!e.target.classList.contains('gallery-slideshow-check')) return;
-    const id = e.target.closest('[data-gallery-id]').dataset.galleryId;
-    const { ok, data } = await api(GALLERY_URL, { method: 'PATCH', body: JSON.stringify({ id, inSlideshow: e.target.checked }) });
-    if (!ok) { alert(data.error || 'Could not update.'); e.target.checked = !e.target.checked; }
-  });
-
-  document.getElementById('gallery-list').addEventListener('click', async (e) => {
-    const moveBtn = e.target.closest('[data-move-gallery]');
-    if (moveBtn) {
-      const id = moveBtn.dataset.galleryMoveId;
-      const idx = galleryItems.findIndex(g => g.id === id);
-      const swapWith = moveBtn.dataset.moveGallery === 'up' ? idx - 1 : idx + 1;
-      if (idx === -1 || swapWith < 0 || swapWith >= galleryItems.length) return;
-      const reordered = [...galleryItems];
-      [reordered[idx], reordered[swapWith]] = [reordered[swapWith], reordered[idx]];
-      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'reorder', ids: reordered.map(g => g.id) }) });
-      if (!ok) { alert(data.error || 'Could not reorder.'); return; }
-      loadGallery();
+  document.getElementById('gallery-grid').addEventListener('click', async (e) => {
+    const openBtn = e.target.closest('[data-gallery-open-folder]');
+    if (openBtn) {
+      galleryCurrentFolderId = openBtn.dataset.galleryOpenFolder;
+      renderGalleryView();
       return;
     }
-    const delBtn = e.target.closest('[data-delete-gallery]');
-    if (!delBtn) return;
-    if (!confirm('Delete this photo? This removes it from the site (the file stays in GitHub history).')) return;
-    const { ok, data } = await api(`${GALLERY_URL}?id=${encodeURIComponent(delBtn.dataset.deleteGallery)}`, { method: 'DELETE' });
-    if (!ok) { alert(data.error || 'Could not delete.'); return; }
-    loadGallery();
+
+    const renameBtn = e.target.closest('[data-gallery-rename-folder]');
+    if (renameBtn) {
+      const id = renameBtn.dataset.galleryRenameFolder;
+      const folder = galleryFolders.find(f => f.id === id);
+      const name = prompt('Rename folder to:', folder?.name || '');
+      if (!name || !name.trim()) return;
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'renameFolder', id, name: name.trim() }) });
+      if (!ok) { alert(data.error || 'Could not rename.'); return; }
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+      return;
+    }
+
+    const moveFolderBtn = e.target.closest('[data-gallery-move-folder]');
+    if (moveFolderBtn) {
+      const panel = document.getElementById(`gallery-move-folder-${moveFolderBtn.dataset.galleryMoveFolder}`);
+      if (panel) panel.style.display = panel.style.display === 'none' ? '' : 'none';
+      return;
+    }
+    const confirmMoveFolderBtn = e.target.closest('[data-gallery-confirm-move-folder]');
+    if (confirmMoveFolderBtn) {
+      const id = confirmMoveFolderBtn.dataset.galleryConfirmMoveFolder;
+      const select = document.querySelector(`[data-gallery-move-folder-select="${id}"]`);
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'moveFolder', id, parentId: select.value || null }) });
+      if (!ok) { alert(data.error || 'Could not move folder.'); return; }
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+      return;
+    }
+
+    const deleteFolderBtn = e.target.closest('[data-gallery-delete-folder]');
+    if (deleteFolderBtn) {
+      if (!confirm('Delete this folder and everything inside it? This cannot be undone.')) return;
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteFolder', id: deleteFolderBtn.dataset.galleryDeleteFolder }) });
+      if (!ok) { alert(data.error || 'Could not delete folder.'); return; }
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+      return;
+    }
+
+    const moveUpBtn = e.target.closest('[data-gallery-move-up]');
+    const moveDownBtn = e.target.closest('[data-gallery-move-down]');
+    if (moveUpBtn || moveDownBtn) {
+      const id = moveUpBtn ? moveUpBtn.dataset.galleryMoveUp : moveDownBtn.dataset.galleryMoveDown;
+      const siblings = galleryImages.filter(i => i.folderId === galleryCurrentFolderId).sort((a, b) => a.order - b.order);
+      const idx = siblings.findIndex(s => s.id === id);
+      const swapWith = moveUpBtn ? idx - 1 : idx + 1;
+      if (idx === -1 || swapWith < 0 || swapWith >= siblings.length) return;
+      const reordered = [...siblings];
+      [reordered[idx], reordered[swapWith]] = [reordered[swapWith], reordered[idx]];
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'reorderImages', ids: reordered.map(i => i.id) }) });
+      if (!ok) { alert(data.error || 'Could not reorder.'); return; }
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+      return;
+    }
+
+    const copyMoveBtn = e.target.closest('[data-gallery-copy-move]');
+    if (copyMoveBtn) {
+      const panel = document.getElementById(`gallery-copy-move-${copyMoveBtn.dataset.galleryCopyMove}`);
+      if (panel) panel.style.display = panel.style.display === 'none' ? '' : 'none';
+      return;
+    }
+    const doCopyBtn = e.target.closest('[data-gallery-do-copy]');
+    const doMoveBtn = e.target.closest('[data-gallery-do-move]');
+    if (doCopyBtn || doMoveBtn) {
+      const id = doCopyBtn ? doCopyBtn.dataset.galleryDoCopy : doMoveBtn.dataset.galleryDoMove;
+      const select = document.querySelector(`[data-gallery-dest-select="${id}"]`);
+      const op = doCopyBtn ? 'copyImage' : 'moveImage';
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op, id, folderId: select.value || null }) });
+      if (!ok) { alert(data.error || 'Could not save.'); return; }
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+      return;
+    }
+
+    const deleteImageBtn = e.target.closest('[data-gallery-delete-image]');
+    if (deleteImageBtn) {
+      if (!confirm('Delete this photo?')) return;
+      const { ok, data } = await api(`${GALLERY_URL}?id=${encodeURIComponent(deleteImageBtn.dataset.galleryDeleteImage)}`, { method: 'DELETE' });
+      if (!ok) { alert(data.error || 'Could not delete.'); return; }
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+    }
   });
 }
 

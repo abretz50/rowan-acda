@@ -479,20 +479,23 @@
       <div class="admin-card"><p class="small muted">Nothing is configurable here yet.</p></div>
     </div>
 
-    <!-- ===== Gallery / Slideshow ===== -->
+    <!-- ===== Gallery (Google-Drive-style folders) ===== -->
     <div class="panel" id="panel-gallery">
       <div class="admin-card">
-        <h3>Upload Photo</h3>
-        <form class="admin-form" id="gallery-upload-form" novalidate>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+          <div id="gallery-breadcrumb" class="small"></div>
+          <button class="btn-sm outline" id="gallery-new-folder-btn">New Folder</button>
+        </div>
+        <div id="gallery-folder-note" class="small muted" style="display:none;margin-top:.6rem;padding:.5rem .7rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem"></div>
+        <form class="admin-form" id="gallery-upload-form" novalidate style="margin-top:.75rem">
           <input class="admin-input" type="file" id="gal-file" accept="image/*" required/>
           <input class="admin-input" type="text" id="gal-caption" placeholder="Caption (optional)"/>
-          <button class="btn-sm" type="submit">Upload</button>
+          <button class="btn-sm" type="submit">Upload photo here</button>
           <div class="admin-status" id="gallery-upload-status"></div>
         </form>
       </div>
       <div class="admin-card" style="margin-top:1rem">
-        <h3>Gallery <span class="small muted">— check "Slideshow" to feature on the homepage</span></h3>
-        <div id="gallery-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;margin-top:.6rem"></div>
+        <div id="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.9rem"><p class="small muted">Loading…</p></div>
       </div>
     </div>
 
@@ -577,6 +580,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=22"></script>
+<script defer src="/js/portal.js?v=23"></script>
 </body>
 </html>

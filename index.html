@@ -347,7 +347,7 @@
     try{
       const res = await fetch('/.netlify/functions/portal-gallery', { cache: 'no-store' });
       const data = await res.json();
-      if(data.ok) urls = data.gallery.filter(g => g.inSlideshow).sort((a,b)=>a.order-b.order).map(g => g.url);
+      if(data.ok) urls = (data.slideshow || []).map(g => g.url);
     } catch { /* fall through to fallback */ }
     if(!urls.length) urls = FALLBACK_IMAGES;
     runCycle(buildSlides(urls));
