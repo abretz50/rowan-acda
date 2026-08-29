@@ -1704,9 +1704,12 @@ function renderGalleryBreadcrumb() {
 
   const current = path[path.length - 1];
   const noteEl = document.getElementById('gallery-folder-note');
-  if (current && current.slideshowSource) {
+  if (current && current.liveTarget === 'homeSlideshow') {
     noteEl.style.display = '';
     noteEl.textContent = 'Anything dropped in this folder is live on the homepage slideshow.';
+  } else if (current && current.liveTarget) {
+    noteEl.style.display = '';
+    noteEl.textContent = 'The topmost photo in this folder (use ▲/▼ to reorder) is live on the site.';
   } else if (current && current.note) {
     noteEl.style.display = '';
     noteEl.textContent = current.note;
@@ -1722,7 +1725,7 @@ function galleryFolderTileHTML(f) {
     childFolderCount ? `${childFolderCount} folder${childFolderCount !== 1 ? 's' : ''}` : '',
     imageCount ? `${imageCount} photo${imageCount !== 1 ? 's' : ''}` : '',
   ].filter(Boolean).join(', ') || 'Empty';
-  const badge = f.slideshowSource ? ' <span class="badge-role eboard">live</span>' : '';
+  const badge = f.liveTarget ? ' <span class="badge-role eboard">live</span>' : '';
   return `<div class="admin-card" style="padding:.6rem" data-gallery-folder-tile="${escHtml(f.id)}">
     <div style="cursor:pointer" data-gallery-open-folder="${escHtml(f.id)}">
       <div style="font-size:2rem;text-align:center">📁</div>

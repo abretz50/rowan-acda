@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css?v=11"/>
+<script defer src="/js/live-images.js?v=1"></script>
 
 <style>
   /* Inline red "Add to Calendar" link */
@@ -94,7 +95,7 @@
 <header class="site-header" role="banner">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Rowan ACDA Home">
-      <img src="/assets/icons/logo2.png" alt="ACDA logo">
+      <img src="/assets/icons/logo2.png" alt="ACDA logo" data-live-img="logo">
       <span>Rowan ACDA</span>
     </a>
     <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
@@ -111,7 +112,7 @@
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
   <section class="banner-outer" role="region" aria-label="Home header">
-    <div class="page-banner"
+    <div class="page-banner" data-live-bg="homeBanner"
          style="--banner-img:url('/assets/img/index-header.jpg')">
       <div class="container">
         <h1 class="page-banner__title">Rowan ACDA</h1>
@@ -151,7 +152,7 @@
     <div class="events-feature">
       <!-- Choral Engagement -->
       <article class="card">
-        <img src="/assets/img/choral-engagement.jpg" alt="Choral Engagement" loading="lazy"
+        <img src="/assets/img/choral-engagement.jpg" alt="Choral Engagement" loading="lazy" data-live-img="choralEngagement"
              onerror="this.onerror=null;this.src='/assets/img/about2.png'">
         <div class="meta">
           <h3>Choral Engagement</h3>
@@ -161,7 +162,7 @@
 
       <!-- Sightreading -->
       <article class="card">
-        <img src="/assets/img/sightreading.jpg" alt="Sightreading" loading="lazy"
+        <img src="/assets/img/sightreading.jpg" alt="Sightreading" loading="lazy" data-live-img="sightReading"
              onerror="this.onerror=null;this.src='/assets/img/about1.png'">
         <div class="meta">
           <h3>Sightreading</h3>
@@ -171,7 +172,7 @@
 
       <!-- Development -->
       <article class="card">
-        <img src="/assets/img/development.jpg" alt="Development" loading="lazy"
+        <img src="/assets/img/development.jpg" alt="Development" loading="lazy" data-live-img="development"
              onerror="this.onerror=null;this.src='/assets/img/about.png'">
         <div class="meta">
           <h3>Development</h3>
@@ -272,7 +273,7 @@
   <div class="container footer-grid">
     <div class="footer-brand">
       <div class="brand--footer">
-        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56">
+        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56" data-live-img="logo">
         <div class="brand-text">
           <strong>Rowan ACDA</strong>
           <div class="muted">Collegiate Chapter</div>

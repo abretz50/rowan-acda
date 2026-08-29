@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css?v=11"/>
+<script defer src="/js/live-images.js?v=1"></script>
 
 <style>
   /* Compact 3-up gallery used in aside cards */
@@ -81,7 +82,7 @@
 <header class="site-header" role="banner">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Rowan ACDA Home">
-      <img src="/assets/icons/logo2.png" alt="ACDA logo">
+      <img src="/assets/icons/logo2.png" alt="ACDA logo" data-live-img="logo">
       <span>Rowan ACDA</span>
     </a>
     <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
@@ -98,7 +99,7 @@
 
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
 <section class="banner-outer" role="region" aria-label="Members header">
-  <div class="page-banner"
+  <div class="page-banner" data-live-bg="membersBanner"
        style="--banner-img:url('/assets/img/members-banner.jpg')">
     <div class="container">
       <h1 class="page-banner__title">Members</h1>
@@ -114,7 +115,7 @@
 
       <!-- Gallery: Join -->
       <div class="media-row" aria-label="Join Rowan ACDA gallery">
-        <div class="cell"><img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="ACDA group photo" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about2.png'"></div>
+        <div class="cell"><img src="/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg" alt="ACDA group photo" loading="lazy" data-live-img="joinPicture" onerror="this.onerror=null;this.src='/assets/img/about2.png'"></div>
       </div>
 
       <p>Open to all Rowan students who love choral music. Join on ProfLink to get involved!</p>
@@ -127,7 +128,7 @@
 
       <!-- Gallery: Perks -->
       <div class="media-row" aria-label="Perks gallery">
-        <div class="cell"><img src="/assets/img/ext_gallery4.png" alt="Rehearsal close-up" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about2.png'"></div>
+        <div class="cell"><img src="/assets/img/ext_gallery4.png" alt="Rehearsal close-up" loading="lazy" data-live-img="perksPicture" onerror="this.onerror=null;this.src='/assets/img/about2.png'"></div>
       </div>
 
       <ul>
@@ -143,7 +144,7 @@
 
       <!-- Gallery: Quick Links -->
       <div class="media-row" aria-label="Quick links gallery">
-        <div class="cell"><img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Performance moment" loading="lazy" onerror="this.onerror=null;this.src='/assets/img/about.png'"></div>
+        <div class="cell"><img src="/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg" alt="Performance moment" loading="lazy" data-live-img="quickLinksPicture" onerror="this.onerror=null;this.src='/assets/img/about.png'"></div>
       </div>
 
       <dl class="kv">
@@ -215,7 +216,7 @@
     <!-- Brand / blurb -->
     <div class="footer-brand">
       <div class="brand--footer">
-        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56">
+        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56" data-live-img="logo">
         <div class="brand-text">
           <strong>Rowan ACDA</strong>
           <div class="muted">Collegiate Chapter</div>

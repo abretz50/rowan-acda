@@ -5,18 +5,36 @@ import { loadMembers } from './_lib/loadMembers.mjs';
 import { hasPermission } from './_lib/permissions.mjs';
 import { GALLERY_SEED_URLS } from './_lib/gallerySeed.mjs';
 
-// Google-Drive-style folder tree: { folders: [{id,name,parentId,slideshowSource?,note?}],
+// Google-Drive-style folder tree: { folders: [{id,name,parentId,liveTarget?,note?}],
 // images: [{id,url,caption,folderId,order}] }. `folderId: null` means "top level".
-// The one folder flagged slideshowSource feeds the live homepage slideshow —
-// everything else here is organizational only (dropping a new photo into any
-// other folder doesn't change anything live on the site by itself).
+// Every folder with a `liveTarget` feeds something live on the public site:
+// 'homeSlideshow' uses every image in the folder (in order); every other
+// liveTarget uses just the lowest-order image in that folder as "the" live
+// photo for that spot, so dropping a new one in front of it swaps it out.
+const NAME_TO_LIVE_TARGET = {
+  'Home Page Banner': 'homeBanner',
+  'Choral Engagement Photo': 'choralEngagement',
+  'Sight Reading Photo': 'sightReading',
+  'Development Photo': 'development',
+  'Events Banner': 'eventsBanner',
+  'Member Banner': 'membersBanner',
+  'Join Rowan ACDA Picture': 'joinPicture',
+  'Perks Picture': 'perksPicture',
+  'Quick Links Picture': 'quickLinksPicture',
+  'E-Board Banner Photo': 'eboardBanner',
+  'Resource Banner': 'resourcesBanner',
+  'Logo': 'logo',
+};
+
 function buildDefaultGalleryTree() {
   const folders = [];
   const images = [];
   let order = 0;
-  const addFolder = (name, parentId, extra = {}) => {
+  const addFolder = (name, parentId, liveTarget) => {
     const id = randomUUID();
-    folders.push({ id, name, parentId, ...extra });
+    const f = { id, name, parentId };
+    if (liveTarget) f.liveTarget = liveTarget;
+    folders.push(f);
     return id;
   };
   const addImage = (url, folderId) => {
@@ -26,37 +44,60 @@ function buildDefaultGalleryTree() {
   const websiteData = addFolder('Website Data', null);
 
   const homePage = addFolder('Home Page', websiteData);
-  const chapterHighlights = addFolder('Chapter Highlights Slideshow', homePage, { slideshowSource: true });
+  const chapterHighlights = addFolder('Chapter Highlights Slideshow', homePage, 'homeSlideshow');
   GALLERY_SEED_URLS.forEach(url => addImage(url, chapterHighlights));
-  addImage('/assets/img/index-header.jpg', addFolder('Home Page Banner', homePage));
-  addImage('/assets/img/choral-engagement.jpg', addFolder('Choral Engagement Photo', homePage));
-  addImage('/assets/img/sightreading.jpg', addFolder('Sight Reading Photo', homePage));
-  addImage('/assets/img/development.jpg', addFolder('Development Photo', homePage));
+  addImage('/assets/img/index-header.jpg', addFolder('Home Page Banner', homePage, 'homeBanner'));
+  addImage('/assets/img/choral-engagement.jpg', addFolder('Choral Engagement Photo', homePage, 'choralEngagement'));
+  addImage('/assets/img/sightreading.jpg', addFolder('Sight Reading Photo', homePage, 'sightReading'));
+  addImage('/assets/img/development.jpg', addFolder('Development Photo', homePage, 'development'));
 
   const events = addFolder('Events', websiteData);
-  addImage('/assets/img/events-banner.png', addFolder('Events Banner', events));
+  addImage('/assets/img/events-banner.png', addFolder('Events Banner', events, 'eventsBanner'));
 
   const membersPage = addFolder('Members Page', websiteData);
-  addImage('/assets/img/members-banner.jpg', addFolder('Member Banner', membersPage));
-  addImage('/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg', addFolder('Join Rowan ACDA Picture', membersPage));
-  addImage('/assets/img/ext_gallery4.png', addFolder('Perks Picture', membersPage));
-  addImage('/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg', addFolder('Quick Links Picture', membersPage));
-  const eboardFolder = addFolder('E-Board', membersPage, { note: 'E-Board profile pictures are updated from the Site Content tab.' });
-  addImage('/assets/img/eboard-header.jpg', addFolder('E-Board Banner Photo', eboardFolder));
+  addImage('/assets/img/members-banner.jpg', addFolder('Member Banner', membersPage, 'membersBanner'));
+  addImage('/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg', addFolder('Join Rowan ACDA Picture', membersPage, 'joinPicture'));
+  addImage('/assets/img/ext_gallery4.png', addFolder('Perks Picture', membersPage, 'perksPicture'));
+  addImage('/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg', addFolder('Quick Links Picture', membersPage, 'quickLinksPicture'));
+  const eboardFolderId = addFolder('E-Board', membersPage);
+  folders.find(f => f.id === eboardFolderId).note = 'E-Board profile pictures are updated from the Site Content tab.';
+  addImage('/assets/img/eboard-header.jpg', addFolder('E-Board Banner Photo', eboardFolderId, 'eboardBanner'));
 
   const resources = addFolder('Resources', websiteData);
-  addImage('/assets/img/resources-banner.png', addFolder('Resource Banner', resources));
+  addImage('/assets/img/resources-banner.png', addFolder('Resource Banner', resources, 'resourcesBanner'));
 
-  addImage('/assets/icons/logo2.png', addFolder('Logo', websiteData));
+  addImage('/assets/icons/logo2.png', addFolder('Logo', websiteData, 'logo'));
 
   return { folders, images };
+}
+
+// One-time backfill for a tree that was already seeded before liveTarget
+// existed (it used a boolean `slideshowSource` and left every other special
+// folder unmarked) — upgrades in place by matching on the folder names the
+// seed always uses, without touching anything a person already renamed.
+function upgradeLegacyLiveTargets(tree) {
+  let changed = false;
+  const alreadyUsed = new Set(tree.folders.filter(f => f.liveTarget).map(f => f.liveTarget));
+  for (const f of tree.folders) {
+    if (f.slideshowSource && !f.liveTarget) {
+      f.liveTarget = 'homeSlideshow';
+      delete f.slideshowSource;
+      alreadyUsed.add('homeSlideshow');
+      changed = true;
+    } else if (!f.liveTarget && NAME_TO_LIVE_TARGET[f.name] && !alreadyUsed.has(NAME_TO_LIVE_TARGET[f.name])) {
+      f.liveTarget = NAME_TO_LIVE_TARGET[f.name];
+      alreadyUsed.add(f.liveTarget);
+      changed = true;
+    }
+  }
+  return changed;
 }
 
 // Migrates the old flat inSlideshow/order array (from before folders existed)
 // into the new tree so nothing anyone already uploaded gets silently lost.
 function migrateOldGallery(oldArray) {
   const tree = buildDefaultGalleryTree();
-  const slideshowFolder = tree.folders.find(f => f.slideshowSource);
+  const slideshowFolder = tree.folders.find(f => f.liveTarget === 'homeSlideshow');
   const seededUrls = new Set(tree.images.filter(i => i.folderId === slideshowFolder.id).map(i => i.url));
   let importedFolderId = null;
   const importedFolder = () => {
@@ -90,6 +131,9 @@ async function loadGallery() {
     await setCollection('gallery', migrated);
     return migrated;
   }
+  if (upgradeLegacyLiveTargets(stored)) {
+    await setCollection('gallery', stored);
+  }
   return stored;
 }
 
@@ -119,13 +163,19 @@ export default async function handler(req) {
     const wantsAdmin = new URL(req.url).searchParams.get('admin') === '1';
     const authed = wantsAdmin && await canManageGallery(req);
     if (authed) return json({ ok: true, folders: tree.folders, images: tree.images });
-    // Public view: only the images in the folder that feeds the live
-    // homepage slideshow — everything else here is E-Board-only.
-    const slideshowFolder = tree.folders.find(f => f.slideshowSource);
+    // Public view: the slideshow images (in order) plus one resolved URL per
+    // other live target — everything else in the tree is E-Board-only.
+    const slideshowFolder = tree.folders.find(f => f.liveTarget === 'homeSlideshow');
     const slideshow = slideshowFolder
       ? tree.images.filter(i => i.folderId === slideshowFolder.id).sort((a, b) => a.order - b.order).map(i => ({ url: i.url, caption: i.caption }))
       : [];
-    return json({ ok: true, slideshow });
+    const liveImages = {};
+    for (const f of tree.folders) {
+      if (!f.liveTarget || f.liveTarget === 'homeSlideshow') continue;
+      const first = tree.images.filter(i => i.folderId === f.id).sort((a, b) => a.order - b.order)[0];
+      if (first) liveImages[f.liveTarget] = first.url;
+    }
+    return json({ ok: true, slideshow, liveImages });
   }
 
   const auth = await requireAuth(req, { perm: 'gallery' });
@@ -176,8 +226,8 @@ export default async function handler(req) {
       const target = tree.folders.find(f => f.id === body.id);
       if (!target) return json({ ok: false, error: 'Folder not found.' }, 404);
       const idsToDelete = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
-      if ([...idsToDelete].some(id => tree.folders.find(f => f.id === id)?.slideshowSource)) {
-        return json({ ok: false, error: 'This folder feeds the live homepage slideshow (or contains the one that does) and cannot be deleted.' }, 400);
+      if ([...idsToDelete].some(id => tree.folders.find(f => f.id === id)?.liveTarget)) {
+        return json({ ok: false, error: 'This folder feeds a live part of the site (or contains one that does) and cannot be deleted.' }, 400);
       }
       tree.folders = tree.folders.filter(f => !idsToDelete.has(f.id));
       tree.images = tree.images.filter(i => !idsToDelete.has(i.folderId));

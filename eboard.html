@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
 <link rel="stylesheet" href="/css/components.css?v=11"/>
+<script defer src="/js/live-images.js?v=1"></script>
 
 <style>
   /* Page-local tweaks (keeps ACDA look) */
@@ -90,7 +91,7 @@
 <header class="site-header" role="banner">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Rowan ACDA Home">
-      <img src="/assets/icons/logo2.png" alt="ACDA logo"/>
+      <img src="/assets/icons/logo2.png" alt="ACDA logo" data-live-img="logo"/>
       <span>Rowan ACDA</span>
     </a>
     <button id="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">☰</button>
@@ -108,7 +109,7 @@
 <main class="container" role="main" style="padding:1.25rem 0 2rem">
   <!-- Banner -->
   <section class="banner-outer" role="region" aria-label="E-Board header">
-    <div class="page-banner" style="--banner-img:url('/assets/img/eboard-header.jpg');">
+    <div class="page-banner" data-live-bg="eboardBanner" style="--banner-img:url('/assets/img/eboard-header.jpg');">
       <div class="container">
         <h1 class="page-banner__title">E-Board</h1>
         <p class="page-banner__subtext">Meet and Get in Touch with our Executive Board</p>
@@ -127,7 +128,7 @@
     <!-- Brand / blurb -->
     <div class="footer-brand">
       <div class="brand--footer">
-        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56">
+        <img src="/assets/icons/logo2.png" alt="Rowan ACDA logo" width="56" height="56" data-live-img="logo">
         <div class="brand-text">
           <strong>Rowan ACDA</strong>
           <div class="muted">Collegiate Chapter</div>
