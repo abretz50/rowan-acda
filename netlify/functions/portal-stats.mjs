@@ -1,6 +1,7 @@
 import { getCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
+import { shortMonthYear } from './_lib/dateFmt.mjs';
 
 // Any signed-in E-Board/admin account can see these — they're aggregate
 // club numbers (counts, totals, a name+total leaderboard), not raw member
@@ -75,7 +76,7 @@ export default async function handler(req) {
     .slice()
     .sort((a, b) => new Date(a.start) - new Date(b.start));
   const attendanceOverTime = pastMeetings.map(ev => ({
-    label: new Date(ev.start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    label: shortMonthYear(new Date(ev.start)),
     count: (attendeesByEvent.get(ev.id) || new Set()).size,
   }));
 

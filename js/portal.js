@@ -309,7 +309,7 @@ async function loadOverviewStats() {
   if (s.topEarners.length) {
     earnersCard.style.display = '';
     earnersEl.innerHTML = s.topEarners.map((e, i) => `<div class="admin-row">
-      <div>${avatarHTML(e.photoUrl)}<span class="name">${i + 1}. ${escHtml(e.name)}</span></div>
+      <div><span class="name">${i + 1}.</span> ${avatarHTML(e.photoUrl)}<span class="name">${escHtml(e.name)}</span></div>
       <div class="actions"><span class="badge-role eboard">${e.total} pt${e.total !== 1 ? 's' : ''}</span></div>
     </div>`).join('');
   } else {
@@ -492,7 +492,7 @@ function taskRowHTML(t) {
     <div class="admin-row${t.status === 'done' ? ' task-done' : ''}" style="cursor:pointer;box-shadow:inset 3px 0 0 ${color}" data-task-toggle="${escHtml(t.id)}">
       <div>
         <span class="name">${escHtml(t.title)}</span> ${priorityBadge}${overdue ? ' <span class="badge-role inactive">overdue</span>' : ''}${isMine ? ' <span class="badge-role eboard">mine</span>' : ''}
-        <div class="meta">For ${escHtml(t.assignedToName)} · assigned by ${escHtml(t.assignedByName)}${t.dueDate ? ' · due ' + fmtDashDate(t.dueDate) : ''}</div>
+        <div class="meta" style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap">${avatarHTML(t.assignedToPhotoUrl, 18)}<span>For ${escHtml(t.assignedToName)} · assigned by ${escHtml(t.assignedByName)}${t.dueDate ? ' · due ' + fmtDashDate(t.dueDate) : ''}</span></div>
         ${descPreview ? `<p class="small" style="margin:.35rem 0 0">${escHtml(descPreview)}</p>` : ''}
       </div>
       <div class="actions">
@@ -839,7 +839,7 @@ function memberRowHTML(m) {
   const isPermanentAdmin = isPermanentAdminEmail(m.email);
   return `<div class="admin-row${selected}" style="cursor:pointer" data-member-id="${escHtml(m.id)}">
     <div>
-      <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${roleBadge}
+      ${avatarHTML(m.photoUrl)}<span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${roleBadge}
       <div class="meta">${escHtml(m.email)}</div>
     </div>
     <div class="actions">

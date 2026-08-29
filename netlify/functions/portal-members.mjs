@@ -3,6 +3,7 @@ import { loadMembers, saveMembers, publicMember } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { getCollection } from './_lib/blobs.mjs';
 import { isPermanentAdmin } from './_lib/permissions.mjs';
+import { shortMonthYear } from './_lib/dateFmt.mjs';
 
 function normEmail(e) { return String(e || '').trim().toLowerCase(); }
 
@@ -65,7 +66,7 @@ async function computeMemberStats(members) {
     const monthStart = new Date(ayStart.getFullYear(), ayStart.getMonth() + i, 1);
     const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 23, 59, 59, 999);
     const count = activeMembers.filter(m => new Date(m.joinedAt) <= monthEnd).length;
-    const label = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const label = shortMonthYear(monthStart);
     return { label, count };
   });
 

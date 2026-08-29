@@ -20,11 +20,16 @@ export default async function handler(req) {
 
   if (req.method === 'GET') {
     const members = await loadMembers();
+    // Joined live (not stored on the task) so an updated profile picture
+    // shows up on old tasks too, instead of freezing whatever photo existed
+    // when the task was created.
+    const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
+    const tasksWithPhotos = tasks.map(t => ({ ...t, assignedToPhotoUrl: photoById.get(t.assignedToId) || null }));
     const assignableMembers = members
       .filter(m => m.hasAccount && m.active !== false && m.role !== 'member')
       .map(m => ({ id: m.id, name: m.name, role: m.role }))
       .sort((a, b) => a.name.localeCompare(b.name));
-    return json({ ok: true, tasks, assignableMembers });
+    return json({ ok: true, tasks: tasksWithPhotos, assignableMembers });
   }
 
   let body;
