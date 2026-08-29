@@ -2,6 +2,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@netlify/blobs": "^6.0.0"
+    "@netlify/blobs": "^11.0.0"
   }
 }

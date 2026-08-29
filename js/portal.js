@@ -57,6 +57,7 @@ let galleryImages = [];
 let galleryCurrentFolderId = null;
 let gallerySelectedImageIds = new Set();
 let galleryDraggingIds = null;
+let galleryDraggingFolderId = null;
 let eventsRefreshTimer = null;
 const KNOWN_VOICINGS = ['','SATB','SATB divisi','SAB','SSA','SSAA','TTBB','2-Part','Unison','Other'];
 const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Chamber Ensemble','Strings','Band','Brass','Other'];
@@ -1727,11 +1728,11 @@ function galleryTopAncestorColor(folder) {
   return GALLERY_COLOR_PALETTE[hash % GALLERY_COLOR_PALETTE.length];
 }
 
-// Flat, indented "Top Level" + every folder (except excludeIds, so a folder
+// Flat, indented "Home" + every folder (except excludeIds, so a folder
 // can't be moved/copied into itself or its own subfolder) — a simple
 // dropdown stands in for a full tree picker given how few folders there'll
 // realistically be. There's only one tree here (no multiple "drives" to
-// choose between), so the root option is just "Top Level", not a name.
+// choose between), so the root option is just "Home", not a name.
 function galleryFolderOptionsHTML(excludeIds) {
   const eligible = galleryFolders.filter(f => !excludeIds.has(f.id));
   const withPath = eligible.map(f => ({ f, path: galleryFolderPath(f.id) }));
@@ -1739,7 +1740,7 @@ function galleryFolderOptionsHTML(excludeIds) {
   const opts = withPath.map(({ f, path }) =>
     `<option value="${escHtml(f.id)}" style="background:${galleryTopAncestorColor(f)}">${'— '.repeat(path.length - 1)}${escHtml(f.name)}</option>`
   ).join('');
-  return `<option value="">Top Level</option>${opts}`;
+  return `<option value="">Home</option>${opts}`;
 }
 
 function closeGalleryMenus() {
@@ -1748,7 +1749,7 @@ function closeGalleryMenus() {
 
 function renderGalleryBreadcrumb() {
   const path = galleryFolderPath(galleryCurrentFolderId);
-  const crumbs = [`<a href="#" data-gallery-crumb="">Top Level</a>`, ...path.map(f => `<a href="#" data-gallery-crumb="${escHtml(f.id)}" style="color:${galleryTopAncestorColor(f)};filter:brightness(.55)">${escHtml(f.name)}</a>`)];
+  const crumbs = [`<a href="#" data-gallery-crumb="">Home</a>`, ...path.map(f => `<a href="#" data-gallery-crumb="${escHtml(f.id)}" style="color:${galleryTopAncestorColor(f)};filter:brightness(.55)">${escHtml(f.name)}</a>`)];
   document.getElementById('gallery-breadcrumb').innerHTML = crumbs.join(' <span class="muted">/</span> ');
   document.getElementById('gallery-back-btn').style.display = path.length ? '' : 'none';
 
@@ -1795,7 +1796,7 @@ function galleryFolderTileHTML(f) {
   ].filter(Boolean).join(', ') || 'Empty';
   const badge = f.liveTarget ? ' <span class="badge-role eboard">live</span>' : '';
   const accent = galleryTopAncestorColor(f);
-  return `<div class="admin-card" style="padding:.6rem;position:relative;box-shadow:inset 4px 0 0 ${accent}" data-gallery-folder-tile="${escHtml(f.id)}">
+  return `<div class="admin-card" style="padding:.6rem;position:relative;box-shadow:inset 4px 0 0 ${accent}" data-gallery-folder-tile="${escHtml(f.id)}" draggable="true" data-gallery-draggable="${escHtml(f.id)}" data-gallery-drag-kind="folder">
     ${galleryMenuHTML('folder', f.id)}
     <div style="cursor:pointer" data-gallery-open-folder="${escHtml(f.id)}">
       <div style="font-size:2rem;text-align:center;background:${accent};border-radius:.5rem;width:2.4rem;height:2.4rem;line-height:2.4rem;margin:0 auto">📁</div>
@@ -1808,7 +1809,7 @@ function galleryFolderTileHTML(f) {
 function galleryImageTileHTML(img, siblings) {
   const idx = siblings.findIndex(s => s.id === img.id);
   const checked = gallerySelectedImageIds.has(img.id);
-  return `<div class="admin-card" style="padding:.5rem;position:relative${checked ? ';box-shadow:0 0 0 2px var(--brand)' : ''}" data-gallery-image-tile="${escHtml(img.id)}" draggable="true" data-gallery-draggable="${escHtml(img.id)}">
+  return `<div class="admin-card" style="padding:.5rem;position:relative${checked ? ';box-shadow:0 0 0 2px var(--brand)' : ''}" data-gallery-image-tile="${escHtml(img.id)}" draggable="true" data-gallery-draggable="${escHtml(img.id)}" data-gallery-drag-kind="image">
     <input type="checkbox" data-gallery-select="${escHtml(img.id)}" ${checked ? 'checked' : ''} title="Select" style="position:absolute;top:.4rem;left:.4rem;z-index:4;width:18px;height:18px;cursor:pointer"/>
     ${galleryMenuHTML('image', img.id)}
     <img src="${escHtml(img.url)}" alt="${escHtml(img.caption || '')}" draggable="false" style="width:100%;height:110px;object-fit:cover;border-radius:.5rem;display:block"/>
@@ -1834,7 +1835,7 @@ function renderGalleryBulkBar() {
   document.getElementById('gallery-bulk-count').textContent = `${count} photo${count !== 1 ? 's' : ''} selected`;
   // Re-rendered on every checkbox toggle (so the count stays live), which
   // would otherwise silently reset an already-chosen destination back to
-  // "Top Level" the moment a second photo gets checked — preserve it.
+  // "Home" the moment a second photo gets checked — preserve it.
   const select = document.getElementById('gallery-bulk-select');
   const previousValue = select.value;
   select.innerHTML = galleryFolderOptionsHTML(new Set());
@@ -2062,21 +2063,53 @@ function wireGalleryPanel() {
   // Drag a photo (or the whole current selection, if the dragged one is
   // part of it) onto a folder tile to move it there.
   const gridEl = document.getElementById('gallery-grid');
+  const isDragActive = () => galleryDraggingIds || galleryDraggingFolderId;
+  // Drops onto a folder tile move into it; drops onto a breadcrumb crumb or
+  // the Back button move "out" to that (shallower) folder — same handler
+  // either way, just a different destination id.
+  const dropOntoFolder = async (folderId) => {
+    if (galleryDraggingFolderId) {
+      const sourceFolderId = galleryDraggingFolderId;
+      galleryDraggingFolderId = null;
+      if (sourceFolderId === folderId) return;
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'moveFolder', id: sourceFolderId, parentId: folderId }) });
+      if (!ok) { alert(data.error || 'Could not move folder.'); return; }
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+      return;
+    }
+    if (galleryDraggingIds) {
+      const ids = galleryDraggingIds;
+      galleryDraggingIds = null;
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'bulkMoveImages', ids, folderId }) });
+      if (!ok) { alert(data.error || 'Could not move.'); return; }
+      gallerySelectedImageIds.clear();
+      galleryFolders = data.folders; galleryImages = data.images;
+      renderGalleryView();
+    }
+  };
+
   gridEl.addEventListener('dragstart', (e) => {
     const tile = e.target.closest('[data-gallery-draggable]');
     if (!tile) return;
     const id = tile.dataset.galleryDraggable;
-    galleryDraggingIds = (gallerySelectedImageIds.has(id) && gallerySelectedImageIds.size > 1)
-      ? [...gallerySelectedImageIds] : [id];
+    if (tile.dataset.galleryDragKind === 'folder') {
+      galleryDraggingIds = null;
+      galleryDraggingFolderId = id;
+    } else {
+      galleryDraggingFolderId = null;
+      galleryDraggingIds = (gallerySelectedImageIds.has(id) && gallerySelectedImageIds.size > 1)
+        ? [...gallerySelectedImageIds] : [id];
+    }
     e.dataTransfer.effectAllowed = 'move';
     try { e.dataTransfer.setData('text/plain', id); } catch {}
   });
   gridEl.addEventListener('dragenter', (e) => {
-    if (!galleryDraggingIds) return;
+    if (!isDragActive()) return;
     if (e.target.closest('[data-gallery-folder-tile]')) e.preventDefault();
   });
   gridEl.addEventListener('dragover', (e) => {
-    if (!galleryDraggingIds) return;
+    if (!isDragActive()) return;
     const folderTile = e.target.closest('[data-gallery-folder-tile]');
     if (!folderTile) return;
     e.preventDefault();
@@ -2088,19 +2121,50 @@ function wireGalleryPanel() {
   });
   gridEl.addEventListener('drop', async (e) => {
     const folderTile = e.target.closest('[data-gallery-folder-tile]');
-    if (!folderTile || !galleryDraggingIds) return;
+    if (!folderTile || !isDragActive()) return;
     e.preventDefault();
     folderTile.style.outline = '';
-    const folderId = folderTile.dataset.galleryFolderTile;
-    const ids = galleryDraggingIds;
-    galleryDraggingIds = null;
-    const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'bulkMoveImages', ids, folderId }) });
-    if (!ok) { alert(data.error || 'Could not move.'); return; }
-    gallerySelectedImageIds.clear();
-    galleryFolders = data.folders; galleryImages = data.images;
-    renderGalleryView();
+    await dropOntoFolder(folderTile.dataset.galleryFolderTile);
   });
-  gridEl.addEventListener('dragend', () => { galleryDraggingIds = null; });
+  gridEl.addEventListener('dragend', () => { galleryDraggingIds = null; galleryDraggingFolderId = null; });
+
+  // Breadcrumb and Back button as drop targets, so a folder (or photo) can
+  // be dragged "out" to a shallower level without needing that ancestor's
+  // tile to be visible in the current grid.
+  const crumbBar = document.getElementById('gallery-breadcrumb');
+  crumbBar.addEventListener('dragover', (e) => {
+    if (!isDragActive()) return;
+    const crumb = e.target.closest('[data-gallery-crumb]');
+    if (!crumb) return;
+    e.preventDefault();
+    crumb.style.outline = '2px solid var(--brand)';
+  });
+  crumbBar.addEventListener('dragleave', (e) => {
+    const crumb = e.target.closest('[data-gallery-crumb]');
+    if (crumb) crumb.style.outline = '';
+  });
+  crumbBar.addEventListener('drop', async (e) => {
+    const crumb = e.target.closest('[data-gallery-crumb]');
+    if (!crumb || !isDragActive()) return;
+    e.preventDefault();
+    crumb.style.outline = '';
+    await dropOntoFolder(crumb.dataset.galleryCrumb || null);
+  });
+  const backBtn = document.getElementById('gallery-back-btn');
+  backBtn.addEventListener('dragover', (e) => {
+    if (!isDragActive()) return;
+    e.preventDefault();
+    backBtn.style.outline = '2px solid var(--brand)';
+  });
+  backBtn.addEventListener('dragleave', () => { backBtn.style.outline = ''; });
+  backBtn.addEventListener('drop', async (e) => {
+    if (!isDragActive()) return;
+    e.preventDefault();
+    backBtn.style.outline = '';
+    const path = galleryFolderPath(galleryCurrentFolderId);
+    const parentId = path.length >= 2 ? path[path.length - 2].id : null;
+    await dropOntoFolder(parentId);
+  });
 }
 
 // ── Boot ──────────────────────────────────────────────────
