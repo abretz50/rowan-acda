@@ -245,8 +245,11 @@ function showDashboard() {
 // anywhere a member's name shows up — Top Earners, Recent Comments.
 function avatarHTML(photoUrl, size) {
   const s = size || 26;
+  // display:inline-block is required here — base.css resets every <img> to
+  // display:block, which would otherwise force the photo onto its own line
+  // above the name instead of sitting beside it.
   return photoUrl
-    ? `<img src="${escHtml(photoUrl)}" alt="" style="width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem"/>`
+    ? `<img src="${escHtml(photoUrl)}" alt="" style="display:inline-block;width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem"/>`
     : `<span style="display:inline-flex;align-items:center;justify-content:center;width:${s}px;height:${s}px;border-radius:50%;background:var(--surface);border:1px solid var(--border);vertical-align:middle;margin-right:.4rem;font-size:${Math.round(s * 0.55)}px">👤</span>`;
 }
 
@@ -514,10 +517,8 @@ function renderTasksList() {
   const visible = taskViewMode === 'mine' ? allTasks.filter(t => me && t.assignedToId === me.id) : allTasks;
   const sorted = visible.slice().sort((a, b) => {
     if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
-    if (taskViewMode === 'mine') {
-      const p = (PRIORITY_ORDER[a.priority] ?? 3) - (PRIORITY_ORDER[b.priority] ?? 3);
-      if (p !== 0) return p;
-    }
+    const p = (PRIORITY_ORDER[a.priority] ?? 3) - (PRIORITY_ORDER[b.priority] ?? 3);
+    if (p !== 0) return p;
     if (!a.dueDate && !b.dueDate) return 0;
     if (!a.dueDate) return 1;
     if (!b.dueDate) return -1;
@@ -853,7 +854,9 @@ function memberRowHTML(m) {
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-view-points="${escHtml(m.id)}">Points history</button>
-      <button class="btn-sm outline" data-verify-proflink="${escHtml(m.id)}">Verify ProfLink</button>
+      ${m.proflinkPointsId
+        ? `<button class="btn-sm delete" data-unverify-proflink="${escHtml(m.proflinkPointsId)}" data-member-id="${escHtml(m.id)}">Unverify ProfLink</button>`
+        : `<button class="btn-sm outline" data-verify-proflink="${escHtml(m.id)}">Verify ProfLink</button>`}
       ${!isPermanentAdmin ? `<button class="btn-sm outline" data-toggle-member="${escHtml(m.id)}" data-next="${m.active === false ? 'true' : 'false'}">${m.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
       ${!isPermanentAdmin ? `<button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>` : ''}
     </div>
@@ -949,6 +952,19 @@ function wireMembersPanel() {
       if (!confirm(`Award 100 points to ${member?.name || 'this member'} for being verified on ProfLink?`)) return;
       const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'manualAward', memberId, amount: 100, reason: 'ProfLink verified' }) });
       if (!ok) { alert(data.error || 'Could not award points.'); return; }
+      await loadMembers();
+      if (selectedMemberId === memberId) selectMemberPoints(memberId);
+      return;
+    }
+    const unverifyBtn = e.target.closest('[data-unverify-proflink]');
+    if (unverifyBtn) {
+      const pointsId = unverifyBtn.dataset.unverifyProflink;
+      const memberId = unverifyBtn.dataset.memberId;
+      const member = allMembers.find(m => m.id === memberId);
+      if (!confirm(`Remove the 100 ProfLink verification points from ${member?.name || 'this member'}?`)) return;
+      const { ok, data } = await api(`${POINTS_URL}?id=${encodeURIComponent(pointsId)}`, { method: 'DELETE' });
+      if (!ok) { alert(data.error || 'Could not remove points.'); return; }
+      await loadMembers();
       if (selectedMemberId === memberId) selectMemberPoints(memberId);
       return;
     }

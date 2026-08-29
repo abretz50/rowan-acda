@@ -374,7 +374,7 @@
   /* ---------- Comments ---------- */
   function commentAvatarHTML(photoUrl){
     return photoUrl
-      ? '<img src="'+escHtml(photoUrl)+'" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem">'
+      ? '<img src="'+escHtml(photoUrl)+'" alt="" style="display:inline-block;width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem">'
       : '<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#f3f4f6;border:1px solid var(--border);vertical-align:middle;margin-right:.4rem;font-size:14px">👤</span>';
   }
   function commentRowHTML(c, eventId, isReply){

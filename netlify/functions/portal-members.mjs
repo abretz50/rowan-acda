@@ -53,10 +53,11 @@ async function computeMemberStats(members) {
     return c > 3;
   }).length;
 
-  // Membership growth: cumulative active-member count for each of the 12
-  // fixed months of the current academic year (Aug through the following
-  // Jul), not just whichever months happen to have a join date.
-  const membershipOverTime = Array.from({ length: 12 }, (_, i) => {
+  // Membership growth: cumulative active-member count for each month of the
+  // current academic year so far (Aug through the current month) — no
+  // projecting into months that haven't happened yet.
+  const monthsSoFar = (now.getFullYear() - ayStart.getFullYear()) * 12 + (now.getMonth() - ayStart.getMonth()) + 1;
+  const membershipOverTime = Array.from({ length: Math.min(12, Math.max(1, monthsSoFar)) }, (_, i) => {
     const monthStart = new Date(ayStart.getFullYear(), ayStart.getMonth() + i, 1);
     const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 23, 59, 59, 999);
     const count = activeMembers.filter(m => new Date(m.joinedAt) <= monthEnd).length;
@@ -81,7 +82,16 @@ export default async function handler(req) {
 
   if (req.method === 'GET') {
     const stats = await computeMemberStats(members);
-    return json({ ok: true, members: members.map(publicMember), stats });
+    // ProfLink verification isn't its own field — it's just whether a member
+    // has an approved "ProfLink verified" manual award — so the roster can
+    // show Verify vs. Unverify without a separate flag to keep in sync.
+    const points = await getCollection('points', []);
+    const proflinkPointsIdByMember = new Map();
+    for (const p of points) {
+      if (p.status === 'approved' && p.reason === 'ProfLink verified') proflinkPointsIdByMember.set(p.memberId, p.id);
+    }
+    const membersOut = members.map(m => ({ ...publicMember(m), proflinkPointsId: proflinkPointsIdByMember.get(m.id) || null }));
+    return json({ ok: true, members: membersOut, stats });
   }
 
   let body;
