@@ -221,6 +221,7 @@ function showDashboard() {
   });
 
   loadOverviewStats();
+  loadRecentComments(); // shown on both Overview and Members — open to any E-Board account
   loadTasks(); // Tasks is open to any E-Board account, not permission-gated
   if (canUse('accounts')) loadAccounts();
   document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
@@ -232,7 +233,7 @@ function showDashboard() {
     clearInterval(eventsRefreshTimer);
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
-  if (canUse('members')) { loadMembers(); loadRecentComments(); }
+  if (canUse('members')) loadMembers();
   if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) loadEboardRoster();
@@ -607,12 +608,9 @@ function wireTasksPanel() {
   });
 }
 
-// ── Recent Comments (shown on the Members tab) ────────────
-async function loadRecentComments() {
-  const el = document.getElementById('recent-comments-list');
-  const { ok, data } = await api(COMMENTS_URL, { method: 'GET' });
-  if (!ok) { el.innerHTML = '<p class="small muted">Could not load comments.</p>'; return; }
-  el.innerHTML = data.comments.map(c => `<div class="admin-row">
+// ── Recent Comments (shown on both Overview and Members) ──
+function recentCommentsHTML(comments) {
+  return comments.map(c => `<div class="admin-row">
     <div>
       ${avatarHTML(c.photoUrl)}<span class="name">${escHtml(c.memberName)}</span>${c.parentId ? ' <span class="badge-role inactive">reply</span>' : ''}
       <div class="meta">Posted ${new Date(c.createdAt).toLocaleString()} on "${escHtml(c.eventTitle)}"</div>
@@ -622,15 +620,26 @@ async function loadRecentComments() {
   </div>`).join('') || '<p class="small muted">No Comments Yet!</p>';
 }
 
+async function loadRecentComments() {
+  const { ok, data } = await api(COMMENTS_URL, { method: 'GET' });
+  const html = ok ? recentCommentsHTML(data.comments) : '<p class="small muted">Could not load comments.</p>';
+  const membersEl = document.getElementById('recent-comments-list');
+  if (membersEl) membersEl.innerHTML = html;
+  const overviewEl = document.getElementById('overview-comments-list');
+  if (overviewEl) overviewEl.innerHTML = html;
+}
+
 function wireRecentCommentsPanel() {
-  document.getElementById('recent-comments-list').addEventListener('click', async (e) => {
+  const onDeleteClick = async (e) => {
     const delBtn = e.target.closest('[data-delete-comment]');
     if (!delBtn) return;
     if (!confirm('Delete this comment?')) return;
     const { ok, data } = await api(`${COMMENTS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteComment)}`, { method: 'DELETE' });
     if (!ok) { alert(data.error || 'Could not delete comment.'); return; }
     loadRecentComments();
-  });
+  };
+  document.getElementById('recent-comments-list').addEventListener('click', onDeleteClick);
+  document.getElementById('overview-comments-list').addEventListener('click', onDeleteClick);
 }
 
 // ── Events tab ────────────────────────────────────────────
