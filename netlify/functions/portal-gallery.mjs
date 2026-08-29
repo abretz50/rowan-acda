@@ -343,6 +343,13 @@ export default async function handler(req) {
       return json({ ok: true, folders: tree.folders, images: tree.images });
     }
 
+    if (op === 'bulkDeleteImages') {
+      const ids = new Set(Array.isArray(body.ids) ? body.ids : []);
+      tree.images = tree.images.filter(i => !ids.has(i.id));
+      await setCollection('gallery', tree);
+      return json({ ok: true, folders: tree.folders, images: tree.images });
+    }
+
     if (op === 'reorderImages') {
       const ids = Array.isArray(body.ids) ? body.ids : [];
       const byId = new Map(tree.images.map(i => [i.id, i]));

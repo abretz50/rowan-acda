@@ -1713,16 +1713,33 @@ function galleryDescendantIds(folderId) {
   return new Set(ids);
 }
 
-// Flat, indented "My Drive" + every folder (except excludeIds, so a folder
+// Every folder in a subtree shares one color (a stable hash of the
+// top-level ancestor's id into a small palette) so nesting reads visually,
+// not just from the dash indentation — e.g. everything under "Gallery" is
+// one shade, everything under "Website Data" another.
+const GALLERY_COLOR_PALETTE = ['#fee2e2', '#dbeafe', '#dcfce7', '#fef9c3', '#f3e8ff', '#ffedd5', '#ccfbf1', '#fce7f3'];
+function galleryTopAncestorColor(folder) {
+  const path = galleryFolderPath(folder.id);
+  const top = path[0];
+  if (!top) return 'transparent';
+  let hash = 0;
+  for (let i = 0; i < top.id.length; i++) hash = (hash * 31 + top.id.charCodeAt(i)) >>> 0;
+  return GALLERY_COLOR_PALETTE[hash % GALLERY_COLOR_PALETTE.length];
+}
+
+// Flat, indented "Top Level" + every folder (except excludeIds, so a folder
 // can't be moved/copied into itself or its own subfolder) — a simple
 // dropdown stands in for a full tree picker given how few folders there'll
-// realistically be.
+// realistically be. There's only one tree here (no multiple "drives" to
+// choose between), so the root option is just "Top Level", not a name.
 function galleryFolderOptionsHTML(excludeIds) {
   const eligible = galleryFolders.filter(f => !excludeIds.has(f.id));
   const withPath = eligible.map(f => ({ f, path: galleryFolderPath(f.id) }));
   withPath.sort((a, b) => a.path.map(x => x.name).join('/').localeCompare(b.path.map(x => x.name).join('/')));
-  const opts = withPath.map(({ f, path }) => `<option value="${escHtml(f.id)}">${'— '.repeat(path.length - 1)}${escHtml(f.name)}</option>`).join('');
-  return `<option value="">My Drive</option>${opts}`;
+  const opts = withPath.map(({ f, path }) =>
+    `<option value="${escHtml(f.id)}" style="background:${galleryTopAncestorColor(f)}">${'— '.repeat(path.length - 1)}${escHtml(f.name)}</option>`
+  ).join('');
+  return `<option value="">Top Level</option>${opts}`;
 }
 
 function closeGalleryMenus() {
@@ -1731,7 +1748,7 @@ function closeGalleryMenus() {
 
 function renderGalleryBreadcrumb() {
   const path = galleryFolderPath(galleryCurrentFolderId);
-  const crumbs = [`<a href="#" data-gallery-crumb="">My Drive</a>`, ...path.map(f => `<a href="#" data-gallery-crumb="${escHtml(f.id)}">${escHtml(f.name)}</a>`)];
+  const crumbs = [`<a href="#" data-gallery-crumb="">Top Level</a>`, ...path.map(f => `<a href="#" data-gallery-crumb="${escHtml(f.id)}" style="color:${galleryTopAncestorColor(f)};filter:brightness(.55)">${escHtml(f.name)}</a>`)];
   document.getElementById('gallery-breadcrumb').innerHTML = crumbs.join(' <span class="muted">/</span> ');
   document.getElementById('gallery-back-btn').style.display = path.length ? '' : 'none';
 
@@ -1777,10 +1794,11 @@ function galleryFolderTileHTML(f) {
     imageCount ? `${imageCount} photo${imageCount !== 1 ? 's' : ''}` : '',
   ].filter(Boolean).join(', ') || 'Empty';
   const badge = f.liveTarget ? ' <span class="badge-role eboard">live</span>' : '';
-  return `<div class="admin-card" style="padding:.6rem;position:relative" data-gallery-folder-tile="${escHtml(f.id)}">
+  const accent = galleryTopAncestorColor(f);
+  return `<div class="admin-card" style="padding:.6rem;position:relative;box-shadow:inset 4px 0 0 ${accent}" data-gallery-folder-tile="${escHtml(f.id)}">
     ${galleryMenuHTML('folder', f.id)}
     <div style="cursor:pointer" data-gallery-open-folder="${escHtml(f.id)}">
-      <div style="font-size:2rem;text-align:center">📁</div>
+      <div style="font-size:2rem;text-align:center;background:${accent};border-radius:.5rem;width:2.4rem;height:2.4rem;line-height:2.4rem;margin:0 auto">📁</div>
       <div class="name" style="text-align:center;word-break:break-word;padding-right:1.4rem">${escHtml(f.name)}${badge}</div>
       <div class="small muted" style="text-align:center">${countLabel}</div>
     </div>
@@ -2024,6 +2042,16 @@ function wireGalleryPanel() {
   };
   document.getElementById('gallery-bulk-copy').addEventListener('click', () => runBulkAction('bulkCopyImages'));
   document.getElementById('gallery-bulk-move').addEventListener('click', () => runBulkAction('bulkMoveImages'));
+  document.getElementById('gallery-bulk-delete').addEventListener('click', async () => {
+    const count = gallerySelectedImageIds.size;
+    if (!confirm(`Delete ${count} photo${count !== 1 ? 's' : ''}? This cannot be undone.`)) return;
+    const ids = [...gallerySelectedImageIds];
+    const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'bulkDeleteImages', ids }) });
+    if (!ok) { alert(data.error || 'Could not delete.'); return; }
+    gallerySelectedImageIds.clear();
+    galleryFolders = data.folders; galleryImages = data.images;
+    renderGalleryView();
+  });
 
   // Drag a photo (or the whole current selection, if the dragged one is
   // part of it) onto a folder tile to move it there.
