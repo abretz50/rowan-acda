@@ -2201,21 +2201,21 @@ function budgetProgressBarHTML(spent, planned) {
 function budgetStatCardsHTML() {
   const s = budgetStats[budgetCurrentAccount] || {};
   if (budgetCurrentAccount === 'regular') {
-    const remaining = (s.targetAmount || 0) - (s.totalSpent || 0);
+    const remaining = (s.targetAmount || 0) + (s.startingBalance || 0) - (s.totalSpent || 0);
     const overPlan = (s.plannedTotal || 0) > (s.targetAmount || 0);
     return [
       statCardHTML(fmtMoney(s.targetAmount), 'Budget Cap (SGA Allocation)'),
       statCardHTML(fmtMoney(s.totalSpent), 'Total Spent'),
-      statCardHTML(budgetSignedMoney(remaining), remaining < 0 ? 'Over Budget' : 'Remaining'),
+      statCardHTML(budgetSignedMoney(remaining), remaining < 0 ? 'Over Budget' : 'Remaining', s.startingBalance ? `Includes ${fmtMoney(s.startingBalance)} carried over` : ''),
       statCardHTML(fmtMoney(s.plannedTotal), 'Total Planned (Categories)', overPlan ? 'Plan exceeds the budget cap' : 'Within the budget cap'),
     ].join('');
   }
-  const net = (s.totalIncome || 0) - (s.totalSpent || 0);
+  const balance = s.currentBalance || 0;
   return [
     statCardHTML(fmtMoney(s.targetAmount), 'Fundraising Goal'),
-    statCardHTML(fmtMoney(s.totalIncome), 'Total Raised'),
-    statCardHTML(fmtMoney(s.totalSpent), 'Total Spent'),
-    statCardHTML(budgetSignedMoney(net), net < 0 ? 'Net Deficit' : 'Net Raised', net < 0 ? 'Raise more to cover spending' : 'Raising at least as much as spent'),
+    statCardHTML(budgetSignedMoney(balance), balance < 0 ? 'Current Balance (Deficit)' : 'Current Balance', balance < 0 ? 'Raise more to cover spending' : 'Raising at least as much as spent'),
+    statCardHTML(fmtMoney(s.totalIncome), 'Raised (logged here)'),
+    statCardHTML(fmtMoney(s.totalSpent), 'Spent (logged here)'),
   ].join('');
 }
 
@@ -2364,6 +2364,19 @@ function wireBudgetPanel() {
     const targetAmount = Number(input);
     if (!targetAmount && targetAmount !== 0) { alert('Enter a valid amount.'); return; }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'setAccountTarget', account: budgetCurrentAccount, targetAmount }) });
+    if (!ok) { alert(data.error || 'Could not update.'); return; }
+    budgetAccounts = data.accounts; budgetStats = data.stats;
+    renderBudgetView();
+  });
+
+  document.getElementById('budget-edit-balance-btn').addEventListener('click', async () => {
+    const current = budgetAccounts[budgetCurrentAccount]?.startingBalance ?? 0;
+    const accountLabel = budgetCurrentAccount === 'regular' ? 'the Regular Account' : 'the Fundraising / Extra Account';
+    const input = prompt(`Current real-world balance of ${accountLabel} (what's actually in the account right now, before anything logged here):`, current);
+    if (input === null) return;
+    const startingBalance = Number(input);
+    if (!startingBalance && startingBalance !== 0) { alert('Enter a valid amount.'); return; }
+    const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'setStartingBalance', account: budgetCurrentAccount, startingBalance }) });
     if (!ok) { alert(data.error || 'Could not update.'); return; }
     budgetAccounts = data.accounts; budgetStats = data.stats;
     renderBudgetView();

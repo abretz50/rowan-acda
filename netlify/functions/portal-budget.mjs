@@ -39,20 +39,45 @@ function buildDefaultBudget() {
 
   return {
     accounts: {
-      regular: { targetAmount: 3000, label: 'Regular Account' },
-      fundraising: { targetAmount: 3000, label: 'Fundraising / Extra Account' },
+      regular: { targetAmount: 3000, label: 'Regular Account', startingBalance: 0 },
+      // $3,355.22 is the account's real current balance as reported by the
+      // treasurer when this tool shipped — the starting point for "current
+      // balance" math, not a transaction, so it doesn't inflate Raised/Spent.
+      fundraising: { targetAmount: 3000, label: 'Fundraising / Extra Account', startingBalance: 3355.22 },
     },
     categories,
     transactions: [],
+    _fundraisingBalanceSeeded: true,
   };
+}
+
+// One-time backfill for a budget collection saved before startingBalance
+// existed — adds the field (defaulting to 0) and, just once, seeds the
+// Fundraising account's real reported balance so a tool already in use
+// doesn't stay stuck at $0 forever. Guarded by _fundraisingBalanceSeeded so
+// it never overwrites a value the treasurer has since edited themselves.
+function migrateBudgetShape(budget) {
+  let changed = false;
+  for (const acc of Object.values(budget.accounts)) {
+    if (typeof acc.startingBalance !== 'number') { acc.startingBalance = 0; changed = true; }
+  }
+  if (!budget._fundraisingBalanceSeeded) {
+    budget.accounts.fundraising.startingBalance = 3355.22;
+    budget._fundraisingBalanceSeeded = true;
+    changed = true;
+  }
+  return changed;
 }
 
 async function loadBudget() {
   const stored = await getCollection('budget', null);
-  if (stored) return stored;
-  const seeded = buildDefaultBudget();
-  await setCollection('budget', seeded);
-  return seeded;
+  if (!stored) {
+    const seeded = buildDefaultBudget();
+    await setCollection('budget', seeded);
+    return seeded;
+  }
+  if (migrateBudgetShape(stored)) await setCollection('budget', stored);
+  return stored;
 }
 
 function computeStats(budget) {
@@ -70,8 +95,11 @@ function computeStats(budget) {
         totalIncome += t.amount;
       }
     }
+    const startingBalance = budget.accounts[account].startingBalance || 0;
     stats[account] = {
       targetAmount: budget.accounts[account].targetAmount,
+      startingBalance,
+      currentBalance: startingBalance + totalIncome - totalSpent,
       plannedTotal: cats.reduce((s, c) => s + c.plannedAmount, 0),
       plannedRevenueTotal: cats.reduce((s, c) => s + (c.plannedRevenue || 0), 0),
       totalSpent,
@@ -107,6 +135,16 @@ export default async function handler(req) {
       if (!ACCOUNTS.includes(account)) return json({ ok: false, error: 'Unknown account.' }, 400);
       if (typeof targetAmount !== 'number' || targetAmount < 0) return json({ ok: false, error: 'A valid target amount is required.' }, 400);
       budget.accounts[account].targetAmount = targetAmount;
+      await setCollection('budget', budget);
+      return json({ ok: true, accounts: budget.accounts, stats: computeStats(budget) });
+    }
+
+    if (op === 'setStartingBalance') {
+      const { account, startingBalance } = body;
+      if (!ACCOUNTS.includes(account)) return json({ ok: false, error: 'Unknown account.' }, 400);
+      if (typeof startingBalance !== 'number') return json({ ok: false, error: 'A valid balance is required.' }, 400);
+      budget.accounts[account].startingBalance = startingBalance;
+      budget._fundraisingBalanceSeeded = true; // a manual edit always wins over the one-time seed
       await setCollection('budget', budget);
       return json({ ok: true, accounts: budget.accounts, stats: computeStats(budget) });
     }
