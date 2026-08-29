@@ -81,7 +81,7 @@
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-gallery" id="tab-gallery">Gallery</button>
       <button class="view-tab" role="tab" aria-selected="false" aria-controls="panel-budget" id="tab-budget" style="display:none">Budget</button>
       <button class="view-tab view-tab--admin" role="tab" aria-selected="false" aria-controls="panel-content" id="tab-content" style="margin-left:auto">Site Content</button>
-      <button class="view-tab view-tab--admin" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none;margin-left:auto">Accounts</button>
+      <button class="view-tab view-tab--admin" role="tab" aria-selected="false" aria-controls="panel-accounts" id="tab-accounts" style="display:none;margin-left:auto">Account Management</button>
     </div>
 
     <div class="panel active" id="panel-overview">
@@ -484,7 +484,10 @@
     <div class="panel" id="panel-gallery">
       <div class="admin-card">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
-          <div id="gallery-breadcrumb" class="small"></div>
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+            <button class="btn-sm outline" id="gallery-back-btn" style="display:none">← Back</button>
+            <div id="gallery-breadcrumb" class="small"></div>
+          </div>
           <button class="btn-sm outline" id="gallery-new-folder-btn">New Folder</button>
         </div>
         <div id="gallery-folder-note" class="small muted" style="display:none;margin-top:.6rem;padding:.5rem .7rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem"></div>
@@ -581,6 +584,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=24"></script>
+<script defer src="/js/portal.js?v=26"></script>
 </body>
 </html>

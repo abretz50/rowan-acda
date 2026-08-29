@@ -74,7 +74,7 @@ export default async function handler(req) {
     .slice()
     .sort((a, b) => new Date(a.start) - new Date(b.start));
   const attendanceOverTime = pastMeetings.map(ev => ({
-    label: new Date(ev.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    label: new Date(ev.start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
     count: (attendeesByEvent.get(ev.id) || new Set()).size,
   }));
 

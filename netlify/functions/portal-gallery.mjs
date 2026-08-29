@@ -119,22 +119,38 @@ function migrateOldGallery(oldArray) {
   return tree;
 }
 
+// Backfill a top-level "Gallery" folder holding a copy of every photo
+// currently in the tree — one flat place to browse everything without
+// digging through the Website Data structure. Marked `isMasterGallery` so
+// this only ever gets created once, even if someone renames or empties it.
+function ensureGalleryFolder(tree) {
+  if (tree.folders.some(f => f.isMasterGallery)) return false;
+  const id = randomUUID();
+  tree.folders.push({ id, name: 'Gallery', parentId: null, isMasterGallery: true });
+  const snapshot = tree.images.slice();
+  let order = Math.max(-1, ...tree.images.map(i => i.order), -1) + 1;
+  for (const img of snapshot) {
+    tree.images.push({ id: randomUUID(), url: img.url, caption: img.caption, folderId: id, order: order++ });
+  }
+  return true;
+}
+
 async function loadGallery() {
   const stored = await getCollection('gallery', null);
+  let tree, changed;
   if (!stored) {
-    const tree = buildDefaultGalleryTree();
-    await setCollection('gallery', tree);
-    return tree;
+    tree = buildDefaultGalleryTree();
+    changed = true;
+  } else if (Array.isArray(stored)) {
+    tree = migrateOldGallery(stored);
+    changed = true;
+  } else {
+    tree = stored;
+    changed = upgradeLegacyLiveTargets(tree);
   }
-  if (Array.isArray(stored)) {
-    const migrated = migrateOldGallery(stored);
-    await setCollection('gallery', migrated);
-    return migrated;
-  }
-  if (upgradeLegacyLiveTargets(stored)) {
-    await setCollection('gallery', stored);
-  }
-  return stored;
+  if (ensureGalleryFolder(tree)) changed = true;
+  if (changed) await setCollection('gallery', tree);
+  return tree;
 }
 
 async function canManageGallery(req) {
@@ -154,6 +170,31 @@ function collectFolderAndDescendantIds(folders, rootId) {
     frontier = next;
   }
   return ids;
+}
+
+// Deep-clones a folder and everything inside it (subfolders + images) into
+// a new destination. `liveTarget` is stripped from every clone — only the
+// original should ever feed a live spot on the site, otherwise two folders
+// could each claim the same target.
+function deepCloneFolder(tree, sourceId, destParentId) {
+  const orderedIds = collectFolderAndDescendantIds(tree.folders, sourceId); // root-first
+  const idMap = new Map();
+  for (const oldId of orderedIds) {
+    const orig = tree.folders.find(f => f.id === oldId);
+    const newId = randomUUID();
+    idMap.set(oldId, newId);
+    const clone = { ...orig, id: newId, parentId: oldId === sourceId ? destParentId : idMap.get(orig.parentId) };
+    delete clone.liveTarget;
+    delete clone.isMasterGallery;
+    tree.folders.push(clone);
+  }
+  for (const oldId of orderedIds) {
+    const newFolderId = idMap.get(oldId);
+    tree.images.filter(i => i.folderId === oldId).forEach(img => {
+      tree.images.push({ id: randomUUID(), url: img.url, caption: img.caption, folderId: newFolderId, order: img.order });
+    });
+  }
+  return idMap.get(sourceId);
 }
 
 export default async function handler(req) {
@@ -218,6 +259,20 @@ export default async function handler(req) {
         if (descendants.has(newParentId)) return json({ ok: false, error: 'Cannot move a folder into its own subfolder.' }, 400);
       }
       target.parentId = newParentId;
+      await setCollection('gallery', tree);
+      return json({ ok: true, folders: tree.folders, images: tree.images });
+    }
+
+    if (op === 'copyFolder') {
+      const target = tree.folders.find(f => f.id === body.id);
+      if (!target) return json({ ok: false, error: 'Folder not found.' }, 404);
+      const destParentId = body.parentId || null;
+      if (destParentId) {
+        if (!tree.folders.some(f => f.id === destParentId)) return json({ ok: false, error: 'Destination folder not found.' }, 404);
+        const descendants = new Set(collectFolderAndDescendantIds(tree.folders, target.id));
+        if (descendants.has(destParentId)) return json({ ok: false, error: 'Cannot copy a folder into its own subfolder.' }, 400);
+      }
+      deepCloneFolder(tree, target.id, destParentId);
       await setCollection('gallery', tree);
       return json({ ok: true, folders: tree.folders, images: tree.images });
     }

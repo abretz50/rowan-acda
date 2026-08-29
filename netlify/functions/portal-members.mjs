@@ -65,7 +65,7 @@ async function computeMemberStats(members) {
     const monthStart = new Date(ayStart.getFullYear(), ayStart.getMonth() + i, 1);
     const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 23, 59, 59, 999);
     const count = activeMembers.filter(m => new Date(m.joinedAt) <= monthEnd).length;
-    const label = monthStart.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+    const label = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     return { label, count };
   });
 

@@ -244,50 +244,32 @@ function statCardHTML(number, label, detail) {
   return `<div class="stat-card"><span class="stat-number">${number}</span><span class="stat-label">${escHtml(label)}</span>${detail ? `<span class="stat-detail">${escHtml(detail)}</span>` : ''}</div>`;
 }
 
-// Plain inline SVG bar chart — no charting library needed for a handful of
-// horizontal bars, and it keeps this dependency-free like the rest of the
-// site. Rows: [{label, count}].
-function barChartSVG(rows, emptyMsg) {
+// Plain inline SVG line chart — no charting library needed for a handful of
+// points, and it keeps this dependency-free like the rest of the site.
+// Rows: [{label, count}], read left-to-right in the order given (x-axis is
+// the label, y-axis is the count). Used for every trend-over-time graph on
+// the portal (attendance, membership, a member's points history).
+function lineChartSVG(rows, emptyMsg) {
   if (!rows.length) return `<p class="small muted">${escHtml(emptyMsg || 'No data yet.')}</p>`;
   const max = Math.max(1, ...rows.map(r => r.count));
-  const rowH = 26, gap = 6, labelW = 130, barMaxW = 320, chartW = labelW + barMaxW + 50;
-  const totalH = rows.length * (rowH + gap);
-  const bars = rows.map((r, i) => {
-    const y = i * (rowH + gap);
-    const w = Math.max(2, (r.count / max) * barMaxW);
-    return `<g transform="translate(0,${y})">
-      <title>${escHtml(r.label)} — ${r.count}</title>
-      <text x="0" y="${rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--text, #333)">${escHtml(r.label)}</text>
-      <rect x="${labelW}" y="4" width="${w}" height="${rowH - 8}" rx="4" fill="var(--brand, #7A0A0A)"></rect>
-      <text x="${labelW + w + 6}" y="${rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--muted, #666)">${r.count}</text>
-    </g>`;
-  }).join('');
-  return `<svg viewBox="0 0 ${chartW} ${totalH}" width="100%" style="max-width:640px;min-width:400px;font-family:inherit">${bars}</svg>`;
-}
-
-// Vertical bar chart — date along the x-axis, count up the y-axis. Used
-// for Attendance Over Time so it reads left-to-right by date instead of
-// top-to-bottom like the horizontal charts above.
-function verticalBarChartSVG(rows, emptyMsg) {
-  if (!rows.length) return `<p class="small muted">${escHtml(emptyMsg || 'No data yet.')}</p>`;
-  const max = Math.max(1, ...rows.map(r => r.count));
-  const barW = 34, gap = 18, chartH = 160, axisPad = 24, topPad = 20, labelPad = 34;
-  const chartW = Math.max(rows.length * (barW + gap) + axisPad, 200);
+  const min = Math.min(0, ...rows.map(r => r.count));
+  const range = Math.max(1, max - min);
+  const pointGap = 70, chartH = 160, axisPad = 30, topPad = 20, labelPad = 34;
+  const chartW = Math.max((rows.length - 1) * pointGap + axisPad * 2, 200);
   const totalH = topPad + chartH + labelPad;
-  const bars = rows.map((r, i) => {
-    const x = axisPad + i * (barW + gap);
-    const h = Math.max(2, (r.count / max) * chartH);
-    const y = topPad + (chartH - h);
-    return `<g>
+  const xFor = (i) => rows.length > 1 ? axisPad + (i * (chartW - axisPad * 2)) / (rows.length - 1) : chartW / 2;
+  const yFor = (v) => topPad + chartH - ((v - min) / range) * chartH;
+  const linePoints = rows.map((r, i) => `${xFor(i)},${yFor(r.count)}`).join(' ');
+  const dots = rows.map((r, i) => `<g>
       <title>${escHtml(r.label)} — ${r.count}</title>
-      <text x="${x + barW / 2}" y="${y - 6}" text-anchor="middle" font-size="11" fill="var(--text, #333)">${r.count}</text>
-      <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="4" fill="var(--brand, #7A0A0A)"></rect>
-      <text x="${x + barW / 2}" y="${topPad + chartH + 16}" text-anchor="middle" font-size="11" fill="var(--muted, #666)">${escHtml(r.label)}</text>
-    </g>`;
-  }).join('');
+      <text x="${xFor(i)}" y="${yFor(r.count) - 10}" text-anchor="middle" font-size="11" fill="var(--text, #333)">${r.count}</text>
+      <circle cx="${xFor(i)}" cy="${yFor(r.count)}" r="4" fill="var(--brand, #7A0A0A)"></circle>
+      <text x="${xFor(i)}" y="${topPad + chartH + 16}" text-anchor="middle" font-size="11" fill="var(--muted, #666)">${escHtml(r.label)}</text>
+    </g>`).join('');
   return `<svg viewBox="0 0 ${chartW} ${totalH}" width="100%" style="max-width:100%;min-width:${Math.min(chartW, 640)}px;font-family:inherit">
-    <line x1="${axisPad}" y1="${topPad + chartH}" x2="${chartW}" y2="${topPad + chartH}" stroke="var(--border, #ddd)"></line>
-    ${bars}
+    <line x1="${axisPad}" y1="${topPad + chartH}" x2="${chartW - axisPad}" y2="${topPad + chartH}" stroke="var(--border, #ddd)"></line>
+    <polyline points="${linePoints}" fill="none" stroke="var(--brand, #7A0A0A)" stroke-width="2"></polyline>
+    ${dots}
   </svg>`;
 }
 
@@ -325,7 +307,7 @@ async function loadOverviewStats() {
     earnersCard.style.display = 'none';
   }
 
-  document.getElementById('overview-attendance-chart').innerHTML = verticalBarChartSVG(s.attendanceOverTime, 'No attendance yet.');
+  document.getElementById('overview-attendance-chart').innerHTML = lineChartSVG(s.attendanceOverTime, 'No attendance yet.');
 }
 
 function initTabs() {
@@ -422,7 +404,7 @@ function wireAccountsPanel() {
 const TAB_LABELS = {
   events: 'Events', members: 'Members', points: 'Points',
   library: 'Digital Library', gallery: 'Gallery', budget: 'Budget',
-  content: 'Site Content', accounts: 'Accounts',
+  content: 'Site Content', accounts: 'Account Management',
 };
 
 function permissionsRoleRowHTML(role, tabs, tabRoles, locked) {
@@ -496,13 +478,12 @@ function taskRowHTML(t) {
   const priorityBadge = `<span class="badge-role ${PRIORITY_BADGE_CLASSES[t.priority] || ''}">${t.priority}</span>`;
   const isMine = me && t.assignedToId === me.id;
   const color = taskViewMode === 'mine' ? (PRIORITY_TASK_COLORS[t.priority] || '#9ca3af') : (ROLE_TASK_COLORS[t.assignedToRole] || '#9ca3af');
-  const roleLabel = ROLE_LABELS[t.assignedToRole] || t.assignedToRole || 'Member';
   const descPreview = t.description && t.description.length > 90 ? t.description.slice(0, 88) + '…' : t.description;
   return `<div>
     <div class="admin-row${t.status === 'done' ? ' task-done' : ''}" style="cursor:pointer;box-shadow:inset 3px 0 0 ${color}" data-task-toggle="${escHtml(t.id)}">
       <div>
         <span class="name">${escHtml(t.title)}</span> ${priorityBadge}${overdue ? ' <span class="badge-role inactive">overdue</span>' : ''}${isMine ? ' <span class="badge-role eboard">mine</span>' : ''}
-        <div class="meta">For ${escHtml(t.assignedToName)} (${escHtml(roleLabel)}) · assigned by ${escHtml(t.assignedByName)}${t.dueDate ? ' · due ' + fmtDashDate(t.dueDate) : ''}</div>
+        <div class="meta">For ${escHtml(t.assignedToName)} · assigned by ${escHtml(t.assignedByName)}${t.dueDate ? ' · due ' + fmtDashDate(t.dueDate) : ''}</div>
         ${descPreview ? `<p class="small" style="margin:.35rem 0 0">${escHtml(descPreview)}</p>` : ''}
       </div>
       <div class="actions">
@@ -844,16 +825,17 @@ function wireEventsPanel() {
 // ── Members tab ───────────────────────────────────────────
 function memberRowHTML(m) {
   const inactiveBadge = m.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
-  const accountBadge = m.hasAccount ? `<span class="badge-role eboard">has account</span>` : '';
+  const roleBadge = `<span class="badge-role ${FULL_ACCESS_ROLES.includes(m.role) ? 'admin' : m.role === 'member' ? 'inactive' : 'eboard'}">${escHtml(ROLE_LABELS[m.role] || m.role)}</span>`;
   const selected = m.id === selectedMemberId ? ' admin-row--selected' : '';
   const isPermanentAdmin = isPermanentAdminEmail(m.email);
   return `<div class="admin-row${selected}" style="cursor:pointer" data-member-id="${escHtml(m.id)}">
     <div>
-      <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${accountBadge}
+      <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${roleBadge}
       <div class="meta">${escHtml(m.email)}</div>
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-view-points="${escHtml(m.id)}">Points history</button>
+      <button class="btn-sm outline" data-verify-proflink="${escHtml(m.id)}">Verify ProfLink</button>
       ${!isPermanentAdmin ? `<button class="btn-sm outline" data-toggle-member="${escHtml(m.id)}" data-next="${m.active === false ? 'true' : 'false'}">${m.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
       ${!isPermanentAdmin ? `<button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>` : ''}
     </div>
@@ -874,7 +856,7 @@ function showMembershipGraph() {
   document.querySelectorAll('#members-list [data-member-id]').forEach(row => row.classList.remove('admin-row--selected'));
   document.getElementById('members-graph-heading').textContent = 'Membership Over Time';
   document.getElementById('members-graph-reset').style.display = 'none';
-  document.getElementById('members-graph-chart').innerHTML = verticalBarChartSVG(lastMemberStats?.membershipOverTime || [], 'No membership data yet.');
+  document.getElementById('members-graph-chart').innerHTML = lineChartSVG(lastMemberStats?.membershipOverTime || [], 'No membership data yet.');
   document.getElementById('members-graph-detail').innerHTML = '';
 }
 
@@ -900,7 +882,7 @@ async function selectMemberPoints(memberId) {
     running += p.amount;
     return { label: fmtDashDate(p.decidedAt || p.requestedAt), count: running };
   });
-  chartEl.innerHTML = barChartSVG(chartRows, 'No approved points yet.');
+  chartEl.innerHTML = lineChartSVG(chartRows, 'No approved points yet.');
 
   const total = running;
   detailEl.innerHTML = `<div class="admin-card" style="padding:.7rem;margin-top:.6rem"><strong>${total} approved point${total !== 1 ? 's' : ''}</strong>` +
@@ -942,6 +924,16 @@ function wireMembersPanel() {
   document.getElementById('members-list').addEventListener('click', async (e) => {
     const viewBtn = e.target.closest('[data-view-points]');
     if (viewBtn) { selectMemberPoints(viewBtn.dataset.viewPoints); return; }
+    const verifyBtn = e.target.closest('[data-verify-proflink]');
+    if (verifyBtn) {
+      const memberId = verifyBtn.dataset.verifyProflink;
+      const member = allMembers.find(m => m.id === memberId);
+      if (!confirm(`Award 100 points to ${member?.name || 'this member'} for being verified on ProfLink?`)) return;
+      const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'manualAward', memberId, amount: 100, reason: 'ProfLink verified' }) });
+      if (!ok) { alert(data.error || 'Could not award points.'); return; }
+      if (selectedMemberId === memberId) selectMemberPoints(memberId);
+      return;
+    }
     const toggleBtn = e.target.closest('[data-toggle-member]');
     if (toggleBtn) {
       const { ok, data } = await api(MEMBERS_URL, { method: 'PATCH', body: JSON.stringify({ id: toggleBtn.dataset.toggleMember, active: toggleBtn.dataset.next === 'true' }) });
@@ -1685,8 +1677,8 @@ function galleryDescendantIds(folderId) {
   return new Set(ids);
 }
 
-// Flat, indented "Website Root" + every folder (except excludeIds, so a
-// folder can't be moved into itself or its own subfolder) — a simple
+// Flat, indented "My Drive" + every folder (except excludeIds, so a folder
+// can't be moved/copied into itself or its own subfolder) — a simple
 // dropdown stands in for a full tree picker given how few folders there'll
 // realistically be.
 function galleryFolderOptionsHTML(excludeIds) {
@@ -1694,13 +1686,18 @@ function galleryFolderOptionsHTML(excludeIds) {
   const withPath = eligible.map(f => ({ f, path: galleryFolderPath(f.id) }));
   withPath.sort((a, b) => a.path.map(x => x.name).join('/').localeCompare(b.path.map(x => x.name).join('/')));
   const opts = withPath.map(({ f, path }) => `<option value="${escHtml(f.id)}">${'— '.repeat(path.length - 1)}${escHtml(f.name)}</option>`).join('');
-  return `<option value="">Website Root</option>${opts}`;
+  return `<option value="">My Drive</option>${opts}`;
+}
+
+function closeGalleryMenus() {
+  document.querySelectorAll('.gallery-menu-panel').forEach(el => { el.style.display = 'none'; });
 }
 
 function renderGalleryBreadcrumb() {
   const path = galleryFolderPath(galleryCurrentFolderId);
-  const crumbs = [`<a href="#" data-gallery-crumb="">Website Root</a>`, ...path.map(f => `<a href="#" data-gallery-crumb="${escHtml(f.id)}">${escHtml(f.name)}</a>`)];
+  const crumbs = [`<a href="#" data-gallery-crumb="">My Drive</a>`, ...path.map(f => `<a href="#" data-gallery-crumb="${escHtml(f.id)}">${escHtml(f.name)}</a>`)];
   document.getElementById('gallery-breadcrumb').innerHTML = crumbs.join(' <span class="muted">/</span> ');
+  document.getElementById('gallery-back-btn').style.display = path.length ? '' : 'none';
 
   const current = path[path.length - 1];
   const noteEl = document.getElementById('gallery-folder-note');
@@ -1718,6 +1715,24 @@ function renderGalleryBreadcrumb() {
   }
 }
 
+// Shared "⋮" menu (Rename / Move / Copy / Delete) for both folder and image
+// tiles, plus a folder-picker panel used by both Move and Copy.
+function galleryMenuHTML(kind, id) {
+  return `<div style="position:absolute;top:.35rem;right:.35rem">
+    <button class="btn-sm outline" data-gallery-menu-toggle="${escHtml(id)}" title="More">⋮</button>
+    <div class="gallery-menu-panel" id="gallery-menu-${escHtml(id)}" style="display:none;position:absolute;right:0;top:100%;z-index:5;background:#fff;border:1px solid var(--border);border-radius:.5rem;box-shadow:0 4px 14px rgba(0,0,0,.15);padding:.4rem;min-width:170px;text-align:left">
+      <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-rename="${escHtml(id)}" data-gallery-kind="${kind}">Rename</button>
+      <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-mover="${escHtml(id)}" data-gallery-mover-kind="${kind}" data-gallery-mover-action="move">Move to folder</button>
+      <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-mover="${escHtml(id)}" data-gallery-mover-kind="${kind}" data-gallery-mover-action="copy">Copy to folder</button>
+      <button class="btn-sm delete" style="width:100%" data-gallery-delete="${escHtml(id)}" data-gallery-kind="${kind}">Delete</button>
+    </div>
+  </div>
+  <div class="gallery-mover-panel" id="gallery-mover-panel-${escHtml(id)}" style="display:none;margin-top:.5rem">
+    <select class="admin-input" data-gallery-mover-select="${escHtml(id)}"></select>
+    <button class="btn-sm" style="margin-top:.3rem;width:100%" data-gallery-mover-confirm="${escHtml(id)}">Go</button>
+  </div>`;
+}
+
 function galleryFolderTileHTML(f) {
   const childFolderCount = galleryFolders.filter(x => x.parentId === f.id).length;
   const imageCount = galleryImages.filter(x => x.folderId === f.id).length;
@@ -1726,40 +1741,24 @@ function galleryFolderTileHTML(f) {
     imageCount ? `${imageCount} photo${imageCount !== 1 ? 's' : ''}` : '',
   ].filter(Boolean).join(', ') || 'Empty';
   const badge = f.liveTarget ? ' <span class="badge-role eboard">live</span>' : '';
-  return `<div class="admin-card" style="padding:.6rem" data-gallery-folder-tile="${escHtml(f.id)}">
+  return `<div class="admin-card" style="padding:.6rem;position:relative" data-gallery-folder-tile="${escHtml(f.id)}">
+    ${galleryMenuHTML('folder', f.id)}
     <div style="cursor:pointer" data-gallery-open-folder="${escHtml(f.id)}">
       <div style="font-size:2rem;text-align:center">📁</div>
-      <div class="name" style="text-align:center;word-break:break-word">${escHtml(f.name)}${badge}</div>
+      <div class="name" style="text-align:center;word-break:break-word;padding-right:1.4rem">${escHtml(f.name)}${badge}</div>
       <div class="small muted" style="text-align:center">${countLabel}</div>
-    </div>
-    <div class="actions" style="justify-content:center;margin-top:.4rem">
-      <button class="btn-sm outline" data-gallery-rename-folder="${escHtml(f.id)}">Rename</button>
-      <button class="btn-sm outline" data-gallery-move-folder="${escHtml(f.id)}">Move</button>
-      <button class="btn-sm delete" data-gallery-delete-folder="${escHtml(f.id)}">Delete</button>
-    </div>
-    <div class="gallery-move-panel" id="gallery-move-folder-${escHtml(f.id)}" style="display:none;margin-top:.5rem">
-      <select class="admin-input" data-gallery-move-folder-select="${escHtml(f.id)}">${galleryFolderOptionsHTML(galleryDescendantIds(f.id))}</select>
-      <button class="btn-sm" data-gallery-confirm-move-folder="${escHtml(f.id)}" style="margin-top:.3rem;width:100%">Move here</button>
     </div>
   </div>`;
 }
 
 function galleryImageTileHTML(img, siblings) {
   const idx = siblings.findIndex(s => s.id === img.id);
-  return `<div class="admin-card" style="padding:.5rem" data-gallery-image-tile="${escHtml(img.id)}">
+  return `<div class="admin-card" style="padding:.5rem;position:relative" data-gallery-image-tile="${escHtml(img.id)}">
+    ${galleryMenuHTML('image', img.id)}
     <img src="${escHtml(img.url)}" alt="${escHtml(img.caption || '')}" style="width:100%;height:110px;object-fit:cover;border-radius:.5rem;display:block"/>
-    <div class="actions" style="justify-content:center;margin-top:.4rem;flex-wrap:wrap">
+    <div class="actions" style="justify-content:center;margin-top:.4rem">
       <button class="btn-sm outline" data-gallery-move-up="${escHtml(img.id)}" ${idx <= 0 ? 'disabled' : ''}>▲</button>
       <button class="btn-sm outline" data-gallery-move-down="${escHtml(img.id)}" ${idx >= siblings.length - 1 ? 'disabled' : ''}>▼</button>
-      <button class="btn-sm outline" data-gallery-copy-move="${escHtml(img.id)}">Copy/Move</button>
-      <button class="btn-sm delete" data-gallery-delete-image="${escHtml(img.id)}">Delete</button>
-    </div>
-    <div class="gallery-move-panel" id="gallery-copy-move-${escHtml(img.id)}" style="display:none;margin-top:.5rem">
-      <select class="admin-input" data-gallery-dest-select="${escHtml(img.id)}">${galleryFolderOptionsHTML(new Set())}</select>
-      <div style="display:flex;gap:.35rem;margin-top:.3rem">
-        <button class="btn-sm outline" style="flex:1" data-gallery-do-copy="${escHtml(img.id)}">Copy here</button>
-        <button class="btn-sm" style="flex:1" data-gallery-do-move="${escHtml(img.id)}">Move here</button>
-      </div>
     </div>
   </div>`;
 }
@@ -1795,6 +1794,12 @@ function wireGalleryPanel() {
     renderGalleryView();
   });
 
+  document.getElementById('gallery-back-btn').addEventListener('click', () => {
+    const path = galleryFolderPath(galleryCurrentFolderId);
+    galleryCurrentFolderId = path.length >= 2 ? path[path.length - 2].id : null;
+    renderGalleryView();
+  });
+
   document.getElementById('gallery-breadcrumb').addEventListener('click', (e) => {
     const a = e.target.closest('[data-gallery-crumb]');
     if (!a) return;
@@ -1820,6 +1825,10 @@ function wireGalleryPanel() {
     renderGalleryView();
   });
 
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.gallery-menu-panel') && !e.target.closest('[data-gallery-menu-toggle]')) closeGalleryMenus();
+  });
+
   document.getElementById('gallery-grid').addEventListener('click', async (e) => {
     const openBtn = e.target.closest('[data-gallery-open-folder]');
     if (openBtn) {
@@ -1828,42 +1837,85 @@ function wireGalleryPanel() {
       return;
     }
 
-    const renameBtn = e.target.closest('[data-gallery-rename-folder]');
+    const menuToggle = e.target.closest('[data-gallery-menu-toggle]');
+    if (menuToggle) {
+      const id = menuToggle.dataset.galleryMenuToggle;
+      const panel = document.getElementById(`gallery-menu-${id}`);
+      const wasOpen = panel.style.display !== 'none';
+      closeGalleryMenus();
+      panel.style.display = wasOpen ? 'none' : '';
+      return;
+    }
+
+    const renameBtn = e.target.closest('[data-gallery-rename]');
     if (renameBtn) {
-      const id = renameBtn.dataset.galleryRenameFolder;
-      const folder = galleryFolders.find(f => f.id === id);
-      const name = prompt('Rename folder to:', folder?.name || '');
-      if (!name || !name.trim()) return;
-      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'renameFolder', id, name: name.trim() }) });
-      if (!ok) { alert(data.error || 'Could not rename.'); return; }
+      closeGalleryMenus();
+      const id = renameBtn.dataset.galleryRename;
+      if (renameBtn.dataset.galleryKind === 'folder') {
+        const folder = galleryFolders.find(f => f.id === id);
+        const name = prompt('Rename folder to:', folder?.name || '');
+        if (!name || !name.trim()) return;
+        const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'renameFolder', id, name: name.trim() }) });
+        if (!ok) { alert(data.error || 'Could not rename.'); return; }
+        galleryFolders = data.folders; galleryImages = data.images;
+      } else {
+        const img = galleryImages.find(i => i.id === id);
+        const caption = prompt('Caption for this photo:', img?.caption || '');
+        if (caption === null) return;
+        const { ok, data } = await api(GALLERY_URL, { method: 'PATCH', body: JSON.stringify({ id, caption: caption.trim() }) });
+        if (!ok) { alert(data.error || 'Could not rename.'); return; }
+        galleryFolders = data.folders; galleryImages = data.images;
+      }
+      renderGalleryView();
+      return;
+    }
+
+    const moverBtn = e.target.closest('[data-gallery-mover]');
+    if (moverBtn) {
+      const id = moverBtn.dataset.galleryMover;
+      const kind = moverBtn.dataset.galleryMoverKind;
+      const action = moverBtn.dataset.galleryMoverAction;
+      closeGalleryMenus();
+      const excludeIds = kind === 'folder' ? galleryDescendantIds(id) : new Set();
+      const select = document.querySelector(`[data-gallery-mover-select="${id}"]`);
+      select.innerHTML = galleryFolderOptionsHTML(excludeIds);
+      const panel = document.getElementById(`gallery-mover-panel-${id}`);
+      panel.dataset.kind = kind;
+      panel.dataset.action = action;
+      panel.style.display = '';
+      return;
+    }
+    const moverConfirmBtn = e.target.closest('[data-gallery-mover-confirm]');
+    if (moverConfirmBtn) {
+      const id = moverConfirmBtn.dataset.galleryMoverConfirm;
+      const panel = document.getElementById(`gallery-mover-panel-${id}`);
+      const select = document.querySelector(`[data-gallery-mover-select="${id}"]`);
+      const { kind, action } = panel.dataset;
+      const op = kind === 'folder' ? (action === 'copy' ? 'copyFolder' : 'moveFolder') : (action === 'copy' ? 'copyImage' : 'moveImage');
+      const payload = { op, id };
+      payload[kind === 'folder' ? 'parentId' : 'folderId'] = select.value || null;
+      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify(payload) });
+      if (!ok) { alert(data.error || 'Could not save.'); return; }
       galleryFolders = data.folders; galleryImages = data.images;
       renderGalleryView();
       return;
     }
 
-    const moveFolderBtn = e.target.closest('[data-gallery-move-folder]');
-    if (moveFolderBtn) {
-      const panel = document.getElementById(`gallery-move-folder-${moveFolderBtn.dataset.galleryMoveFolder}`);
-      if (panel) panel.style.display = panel.style.display === 'none' ? '' : 'none';
-      return;
-    }
-    const confirmMoveFolderBtn = e.target.closest('[data-gallery-confirm-move-folder]');
-    if (confirmMoveFolderBtn) {
-      const id = confirmMoveFolderBtn.dataset.galleryConfirmMoveFolder;
-      const select = document.querySelector(`[data-gallery-move-folder-select="${id}"]`);
-      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'moveFolder', id, parentId: select.value || null }) });
-      if (!ok) { alert(data.error || 'Could not move folder.'); return; }
-      galleryFolders = data.folders; galleryImages = data.images;
-      renderGalleryView();
-      return;
-    }
-
-    const deleteFolderBtn = e.target.closest('[data-gallery-delete-folder]');
-    if (deleteFolderBtn) {
-      if (!confirm('Delete this folder and everything inside it? This cannot be undone.')) return;
-      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteFolder', id: deleteFolderBtn.dataset.galleryDeleteFolder }) });
-      if (!ok) { alert(data.error || 'Could not delete folder.'); return; }
-      galleryFolders = data.folders; galleryImages = data.images;
+    const deleteBtn = e.target.closest('[data-gallery-delete]');
+    if (deleteBtn) {
+      closeGalleryMenus();
+      const id = deleteBtn.dataset.galleryDelete;
+      if (deleteBtn.dataset.galleryKind === 'folder') {
+        if (!confirm('Delete this folder and everything inside it? This cannot be undone.')) return;
+        const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteFolder', id }) });
+        if (!ok) { alert(data.error || 'Could not delete folder.'); return; }
+        galleryFolders = data.folders; galleryImages = data.images;
+      } else {
+        if (!confirm('Delete this photo?')) return;
+        const { ok, data } = await api(`${GALLERY_URL}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+        if (!ok) { alert(data.error || 'Could not delete.'); return; }
+        galleryFolders = data.folders; galleryImages = data.images;
+      }
       renderGalleryView();
       return;
     }
@@ -1880,35 +1932,6 @@ function wireGalleryPanel() {
       [reordered[idx], reordered[swapWith]] = [reordered[swapWith], reordered[idx]];
       const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'reorderImages', ids: reordered.map(i => i.id) }) });
       if (!ok) { alert(data.error || 'Could not reorder.'); return; }
-      galleryFolders = data.folders; galleryImages = data.images;
-      renderGalleryView();
-      return;
-    }
-
-    const copyMoveBtn = e.target.closest('[data-gallery-copy-move]');
-    if (copyMoveBtn) {
-      const panel = document.getElementById(`gallery-copy-move-${copyMoveBtn.dataset.galleryCopyMove}`);
-      if (panel) panel.style.display = panel.style.display === 'none' ? '' : 'none';
-      return;
-    }
-    const doCopyBtn = e.target.closest('[data-gallery-do-copy]');
-    const doMoveBtn = e.target.closest('[data-gallery-do-move]');
-    if (doCopyBtn || doMoveBtn) {
-      const id = doCopyBtn ? doCopyBtn.dataset.galleryDoCopy : doMoveBtn.dataset.galleryDoMove;
-      const select = document.querySelector(`[data-gallery-dest-select="${id}"]`);
-      const op = doCopyBtn ? 'copyImage' : 'moveImage';
-      const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op, id, folderId: select.value || null }) });
-      if (!ok) { alert(data.error || 'Could not save.'); return; }
-      galleryFolders = data.folders; galleryImages = data.images;
-      renderGalleryView();
-      return;
-    }
-
-    const deleteImageBtn = e.target.closest('[data-gallery-delete-image]');
-    if (deleteImageBtn) {
-      if (!confirm('Delete this photo?')) return;
-      const { ok, data } = await api(`${GALLERY_URL}?id=${encodeURIComponent(deleteImageBtn.dataset.galleryDeleteImage)}`, { method: 'DELETE' });
-      if (!ok) { alert(data.error || 'Could not delete.'); return; }
       galleryFolders = data.folders; galleryImages = data.images;
       renderGalleryView();
     }
