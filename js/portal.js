@@ -469,16 +469,25 @@ function populateTaskAssigneeSelect() {
   if (taskAssignableMembers.some(m => m.id === current)) sel.value = current;
 }
 
-// Color-coded by priority, per feedback — high=red, medium=yellow, low=blue.
+// Task Board shows everyone's tasks, so its row accent is color-coded by
+// assignee role (useful for scanning who has what); My Tasks is all one
+// person's tasks, so role coloring there would be uniform — its accent is
+// color-coded by priority instead. The priority badge/tag itself is
+// always priority-colored in both views, per feedback.
+const ROLE_TASK_COLORS = {
+  president: '#ec4899', admin: '#ec4899', vice_president: '#8b5cf6',
+  secretary: '#14b8a6', treasurer: '#22c55e', event_coordinator: '#eab308',
+  media: '#3b82f6', senator: '#f97316', eboard_access: '#9ca3af', eboard_legacy: '#9ca3af',
+};
 const PRIORITY_TASK_COLORS = { high: '#ef4444', medium: '#eab308', low: '#3b82f6' };
 const PRIORITY_BADGE_CLASSES = { high: 'badge-priority-high', medium: 'badge-priority-medium', low: 'badge-priority-low' };
-function taskColorFor(priority) { return PRIORITY_TASK_COLORS[priority] || '#9ca3af'; }
+const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
 function taskRowHTML(t) {
   const overdue = t.status === 'open' && t.dueDate && new Date(t.dueDate) < new Date(new Date().toDateString());
   const priorityBadge = `<span class="badge-role ${PRIORITY_BADGE_CLASSES[t.priority] || ''}">${t.priority}</span>`;
   const isMine = me && t.assignedToId === me.id;
-  const color = taskColorFor(t.priority);
+  const color = taskViewMode === 'mine' ? (PRIORITY_TASK_COLORS[t.priority] || '#9ca3af') : (ROLE_TASK_COLORS[t.assignedToRole] || '#9ca3af');
   const roleLabel = ROLE_LABELS[t.assignedToRole] || t.assignedToRole || 'Member';
   const descPreview = t.description && t.description.length > 90 ? t.description.slice(0, 88) + '…' : t.description;
   return `<div>
@@ -506,6 +515,10 @@ function renderTasksList() {
   const visible = taskViewMode === 'mine' ? allTasks.filter(t => me && t.assignedToId === me.id) : allTasks;
   const sorted = visible.slice().sort((a, b) => {
     if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
+    if (taskViewMode === 'mine') {
+      const p = (PRIORITY_ORDER[a.priority] ?? 3) - (PRIORITY_ORDER[b.priority] ?? 3);
+      if (p !== 0) return p;
+    }
     if (!a.dueDate && !b.dueDate) return 0;
     if (!a.dueDate) return 1;
     if (!b.dueDate) return -1;
