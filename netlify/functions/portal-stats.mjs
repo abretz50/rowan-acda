@@ -1,7 +1,7 @@
 import { getCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
-import { shortMonthYear } from './_lib/dateFmt.mjs';
+import { shortMonthYear, academicYearStart } from './_lib/dateFmt.mjs';
 
 // Any signed-in E-Board/admin account can see these — they're aggregate
 // club numbers (counts, totals, a name+total leaderboard), not raw member
@@ -69,10 +69,11 @@ export default async function handler(req) {
     mostAttendedEvent = { title: events[0].title, count: 0 };
   }
 
-  // Chart data: one bar per past Meeting, in date order — an actual
-  // attendance trend over time rather than a monthly rollup.
+  // Chart data: one bar per past Meeting this academic year, in date order —
+  // an actual attendance trend over the current year, not all-time history.
+  const ayStart = academicYearStart(now);
   const pastMeetings = events
-    .filter(e => Array.isArray(e.tags) && e.tags.includes('Meeting') && new Date(e.end || e.start) <= now)
+    .filter(e => Array.isArray(e.tags) && e.tags.includes('Meeting') && new Date(e.start) >= ayStart && new Date(e.end || e.start) <= now)
     .slice()
     .sort((a, b) => new Date(a.start) - new Date(b.start));
   const attendanceOverTime = pastMeetings.map(ev => ({

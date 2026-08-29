@@ -3,15 +3,9 @@ import { loadMembers, saveMembers, publicMember } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { getCollection } from './_lib/blobs.mjs';
 import { isPermanentAdmin } from './_lib/permissions.mjs';
-import { shortMonthYear } from './_lib/dateFmt.mjs';
+import { shortMonthYear, academicYearStart } from './_lib/dateFmt.mjs';
 
 function normEmail(e) { return String(e || '').trim().toLowerCase(); }
-
-// School-year boundary (Aug 1) — mirrors js/portal.js's academicYearLabel.
-function academicYearStart(d = new Date()) {
-  const y = d.getFullYear();
-  return d.getMonth() >= 7 ? new Date(y, 7, 1) : new Date(y - 1, 7, 1);
-}
 
 // "Meeting" attendance stats and a membership-growth chart, computed
 // specifically for the Members tab — deliberately scoped to the 'Meeting'
