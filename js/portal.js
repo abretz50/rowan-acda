@@ -258,6 +258,32 @@ function barChartSVG(rows, emptyMsg) {
   return `<svg viewBox="0 0 ${chartW} ${totalH}" width="100%" style="max-width:640px;min-width:400px;font-family:inherit">${bars}</svg>`;
 }
 
+// Vertical bar chart — date along the x-axis, count up the y-axis. Used
+// for Attendance Over Time so it reads left-to-right by date instead of
+// top-to-bottom like the horizontal charts above.
+function verticalBarChartSVG(rows, emptyMsg) {
+  if (!rows.length) return `<p class="small muted">${escHtml(emptyMsg || 'No data yet.')}</p>`;
+  const max = Math.max(1, ...rows.map(r => r.count));
+  const barW = 34, gap = 18, chartH = 160, axisPad = 24, topPad = 20, labelPad = 34;
+  const chartW = Math.max(rows.length * (barW + gap) + axisPad, 200);
+  const totalH = topPad + chartH + labelPad;
+  const bars = rows.map((r, i) => {
+    const x = axisPad + i * (barW + gap);
+    const h = Math.max(2, (r.count / max) * chartH);
+    const y = topPad + (chartH - h);
+    return `<g>
+      <title>${escHtml(r.label)} — ${r.count}</title>
+      <text x="${x + barW / 2}" y="${y - 6}" text-anchor="middle" font-size="11" fill="var(--text, #333)">${r.count}</text>
+      <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="4" fill="var(--brand, #7A0A0A)"></rect>
+      <text x="${x + barW / 2}" y="${topPad + chartH + 16}" text-anchor="middle" font-size="11" fill="var(--muted, #666)">${escHtml(r.label)}</text>
+    </g>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${chartW} ${totalH}" width="100%" style="max-width:100%;min-width:${Math.min(chartW, 640)}px;font-family:inherit">
+    <line x1="${axisPad}" y1="${topPad + chartH}" x2="${chartW}" y2="${topPad + chartH}" stroke="var(--border, #ddd)"></line>
+    ${bars}
+  </svg>`;
+}
+
 // For the Most Attended Event card: the big red headline is the fixed
 // label, the event name itself is the small gray line underneath — the
 // event name varies in length far more than a stat number would.
@@ -292,7 +318,7 @@ async function loadOverviewStats() {
     earnersCard.style.display = 'none';
   }
 
-  document.getElementById('overview-attendance-chart').innerHTML = barChartSVG(s.attendanceOverTime, 'No attendance yet.');
+  document.getElementById('overview-attendance-chart').innerHTML = verticalBarChartSVG(s.attendanceOverTime, 'No attendance yet.');
 }
 
 function initTabs() {
