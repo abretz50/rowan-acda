@@ -158,16 +158,22 @@
     <!-- ===== Budget (placeholder) ===== -->
     <div class="panel" id="panel-budget">
       <div class="admin-card">
+        <p class="small muted" id="budget-reconciliation-text">Loading…</p>
+      </div>
+
+      <div class="admin-card" style="margin-top:1rem">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
           <div class="cat-chips" id="budget-account-chips">
             <button class="cat-chip active" type="button" data-budget-account="regular">Regular Account</button>
             <button class="cat-chip" type="button" data-budget-account="fundraising">Fundraising / Extra Account</button>
+            <button class="cat-chip" type="button" data-budget-account="convention">Convention Trip</button>
           </div>
           <div>
             <button class="btn-sm outline" id="budget-edit-balance-btn">Edit Current Balance</button>
             <button class="btn-sm outline" id="budget-edit-target-btn">Edit Budget Target</button>
           </div>
         </div>
+        <p class="small muted" id="budget-account-description" style="margin-top:.5rem"></p>
       </div>
 
       <div class="stat-grid" id="budget-stats">
@@ -210,7 +216,9 @@
             <div class="cat-chips" id="budget-txn-type-chips">
               <button class="cat-chip active" type="button" data-txn-type="expense">Expense</button>
               <button class="cat-chip" type="button" data-txn-type="income" id="budget-income-chip" style="display:none">Fundraiser Income</button>
+              <button class="cat-chip" type="button" data-txn-type="fundraiser" id="budget-fundraiser-chip" style="display:none">Fundraiser (Cost + Revenue)</button>
             </div>
+            <p class="small muted" id="budget-fundraiser-hint" style="display:none">For when a fundraiser costs money to run and brings money in — logs both sides at once, linked together.</p>
             <div class="form-group">
               <label for="budget-txn-category">Category</label>
               <select class="admin-input" id="budget-txn-category"></select>
@@ -218,6 +226,10 @@
             <div class="form-row">
               <input class="admin-input" type="text" id="budget-txn-desc" placeholder="Description" required/>
               <input class="admin-input" type="number" step="0.01" min="0.01" id="budget-txn-amount" placeholder="Amount ($)" required/>
+            </div>
+            <div class="form-row" id="budget-fundraiser-amounts-row" style="display:none">
+              <input class="admin-input" type="number" step="0.01" min="0" id="budget-txn-cost" placeholder="Cost ($, optional)"/>
+              <input class="admin-input" type="number" step="0.01" min="0" id="budget-txn-revenue" placeholder="Revenue ($, optional)"/>
             </div>
             <input class="admin-input" type="date" id="budget-txn-date"/>
             <button class="btn-sm" type="submit" id="budget-txn-submit">Add expense</button>
@@ -677,6 +689,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=38"></script>
+<script defer src="/js/portal.js?v=39"></script>
 </body>
 </html>

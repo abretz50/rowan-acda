@@ -41,15 +41,18 @@ function buildDefaultGalleryTree() {
     images.push({ id: randomUUID(), url, caption: '', folderId, order: order++ });
   };
 
-  const websiteData = addFolder('Website Data', null);
+  const websiteData = addFolder('Website Pictures', null);
 
   const homePage = addFolder('Home Page', websiteData);
   const chapterHighlights = addFolder('Chapter Highlights Slideshow', homePage, 'homeSlideshow');
   GALLERY_SEED_URLS.forEach(url => addImage(url, chapterHighlights));
   addImage('/assets/img/index-header.jpg', addFolder('Home Page Banner', homePage, 'homeBanner'));
-  addImage('/assets/img/choral-engagement.jpg', addFolder('Choral Engagement Photo', homePage, 'choralEngagement'));
-  addImage('/assets/img/sightreading.jpg', addFolder('Sight Reading Photo', homePage, 'sightReading'));
-  addImage('/assets/img/development.jpg', addFolder('Development Photo', homePage, 'development'));
+  // These three never actually had real photos uploaded — the site has
+  // always silently fallen back to the generic "about" images below.
+  // Seeding the real (working) fallback paths instead of the missing ones.
+  addImage('/assets/img/about2.png', addFolder('Choral Engagement Photo', homePage, 'choralEngagement'));
+  addImage('/assets/img/about1.png', addFolder('Sight Reading Photo', homePage, 'sightReading'));
+  addImage('/assets/img/about.png', addFolder('Development Photo', homePage, 'development'));
 
   const events = addFolder('Events', websiteData);
   addImage('/assets/img/events-banner.png', addFolder('Events Banner', events, 'eventsBanner'));
@@ -85,6 +88,27 @@ function upgradeLegacyLiveTargets(tree) {
     } else if (!f.liveTarget && NAME_TO_LIVE_TARGET[f.name] && !alreadyUsed.has(NAME_TO_LIVE_TARGET[f.name])) {
       f.liveTarget = NAME_TO_LIVE_TARGET[f.name];
       alreadyUsed.add(f.liveTarget);
+    }
+    // The top-level folder was originally seeded as "Website Data" —
+    // renamed to "Website Pictures" for clarity. Only touches it if it
+    // still has the exact original name (i.e. nobody's renamed it since).
+    if (f.parentId === null && f.name === 'Website Data') f.name = 'Website Pictures';
+  }
+  // These three were seeded pointing at photos that never actually
+  // existed (the site silently fell back to generic placeholders the
+  // whole time) — swap in the working fallback paths, but only for an
+  // image that's still exactly the original broken seed URL, so this
+  // never overwrites a real photo someone has since uploaded.
+  const BROKEN_SEED_FIX = {
+    choralEngagement: { broken: '/assets/img/choral-engagement.jpg', fixed: '/assets/img/about2.png' },
+    sightReading: { broken: '/assets/img/sightreading.jpg', fixed: '/assets/img/about1.png' },
+    development: { broken: '/assets/img/development.jpg', fixed: '/assets/img/about.png' },
+  };
+  for (const [liveTarget, { broken, fixed }] of Object.entries(BROKEN_SEED_FIX)) {
+    const folder = tree.folders.find(f => f.liveTarget === liveTarget);
+    if (!folder) continue;
+    for (const img of tree.images) {
+      if (img.folderId === folder.id && img.url === broken) img.url = fixed;
     }
   }
 }

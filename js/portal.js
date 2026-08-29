@@ -61,6 +61,7 @@ let galleryDraggingIds = null;
 let galleryDraggingFolderId = null;
 let budgetAccounts = {};
 let budgetStats = {};
+let budgetReconciliation = {};
 let budgetTransactions = [];
 let budgetCurrentAccount = 'regular';
 let budgetTxnType = 'expense';
@@ -2198,26 +2199,42 @@ function budgetProgressBarHTML(spent, planned) {
   </div>`;
 }
 
+// Regular and Convention Trip are both "we were given/asked for a capped
+// amount, now we're spending it down" accounts — same card layout. Only
+// Fundraising is fundamentally different (a balance fed by income, not a
+// fixed allocation), so it gets its own layout.
+const BUDGET_CAP_STYLE_ACCOUNTS = ['regular', 'convention'];
+const BUDGET_CAP_LABELS = {
+  regular: 'Budget Cap (SGA Allocation)',
+  convention: 'SGA Ask (Ceiling)',
+};
+
 function budgetStatCardsHTML() {
   const s = budgetStats[budgetCurrentAccount] || {};
-  if (budgetCurrentAccount === 'regular') {
+  if (BUDGET_CAP_STYLE_ACCOUNTS.includes(budgetCurrentAccount)) {
     const remaining = (s.targetAmount || 0) + (s.startingBalance || 0) - (s.totalSpent || 0);
     const overPlan = (s.plannedTotal || 0) > (s.targetAmount || 0);
     return [
-      statCardHTML(fmtMoney(s.targetAmount), 'Budget Cap (SGA Allocation)'),
+      statCardHTML(fmtMoney(s.targetAmount), BUDGET_CAP_LABELS[budgetCurrentAccount] || 'Budget Cap'),
       statCardHTML(fmtMoney(s.totalSpent), 'Total Spent'),
       statCardHTML(budgetSignedMoney(remaining), remaining < 0 ? 'Over Budget' : 'Remaining', s.startingBalance ? `Includes ${fmtMoney(s.startingBalance)} carried over` : ''),
-      statCardHTML(fmtMoney(s.plannedTotal), 'Total Planned (Categories)', overPlan ? 'Plan exceeds the budget cap' : 'Within the budget cap'),
+      statCardHTML(fmtMoney(s.plannedTotal), 'Total Planned (Categories)', overPlan ? 'Plan exceeds the cap' : 'Within the cap'),
     ].join('');
   }
   const balance = s.currentBalance || 0;
   return [
-    statCardHTML(fmtMoney(s.targetAmount), 'Fundraising Goal'),
+    statCardHTML(fmtMoney(s.targetAmount), 'Fundraising Goal (target, not a cap)'),
     statCardHTML(budgetSignedMoney(balance), balance < 0 ? 'Current Balance (Deficit)' : 'Current Balance', balance < 0 ? 'Raise more to cover spending' : 'Raising at least as much as spent'),
     statCardHTML(fmtMoney(s.totalIncome), 'Raised (logged here)'),
     statCardHTML(fmtMoney(s.totalSpent), 'Spent (logged here)'),
   ].join('');
 }
+
+const BUDGET_ACCOUNT_DESCRIPTIONS = {
+  regular: 'Money the SGA has already allocated to us — a fixed amount to spend down across the categories below.',
+  fundraising: 'Money we raise ourselves (bake sales, merch, etc.), not a fixed allocation. The Goal is a target; the Current Balance is what’s actually in the account right now. The rule: raise at least as much as we spend from it.',
+  convention: 'A separate special SGA request for the 2027 ACDA National Conference trip — kept apart from the Regular and Fundraising accounts above, but tracked here too.',
+};
 
 function budgetCategoryRowHTML(cat) {
   const over = cat.spent > cat.plannedAmount;
@@ -2263,7 +2280,7 @@ function budgetTransactionRowHTML(t) {
   const amountColor = t.type === 'income' ? '#16a34a' : 'var(--brand)';
   return `<div class="admin-row">
     <div>
-      <span class="name">${escHtml(t.description)}</span>${t.type === 'income' ? ' <span class="badge-role eboard">income</span>' : ''}
+      <span class="name">${escHtml(t.description)}</span>${t.type === 'income' ? ' <span class="badge-role eboard">income</span>' : ''}${t.linkId ? ' <span class="badge-role inactive" title="Logged together as one fundraiser">🔗 linked</span>' : ''}
       <div class="meta">${escHtml(catLabel)} · ${fmtDashDate(t.date)} · logged by ${escHtml(t.addedByName)}</div>
     </div>
     <div class="actions">
@@ -2301,26 +2318,51 @@ function exportBudgetTxnsXls() {
   URL.revokeObjectURL(url);
 }
 
+function renderBudgetReconciliation() {
+  const r = budgetReconciliation || {};
+  const el = document.getElementById('budget-reconciliation-text');
+  if (typeof r.combinedCapacity !== 'number') { el.textContent = 'Loading…'; return; }
+  const matches = Math.abs(r.difference) < 0.01;
+  el.innerHTML = `Regular Budget Cap + Fundraising Goal = <strong>${fmtMoney(r.combinedCapacity)}</strong> total planned spending capacity. `
+    + `Actual total planned across both accounts' categories: <strong>${fmtMoney(r.combinedPlanned)}</strong>. `
+    + (matches
+      ? '<span style="color:#16a34a">These match.</span>'
+      : `<span style="color:#ef4444">Off by ${fmtMoney(Math.abs(r.difference))} ${r.difference > 0 ? '(capacity unused)' : '(over capacity)'}.</span>`);
+}
+
 function renderBudgetView() {
   document.getElementById('budget-stats').innerHTML = budgetStatCardsHTML();
+  document.getElementById('budget-account-description').textContent = BUDGET_ACCOUNT_DESCRIPTIONS[budgetCurrentAccount] || '';
+  renderBudgetReconciliation();
   renderBudgetCategoriesList();
   populateBudgetTxnCategorySelect();
   renderBudgetChart();
   renderBudgetTransactionsList();
-  // Logging income only makes sense for the fundraising account.
-  document.getElementById('budget-income-chip').style.display = budgetCurrentAccount === 'fundraising' ? '' : 'none';
-  if (budgetCurrentAccount === 'regular' && budgetTxnType === 'income') {
+  // Logging income (or a combined fundraiser cost+revenue entry) only makes
+  // sense for the fundraising account.
+  const isFundraising = budgetCurrentAccount === 'fundraising';
+  document.getElementById('budget-income-chip').style.display = isFundraising ? '' : 'none';
+  document.getElementById('budget-fundraiser-chip').style.display = isFundraising ? '' : 'none';
+  if (!isFundraising && budgetTxnType !== 'expense') {
     budgetTxnType = 'expense';
     document.querySelectorAll('#budget-txn-type-chips [data-txn-type]').forEach(b => b.classList.toggle('active', b.dataset.txnType === 'expense'));
   }
-  if (!editingBudgetTxnId) document.getElementById('budget-txn-submit').textContent = budgetTxnType === 'income' ? 'Add income' : 'Add expense';
+  const isFundraiserEntry = budgetTxnType === 'fundraiser';
+  document.getElementById('budget-fundraiser-hint').style.display = isFundraiserEntry ? '' : 'none';
+  document.getElementById('budget-fundraiser-amounts-row').style.display = isFundraiserEntry ? '' : 'none';
+  document.getElementById('budget-txn-amount').style.display = isFundraiserEntry ? 'none' : '';
+  document.getElementById('budget-txn-amount').required = !isFundraiserEntry;
+  if (!editingBudgetTxnId) {
+    document.getElementById('budget-txn-submit').textContent =
+      budgetTxnType === 'income' ? 'Add income' : budgetTxnType === 'fundraiser' ? 'Log fundraiser' : 'Add expense';
+  }
 }
 
 async function loadBudget() {
   const { ok, data } = await api(BUDGET_URL, { method: 'GET' });
   if (!ok) { document.getElementById('budget-stats').innerHTML = '<div class="admin-card"><p class="small muted">Could not load budget.</p></div>'; return; }
   budgetAccounts = data.accounts;
-  budgetStats = data.stats;
+  budgetStats = data.stats.accounts; budgetReconciliation = data.stats.reconciliation;
   budgetTransactions = data.transactions;
   renderBudgetView();
 }
@@ -2358,27 +2400,27 @@ function wireBudgetPanel() {
 
   document.getElementById('budget-edit-target-btn').addEventListener('click', async () => {
     const current = budgetAccounts[budgetCurrentAccount]?.targetAmount ?? 0;
-    const label = budgetCurrentAccount === 'regular' ? 'the Regular Account budget cap' : 'the Fundraising / Extra Account goal';
-    const input = prompt(`New amount for ${label}:`, current);
+    const targetLabels = { regular: 'the Regular Account budget cap', fundraising: 'the Fundraising / Extra Account goal', convention: 'the Convention Trip SGA ask' };
+    const input = prompt(`New amount for ${targetLabels[budgetCurrentAccount] || 'this account'}:`, current);
     if (input === null) return;
     const targetAmount = Number(input);
     if (!targetAmount && targetAmount !== 0) { alert('Enter a valid amount.'); return; }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'setAccountTarget', account: budgetCurrentAccount, targetAmount }) });
     if (!ok) { alert(data.error || 'Could not update.'); return; }
-    budgetAccounts = data.accounts; budgetStats = data.stats;
+    budgetAccounts = data.accounts; budgetStats = data.stats.accounts; budgetReconciliation = data.stats.reconciliation;
     renderBudgetView();
   });
 
   document.getElementById('budget-edit-balance-btn').addEventListener('click', async () => {
     const current = budgetAccounts[budgetCurrentAccount]?.startingBalance ?? 0;
-    const accountLabel = budgetCurrentAccount === 'regular' ? 'the Regular Account' : 'the Fundraising / Extra Account';
-    const input = prompt(`Current real-world balance of ${accountLabel} (what's actually in the account right now, before anything logged here):`, current);
+    const accountLabels = { regular: 'the Regular Account', fundraising: 'the Fundraising / Extra Account', convention: 'the Convention Trip account' };
+    const input = prompt(`Current real-world balance of ${accountLabels[budgetCurrentAccount] || 'this account'} (what's actually in the account right now, before anything logged here):`, current);
     if (input === null) return;
     const startingBalance = Number(input);
     if (!startingBalance && startingBalance !== 0) { alert('Enter a valid amount.'); return; }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'setStartingBalance', account: budgetCurrentAccount, startingBalance }) });
     if (!ok) { alert(data.error || 'Could not update.'); return; }
-    budgetAccounts = data.accounts; budgetStats = data.stats;
+    budgetAccounts = data.accounts; budgetStats = data.stats.accounts; budgetReconciliation = data.stats.reconciliation;
     renderBudgetView();
   });
 
@@ -2419,7 +2461,7 @@ function wireBudgetPanel() {
       : { op: 'createCategory', account: budgetCurrentAccount, name, plannedAmount, plannedRevenue };
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify(body) });
     if (!ok) { statusEl.textContent = data.error || 'Could not save category.'; statusEl.className = 'admin-status err'; return; }
-    budgetStats = data.stats;
+    budgetStats = data.stats.accounts; budgetReconciliation = data.stats.reconciliation;
     resetBudgetCategoryForm();
     renderBudgetView();
   });
@@ -2429,7 +2471,7 @@ function wireBudgetPanel() {
     if (!confirm('Delete this category? Existing transactions in it will show as Uncategorized.')) return;
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteCategory', id: editingBudgetCategoryId }) });
     if (!ok) { alert(data.error || 'Could not delete category.'); return; }
-    budgetTransactions = data.transactions; budgetStats = data.stats;
+    budgetTransactions = data.transactions; budgetStats = data.stats.accounts; budgetReconciliation = data.stats.reconciliation;
     resetBudgetCategoryForm();
     renderBudgetView();
   });
@@ -2439,26 +2481,36 @@ function wireBudgetPanel() {
     if (!btn) return;
     budgetTxnType = btn.dataset.txnType;
     document.querySelectorAll('#budget-txn-type-chips [data-txn-type]').forEach(b => b.classList.toggle('active', b === btn));
-    document.getElementById('budget-txn-submit').textContent = editingBudgetTxnId ? 'Save changes' : (budgetTxnType === 'income' ? 'Add income' : 'Add expense');
+    renderBudgetView();
   });
 
   document.getElementById('budget-txn-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('budget-txn-status');
-    const body = {
-      op: editingBudgetTxnId ? 'updateTransaction' : 'addTransaction',
-      account: budgetCurrentAccount,
-      type: budgetTxnType,
-      categoryId: document.getElementById('budget-txn-category').value || null,
-      description: document.getElementById('budget-txn-desc').value.trim(),
-      amount: Number(document.getElementById('budget-txn-amount').value),
-      date: document.getElementById('budget-txn-date').value,
-    };
-    if (editingBudgetTxnId) body.id = editingBudgetTxnId;
+    const categoryId = document.getElementById('budget-txn-category').value || null;
+    const description = document.getElementById('budget-txn-desc').value.trim();
+    const date = document.getElementById('budget-txn-date').value;
+    let body;
+    if (!editingBudgetTxnId && budgetTxnType === 'fundraiser') {
+      body = {
+        op: 'addFundraiserEvent', categoryId, description, date,
+        cost: document.getElementById('budget-txn-cost').value,
+        revenue: document.getElementById('budget-txn-revenue').value,
+      };
+    } else {
+      body = {
+        op: editingBudgetTxnId ? 'updateTransaction' : 'addTransaction',
+        account: budgetCurrentAccount,
+        type: budgetTxnType,
+        categoryId, description, date,
+        amount: Number(document.getElementById('budget-txn-amount').value),
+      };
+      if (editingBudgetTxnId) body.id = editingBudgetTxnId;
+    }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify(body) });
     if (!ok) { statusEl.textContent = data.error || 'Could not save.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
-    budgetTransactions = data.transactions; budgetStats = data.stats;
+    budgetTransactions = data.transactions; budgetStats = data.stats.accounts; budgetReconciliation = data.stats.reconciliation;
     resetBudgetTxnForm();
     renderBudgetView();
   });
@@ -2479,6 +2531,10 @@ function wireBudgetPanel() {
       document.getElementById('budget-txn-form-heading').textContent = 'Edit Transaction';
       document.getElementById('budget-txn-submit').textContent = 'Save changes';
       document.getElementById('budget-txn-cancel').style.display = '';
+      document.getElementById('budget-fundraiser-hint').style.display = 'none';
+      document.getElementById('budget-fundraiser-amounts-row').style.display = 'none';
+      document.getElementById('budget-txn-amount').style.display = '';
+      document.getElementById('budget-txn-amount').required = true;
       document.getElementById('budget-txn-desc').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -2487,7 +2543,7 @@ function wireBudgetPanel() {
       if (!confirm('Delete this transaction?')) return;
       const { ok, data } = await api(`${BUDGET_URL}?id=${encodeURIComponent(delBtn.dataset.budgetDeleteTxn)}`, { method: 'DELETE' });
       if (!ok) { alert(data.error || 'Could not delete.'); return; }
-      budgetTransactions = data.transactions; budgetStats = data.stats;
+      budgetTransactions = data.transactions; budgetStats = data.stats.accounts; budgetReconciliation = data.stats.reconciliation;
       renderBudgetView();
     }
   });

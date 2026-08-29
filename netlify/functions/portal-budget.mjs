@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 
-const ACCOUNTS = ['regular', 'fundraising'];
+const ACCOUNTS = ['regular', 'fundraising', 'convention'];
 
 // Seeded once from the chapter's real FY27 budget plan (ACDA FY27
 // Budget.xlsx) — only the planned amounts carry over; actual transactions
@@ -36,6 +36,14 @@ function buildDefaultBudget() {
   addCat('fundraising', 'Christmas Caroling', 0, 100);
   addCat('fundraising', 'Spring Musical', 400, 1000);
   addCat('fundraising', 'Songs of the Seasons', 200, 400);
+  // Convention Trip — a separate SGA special request (2027 ACDA National
+  // Conference, Minneapolis), not part of the two accounts above. Seeded
+  // at the 10-attendee scenario from the Spring Trip sheet, which is what
+  // the budget's own Overview tab treats as "the plan" ($7,900 of the
+  // $12,000 SGA ask).
+  addCat('convention', 'Registration (10 attendees @ $250)', 2500);
+  addCat('convention', 'Flights (10 attendees @ $300, round-trip)', 3000);
+  addCat('convention', 'Hotel (3 rooms x 4 nights @ $200, quad occupancy)', 2400);
 
   return {
     accounts: {
@@ -44,6 +52,7 @@ function buildDefaultBudget() {
       // treasurer when this tool shipped — the starting point for "current
       // balance" math, not a transaction, so it doesn't inflate Raised/Spent.
       fundraising: { targetAmount: 3000, label: 'Fundraising / Extra Account', startingBalance: 3355.22 },
+      convention: { targetAmount: 12000, label: 'Convention Trip (2027 ACDA National Conference)', startingBalance: 0 },
     },
     categories,
     transactions: [],
@@ -64,6 +73,17 @@ function migrateBudgetShape(budget) {
   if (!budget._fundraisingBalanceSeeded) {
     budget.accounts.fundraising.startingBalance = 3355.22;
     budget._fundraisingBalanceSeeded = true;
+    changed = true;
+  }
+  // Backfill the Convention Trip account for a budget collection saved
+  // before it existed.
+  if (!budget.accounts.convention) {
+    budget.accounts.convention = { targetAmount: 12000, label: 'Convention Trip (2027 ACDA National Conference)', startingBalance: 0 };
+    budget.categories.push(
+      { id: randomUUID(), account: 'convention', name: 'Registration (10 attendees @ $250)', plannedAmount: 2500 },
+      { id: randomUUID(), account: 'convention', name: 'Flights (10 attendees @ $300, round-trip)', plannedAmount: 3000 },
+      { id: randomUUID(), account: 'convention', name: 'Hotel (3 rooms x 4 nights @ $200, quad occupancy)', plannedAmount: 2400 },
+    );
     changed = true;
   }
   return changed;
@@ -107,7 +127,19 @@ function computeStats(budget) {
       categories: cats.map(c => ({ ...c, spent: spentByCat.get(c.id) || 0 })),
     };
   }
-  return stats;
+  // "Our fundraising goal plus our budget cap should equal our total plan
+  // spending" — a quick sanity check the treasurer asked for, comparing the
+  // combined capacity of the two operating accounts (Regular + Fundraising;
+  // Convention Trip is a separate special request, deliberately excluded)
+  // against what's actually planned across their categories.
+  const combinedCapacity = (budget.accounts.regular.targetAmount || 0) + (budget.accounts.fundraising.targetAmount || 0);
+  const combinedPlanned = stats.regular.plannedTotal + stats.fundraising.plannedTotal;
+  const reconciliation = {
+    combinedCapacity,
+    combinedPlanned,
+    difference: combinedCapacity - combinedPlanned,
+  };
+  return { accounts: stats, reconciliation };
 }
 
 export default async function handler(req) {
@@ -180,10 +212,38 @@ export default async function handler(req) {
       return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
     }
 
+    if (op === 'addFundraiserEvent') {
+      // "Sometimes we have to spend money to make money" — one fundraiser
+      // logged as a single linked cost+revenue pair instead of two
+      // unrelated transactions, matching how the real Fundraising Plan
+      // tracks cost/revenue/net per fundraiser.
+      const { categoryId, description, cost, revenue, date } = body;
+      const costNum = Number(cost) || 0;
+      const revenueNum = Number(revenue) || 0;
+      if (costNum < 0 || revenueNum < 0) return json({ ok: false, error: 'Amounts cannot be negative.' }, 400);
+      if (!costNum && !revenueNum) return json({ ok: false, error: 'Enter a cost, a revenue amount, or both.' }, 400);
+      const desc = String(description || '').trim();
+      if (!desc) return json({ ok: false, error: 'A description is required.' }, 400);
+      if (categoryId && !budget.categories.some(c => c.id === categoryId && c.account === 'fundraising')) {
+        return json({ ok: false, error: 'Category not found.' }, 404);
+      }
+      const linkId = randomUUID();
+      const now = new Date().toISOString();
+      const txnDate = date || now.slice(0, 10);
+      const base = { account: 'fundraising', categoryId: categoryId || null, description: desc, date: txnDate, addedById: me.id, addedByName: me.name, createdAt: now, linkId };
+      if (costNum > 0) budget.transactions.push({ id: randomUUID(), type: 'expense', amount: costNum, ...base });
+      if (revenueNum > 0) budget.transactions.push({ id: randomUUID(), type: 'income', amount: revenueNum, ...base });
+      await setCollection('budget', budget);
+      return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
+    }
+
     if (op === 'addTransaction') {
       const { account, type, categoryId, description, amount, date } = body;
       if (!ACCOUNTS.includes(account)) return json({ ok: false, error: 'Unknown account.' }, 400);
       if (!['expense', 'income'].includes(type)) return json({ ok: false, error: 'Unknown transaction type.' }, 400);
+      if (type === 'income' && account !== 'fundraising') {
+        return json({ ok: false, error: 'Income can only be logged against the Fundraising / Extra account.' }, 400);
+      }
       const numAmount = Number(amount);
       if (!numAmount || numAmount <= 0) return json({ ok: false, error: 'A positive amount is required.' }, 400);
       if (!String(description || '').trim()) return json({ ok: false, error: 'A description is required.' }, 400);
