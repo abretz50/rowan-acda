@@ -1143,10 +1143,10 @@ html, body{ background: var(--page-bg); }
 }
 
 /* ===== Shared admin/portal styles (E-Board Portal, Digital Library editor) ===== */
-.view-tabs { display: flex; gap: .4rem; flex-wrap: wrap; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; }
+.view-tabs { display: flex; gap: .4rem; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; }
 .view-tab {
-  appearance: none; background: none; border: none;
-  padding: .55rem 1.1rem; font-weight: 700; font-size: .95rem;
+  appearance: none; background: none; border: none; flex-shrink: 0;
+  padding: .55rem .9rem; font-weight: 700; font-size: .95rem;
   color: var(--muted); cursor: pointer; border-radius: .5rem .5rem 0 0;
   border-bottom: 2px solid transparent; margin-bottom: -2px;
   transition: color .15s ease, border-color .15s ease; letter-spacing: .01em;

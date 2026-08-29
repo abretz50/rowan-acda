@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=11"/>
+<link rel="stylesheet" href="/css/components.css?v=12"/>
 <script defer src="/js/live-images.js?v=1"></script>
 </head>
 <body>
@@ -483,15 +483,8 @@
     <!-- ===== Gallery (Google-Drive-style folders) ===== -->
     <div class="panel" id="panel-gallery">
       <div class="admin-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
-          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
-            <button class="btn-sm outline" id="gallery-back-btn" style="display:none">← Back</button>
-            <div id="gallery-breadcrumb" class="small"></div>
-          </div>
-          <button class="btn-sm outline" id="gallery-new-folder-btn">New Folder</button>
-        </div>
-        <div id="gallery-folder-note" class="small muted" style="display:none;margin-top:.6rem;padding:.5rem .7rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem"></div>
-        <form class="admin-form" id="gallery-upload-form" novalidate style="margin-top:.75rem">
+        <h3>Upload Photo</h3>
+        <form class="admin-form" id="gallery-upload-form" novalidate>
           <input class="admin-input" type="file" id="gal-file" accept="image/*" required/>
           <input class="admin-input" type="text" id="gal-caption" placeholder="Caption (optional)"/>
           <button class="btn-sm" type="submit">Upload photo here</button>
@@ -499,6 +492,16 @@
         </form>
       </div>
       <div class="admin-card" style="margin-top:1rem">
+        <div id="gallery-nav-bar" style="position:sticky;top:0;z-index:3;background:#fff;padding-bottom:.6rem;margin-bottom:.6rem;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+            <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+              <button class="btn-sm outline" id="gallery-back-btn" style="display:none">← Back</button>
+              <div id="gallery-breadcrumb" class="small"></div>
+            </div>
+            <button class="btn-sm outline" id="gallery-new-folder-btn">New Folder</button>
+          </div>
+          <div id="gallery-folder-note" class="small muted" style="display:none;margin-top:.6rem;padding:.5rem .7rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem"></div>
+        </div>
         <div id="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.9rem"><p class="small muted">Loading…</p></div>
       </div>
     </div>
@@ -584,6 +587,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=27"></script>
+<script defer src="/js/portal.js?v=28"></script>
 </body>
 </html>

@@ -1793,7 +1793,19 @@ async function loadGallery() {
   renderGalleryView();
 }
 
+// Keeps the sticky folder-nav bar just below the site's own sticky header
+// instead of pinned to the literal top of the viewport (where it'd end up
+// underneath the header) — the header's height isn't a fixed constant since
+// its nav can wrap on narrow screens.
+function syncGalleryNavOffset() {
+  const header = document.querySelector('.site-header');
+  const navBar = document.getElementById('gallery-nav-bar');
+  if (header && navBar) navBar.style.top = `${header.offsetHeight}px`;
+}
+window.addEventListener('resize', syncGalleryNavOffset);
+
 function wireGalleryPanel() {
+  syncGalleryNavOffset();
   document.getElementById('gallery-new-folder-btn').addEventListener('click', async () => {
     const name = prompt('Folder name?');
     if (!name || !name.trim()) return;
