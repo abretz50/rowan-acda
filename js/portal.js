@@ -1832,7 +1832,13 @@ function renderGalleryBulkBar() {
   if (!count) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
   document.getElementById('gallery-bulk-count').textContent = `${count} photo${count !== 1 ? 's' : ''} selected`;
-  document.getElementById('gallery-bulk-select').innerHTML = galleryFolderOptionsHTML(new Set());
+  // Re-rendered on every checkbox toggle (so the count stays live), which
+  // would otherwise silently reset an already-chosen destination back to
+  // "Top Level" the moment a second photo gets checked — preserve it.
+  const select = document.getElementById('gallery-bulk-select');
+  const previousValue = select.value;
+  select.innerHTML = galleryFolderOptionsHTML(new Set());
+  if ([...select.options].some(o => o.value === previousValue)) select.value = previousValue;
 }
 
 function renderGalleryView() {
@@ -2064,6 +2070,10 @@ function wireGalleryPanel() {
       ? [...gallerySelectedImageIds] : [id];
     e.dataTransfer.effectAllowed = 'move';
     try { e.dataTransfer.setData('text/plain', id); } catch {}
+  });
+  gridEl.addEventListener('dragenter', (e) => {
+    if (!galleryDraggingIds) return;
+    if (e.target.closest('[data-gallery-folder-tile]')) e.preventDefault();
   });
   gridEl.addEventListener('dragover', (e) => {
     if (!galleryDraggingIds) return;
