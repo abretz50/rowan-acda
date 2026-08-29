@@ -122,3 +122,12 @@ export async function computeCanUse(role) {
 export function isValidRole(role) {
   return ROLES.includes(role);
 }
+
+// The chapter's permanent site-owner account. Unlike every other admin
+// account (which can be freely granted/revoked), this one can never be
+// demoted, deactivated, or have its access removed — from the Accounts
+// tab or the Members roster — regardless of how many other admins exist.
+export const PERMANENT_ADMIN_EMAIL = 'abretz50@gmail.com';
+export function isPermanentAdmin(member) {
+  return String(member?.email || '').trim().toLowerCase() === PERMANENT_ADMIN_EMAIL;
+}

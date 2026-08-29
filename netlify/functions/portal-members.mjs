@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { loadMembers, saveMembers, publicMember } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { getCollection } from './_lib/blobs.mjs';
+import { isPermanentAdmin } from './_lib/permissions.mjs';
 
 function normEmail(e) { return String(e || '').trim().toLowerCase(); }
 
@@ -112,13 +113,22 @@ export default async function handler(req) {
     if (!target) return json({ ok: false, error: 'Member not found.' }, 404);
     if (body.name) target.name = body.name;
     if (body.email) target.email = body.email;
-    if ('active' in body) target.active = !!body.active;
+    if ('active' in body) {
+      if (body.active === false && isPermanentAdmin(target)) {
+        return json({ ok: false, error: 'The permanent admin account cannot be deactivated.' }, 400);
+      }
+      target.active = !!body.active;
+    }
     await saveMembers(members);
     return json({ ok: true, member: publicMember(target) });
   }
 
   if (req.method === 'DELETE') {
-    if (!members.some(m => m.id === body.id)) return json({ ok: false, error: 'Member not found.' }, 404);
+    const target = members.find(m => m.id === body.id);
+    if (!target) return json({ ok: false, error: 'Member not found.' }, 404);
+    if (isPermanentAdmin(target)) {
+      return json({ ok: false, error: 'The permanent admin account cannot be removed.' }, 400);
+    }
     await saveMembers(members.filter(m => m.id !== body.id));
     return json({ ok: true });
   }

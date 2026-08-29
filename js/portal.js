@@ -18,6 +18,11 @@ const UPLOAD_URL   = '/.netlify/functions/portal-upload';
 const STATS_URL    = '/.netlify/functions/portal-stats';
 const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
 const TASKS_URL = '/.netlify/functions/portal-tasks';
+// The chapter's permanent site-owner account — mirrors _lib/permissions.mjs's
+// isPermanentAdmin(); the server is the source of truth, this is only for
+// hiding the buttons it would reject anyway.
+const PERMANENT_ADMIN_EMAIL = 'abretz50@gmail.com';
+function isPermanentAdminEmail(email) { return String(email || '').trim().toLowerCase() === PERMANENT_ADMIN_EMAIL; }
 const COMMENTS_URL = '/.netlify/functions/portal-comments';
 
 // The server computes exactly which tabs a signed-in user can use (see
@@ -337,6 +342,7 @@ function accountRowHTML(a) {
   const roleBadge = `<span class="badge-role ${FULL_ACCESS_ROLES.includes(a.role) ? 'admin' : 'eboard'}">${ROLE_LABELS[a.role] || a.role}</span>`;
   const inactiveBadge = a.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
   const isSelf = me && a.id === me.id;
+  const isPermanentAdmin = isPermanentAdminEmail(a.email);
   // Defensive fallback for any stray role value that isn't in ROLE_LABELS
   // (shouldn't happen going forward, but keeps the dropdown from silently
   // jumping to a different role if it ever does).
@@ -346,15 +352,15 @@ function accountRowHTML(a) {
     + (isUnknownRole ? `<option value="${escHtml(a.role)}" selected>${escHtml(a.role)}</option>` : '');
   return `<div class="admin-row" data-account-id="${escHtml(a.id)}">
     <div>
-      <span class="name">${escHtml(a.name)}</span> ${roleBadge}${inactiveBadge}
+      <span class="name">${escHtml(a.name)}</span> ${roleBadge}${inactiveBadge}${isPermanentAdmin ? ' <span class="badge-role admin">permanent admin</span>' : ''}
       <div class="meta">${escHtml(a.email || '')}${isSelf ? ' · you' : ''}</div>
     </div>
     <div class="actions">
-      <select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">
-        ${options}
-      </select>
-      ${!isSelf ? `<button class="btn-sm outline" data-toggle-active="${escHtml(a.id)}" data-next="${a.active === false ? 'true' : 'false'}">${a.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
-      ${!isSelf ? `<button class="btn-sm delete" data-remove-account="${escHtml(a.id)}">Revoke access</button>` : ''}
+      ${isPermanentAdmin
+        ? ''
+        : `<select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">${options}</select>`}
+      ${!isSelf && !isPermanentAdmin ? `<button class="btn-sm outline" data-toggle-active="${escHtml(a.id)}" data-next="${a.active === false ? 'true' : 'false'}">${a.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
+      ${!isSelf && !isPermanentAdmin ? `<button class="btn-sm delete" data-remove-account="${escHtml(a.id)}">Revoke access</button>` : ''}
     </div>
   </div>`;
 }
@@ -838,6 +844,7 @@ function memberRowHTML(m) {
   const inactiveBadge = m.active === false ? `<span class="badge-role inactive">inactive</span>` : '';
   const accountBadge = m.hasAccount ? `<span class="badge-role eboard">has account</span>` : '';
   const selected = m.id === selectedMemberId ? ' admin-row--selected' : '';
+  const isPermanentAdmin = isPermanentAdminEmail(m.email);
   return `<div class="admin-row${selected}" style="cursor:pointer" data-member-id="${escHtml(m.id)}">
     <div>
       <span class="name">${escHtml(m.name)}</span> ${inactiveBadge}${accountBadge}
@@ -845,8 +852,8 @@ function memberRowHTML(m) {
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-view-points="${escHtml(m.id)}">Points history</button>
-      <button class="btn-sm outline" data-toggle-member="${escHtml(m.id)}" data-next="${m.active === false ? 'true' : 'false'}">${m.active === false ? 'Reactivate' : 'Deactivate'}</button>
-      <button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>
+      ${!isPermanentAdmin ? `<button class="btn-sm outline" data-toggle-member="${escHtml(m.id)}" data-next="${m.active === false ? 'true' : 'false'}">${m.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
+      ${!isPermanentAdmin ? `<button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>` : ''}
     </div>
   </div>`;
 }
@@ -1224,12 +1231,29 @@ function renderLibManageList() {
   el.innerHTML = filtered.map(scoreManageRowHTML).join('') || '<p class="small muted">No scores yet.</p>';
 }
 
+function knownArchiveFolders() {
+  return [...new Set(libSessions.filter(s => s.archiveFolder).map(s => s.archiveFolder))].sort();
+}
+
 function setManageRowHTML(sess) {
   const count = sess.scoreUrls.length;
   const archiveBtn = sess.archived
     ? `<button class="btn-sm outline" data-unarchive-set="${escHtml(sess.num)}">Unarchive</button>`
     : `<button class="btn-sm outline" data-archive-set="${escHtml(sess.num)}">Archive</button>`;
   const archivedMeta = sess.archived && sess.archivedAt ? ` · archived ${fmtDashDate(sess.archivedAt)}` : '';
+  const folders = knownArchiveFolders();
+  const archivePanel = sess.archived ? '' : `
+  <div class="set-archive-panel" id="set-archive-${escHtml(sess.num)}" style="display:none;margin:.4rem 0 .8rem;padding:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:.55rem">
+    <div class="form-row">
+      <select class="admin-input" data-archive-folder-select="${escHtml(sess.num)}">
+        ${folders.map(f => `<option value="${escHtml(f)}">${escHtml(f)}</option>`).join('')}
+        <option value="__new__">+ New folder…</option>
+      </select>
+      <input class="admin-input" type="text" placeholder="New folder name (e.g. 26-27)" data-archive-folder-new="${escHtml(sess.num)}" style="${folders.length ? 'display:none' : ''}"/>
+    </div>
+    <button class="btn-sm" data-confirm-archive="${escHtml(sess.num)}">Archive</button>
+    <button class="btn-sm outline" data-cancel-archive="${escHtml(sess.num)}">Cancel</button>
+  </div>`;
   return `<div class="admin-row" style="align-items:flex-start" data-set-num="${escHtml(sess.num)}">
     <div>
       <span class="name">${escHtml(sess.num)}: ${escHtml(sess.name)}</span>
@@ -1241,10 +1265,25 @@ function setManageRowHTML(sess) {
       <button class="btn-sm delete" data-delete-set="${escHtml(sess.num)}">Delete</button>
     </div>
   </div>
+  ${archivePanel}
   <div class="set-manage-panel" id="set-manage-${escHtml(sess.num)}" style="display:none;margin:.4rem 0 .8rem;padding:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:.55rem">
     <div id="set-current-${escHtml(sess.num)}" style="display:flex;flex-direction:column;gap:.25rem;margin-bottom:.5rem"></div>
     <input class="admin-input" type="search" placeholder="Search the library to add a score…" data-set-search="${escHtml(sess.num)}"/>
     <div id="set-search-results-${escHtml(sess.num)}" style="display:none;max-height:200px;overflow-y:auto;margin-top:.4rem;border:1px solid var(--border);border-radius:.5rem"></div>
+  </div>`;
+}
+
+// Same collapsible-group shell as Events' academic-year folders (yearFolderHTML/
+// wireYearFolders), reused here to group archived sets by archive folder.
+function archiveFolderHTML(group, rowFn) {
+  return `<div class="session-group" data-year-folder="${escHtml(group.label)}">
+    <div class="session-toggle-wrap">
+      <button class="session-toggle" aria-expanded="false" type="button">
+        <span class="session-toggle-left"><span>${escHtml(group.label)}</span><span class="session-date">${group.sets.length} set${group.sets.length !== 1 ? 's' : ''}</span></span>
+        <span class="chevron" aria-hidden="true">&#9660;</span>
+      </button>
+    </div>
+    <div class="session-body"><div style="display:flex;flex-direction:column;gap:.5rem">${group.sets.map(rowFn).join('')}</div></div>
   </div>`;
 }
 function renderSetCurrentScores(sessNum) {
@@ -1261,7 +1300,17 @@ function renderSetsManageList() {
   const active = libSessions.filter(s => !s.archived);
   const archived = libSessions.filter(s => s.archived);
   document.getElementById('sets-manage-list').innerHTML = active.map(setManageRowHTML).join('') || '<p class="small muted">No sets yet.</p>';
-  document.getElementById('sets-archive-list').innerHTML = archived.map(setManageRowHTML).join('') || '<p class="small muted">No archived sets.</p>';
+
+  const byFolder = new Map();
+  archived.forEach(s => {
+    const folder = s.archiveFolder || 'Unsorted';
+    if (!byFolder.has(folder)) byFolder.set(folder, []);
+    byFolder.get(folder).push(s);
+  });
+  const groups = [...byFolder.entries()].sort((a, b) => b[0].localeCompare(a[0])).map(([label, sets]) => ({ label, sets }));
+  const archiveEl = document.getElementById('sets-archive-list');
+  archiveEl.innerHTML = groups.map(g => archiveFolderHTML(g, setManageRowHTML)).join('') || '<p class="small muted">No archived sets.</p>';
+  wireYearFolders(archiveEl);
 }
 
 async function loadLibrary() {
@@ -1443,7 +1492,24 @@ function wireLibraryPanel() {
     }
     const archiveBtn = e.target.closest('[data-archive-set]');
     if (archiveBtn) {
-      const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'setSessionArchived', num: archiveBtn.dataset.archiveSet, archived: true }) });
+      const panel = document.getElementById(`set-archive-${archiveBtn.dataset.archiveSet}`);
+      if (panel) panel.style.display = panel.style.display === 'none' ? '' : 'none';
+      return;
+    }
+    const cancelArchiveBtn = e.target.closest('[data-cancel-archive]');
+    if (cancelArchiveBtn) {
+      const panel = document.getElementById(`set-archive-${cancelArchiveBtn.dataset.cancelArchive}`);
+      if (panel) panel.style.display = 'none';
+      return;
+    }
+    const confirmArchiveBtn = e.target.closest('[data-confirm-archive]');
+    if (confirmArchiveBtn) {
+      const num = confirmArchiveBtn.dataset.confirmArchive;
+      const select = document.querySelector(`[data-archive-folder-select="${num}"]`);
+      const newInput = document.querySelector(`[data-archive-folder-new="${num}"]`);
+      const folder = select.value === '__new__' ? newInput.value.trim() : select.value;
+      if (!folder) { alert('Enter a folder name.'); return; }
+      const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'setSessionArchived', num, archived: true, folder }) });
       if (!ok) { alert(data.error || 'Could not archive.'); return; }
       libScores = data.scores; libSessions = data.sessions;
       renderSetsManageList();
@@ -1475,6 +1541,13 @@ function wireLibraryPanel() {
   };
   document.getElementById('sets-manage-list').addEventListener('input', onSetsListInput);
   document.getElementById('sets-archive-list').addEventListener('input', onSetsListInput);
+
+  document.getElementById('sets-manage-list').addEventListener('change', (e) => {
+    const select = e.target.closest('[data-archive-folder-select]');
+    if (!select) return;
+    const input = document.querySelector(`[data-archive-folder-new="${select.dataset.archiveFolderSelect}"]`);
+    if (input) input.style.display = select.value === '__new__' ? '' : 'none';
+  });
 }
 
 // ── Site Content (E-Board roster) tab ─────────────────────

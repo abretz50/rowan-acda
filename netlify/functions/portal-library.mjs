@@ -5,12 +5,23 @@ import { SEED_DAT_TEXT } from './_lib/librarySeed.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { hasPermission } from './_lib/permissions.mjs';
 
+// One-time backfill: sets archived before folders existed all land in
+// "25-26" so nothing is left unsorted going forward.
 async function loadLibrary() {
   const lib = await getCollection('library', null);
-  if (lib) return lib;
-  const seeded = parseDat(SEED_DAT_TEXT);
-  await setCollection('library', seeded);
-  return seeded;
+  if (!lib) {
+    const seeded = parseDat(SEED_DAT_TEXT);
+    await setCollection('library', seeded);
+    return seeded;
+  }
+  if (!lib._archiveFolderMigrated) {
+    for (const sess of lib.sessions) {
+      if (sess.archived && !sess.archiveFolder) sess.archiveFolder = '25-26';
+    }
+    lib._archiveFolderMigrated = true;
+    await setCollection('library', lib);
+  }
+  return lib;
 }
 
 async function canManageLibrary(req) {
@@ -97,7 +108,7 @@ export default async function handler(req) {
     const { num, name } = body;
     if (!num || !name) return json({ ok: false, error: 'ID and name are required.' }, 400);
     if (lib.sessions.some(s => s.num === num)) return json({ ok: false, error: `${num} already exists.` }, 409);
-    lib.sessions.unshift({ num, name, scoreUrls: [], archived: false, archivedAt: null });
+    lib.sessions.unshift({ num, name, scoreUrls: [], archived: false, archivedAt: null, archiveFolder: null });
     await setCollection('library', lib);
     return json({ ok: true, ...lib });
   }
@@ -107,6 +118,13 @@ export default async function handler(req) {
     if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
     sess.archived = !!body.archived;
     sess.archivedAt = sess.archived ? new Date().toISOString() : null;
+    if (sess.archived) {
+      const folder = String(body.folder || '').trim();
+      if (!folder) return json({ ok: false, error: 'Choose or create a folder to archive into.' }, 400);
+      sess.archiveFolder = folder;
+    } else {
+      sess.archiveFolder = null;
+    }
     await setCollection('library', lib);
     return json({ ok: true, ...lib });
   }

@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { loadMembers, saveMembers, accountMember } from './_lib/loadMembers.mjs';
 import { hashPassword, requireAuth, json } from './_lib/auth.mjs';
-import { isValidRole, FULL_ACCESS_ROLES } from './_lib/permissions.mjs';
+import { isValidRole, FULL_ACCESS_ROLES, isPermanentAdmin } from './_lib/permissions.mjs';
 
 function activeFullAccess(members) {
   return members.filter(m => FULL_ACCESS_ROLES.includes(m.role) && m.hasAccount && m.active !== false);
@@ -48,6 +48,9 @@ export default async function handler(req) {
 
     if ('role' in body) {
       if (!isValidRole(body.role)) return json({ ok: false, error: 'Invalid role.' }, 400);
+      if (isPermanentAdmin(target) && body.role !== 'admin') {
+        return json({ ok: false, error: 'This is the permanent admin account — its role cannot be changed.' }, 400);
+      }
       if (FULL_ACCESS_ROLES.includes(target.role) && !FULL_ACCESS_ROLES.includes(body.role) && activeFullAccess(members).length <= 1) {
         return json({ ok: false, error: 'Cannot remove the last full-access (president/admin) account.' }, 400);
       }
@@ -68,6 +71,9 @@ export default async function handler(req) {
     }
 
     if ('active' in body) {
+      if (body.active === false && isPermanentAdmin(target)) {
+        return json({ ok: false, error: 'The permanent admin account cannot be deactivated.' }, 400);
+      }
       if (FULL_ACCESS_ROLES.includes(target.role) && body.active === false && activeFullAccess(members).length <= 1) {
         return json({ ok: false, error: 'Cannot deactivate the last full-access (president/admin) account.' }, 400);
       }
@@ -82,6 +88,9 @@ export default async function handler(req) {
   if (req.method === 'DELETE') {
     const target = members.find(m => m.id === body.id);
     if (!target) return json({ ok: false, error: 'Member not found.' }, 404);
+    if (isPermanentAdmin(target)) {
+      return json({ ok: false, error: 'The permanent admin account cannot have its access revoked.' }, 400);
+    }
     if (FULL_ACCESS_ROLES.includes(target.role) && activeFullAccess(members).length <= 1) {
       return json({ ok: false, error: 'Cannot remove the last full-access (president/admin) account.' }, 400);
     }
