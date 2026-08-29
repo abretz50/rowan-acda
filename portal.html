@@ -505,6 +505,13 @@
             <button class="btn-sm outline" id="gallery-new-folder-btn">New Folder</button>
           </div>
           <div id="gallery-folder-note" class="small muted" style="display:none;margin-top:.6rem;padding:.5rem .7rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem"></div>
+          <div id="gallery-bulk-bar" style="display:none;margin-top:.6rem;padding:.5rem .7rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem;align-items:center;gap:.5rem;flex-wrap:wrap">
+            <span class="small" id="gallery-bulk-count"></span>
+            <select class="admin-input" id="gallery-bulk-select" style="width:auto;flex:1;min-width:160px"></select>
+            <button class="btn-sm outline" id="gallery-bulk-copy">Copy here</button>
+            <button class="btn-sm" id="gallery-bulk-move">Move here</button>
+            <button class="btn-sm outline" id="gallery-bulk-clear">Clear selection</button>
+          </div>
         </div>
         <div id="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.9rem"><p class="small muted">Loading…</p></div>
       </div>
@@ -591,6 +598,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=31"></script>
+<script defer src="/js/portal.js?v=32"></script>
 </body>
 </html>

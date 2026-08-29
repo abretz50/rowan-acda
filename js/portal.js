@@ -55,6 +55,8 @@ let editingEboardId = null;
 let galleryFolders = [];
 let galleryImages = [];
 let galleryCurrentFolderId = null;
+let gallerySelectedImageIds = new Set();
+let galleryDraggingIds = null;
 let eventsRefreshTimer = null;
 const KNOWN_VOICINGS = ['','SATB','SATB divisi','SAB','SSA','SSAA','TTBB','2-Part','Unison','Other'];
 const KNOWN_INSTRS   = ['','A Cappella','Piano','Organ','Guitar','Orchestra','Chamber Ensemble','Strings','Band','Brass','Other'];
@@ -1787,9 +1789,11 @@ function galleryFolderTileHTML(f) {
 
 function galleryImageTileHTML(img, siblings) {
   const idx = siblings.findIndex(s => s.id === img.id);
-  return `<div class="admin-card" style="padding:.5rem;position:relative" data-gallery-image-tile="${escHtml(img.id)}">
+  const checked = gallerySelectedImageIds.has(img.id);
+  return `<div class="admin-card" style="padding:.5rem;position:relative${checked ? ';box-shadow:0 0 0 2px var(--brand)' : ''}" data-gallery-image-tile="${escHtml(img.id)}" draggable="true" data-gallery-draggable="${escHtml(img.id)}">
+    <input type="checkbox" data-gallery-select="${escHtml(img.id)}" ${checked ? 'checked' : ''} title="Select" style="position:absolute;top:.4rem;left:.4rem;z-index:4;width:18px;height:18px;cursor:pointer"/>
     ${galleryMenuHTML('image', img.id)}
-    <img src="${escHtml(img.url)}" alt="${escHtml(img.caption || '')}" style="width:100%;height:110px;object-fit:cover;border-radius:.5rem;display:block"/>
+    <img src="${escHtml(img.url)}" alt="${escHtml(img.caption || '')}" draggable="false" style="width:100%;height:110px;object-fit:cover;border-radius:.5rem;display:block"/>
     <div class="actions" style="justify-content:center;margin-top:.4rem">
       <button class="btn-sm outline" data-gallery-move-up="${escHtml(img.id)}" ${idx <= 0 ? 'disabled' : ''}>▲</button>
       <button class="btn-sm outline" data-gallery-move-down="${escHtml(img.id)}" ${idx >= siblings.length - 1 ? 'disabled' : ''}>▼</button>
@@ -1804,9 +1808,19 @@ function renderGalleryGrid() {
   gridEl.innerHTML = folders.map(galleryFolderTileHTML).join('') + images.map(img => galleryImageTileHTML(img, images)).join('') || '<p class="small muted">This folder is empty.</p>';
 }
 
+function renderGalleryBulkBar() {
+  const bar = document.getElementById('gallery-bulk-bar');
+  const count = gallerySelectedImageIds.size;
+  if (!count) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  document.getElementById('gallery-bulk-count').textContent = `${count} photo${count !== 1 ? 's' : ''} selected`;
+  document.getElementById('gallery-bulk-select').innerHTML = galleryFolderOptionsHTML(new Set());
+}
+
 function renderGalleryView() {
   renderGalleryBreadcrumb();
   renderGalleryGrid();
+  renderGalleryBulkBar();
 }
 
 async function loadGallery() {
@@ -1843,6 +1857,7 @@ function wireGalleryPanel() {
   document.getElementById('gallery-back-btn').addEventListener('click', () => {
     const path = galleryFolderPath(galleryCurrentFolderId);
     galleryCurrentFolderId = path.length >= 2 ? path[path.length - 2].id : null;
+    gallerySelectedImageIds.clear();
     renderGalleryView();
   });
 
@@ -1851,6 +1866,7 @@ function wireGalleryPanel() {
     if (!a) return;
     e.preventDefault();
     galleryCurrentFolderId = a.dataset.galleryCrumb || null;
+    gallerySelectedImageIds.clear();
     renderGalleryView();
   });
 
@@ -1879,6 +1895,7 @@ function wireGalleryPanel() {
     const openBtn = e.target.closest('[data-gallery-open-folder]');
     if (openBtn) {
       galleryCurrentFolderId = openBtn.dataset.galleryOpenFolder;
+      gallerySelectedImageIds.clear();
       renderGalleryView();
       return;
     }
@@ -1982,6 +1999,70 @@ function wireGalleryPanel() {
       renderGalleryView();
     }
   });
+
+  // Multi-select checkboxes
+  document.getElementById('gallery-grid').addEventListener('change', (e) => {
+    const cb = e.target.closest('[data-gallery-select]');
+    if (!cb) return;
+    if (cb.checked) gallerySelectedImageIds.add(cb.dataset.gallerySelect);
+    else gallerySelectedImageIds.delete(cb.dataset.gallerySelect);
+    renderGalleryView();
+  });
+
+  document.getElementById('gallery-bulk-clear').addEventListener('click', () => {
+    gallerySelectedImageIds.clear();
+    renderGalleryView();
+  });
+  const runBulkAction = async (op) => {
+    const folderId = document.getElementById('gallery-bulk-select').value || null;
+    const ids = [...gallerySelectedImageIds];
+    const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op, ids, folderId }) });
+    if (!ok) { alert(data.error || 'Could not complete that action.'); return; }
+    gallerySelectedImageIds.clear();
+    galleryFolders = data.folders; galleryImages = data.images;
+    renderGalleryView();
+  };
+  document.getElementById('gallery-bulk-copy').addEventListener('click', () => runBulkAction('bulkCopyImages'));
+  document.getElementById('gallery-bulk-move').addEventListener('click', () => runBulkAction('bulkMoveImages'));
+
+  // Drag a photo (or the whole current selection, if the dragged one is
+  // part of it) onto a folder tile to move it there.
+  const gridEl = document.getElementById('gallery-grid');
+  gridEl.addEventListener('dragstart', (e) => {
+    const tile = e.target.closest('[data-gallery-draggable]');
+    if (!tile) return;
+    const id = tile.dataset.galleryDraggable;
+    galleryDraggingIds = (gallerySelectedImageIds.has(id) && gallerySelectedImageIds.size > 1)
+      ? [...gallerySelectedImageIds] : [id];
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', id); } catch {}
+  });
+  gridEl.addEventListener('dragover', (e) => {
+    if (!galleryDraggingIds) return;
+    const folderTile = e.target.closest('[data-gallery-folder-tile]');
+    if (!folderTile) return;
+    e.preventDefault();
+    folderTile.style.outline = '2px solid var(--brand)';
+  });
+  gridEl.addEventListener('dragleave', (e) => {
+    const folderTile = e.target.closest('[data-gallery-folder-tile]');
+    if (folderTile) folderTile.style.outline = '';
+  });
+  gridEl.addEventListener('drop', async (e) => {
+    const folderTile = e.target.closest('[data-gallery-folder-tile]');
+    if (!folderTile || !galleryDraggingIds) return;
+    e.preventDefault();
+    folderTile.style.outline = '';
+    const folderId = folderTile.dataset.galleryFolderTile;
+    const ids = galleryDraggingIds;
+    galleryDraggingIds = null;
+    const { ok, data } = await api(GALLERY_URL, { method: 'POST', body: JSON.stringify({ op: 'bulkMoveImages', ids, folderId }) });
+    if (!ok) { alert(data.error || 'Could not move.'); return; }
+    gallerySelectedImageIds.clear();
+    galleryFolders = data.folders; galleryImages = data.images;
+    renderGalleryView();
+  });
+  gridEl.addEventListener('dragend', () => { galleryDraggingIds = null; });
 }
 
 // ── Boot ──────────────────────────────────────────────────

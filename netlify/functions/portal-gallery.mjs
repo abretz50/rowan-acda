@@ -324,6 +324,25 @@ export default async function handler(req) {
       return json({ ok: true, folders: tree.folders, images: tree.images });
     }
 
+    if (op === 'bulkMoveImages' || op === 'bulkCopyImages') {
+      const ids = Array.isArray(body.ids) ? body.ids : [];
+      const folderId = body.folderId || null;
+      if (folderId && !tree.folders.some(f => f.id === folderId)) return json({ ok: false, error: 'Folder not found.' }, 404);
+      let order = Math.max(-1, ...tree.images.filter(i => i.folderId === folderId).map(i => i.order));
+      for (const id of ids) {
+        const source = tree.images.find(i => i.id === id);
+        if (!source) continue;
+        if (op === 'bulkCopyImages') {
+          tree.images.push({ id: randomUUID(), url: source.url, caption: source.caption, folderId, order: ++order });
+        } else {
+          source.folderId = folderId;
+          source.order = ++order;
+        }
+      }
+      await setCollection('gallery', tree);
+      return json({ ok: true, folders: tree.folders, images: tree.images });
+    }
+
     if (op === 'reorderImages') {
       const ids = Array.isArray(body.ids) ? body.ids : [];
       const byId = new Map(tree.images.map(i => [i.id, i]));
