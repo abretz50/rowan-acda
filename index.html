@@ -307,8 +307,8 @@
 </script>
 
 <!-- Merch cards: rendered from Site Content > Home Page > Merch -->
-<script defer>
-(function(){
+<script>
+document.addEventListener('DOMContentLoaded', function(){
   function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function merchCardHTML(item){
     const photos = (item.photos && item.photos.length) ? item.photos : ['/assets/img/about.png'];
@@ -375,7 +375,7 @@
     const fee = parseFloat(e.target.selectedOptions[0].dataset.fee || '0');
     card.querySelector('.merch-amount').value = (base + fee).toFixed(2);
   });
-})();
+});
 </script>
 
 <script src="/js/home-events.js" defer></script>

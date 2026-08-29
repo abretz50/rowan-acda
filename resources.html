@@ -265,20 +265,22 @@
 </footer>
 
 
-  <script defer>
-    window.siteContentReady && window.siteContentReady.then((data) => {
-      if (!data || !data.resources) return;
-      function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-      function renderList(elId, items) {
-        const el = document.getElementById(elId);
-        if (!el) return;
-        el.innerHTML = items.map(r => {
-          const label = r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title);
-          return `<li>${label}${r.note ? ' — ' + esc(r.note) : ''}</li>`;
-        }).join('');
-      }
-      renderList('pd-resources-list', data.resources.pd || []);
-      renderList('show-and-tell-list', data.resources.showAndTell || []);
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      window.siteContentReady && window.siteContentReady.then((data) => {
+        if (!data || !data.resources) return;
+        function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+        function renderList(elId, items) {
+          const el = document.getElementById(elId);
+          if (!el) return;
+          el.innerHTML = items.map(r => {
+            const label = r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title);
+            return `<li>${label}${r.note ? ' — ' + esc(r.note) : ''}</li>`;
+          }).join('');
+        }
+        renderList('pd-resources-list', data.resources.pd || []);
+        renderList('show-and-tell-list', data.resources.showAndTell || []);
+      });
     });
   </script>
   <script defer src="/js/core.js?v=4"></script>
