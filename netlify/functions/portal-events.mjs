@@ -51,7 +51,15 @@ async function loadEvents() {
 export default async function handler(req) {
   if (req.method === 'GET') {
     const events = await loadEvents();
-    const authed = await canManageEvents(req);
+    // Whether to include full admin-only fields is driven by which VIEW is
+    // being requested (?admin=1, sent only by the portal's own Events tab),
+    // not just whether the requester happens to be signed in — otherwise an
+    // E-Board member with Events access browsing the PUBLIC events page
+    // would get the raw admin records (which have no computed `checkinOpen`
+    // field), breaking their own check-in buttons. Same bug/fix pattern as
+    // portal-library.mjs's archived-sets leak.
+    const wantsAdmin = new URL(req.url).searchParams.get('admin') === '1';
+    const authed = wantsAdmin && await canManageEvents(req);
     return json({ ok: true, events: authed ? events : events.map(publicEvent) });
   }
 

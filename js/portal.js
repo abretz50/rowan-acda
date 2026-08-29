@@ -643,7 +643,7 @@ function wireYearFolders(container) {
 async function loadEvents() {
   const upEl = document.getElementById('events-upcoming-list');
   const pastEl = document.getElementById('events-past-list');
-  const { ok, data } = await api(EVENTS_URL, { method: 'GET' });
+  const { ok, data } = await api(`${EVENTS_URL}?admin=1`, { method: 'GET' });
   if (!ok) { upEl.innerHTML = `<p class="small muted">Could not load events.</p>`; return; }
   allEvents = data.events;
   const { upcoming, pastByYear } = groupUpcomingPast(allEvents);
