@@ -663,8 +663,14 @@
   window.addEventListener('DOMContentLoaded', init);
   // Check-in windows open/close on a clock, not on user action — if someone
   // loads this page before an event's window opens and just waits, re-fetch
-  // periodically so the button updates without a manual reload.
-  setInterval(init, 60 * 1000);
+  // periodically so the button updates without a manual reload. Browsers
+  // throttle setInterval heavily in background tabs (sometimes to once
+  // every several minutes), so also refresh immediately the moment the tab
+  // becomes visible again — that's the case a 60s timer alone doesn't cover
+  // well: someone opens this page, switches away for a while, then comes
+  // back right when check-in should already be open.
+  setInterval(() => { if (!document.hidden) init(); }, 60 * 1000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) init(); });
 })();
 </script>
 
