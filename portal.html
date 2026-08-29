@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=9"/>
+<link rel="stylesheet" href="/css/components.css?v=10"/>
 </head>
 <body>
 <header class="site-header" role="banner">
@@ -141,9 +141,9 @@
           </form>
         </div>
         <div class="admin-card">
-          <div class="view-tabs" role="tablist" style="margin-bottom:.75rem">
-            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-task-view="board">Task Board</button>
-            <button class="view-tab" type="button" role="tab" aria-selected="false" data-task-view="mine">My Tasks</button>
+          <div class="cat-chips" style="margin-bottom:.75rem">
+            <button class="cat-chip active" type="button" data-task-view="board">Task Board</button>
+            <button class="cat-chip" type="button" data-task-view="mine">My Tasks</button>
           </div>
           <div id="tasks-list"><p class="small muted">Loading…</p></div>
         </div>
@@ -576,6 +576,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=12"></script>
+<script defer src="/js/portal.js?v=13"></script>
 </body>
 </html>

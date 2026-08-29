@@ -1325,8 +1325,5 @@ html, body{ background: var(--page-bg); }
 .content-section-heading:first-child { margin-top: 0; }
 
 /* Tasks tab — color-coded by priority via a left accent bar */
-.task-priority-low { box-shadow: inset 3px 0 0 #2f9e44; }
-.task-priority-medium { box-shadow: inset 3px 0 0 #e8a317; }
-.task-priority-high { box-shadow: inset 3px 0 0 #c0392b; }
 .task-done { opacity: .6; }
 .task-done .name { text-decoration: line-through; }

@@ -10,16 +10,29 @@ export default async function handler(req) {
   const auth = await requireAuth(req);
   if (auth.deny) return auth.deny;
 
-  const [members, events, points] = await Promise.all([
+  const [members, events, points, tasks] = await Promise.all([
     loadMembers(),
     getCollection('events', []),
     getCollection('points', []),
+    getCollection('tasks', []),
   ]);
 
   const now = new Date();
   const activeMembers = members.filter(m => m.active !== false);
   const upcomingEventCount = events.filter(e => new Date(e.end || e.start) >= now).length;
   const approved = points.filter(p => p.status === 'approved');
+
+  // Current week = the previous Sunday through the following Saturday.
+  const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+  const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 7);
+  const eventsThisWeekCount = events.filter(e => {
+    const s = new Date(e.start);
+    return s >= weekStart && s < weekEnd;
+  }).length;
+
+  const openTasksCount = tasks.filter(t => t.status === 'open').length;
+  const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const tasksCompletedRecently = tasks.filter(t => t.status === 'done' && new Date(t.updatedAt) >= twoWeeksAgo).length;
 
   const totalsByMember = new Map();
   for (const p of approved) {
@@ -45,10 +58,15 @@ export default async function handler(req) {
   let mostAttendedEvent = null;
   for (const [eventId, memberSet] of attendeesByEvent.entries()) {
     const ev = events.find(e => e.id === eventId);
-    if (!ev) continue;
+    if (!ev || !memberSet.size) continue;
     if (!mostAttendedEvent || memberSet.size > mostAttendedEvent.count) {
       mostAttendedEvent = { title: ev.title, count: memberSet.size };
     }
+  }
+  // No attendance data yet — show something rather than nothing, per
+  // feedback (this'll naturally get replaced once real check-ins exist).
+  if (!mostAttendedEvent && events.length) {
+    mostAttendedEvent = { title: events[0].title, count: 0 };
   }
 
   const totalAttendanceRecords = [...attendeesByEvent.values()].reduce((s, set) => s + set.size, 0);
@@ -79,8 +97,11 @@ export default async function handler(req) {
     stats: {
       memberCount: activeMembers.length,
       upcomingEventCount,
+      eventsThisWeekCount,
       totalApprovedPoints: approved.reduce((s, p) => s + p.amount, 0),
       pendingPointsCount: points.filter(p => p.status === 'pending').length,
+      openTasksCount,
+      tasksCompletedRecently,
       topEarners,
       mostAttendedEvent,
       avgMemberAttendance: Math.round(avgMemberAttendance * 10) / 10,

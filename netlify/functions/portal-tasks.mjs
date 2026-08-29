@@ -22,7 +22,7 @@ export default async function handler(req) {
     const members = await loadMembers();
     const assignableMembers = members
       .filter(m => m.hasAccount && m.active !== false && m.role !== 'member')
-      .map(m => ({ id: m.id, name: m.name }))
+      .map(m => ({ id: m.id, name: m.name, role: m.role }))
       .sort((a, b) => a.name.localeCompare(b.name));
     return json({ ok: true, tasks, assignableMembers });
   }
@@ -40,7 +40,7 @@ export default async function handler(req) {
     const now = new Date().toISOString();
     const task = {
       id: randomUUID(), title, description: description || '',
-      assignedToId: assignee.id, assignedToName: assignee.name,
+      assignedToId: assignee.id, assignedToName: assignee.name, assignedToRole: assignee.role,
       assignedById: auth.user.id, assignedByName: auth.user.name,
       dueDate: dueDate || '', priority: PRIORITIES.includes(priority) ? priority : 'medium',
       status: 'open', createdAt: now, updatedAt: now,
@@ -64,6 +64,7 @@ export default async function handler(req) {
       if (!assignee) return json({ ok: false, error: 'Assignee not found.' }, 404);
       target.assignedToId = assignee.id;
       target.assignedToName = assignee.name;
+      target.assignedToRole = assignee.role;
     }
     target.updatedAt = new Date().toISOString();
     await setCollection('tasks', tasks);
