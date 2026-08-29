@@ -617,7 +617,7 @@ async function loadRecentComments() {
   el.innerHTML = data.comments.map(c => `<div class="admin-row">
     <div>
       <span class="name">${escHtml(c.memberName)}</span>
-      <div class="meta">on "${escHtml(c.eventTitle)}" · ${new Date(c.createdAt).toLocaleDateString()}</div>
+      <div class="meta">Posted ${new Date(c.createdAt).toLocaleString()} on "${escHtml(c.eventTitle)}"</div>
       <p class="small" style="margin:.3rem 0 0">${escHtml(c.text)}</p>
     </div>
     <div class="actions"><button class="btn-sm delete" data-delete-comment="${escHtml(c.id)}">Delete</button></div>
@@ -865,7 +865,7 @@ function showMembershipGraph() {
   document.querySelectorAll('#members-list [data-member-id]').forEach(row => row.classList.remove('admin-row--selected'));
   document.getElementById('members-graph-heading').textContent = 'Membership Over Time';
   document.getElementById('members-graph-reset').style.display = 'none';
-  document.getElementById('members-graph-chart').innerHTML = barChartSVG(lastMemberStats?.membershipOverTime || [], 'No membership data yet.');
+  document.getElementById('members-graph-chart').innerHTML = verticalBarChartSVG(lastMemberStats?.membershipOverTime || [], 'No membership data yet.');
   document.getElementById('members-graph-detail').innerHTML = '';
 }
 
@@ -906,12 +906,21 @@ async function selectMemberPoints(memberId) {
     }).join('') + `${!sorted.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
 }
 
+function renderRosterList() {
+  const listEl = document.getElementById('members-list');
+  const term = document.getElementById('roster-search').value.trim().toLowerCase();
+  const visible = term
+    ? allMembers.filter(m => m.name.toLowerCase().includes(term) || m.email.toLowerCase().includes(term))
+    : allMembers;
+  listEl.innerHTML = visible.map(memberRowHTML).join('') || `<p class="small muted">${term ? 'No matches.' : "No members yet — they'll also appear automatically once someone self check-ins to an event."}</p>`;
+}
+
 async function loadMembers() {
   const listEl = document.getElementById('members-list');
   const { ok, data } = await api(MEMBERS_URL, { method: 'GET' });
   if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load members.</p>`; return; }
   allMembers = data.members.sort((a, b) => a.name.localeCompare(b.name));
-  listEl.innerHTML = allMembers.map(memberRowHTML).join('') || `<p class="small muted">No members yet — they'll also appear automatically once someone self check-ins to an event.</p>`;
+  renderRosterList();
   document.getElementById('members-stats').innerHTML = memberStatsCardsHTML(data.stats);
   lastMemberStats = data.stats;
   if (!selectedMemberId || !allMembers.some(m => m.id === selectedMemberId)) showMembershipGraph();
@@ -919,6 +928,7 @@ async function loadMembers() {
 
 function wireMembersPanel() {
   document.getElementById('members-graph-reset').addEventListener('click', showMembershipGraph);
+  document.getElementById('roster-search').addEventListener('input', renderRosterList);
 
   document.getElementById('members-list').addEventListener('click', async (e) => {
     const viewBtn = e.target.closest('[data-view-points]');

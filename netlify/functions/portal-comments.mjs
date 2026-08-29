@@ -23,7 +23,7 @@ export default async function handler(req) {
     const titleById = new Map(events.map(e => [e.id, e.title]));
     const recent = comments.slice()
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      .slice(0, 20)
+      .slice(0, 50)
       .map(c => ({ ...c, eventTitle: titleById.get(c.eventId) || 'Unknown event' }));
     return json({ ok: true, comments: recent });
   }

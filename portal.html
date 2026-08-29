@@ -262,7 +262,8 @@
       <div class="eboard-panel">
         <div class="admin-card">
           <h3>Roster</h3>
-          <div id="members-list"><p class="small muted">Loading…</p></div>
+          <input class="admin-input" type="text" id="roster-search" placeholder="Search by name or email…" autocomplete="off" style="margin-bottom:.6rem"/>
+          <div id="members-list" style="max-height:400px;overflow-y:auto"><p class="small muted">Loading…</p></div>
         </div>
         <div class="admin-card">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem">
@@ -275,9 +276,8 @@
       </div>
 
       <div class="admin-card" style="margin-top:1rem">
-        <h3>Recent Comments</h3>
-        <p class="small muted">Latest comments/questions members have left on events.</p>
-        <div id="recent-comments-list"><p class="small muted">Loading…</p></div>
+        <h3>Latest Comments</h3>
+        <div id="recent-comments-list" style="max-height:450px;overflow-y:auto"><p class="small muted">Loading…</p></div>
       </div>
     </div>
 
@@ -577,6 +577,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=20"></script>
+<script defer src="/js/portal.js?v=21"></script>
 </body>
 </html>

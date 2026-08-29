@@ -57,22 +57,16 @@ async function computeMemberStats(members) {
     return c > 3;
   }).length;
 
-  // Membership growth: cumulative active-member count by the month they joined.
-  const byMonth = new Map();
-  for (const m of activeMembers.slice().sort((a, b) => new Date(a.joinedAt) - new Date(b.joinedAt))) {
-    const d = new Date(m.joinedAt);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    byMonth.set(key, (byMonth.get(key) || 0) + 1);
-  }
-  let running = 0;
-  const membershipOverTime = [...byMonth.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, n]) => {
-      running += n;
-      const [y, mo] = key.split('-').map(Number);
-      const label = new Date(y, mo - 1, 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-      return { label, count: running };
-    });
+  // Membership growth: cumulative active-member count for each of the 12
+  // fixed months of the current academic year (Aug through the following
+  // Jul), not just whichever months happen to have a join date.
+  const membershipOverTime = Array.from({ length: 12 }, (_, i) => {
+    const monthStart = new Date(ayStart.getFullYear(), ayStart.getMonth() + i, 1);
+    const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 23, 59, 59, 999);
+    const count = activeMembers.filter(m => new Date(m.joinedAt) <= monthEnd).length;
+    const label = monthStart.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+    return { label, count };
+  });
 
   return {
     totalMeetings,
