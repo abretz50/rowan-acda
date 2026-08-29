@@ -258,9 +258,11 @@ function barChartSVG(rows, emptyMsg) {
   return `<svg viewBox="0 0 ${chartW} ${totalH}" width="100%" style="max-width:640px;min-width:400px;font-family:inherit">${bars}</svg>`;
 }
 
-// For stats where the headline is a name/title, not a count.
-function textStatCardHTML(headline, label) {
-  return `<div class="stat-card"><span class="stat-number" style="font-size:1.05rem;line-height:1.3">${escHtml(headline)}</span><span class="stat-label">${escHtml(label)}</span></div>`;
+// For the Most Attended Event card: the big red headline is the fixed
+// label, the event name itself is the small gray line underneath — the
+// event name varies in length far more than a stat number would.
+function mostAttendedCardHTML(eventTitle) {
+  return `<div class="stat-card"><span class="stat-number">Most Attended Event</span><span class="stat-label">${escHtml(eventTitle)}</span></div>`;
 }
 
 async function loadOverviewStats() {
@@ -275,9 +277,7 @@ async function loadOverviewStats() {
     statCardHTML(s.totalApprovedPoints, 'Points Awarded'),
     statCardHTML(s.pendingPointsCount, 'Pending Approvals'),
     statCardHTML(s.openTasksCount, 'Open Tasks'),
-    statCardHTML(s.tasksCompletedRecently, 'Tasks Completed (2 wks)'),
-    textStatCardHTML(s.mostAttendedEvent ? s.mostAttendedEvent.title : 'No events yet', 'Most Attended Event'),
-    statCardHTML(s.avgMemberAttendance, 'Avg. Events / Member'),
+    mostAttendedCardHTML(s.mostAttendedEvent ? s.mostAttendedEvent.title : 'No events yet'),
   ].join('');
 
   const earnersCard = document.getElementById('overview-top-earners-card');
@@ -443,19 +443,16 @@ function populateTaskAssigneeSelect() {
   if (taskAssignableMembers.some(m => m.id === current)) sel.value = current;
 }
 
-// Color-coded by the assignee's role, per feedback — not by priority.
-const ROLE_TASK_COLORS = {
-  president: '#ec4899', admin: '#ec4899', vice_president: '#8b5cf6',
-  secretary: '#14b8a6', treasurer: '#22c55e', event_coordinator: '#eab308',
-  media: '#3b82f6', senator: '#f97316', eboard_access: '#9ca3af', eboard_legacy: '#9ca3af',
-};
-function taskColorFor(role) { return ROLE_TASK_COLORS[role] || '#9ca3af'; }
+// Color-coded by priority, per feedback — high=red, medium=yellow, low=blue.
+const PRIORITY_TASK_COLORS = { high: '#ef4444', medium: '#eab308', low: '#3b82f6' };
+const PRIORITY_BADGE_CLASSES = { high: 'badge-priority-high', medium: 'badge-priority-medium', low: 'badge-priority-low' };
+function taskColorFor(priority) { return PRIORITY_TASK_COLORS[priority] || '#9ca3af'; }
 
 function taskRowHTML(t) {
   const overdue = t.status === 'open' && t.dueDate && new Date(t.dueDate) < new Date(new Date().toDateString());
-  const priorityBadge = `<span class="badge-role ${t.priority === 'high' ? 'inactive' : t.priority === 'medium' ? 'admin' : 'eboard'}">${t.priority}</span>`;
+  const priorityBadge = `<span class="badge-role ${PRIORITY_BADGE_CLASSES[t.priority] || ''}">${t.priority}</span>`;
   const isMine = me && t.assignedToId === me.id;
-  const color = taskColorFor(t.assignedToRole);
+  const color = taskColorFor(t.priority);
   const roleLabel = ROLE_LABELS[t.assignedToRole] || t.assignedToRole || 'Member';
   const descPreview = t.description && t.description.length > 90 ? t.description.slice(0, 88) + '…' : t.description;
   return `<div>

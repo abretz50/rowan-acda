@@ -31,8 +31,6 @@ export default async function handler(req) {
   }).length;
 
   const openTasksCount = tasks.filter(t => t.status === 'open').length;
-  const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
-  const tasksCompletedRecently = tasks.filter(t => t.status === 'done' && new Date(t.updatedAt) >= twoWeeksAgo).length;
 
   const totalsByMember = new Map();
   for (const p of approved) {
@@ -42,7 +40,7 @@ export default async function handler(req) {
   const topEarners = [...totalsByMember.entries()]
     .map(([id, total]) => ({ name: nameById.get(id) || 'Unknown', total }))
     .sort((a, b) => b.total - a.total)
-    .slice(0, 10);
+    .slice(0, 5);
 
   // Attendance = one distinct member per event with any non-denied points
   // entry tied to that event (a regular check-in, or any volunteer signup) —
@@ -69,28 +67,16 @@ export default async function handler(req) {
     mostAttendedEvent = { title: events[0].title, count: 0 };
   }
 
-  const totalAttendanceRecords = [...attendeesByEvent.values()].reduce((s, set) => s + set.size, 0);
-  const avgMemberAttendance = activeMembers.length ? totalAttendanceRecords / activeMembers.length : 0;
-
-  // Chart data: total attendance per calendar month (not one bar per
-  // event) — an actual trend over time rather than a long list of
-  // individual meetings.
-  const pastEvents = events.filter(e => new Date(e.end || e.start) <= now);
-  const attendanceByMonth = new Map(); // "YYYY-MM" -> count
-  for (const ev of pastEvents) {
-    const count = (attendeesByEvent.get(ev.id) || new Set()).size;
-    if (!count) continue;
-    const d = new Date(ev.start);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    attendanceByMonth.set(key, (attendanceByMonth.get(key) || 0) + count);
-  }
-  const monthLabel = (key) => {
-    const [y, m] = key.split('-').map(Number);
-    return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-  };
-  const attendanceOverTime = [...attendanceByMonth.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, count]) => ({ label: monthLabel(key), count }));
+  // Chart data: one bar per past Meeting, in date order — an actual
+  // attendance trend over time rather than a monthly rollup.
+  const pastMeetings = events
+    .filter(e => Array.isArray(e.tags) && e.tags.includes('Meeting') && new Date(e.end || e.start) <= now)
+    .slice()
+    .sort((a, b) => new Date(a.start) - new Date(b.start));
+  const attendanceOverTime = pastMeetings.map(ev => ({
+    label: new Date(ev.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    count: (attendeesByEvent.get(ev.id) || new Set()).size,
+  }));
 
   return json({
     ok: true,
@@ -101,10 +87,8 @@ export default async function handler(req) {
       totalApprovedPoints: approved.reduce((s, p) => s + p.amount, 0),
       pendingPointsCount: points.filter(p => p.status === 'pending').length,
       openTasksCount,
-      tasksCompletedRecently,
       topEarners,
       mostAttendedEvent,
-      avgMemberAttendance: Math.round(avgMemberAttendance * 10) / 10,
       attendanceOverTime,
     },
   });

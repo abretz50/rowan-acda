@@ -1218,6 +1218,9 @@ html, body{ background: var(--page-bg); }
 .badge-role.admin { color: #6b0a31; background: #feeef5; border: 1px solid #e09fc0; }
 .badge-role.eboard { color: #0a4f68; background: #edf6fb; border: 1px solid #9fd0e8; }
 .badge-role.inactive { color: var(--muted); background: #f3f4f6; border: 1px solid var(--border); }
+.badge-role.badge-priority-high { color: #7f1d1d; background: #fee2e2; border: 1px solid #ef4444; }
+.badge-role.badge-priority-medium { color: #713f12; background: #fef9c3; border: 1px solid #eab308; }
+.badge-role.badge-priority-low { color: #1e3a8a; background: #dbeafe; border: 1px solid #3b82f6; }
 
 .btn-sm {
   display: inline-flex; align-items: center; justify-content: center;
