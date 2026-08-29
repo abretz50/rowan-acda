@@ -24,7 +24,14 @@ async function canManageLibrary(req) {
 export default async function handler(req) {
   if (req.method === 'GET') {
     const lib = await loadLibrary();
-    const authed = await canManageLibrary(req);
+    // Whether to include archived sets is driven by which VIEW is being
+    // requested (?admin=1, sent only by the portal's own management tab),
+    // not just whether the requester happens to be signed in — otherwise an
+    // E-Board member browsing the public library page in the same browser
+    // would see archived sets too, since their session cookie goes along
+    // with that request regardless of which page it came from.
+    const wantsAdmin = new URL(req.url).searchParams.get('admin') === '1';
+    const authed = wantsAdmin && await canManageLibrary(req);
     // Archived sets are an E-Board-only organizational view — the public
     // library only ever offers the current (non-archived) sets.
     const sessions = authed ? lib.sessions : lib.sessions.filter(s => !s.archived);

@@ -1190,7 +1190,7 @@ function renderSetsManageList() {
 }
 
 async function loadLibrary() {
-  const { ok, data } = await api(LIBRARY_URL, { method: 'GET' });
+  const { ok, data } = await api(`${LIBRARY_URL}?admin=1`, { method: 'GET' });
   if (!ok) return;
   libScores = data.scores || [];
   libSessions = data.sessions || [];
