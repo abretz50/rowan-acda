@@ -2495,7 +2495,11 @@ function budgetSignedMoney(n) {
 const BUDGET_CAP_STYLE_ACCOUNTS = ['regular', 'convention'];
 const BUDGET_CAP_LABELS = {
   regular: 'Budget Cap (SGA Allocation)',
-  convention: 'SGA Ask (Ceiling)',
+  convention: 'SFCB Request',
+};
+const BUDGET_PLANNED_LABELS = {
+  regular: 'Total Planned (Categories)',
+  convention: 'Current Cost',
 };
 
 function budgetStatCardsHTML() {
@@ -2503,26 +2507,27 @@ function budgetStatCardsHTML() {
   if (BUDGET_CAP_STYLE_ACCOUNTS.includes(budgetCurrentAccount)) {
     const remaining = (s.targetAmount || 0) + (s.startingBalance || 0) - (s.totalSpent || 0);
     const overPlan = (s.plannedTotal || 0) > (s.targetAmount || 0);
+    const plannedDetail = budgetCurrentAccount === 'convention' ? '' : (overPlan ? 'Plan exceeds the cap' : 'Within the cap');
     return [
       statCardHTML(fmtMoney(s.targetAmount), BUDGET_CAP_LABELS[budgetCurrentAccount] || 'Budget Cap'),
       statCardHTML(fmtMoney(s.totalSpent), 'Total Spent'),
       statCardHTML(budgetSignedMoney(remaining), remaining < 0 ? 'Over Budget' : 'Remaining', s.startingBalance ? `Includes ${fmtMoney(s.startingBalance)} carried over` : ''),
-      statCardHTML(fmtMoney(s.plannedTotal), 'Total Planned (Categories)', overPlan ? 'Plan exceeds the cap' : 'Within the cap'),
+      statCardHTML(fmtMoney(s.plannedTotal), BUDGET_PLANNED_LABELS[budgetCurrentAccount] || 'Total Planned (Categories)', plannedDetail),
     ].join('');
   }
   const balance = s.currentBalance || 0;
   return [
-    statCardHTML(fmtMoney(s.targetAmount), 'Fundraising Goal (target, not a cap)'),
+    statCardHTML(fmtMoney(s.targetAmount), 'Fundraising Goal'),
     statCardHTML(budgetSignedMoney(balance), balance < 0 ? 'Current Balance (Deficit)' : 'Current Balance', balance < 0 ? 'Raise more to cover spending' : 'Raising at least as much as spent'),
-    statCardHTML(fmtMoney(s.totalIncome), 'Raised (logged here)'),
-    statCardHTML(fmtMoney(s.totalSpent), 'Spent (logged here)'),
+    statCardHTML(fmtMoney(s.totalIncome), 'Raised'),
+    statCardHTML(fmtMoney(s.totalSpent), 'Spent'),
   ].join('');
 }
 
 const BUDGET_ACCOUNT_DESCRIPTIONS = {
-  regular: 'Money the SGA has already allocated to us — a fixed amount to spend down across the categories below.',
-  fundraising: 'Money we raise ourselves (bake sales, merch, etc.), not a fixed allocation. The Goal is a target; the Current Balance is what’s actually in the account right now. The rule: raise at least as much as we spend from it.',
-  convention: 'A planning tool for the 2027 ACDA National Conference trip — set the number of attendees and a per-person cost for each category to see the total projected cost and cost per person, and log real purchases here as they happen.',
+  regular: 'SGA Allocated funds',
+  fundraising: 'Fundraised Balance',
+  convention: 'Set the number of attendees and a per-person cost for each category to see the total projected cost and cost per person, and log real purchases here as they happen.',
 };
 
 function budgetCategoryRowHTML(cat) {
@@ -2551,6 +2556,17 @@ function renderBudgetPies() {
   const actual = s.categories.map(c => ({ label: c.name, value: c.spent }));
   document.getElementById('budget-pie-planned').innerHTML = pieChartSVG(planned, 'No planned amounts yet.');
   document.getElementById('budget-pie-actual').innerHTML = pieChartSVG(actual, 'Nothing spent yet.');
+}
+
+function renderBudgetRevenuePies() {
+  const card = document.getElementById('budget-revenue-pies-card');
+  if (budgetCurrentAccount !== 'fundraising') { card.style.display = 'none'; return; }
+  card.style.display = '';
+  const s = budgetStats.fundraising || { categories: [] };
+  const revenue = s.categories.map(c => ({ label: c.name, value: c.plannedRevenue || 0 }));
+  const profit = s.categories.map(c => ({ label: c.name, value: (c.plannedRevenue || 0) - (c.plannedAmount || 0) }));
+  document.getElementById('budget-pie-revenue').innerHTML = pieChartSVG(revenue, 'No planned revenue yet.');
+  document.getElementById('budget-pie-profit').innerHTML = pieChartSVG(profit, 'No projected profit yet.');
 }
 
 function renderBudgetTripPlanning() {
@@ -2628,6 +2644,7 @@ function renderBudgetView() {
   document.getElementById('budget-account-description').textContent = BUDGET_ACCOUNT_DESCRIPTIONS[budgetCurrentAccount] || '';
   renderBudgetTripPlanning();
   renderBudgetPies();
+  renderBudgetRevenuePies();
   renderBudgetCategoriesList();
   populateBudgetTxnCategorySelect();
   renderBudgetChart();

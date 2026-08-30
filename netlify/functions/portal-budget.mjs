@@ -54,7 +54,7 @@ function buildDefaultBudget() {
       // $3,355.22 is the account's real current balance as reported by the
       // treasurer when this tool shipped — the starting point for "current
       // balance" math, not a transaction, so it doesn't inflate Raised/Spent.
-      fundraising: { targetAmount: 3000, label: 'Extra Account', startingBalance: 3355.22 },
+      fundraising: { targetAmount: 1000, label: 'Extra Account', startingBalance: 3355.22 },
       convention: { targetAmount: 12000, label: 'Convention Trip (2027 ACDA National Conference)', startingBalance: 0, attendeeCount: 10 },
     },
     categories,
@@ -62,6 +62,7 @@ function buildDefaultBudget() {
     _fundraisingBalanceSeeded: true,
     _conventionPerPersonMigrated: true,
     _onCampusHyphenFixed: true,
+    _fundraisingGoal1000Migrated: true,
   };
 }
 
@@ -89,6 +90,11 @@ function migrateBudgetShape(budget) {
   }
   if (budget.accounts.fundraising.label !== 'Extra Account') {
     budget.accounts.fundraising.label = 'Extra Account';
+    changed = true;
+  }
+  if (!budget._fundraisingGoal1000Migrated) {
+    budget.accounts.fundraising.targetAmount = 1000;
+    budget._fundraisingGoal1000Migrated = true;
     changed = true;
   }
   if (typeof budget.accounts.convention.attendeeCount !== 'number') {

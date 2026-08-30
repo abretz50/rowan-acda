@@ -200,6 +200,20 @@
         </div>
       </div>
 
+      <div class="admin-card" id="budget-revenue-pies-card" style="display:none;margin-top:1rem">
+        <h3 style="border:none;padding:0;margin:0 0 .5rem">Revenue &amp; Profit by Category</h3>
+        <div class="eboard-panel">
+          <div>
+            <p class="small muted" style="margin:0 0 .4rem">Planned Revenue</p>
+            <div id="budget-pie-revenue"><p class="small muted">Loading…</p></div>
+          </div>
+          <div>
+            <p class="small muted" style="margin:0 0 .4rem">Projected Profit</p>
+            <div id="budget-pie-profit"><p class="small muted">Loading…</p></div>
+          </div>
+        </div>
+      </div>
+
       <div class="admin-card" style="margin-top:1rem">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
           <h3 style="border:none;padding:0;margin:0">Categories</h3>
@@ -848,6 +862,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=42"></script>
+<script defer src="/js/portal.js?v=43"></script>
 </body>
 </html>
