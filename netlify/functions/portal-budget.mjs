@@ -22,12 +22,12 @@ function buildDefaultBudget() {
   addCat('regular', 'Technology & Operations', 164);
   addCat('regular', 'Professional Development', 640);
   addCat('regular', 'Prizes & Awards', 650);
-  addCat('regular', 'On-Campus Events & Programming', 401.05);
+  addCat('regular', 'On Campus Events & Programming', 401.05);
   addCat('regular', 'Merchandise', 450);
   addCat('regular', 'Travel', 1050);
-  // Fundraising/Extra account — Fundraising Plan categories, each with a
-  // planned cost (what a fundraiser costs to run) and planned revenue
-  // (what it's expected to bring in).
+  // Extra account — Fundraising Plan categories, each with a planned cost
+  // (what a fundraiser costs to run) and planned revenue (what it's
+  // expected to bring in).
   addCat('fundraising', 'Bake Sales', 500, 800);
   addCat('fundraising', 'Hispanic Heritage Month Fundraiser', 100, 200);
   addCat('fundraising', 'Asian Heritage Month Fundraiser', 50, 100);
@@ -37,13 +37,16 @@ function buildDefaultBudget() {
   addCat('fundraising', 'Spring Musical', 400, 1000);
   addCat('fundraising', 'Songs of the Seasons', 200, 400);
   // Convention Trip — a separate SGA special request (2027 ACDA National
-  // Conference, Minneapolis), not part of the two accounts above. Seeded
-  // at the 10-attendee scenario from the Spring Trip sheet, which is what
-  // the budget's own Overview tab treats as "the plan" ($7,900 of the
-  // $12,000 SGA ask).
-  addCat('convention', 'Registration (10 attendees @ $250)', 2500);
-  addCat('convention', 'Flights (10 attendees @ $300, round-trip)', 3000);
-  addCat('convention', 'Hotel (3 rooms x 4 nights @ $200, quad occupancy)', 2400);
+  // Conference, Minneapolis), not part of the two accounts above. Each
+  // category is a per-person cost times a planning attendee count, so the
+  // whole trip's projected cost (and cost-per-person) updates live as the
+  // headcount or per-person prices change — this account is a planning
+  // tool first, a ledger second.
+  categories.push(
+    { id: randomUUID(), account: 'convention', name: 'Registration', perPerson: true, unitCost: 250, plannedAmount: 0 },
+    { id: randomUUID(), account: 'convention', name: 'Flights', perPerson: true, unitCost: 300, plannedAmount: 0 },
+    { id: randomUUID(), account: 'convention', name: 'Hotel', perPerson: true, unitCost: 240, plannedAmount: 0 },
+  );
 
   return {
     accounts: {
@@ -51,20 +54,20 @@ function buildDefaultBudget() {
       // $3,355.22 is the account's real current balance as reported by the
       // treasurer when this tool shipped — the starting point for "current
       // balance" math, not a transaction, so it doesn't inflate Raised/Spent.
-      fundraising: { targetAmount: 3000, label: 'Fundraising / Extra Account', startingBalance: 3355.22 },
-      convention: { targetAmount: 12000, label: 'Convention Trip (2027 ACDA National Conference)', startingBalance: 0 },
+      fundraising: { targetAmount: 3000, label: 'Extra Account', startingBalance: 3355.22 },
+      convention: { targetAmount: 12000, label: 'Convention Trip (2027 ACDA National Conference)', startingBalance: 0, attendeeCount: 10 },
     },
     categories,
     transactions: [],
     _fundraisingBalanceSeeded: true,
+    _conventionPerPersonMigrated: true,
+    _onCampusHyphenFixed: true,
   };
 }
 
-// One-time backfill for a budget collection saved before startingBalance
-// existed — adds the field (defaulting to 0) and, just once, seeds the
-// Fundraising account's real reported balance so a tool already in use
-// doesn't stay stuck at $0 forever. Guarded by _fundraisingBalanceSeeded so
-// it never overwrites a value the treasurer has since edited themselves.
+// One-time backfills as the budget tool's shape has grown — each guarded so
+// it only ever runs once per store and never overwrites something an admin
+// has since edited themselves.
 function migrateBudgetShape(budget) {
   let changed = false;
   for (const acc of Object.values(budget.accounts)) {
@@ -75,15 +78,51 @@ function migrateBudgetShape(budget) {
     budget._fundraisingBalanceSeeded = true;
     changed = true;
   }
-  // Backfill the Convention Trip account for a budget collection saved
-  // before it existed.
   if (!budget.accounts.convention) {
-    budget.accounts.convention = { targetAmount: 12000, label: 'Convention Trip (2027 ACDA National Conference)', startingBalance: 0 };
+    budget.accounts.convention = { targetAmount: 12000, label: 'Convention Trip (2027 ACDA National Conference)', startingBalance: 0, attendeeCount: 10 };
     budget.categories.push(
-      { id: randomUUID(), account: 'convention', name: 'Registration (10 attendees @ $250)', plannedAmount: 2500 },
-      { id: randomUUID(), account: 'convention', name: 'Flights (10 attendees @ $300, round-trip)', plannedAmount: 3000 },
-      { id: randomUUID(), account: 'convention', name: 'Hotel (3 rooms x 4 nights @ $200, quad occupancy)', plannedAmount: 2400 },
+      { id: randomUUID(), account: 'convention', name: 'Registration', perPerson: true, unitCost: 250, plannedAmount: 0 },
+      { id: randomUUID(), account: 'convention', name: 'Flights', perPerson: true, unitCost: 300, plannedAmount: 0 },
+      { id: randomUUID(), account: 'convention', name: 'Hotel', perPerson: true, unitCost: 240, plannedAmount: 0 },
     );
+    changed = true;
+  }
+  if (budget.accounts.fundraising.label !== 'Extra Account') {
+    budget.accounts.fundraising.label = 'Extra Account';
+    changed = true;
+  }
+  if (typeof budget.accounts.convention.attendeeCount !== 'number') {
+    budget.accounts.convention.attendeeCount = 10;
+    changed = true;
+  }
+  if (!budget._conventionPerPersonMigrated) {
+    // The original 3 seeded categories baked a 10-attendee assumption
+    // straight into fixed totals — convert them to the per-person model at
+    // the same effective unit cost so nothing changes numerically today,
+    // only how it recalculates going forward.
+    const renameMap = {
+      'Registration (10 attendees @ $250)': { name: 'Registration', unitCost: 250 },
+      'Flights (10 attendees @ $300, round-trip)': { name: 'Flights', unitCost: 300 },
+      'Hotel (3 rooms x 4 nights @ $200, quad occupancy)': { name: 'Hotel', unitCost: 240 },
+    };
+    for (const cat of budget.categories) {
+      if (cat.account !== 'convention') continue;
+      const mapped = renameMap[cat.name];
+      if (mapped) {
+        cat.name = mapped.name;
+        cat.perPerson = true;
+        cat.unitCost = mapped.unitCost;
+      } else if (typeof cat.perPerson !== 'boolean') {
+        cat.perPerson = false;
+      }
+    }
+    budget._conventionPerPersonMigrated = true;
+    changed = true;
+  }
+  if (!budget._onCampusHyphenFixed) {
+    const c = budget.categories.find(x => x.account === 'regular' && x.name === 'On-Campus Events & Programming');
+    if (c) c.name = 'On Campus Events & Programming';
+    budget._onCampusHyphenFixed = true;
     changed = true;
   }
   return changed;
@@ -100,9 +139,18 @@ async function loadBudget() {
   return stored;
 }
 
+// A convention-trip category's real planned amount is unitCost × the
+// account's current attendee count, recomputed live rather than stored, so
+// changing the headcount instantly reprices every per-person category.
+function effectivePlannedAmount(cat, attendeeCount) {
+  if (cat.perPerson) return (Number(cat.unitCost) || 0) * (Number(attendeeCount) || 0);
+  return Number(cat.plannedAmount) || 0;
+}
+
 function computeStats(budget) {
   const stats = {};
   for (const account of ACCOUNTS) {
+    const attendeeCount = budget.accounts[account].attendeeCount;
     const cats = budget.categories.filter(c => c.account === account);
     const txns = budget.transactions.filter(t => t.account === account);
     const spentByCat = new Map();
@@ -116,30 +164,20 @@ function computeStats(budget) {
       }
     }
     const startingBalance = budget.accounts[account].startingBalance || 0;
+    const plannedTotal = cats.reduce((s, c) => s + effectivePlannedAmount(c, attendeeCount), 0);
     stats[account] = {
       targetAmount: budget.accounts[account].targetAmount,
       startingBalance,
       currentBalance: startingBalance + totalIncome - totalSpent,
-      plannedTotal: cats.reduce((s, c) => s + c.plannedAmount, 0),
+      plannedTotal,
       plannedRevenueTotal: cats.reduce((s, c) => s + (c.plannedRevenue || 0), 0),
       totalSpent,
       totalIncome,
-      categories: cats.map(c => ({ ...c, spent: spentByCat.get(c.id) || 0 })),
+      categories: cats.map(c => ({ ...c, plannedAmount: effectivePlannedAmount(c, attendeeCount), spent: spentByCat.get(c.id) || 0 })),
+      ...(typeof attendeeCount === 'number' ? { attendeeCount, costPerPerson: attendeeCount > 0 ? plannedTotal / attendeeCount : 0 } : {}),
     };
   }
-  // "Our fundraising goal plus our budget cap should equal our total plan
-  // spending" — a quick sanity check the treasurer asked for, comparing the
-  // combined capacity of the two operating accounts (Regular + Fundraising;
-  // Convention Trip is a separate special request, deliberately excluded)
-  // against what's actually planned across their categories.
-  const combinedCapacity = (budget.accounts.regular.targetAmount || 0) + (budget.accounts.fundraising.targetAmount || 0);
-  const combinedPlanned = stats.regular.plannedTotal + stats.fundraising.plannedTotal;
-  const reconciliation = {
-    combinedCapacity,
-    combinedPlanned,
-    difference: combinedCapacity - combinedPlanned,
-  };
-  return { accounts: stats, reconciliation };
+  return { accounts: stats };
 }
 
 export default async function handler(req) {
@@ -181,12 +219,28 @@ export default async function handler(req) {
       return json({ ok: true, accounts: budget.accounts, stats: computeStats(budget) });
     }
 
+    if (op === 'setAttendeeCount') {
+      if (body.account !== 'convention') return json({ ok: false, error: 'Attendee count only applies to the Convention Trip account.' }, 400);
+      const n = Number(body.attendeeCount);
+      if (!Number.isFinite(n) || n < 0) return json({ ok: false, error: 'A valid attendee count is required.' }, 400);
+      budget.accounts.convention.attendeeCount = n;
+      await setCollection('budget', budget);
+      return json({ ok: true, accounts: budget.accounts, stats: computeStats(budget) });
+    }
+
     if (op === 'createCategory') {
-      const { account, name, plannedAmount, plannedRevenue } = body;
+      const { account, name, plannedAmount, plannedRevenue, perPerson, unitCost } = body;
       if (!ACCOUNTS.includes(account)) return json({ ok: false, error: 'Unknown account.' }, 400);
       const trimmed = String(name || '').trim();
       if (!trimmed) return json({ ok: false, error: 'Category name is required.' }, 400);
-      const cat = { id: randomUUID(), account, name: trimmed, plannedAmount: Number(plannedAmount) || 0 };
+      const cat = { id: randomUUID(), account, name: trimmed, plannedAmount: 0 };
+      if (account === 'convention' && perPerson) {
+        cat.perPerson = true;
+        cat.unitCost = Number(unitCost) || 0;
+      } else {
+        cat.perPerson = false;
+        cat.plannedAmount = Number(plannedAmount) || 0;
+      }
       if (account === 'fundraising') cat.plannedRevenue = Number(plannedRevenue) || 0;
       budget.categories.push(cat);
       await setCollection('budget', budget);
@@ -197,7 +251,16 @@ export default async function handler(req) {
       const target = budget.categories.find(c => c.id === body.id);
       if (!target) return json({ ok: false, error: 'Category not found.' }, 404);
       if (body.name) target.name = String(body.name).trim();
-      if ('plannedAmount' in body) target.plannedAmount = Number(body.plannedAmount) || 0;
+      if (target.account === 'convention' && 'perPerson' in body) {
+        target.perPerson = !!body.perPerson;
+        if (target.perPerson) {
+          target.unitCost = Number(body.unitCost) || 0;
+        } else if ('plannedAmount' in body) {
+          target.plannedAmount = Number(body.plannedAmount) || 0;
+        }
+      } else if ('plannedAmount' in body) {
+        target.plannedAmount = Number(body.plannedAmount) || 0;
+      }
       if ('plannedRevenue' in body && target.account === 'fundraising') target.plannedRevenue = Number(body.plannedRevenue) || 0;
       await setCollection('budget', budget);
       return json({ ok: true, stats: computeStats(budget) });
@@ -242,7 +305,7 @@ export default async function handler(req) {
       if (!ACCOUNTS.includes(account)) return json({ ok: false, error: 'Unknown account.' }, 400);
       if (!['expense', 'income'].includes(type)) return json({ ok: false, error: 'Unknown transaction type.' }, 400);
       if (type === 'income' && account !== 'fundraising') {
-        return json({ ok: false, error: 'Income can only be logged against the Fundraising / Extra account.' }, 400);
+        return json({ ok: false, error: 'Income can only be logged against the Extra Account.' }, 400);
       }
       const numAmount = Number(amount);
       if (!numAmount || numAmount <= 0) return json({ ok: false, error: 'A positive amount is required.' }, 400);
