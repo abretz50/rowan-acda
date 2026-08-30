@@ -4,9 +4,7 @@
 // instead of needing its own separate secret/CORS setup.
 import { requireAuth, json } from './_lib/auth.mjs';
 import { hasPermission } from './_lib/permissions.mjs';
-
-const GH_REPO = 'abretz50/rowan-acda';
-const GH_BRANCH = 'main';
+import { ghFetch, GH_BRANCH } from './_lib/github.mjs';
 
 const CATEGORY_DIRS = {
   gallery: 'assets/img/gallery',
@@ -31,19 +29,6 @@ const CATEGORY_PERM = { gallery: 'gallery', eboard: 'content', library: 'library
 function extOf(name) {
   const m = /\.[a-z0-9]+$/i.exec(name || '');
   return m ? m[0].toLowerCase() : '';
-}
-
-async function ghFetch(endpoint, method, body) {
-  return fetch(`https://api.github.com/repos/${GH_REPO}/${endpoint}`, {
-    method,
-    headers: {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`,
-      Accept: 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-      'User-Agent': 'rowan-acda-portal',
-    },
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  });
 }
 
 export default async function handler(req) {

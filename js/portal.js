@@ -15,6 +15,7 @@ const LIBRARY_URL  = '/.netlify/functions/portal-library';
 const CONTENT_URL  = '/.netlify/functions/portal-content';
 const GALLERY_URL  = '/.netlify/functions/portal-gallery';
 const UPLOAD_URL   = '/.netlify/functions/portal-upload';
+const BACKUP_URL   = '/.netlify/functions/portal-backup';
 const STATS_URL    = '/.netlify/functions/portal-stats';
 const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
 const TASKS_URL = '/.netlify/functions/portal-tasks';
@@ -50,6 +51,7 @@ let taskViewMode = 'board';
 let editingTaskId = null;
 let libScores = [];
 let libSessions = [];
+let libArchiveFolders = [];
 let editingScoreUrl = null;
 let eboardRoster = [];
 let editingEboardId = null;
@@ -244,6 +246,7 @@ function showDashboard() {
   loadTasks(); // Tasks is open to any E-Board account, not permission-gated
   if (canUse('accounts')) loadAccounts();
   document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
+  document.getElementById('backup-section').style.display = canUse('permissions') ? '' : 'none';
   if (canUse('permissions')) loadPermissions();
   // loadEvents() populates the shared `allEvents` list, which the Points tab's
   // "Event Point Values" section also needs — so load it for either permission.
@@ -472,6 +475,18 @@ function wirePermissionsPanel() {
     btn.disabled = false;
     if (!ok) { alert(data.error || 'Could not save permissions.'); btn.textContent = original; return; }
     btn.textContent = 'Saved!'; setTimeout(() => { btn.textContent = original; }, 1200);
+  });
+
+  document.getElementById('backup-now-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('backup-now-btn');
+    const statusEl = document.getElementById('backup-status');
+    btn.disabled = true;
+    statusEl.textContent = 'Backing up…'; statusEl.className = 'admin-status';
+    const { ok, data } = await api(BACKUP_URL, { method: 'POST' });
+    btn.disabled = false;
+    if (!ok) { statusEl.textContent = data.error || 'Backup failed.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = `Backed up successfully at ${new Date(data.generatedAt).toLocaleString()}.`;
+    statusEl.className = 'admin-status ok';
   });
 }
 
@@ -1280,7 +1295,7 @@ function renderLibManageList() {
 }
 
 function knownArchiveFolders() {
-  return [...new Set(libSessions.filter(s => s.archiveFolder).map(s => s.archiveFolder))].sort();
+  return [...new Set([...libArchiveFolders, ...libSessions.filter(s => s.archiveFolder).map(s => s.archiveFolder)])].sort();
 }
 
 function setManageRowHTML(sess) {
@@ -1331,7 +1346,7 @@ function archiveFolderHTML(group, rowFn) {
         <span class="chevron" aria-hidden="true">&#9660;</span>
       </button>
     </div>
-    <div class="session-body"><div style="display:flex;flex-direction:column;gap:.5rem">${group.sets.map(rowFn).join('')}</div></div>
+    <div class="session-body"><div style="display:flex;flex-direction:column;gap:.5rem">${group.sets.map(rowFn).join('') || '<p class="small muted">No sets archived here yet.</p>'}</div></div>
   </div>`;
 }
 function renderSetCurrentScores(sessNum) {
@@ -1350,6 +1365,7 @@ function renderSetsManageList() {
   document.getElementById('sets-manage-list').innerHTML = active.map(setManageRowHTML).join('') || '<p class="small muted">No sets yet.</p>';
 
   const byFolder = new Map();
+  libArchiveFolders.forEach(folder => byFolder.set(folder, []));
   archived.forEach(s => {
     const folder = s.archiveFolder || 'Unsorted';
     if (!byFolder.has(folder)) byFolder.set(folder, []);
@@ -1357,7 +1373,7 @@ function renderSetsManageList() {
   });
   const groups = [...byFolder.entries()].sort((a, b) => b[0].localeCompare(a[0])).map(([label, sets]) => ({ label, sets }));
   const archiveEl = document.getElementById('sets-archive-list');
-  archiveEl.innerHTML = groups.map(g => archiveFolderHTML(g, setManageRowHTML)).join('') || '<p class="small muted">No archived sets.</p>';
+  archiveEl.innerHTML = groups.map(g => archiveFolderHTML(g, setManageRowHTML)).join('') || '<p class="small muted">No archive folders yet.</p>';
   wireYearFolders(archiveEl);
 }
 
@@ -1366,6 +1382,7 @@ async function loadLibrary() {
   if (!ok) return;
   libScores = data.scores || [];
   libSessions = data.sessions || [];
+  libArchiveFolders = data.archiveFolders || [];
   renderLibManageChips();
   renderLibManageList();
   renderSetsManageList();
@@ -1386,6 +1403,15 @@ function resetScoreForm() {
 function wireLibraryPanel() {
   initOtherSelect('sc-voicing', 'sc-voicing-other');
   initOtherSelect('sc-instr', 'sc-instr-other');
+
+  document.getElementById('new-archive-folder-btn').addEventListener('click', async () => {
+    const name = prompt('Name the new archive folder (e.g. 26-27):');
+    if (!name || !name.trim()) return;
+    const { ok, data } = await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'createArchiveFolder', name: name.trim() }) });
+    if (!ok) { alert(data.error || 'Could not create folder.'); return; }
+    libArchiveFolders = data.archiveFolders;
+    renderSetsManageList();
+  });
 
   document.getElementById('score-form').addEventListener('submit', async (e) => {
     e.preventDefault();

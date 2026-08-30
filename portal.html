@@ -508,7 +508,10 @@
       </div>
 
       <div class="admin-card" style="margin-top:1rem">
-        <h3>Set Archives</h3>
+        <div class="section-header">
+          <h3 style="margin:0">Set Archives</h3>
+          <button class="btn-sm outline" type="button" id="new-archive-folder-btn">New Archive</button>
+        </div>
         <p class="small muted">Main Sets are visible on the library, archived sets are for reference.</p>
         <div id="sets-archive-list"><p class="small muted">Loading…</p></div>
       </div>
@@ -773,6 +776,13 @@
         <p class="small muted">Only President and Admin can change this.</p>
         <div id="permissions-list"><p class="small muted">Loading…</p></div>
       </div>
+
+      <div class="admin-card" id="backup-section" style="margin-top:1rem;display:none">
+        <h3>Data Backups</h3>
+        <p class="small muted">Every collection (Members, Events, Points, Budget, Gallery, Digital Library, Site Content, Tasks, and Permissions) is snapshotted into <code>backups/portal-data-backup.json</code> in the site's GitHub repo automatically once a week — a separate storage system from the live database, so an issue with one can't take out both. You can also trigger one manually here at any time.</p>
+        <button class="btn-sm" type="button" id="backup-now-btn">Back Up Now</button>
+        <div class="admin-status" id="backup-status"></div>
+      </div>
     </div>
   </div>
 </main>
@@ -814,6 +824,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=40"></script>
+<script defer src="/js/portal.js?v=41"></script>
 </body>
 </html>

@@ -21,6 +21,10 @@ async function loadLibrary() {
     lib._archiveFolderMigrated = true;
     await setCollection('library', lib);
   }
+  if (!lib.archiveFolders) {
+    lib.archiveFolders = [...new Set(lib.sessions.filter(s => s.archiveFolder).map(s => s.archiveFolder))];
+    await setCollection('library', lib);
+  }
   return lib;
 }
 
@@ -46,7 +50,7 @@ export default async function handler(req) {
     // Archived sets are an E-Board-only organizational view — the public
     // library only ever offers the current (non-archived) sets.
     const sessions = authed ? lib.sessions : lib.sessions.filter(s => !s.archived);
-    return json({ ok: true, scores: lib.scores, sessions });
+    return json({ ok: true, scores: lib.scores, sessions, archiveFolders: authed ? lib.archiveFolders : [] });
   }
 
   const auth = await requireAuth(req, { perm: 'library' });
@@ -122,9 +126,21 @@ export default async function handler(req) {
       const folder = String(body.folder || '').trim();
       if (!folder) return json({ ok: false, error: 'Choose or create a folder to archive into.' }, 400);
       sess.archiveFolder = folder;
+      if (!lib.archiveFolders.includes(folder)) lib.archiveFolders.push(folder);
     } else {
       sess.archiveFolder = null;
     }
+    await setCollection('library', lib);
+    return json({ ok: true, ...lib });
+  }
+
+  if (op === 'createArchiveFolder') {
+    const name = String(body.name || '').trim();
+    if (!name) return json({ ok: false, error: 'A folder name is required.' }, 400);
+    if (lib.archiveFolders.some(f => f.toLowerCase() === name.toLowerCase())) {
+      return json({ ok: false, error: 'A folder with that name already exists.' }, 409);
+    }
+    lib.archiveFolders.push(name);
     await setCollection('library', lib);
     return json({ ok: true, ...lib });
   }
