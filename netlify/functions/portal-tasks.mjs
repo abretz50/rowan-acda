@@ -5,6 +5,24 @@ import { loadMembers } from './_lib/loadMembers.mjs';
 
 const PRIORITIES = ['low', 'medium', 'high'];
 
+// Backfills a `history` log (created/completed/reopened entries) onto any
+// task saved before this feature existed, so the Task History view has
+// something to show for old tasks too. Who actually completed an
+// already-done task was never recorded, so that entry's byName is left
+// null — the UI shows it as "Unknown" rather than guessing.
+function migrateTaskHistory(tasks) {
+  let changed = false;
+  for (const t of tasks) {
+    if (t.history) continue;
+    t.history = [{ event: 'created', byId: t.assignedById || null, byName: t.assignedByName || null, at: t.createdAt }];
+    if (t.status === 'done') {
+      t.history.push({ event: 'completed', byId: null, byName: null, at: t.updatedAt || t.createdAt, comment: '' });
+    }
+    changed = true;
+  }
+  return changed;
+}
+
 // Tasks is a shared E-Board coordination tool, not gated by the adjustable
 // permissions system — any signed-in account that isn't a plain club
 // 'member' can see the board, assign a task to anyone else with portal
@@ -17,6 +35,7 @@ export default async function handler(req) {
   if (auth.user.role === 'member') return json({ ok: false, error: 'Not authorized.' }, 403);
 
   const tasks = await getCollection('tasks', []);
+  if (migrateTaskHistory(tasks)) await setCollection('tasks', tasks);
 
   if (req.method === 'GET') {
     const members = await loadMembers();
@@ -49,6 +68,7 @@ export default async function handler(req) {
       assignedById: auth.user.id, assignedByName: auth.user.name,
       dueDate: dueDate || '', priority: PRIORITIES.includes(priority) ? priority : 'medium',
       status: 'open', createdAt: now, updatedAt: now,
+      history: [{ event: 'created', byId: auth.user.id, byName: auth.user.name, at: now }],
     };
     tasks.push(task);
     await setCollection('tasks', tasks);
@@ -62,7 +82,15 @@ export default async function handler(req) {
       if (f in body) target[f] = body[f];
     }
     if (body.priority && PRIORITIES.includes(body.priority)) target.priority = body.priority;
-    if (body.status && ['open', 'done'].includes(body.status)) target.status = body.status;
+    if (body.status && ['open', 'done'].includes(body.status) && body.status !== target.status) {
+      const now = new Date().toISOString();
+      if (body.status === 'done') {
+        target.history.push({ event: 'completed', byId: auth.user.id, byName: auth.user.name, at: now, comment: String(body.completionComment || '').trim() });
+      } else {
+        target.history.push({ event: 'reopened', byId: auth.user.id, byName: auth.user.name, at: now });
+      }
+      target.status = body.status;
+    }
     if (body.assignedToId) {
       const members = await loadMembers();
       const assignee = members.find(m => m.id === body.assignedToId);

@@ -588,8 +588,34 @@ function taskRowHTML(t) {
   </div>`;
 }
 
+const TASK_HISTORY_EVENT_LABELS = { created: 'Created', completed: 'Completed', reopened: 'Reopened' };
+const TASK_HISTORY_EVENT_BADGE = { created: 'inactive', completed: 'eboard', reopened: 'admin' };
+
+function taskHistoryRowHTML(entry) {
+  const badgeClass = TASK_HISTORY_EVENT_BADGE[entry.event] || '';
+  const label = TASK_HISTORY_EVENT_LABELS[entry.event] || entry.event;
+  return `<div class="admin-row">
+    <div>
+      <span class="name">${escHtml(entry.taskTitle)}</span> <span class="badge-role ${badgeClass}">${label}</span>
+      <div class="meta">${escHtml(entry.byName || 'Unknown')} · ${fmtDashDate(entry.at)}</div>
+      ${entry.comment ? `<p class="small" style="margin:.35rem 0 0">“${escHtml(entry.comment)}”</p>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderTaskHistoryList() {
+  const el = document.getElementById('tasks-list');
+  const entries = [];
+  for (const t of allTasks) {
+    for (const h of (t.history || [])) entries.push({ ...h, taskTitle: t.title });
+  }
+  entries.sort((a, b) => new Date(b.at) - new Date(a.at));
+  el.innerHTML = entries.map(taskHistoryRowHTML).join('') || '<p class="small muted">No task history yet.</p>';
+}
+
 function renderTasksList() {
   const el = document.getElementById('tasks-list');
+  if (taskViewMode === 'history') { renderTaskHistoryList(); return; }
   const visible = taskViewMode === 'mine' ? allTasks.filter(t => me && t.assignedToId === me.id) : allTasks;
   const sorted = visible.slice().sort((a, b) => {
     if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
@@ -647,7 +673,14 @@ function wireTasksPanel() {
   document.getElementById('tasks-list').addEventListener('click', async (e) => {
     const toggleBtn = e.target.closest('[data-toggle-task]');
     if (toggleBtn) {
-      const { ok, data } = await api(TASKS_URL, { method: 'PATCH', body: JSON.stringify({ id: toggleBtn.dataset.toggleTask, status: toggleBtn.dataset.next }) });
+      const next = toggleBtn.dataset.next;
+      const body = { id: toggleBtn.dataset.toggleTask, status: next };
+      if (next === 'done') {
+        const comment = prompt('Add a comment about completing this task (optional):');
+        if (comment === null) return; // cancelled
+        if (comment.trim()) body.completionComment = comment.trim();
+      }
+      const { ok, data } = await api(TASKS_URL, { method: 'PATCH', body: JSON.stringify(body) });
       if (!ok) { alert(data.error || 'Could not update task.'); return; }
       loadTasks();
       return;
