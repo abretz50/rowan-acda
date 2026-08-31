@@ -395,7 +395,11 @@
       </div>
       <div class="eboard-panel">
         <div class="admin-card">
-          <h3>Roster</h3>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.4rem">
+            <h3 style="border:none;padding:0;margin:0">Roster</h3>
+            <button class="btn-sm outline" id="copy-email-list-btn">Copy Email List</button>
+          </div>
+          <p class="small muted" id="copy-email-list-status"></p>
           <input class="admin-input" type="text" id="roster-search" placeholder="Search by name or email…" autocomplete="off" style="margin-bottom:.6rem"/>
           <div id="members-list" style="max-height:400px;overflow-y:auto"><p class="small muted">Loading…</p></div>
         </div>
@@ -863,6 +867,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=44"></script>
+<script defer src="/js/portal.js?v=45"></script>
 </body>
 </html>

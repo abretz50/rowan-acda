@@ -1051,6 +1051,19 @@ function wireMembersPanel() {
   document.getElementById('members-graph-reset').addEventListener('click', showMembershipGraph);
   document.getElementById('roster-search').addEventListener('input', renderRosterList);
 
+  document.getElementById('copy-email-list-btn').addEventListener('click', async () => {
+    const statusEl = document.getElementById('copy-email-list-status');
+    const emails = [...new Set(allMembers.filter(m => m.active !== false && m.email).map(m => m.email))];
+    if (!emails.length) { statusEl.textContent = 'No emails to copy.'; return; }
+    try {
+      await navigator.clipboard.writeText(emails.join(', '));
+      statusEl.textContent = `Copied ${emails.length} email${emails.length !== 1 ? 's' : ''} to your clipboard.`;
+    } catch {
+      statusEl.textContent = 'Could not copy — your browser blocked clipboard access.';
+    }
+    setTimeout(() => { statusEl.textContent = ''; }, 4000);
+  });
+
   document.getElementById('members-list').addEventListener('click', async (e) => {
     const viewBtn = e.target.closest('[data-view-points]');
     if (viewBtn) { selectMemberPoints(viewBtn.dataset.viewPoints); return; }
