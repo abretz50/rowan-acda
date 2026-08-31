@@ -420,6 +420,7 @@ function accountRowHTML(a) {
       ${isPermanentAdmin
         ? ''
         : `<select class="admin-input" style="width:auto;display:inline-block" data-role-select="${escHtml(a.id)}">${options}</select>`}
+      <button class="btn-sm outline" data-reset-password="${escHtml(a.id)}">Reset Password</button>
       ${!isSelf && !isPermanentAdmin ? `<button class="btn-sm outline" data-toggle-active="${escHtml(a.id)}" data-next="${a.active === false ? 'true' : 'false'}">${a.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
       ${!isSelf && !isPermanentAdmin ? `<button class="btn-sm delete" data-remove-account="${escHtml(a.id)}">Revoke access</button>` : ''}
     </div>
@@ -460,6 +461,16 @@ function wireAccountsPanel() {
   });
 
   document.getElementById('accounts-list').addEventListener('click', async (e) => {
+    const resetBtn = e.target.closest('[data-reset-password]');
+    if (resetBtn) {
+      const newPassword = prompt('Enter a new password for this account:');
+      if (newPassword === null) return;
+      if (!newPassword.trim()) { alert('Enter a password.'); return; }
+      const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: resetBtn.dataset.resetPassword, newPassword: newPassword.trim() }) });
+      if (!ok) { alert(data.error || 'Could not reset password.'); return; }
+      alert('Password reset. Share the new password with them directly.');
+      return;
+    }
     const toggleBtn = e.target.closest('[data-toggle-active]');
     if (toggleBtn) {
       const { ok, data } = await api(ACCOUNTS_URL, { method: 'PATCH', body: JSON.stringify({ id: toggleBtn.dataset.toggleActive, active: toggleBtn.dataset.next === 'true' }) });
