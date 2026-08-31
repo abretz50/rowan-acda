@@ -123,6 +123,18 @@ export default async function handler(req) {
       const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
       return json({ ok: true, points: withDeciderNames(points.filter(p => p.memberId === auth.user.id), members) });
     }
+    // Export Attendance (Events tab) — gated by 'events' rather than
+    // 'points', since it's who showed up, not the point-approval workflow.
+    // Denied check-ins (mistaken/fraudulent) are excluded; pending ones
+    // still count as attendance even before a secretary approves the points.
+    if (url.searchParams.get('eventId')) {
+      const auth = await requireAuth(req, { perm: 'events' });
+      if (auth.deny) return auth.deny;
+      const points = await getCollection('points', []);
+      const eventId = url.searchParams.get('eventId');
+      const rows = points.filter(p => p.eventId === eventId && p.status !== 'denied');
+      return json({ ok: true, points: rows });
+    }
     const auth = await requireAuth(req, { perm: 'points' });
     if (auth.deny) return auth.deny;
     const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);

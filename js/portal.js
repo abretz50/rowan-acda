@@ -768,6 +768,7 @@ function eventRowHTML(ev) {
     <div class="actions">
       <button class="btn-sm edit" data-edit-event="${escHtml(ev.id)}">Edit</button>
       <button class="btn-sm delete" data-delete-event="${escHtml(ev.id)}">Delete</button>
+      <button class="btn-sm outline" data-export-attendance="${escHtml(ev.id)}">Export Attendance</button>
     </div>
   </div>`;
 }
@@ -944,6 +945,20 @@ function wireEventsPanel() {
       const { ok, data } = await api(`${EVENTS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteEvent)}`, { method: 'DELETE' });
       if (!ok) { alert(data.error || 'Could not delete event.'); return; }
       loadEvents();
+      return;
+    }
+    const exportBtn = e.target.closest('[data-export-attendance]');
+    if (exportBtn) {
+      const { ok, data } = await api(`${POINTS_URL}?eventId=${encodeURIComponent(exportBtn.dataset.exportAttendance)}`, { method: 'GET' });
+      if (!ok) { alert(data.error || 'Could not load attendance.'); return; }
+      const emails = [...new Set(data.points.map(p => p.memberEmail).filter(Boolean))];
+      if (!emails.length) { alert('No attendance recorded for this event yet.'); return; }
+      try {
+        await navigator.clipboard.writeText(emails.join(', '));
+        alert(`Copied ${emails.length} attendee email${emails.length !== 1 ? 's' : ''} to your clipboard.`);
+      } catch {
+        alert('Could not copy — your browser blocked clipboard access.');
+      }
     }
   };
   document.getElementById('events-upcoming-list').addEventListener('click', onEventsListClick);
