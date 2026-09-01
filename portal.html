@@ -840,6 +840,13 @@
         <button class="btn-sm" type="button" id="backup-now-btn">Back Up Now</button>
         <div class="admin-status" id="backup-status"></div>
       </div>
+
+      <div class="admin-card" id="reminders-section" style="margin-top:1rem;display:none">
+        <h3>Email Reminders</h3>
+        <p class="small muted">Once a day, task-deadline and event reminders go out automatically to whoever's affected. You can also trigger a sweep manually here — useful for confirming email is set up correctly.</p>
+        <button class="btn-sm" type="button" id="reminders-now-btn">Send Reminders Now</button>
+        <div class="admin-status" id="reminders-status"></div>
+      </div>
     </div>
   </div>
 </main>
@@ -881,6 +888,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=50"></script>
+<script defer src="/js/portal.js?v=51"></script>
 </body>
 </html>

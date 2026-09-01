@@ -2,8 +2,20 @@ import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
+import { sendEmail, emailLayout, escapeHtml } from './_lib/email.mjs';
 
 const PRIORITIES = ['low', 'medium', 'high'];
+
+function taskEmailHtml(task, actorName, verb) {
+  const dueBit = task.dueDate ? `<p><strong>Due:</strong> ${escapeHtml(task.dueDate)}</p>` : '';
+  return emailLayout(`
+    <p>${escapeHtml(actorName)} ${verb} a task:</p>
+    <h3 style="margin:.5rem 0">${escapeHtml(task.title)}</h3>
+    ${task.description ? `<p>${escapeHtml(task.description)}</p>` : ''}
+    ${dueBit}
+    <p><a href="https://rowanacda.org/portal.html" style="color:#7A0A0A">Open the E-Board Portal</a></p>
+  `);
+}
 
 // Backfills a `history` log (created/completed/reopened entries) onto any
 // task saved before this feature existed, so the Task History view has
@@ -88,6 +100,19 @@ export default async function handler(req) {
     };
     tasks.push(task);
     await setCollection('tasks', tasks);
+
+    const notifyJobs = [];
+    if (assignee.email) {
+      notifyJobs.push(sendEmail({ to: assignee.email, subject: `New task assigned: ${task.title}`, html: taskEmailHtml(task, auth.user.name, 'assigned you') }));
+    }
+    for (const tag of task.tags) {
+      const m = members.find(x => x.id === tag.id);
+      if (m?.email) {
+        notifyJobs.push(sendEmail({ to: m.email, subject: `Tagged on a task: ${task.title}`, html: taskEmailHtml(task, auth.user.name, `tagged you on a task assigned to ${task.assignedToName}`) }));
+      }
+    }
+    try { await Promise.allSettled(notifyJobs); } catch {}
+
     return json({ ok: true, task });
   }
 
@@ -109,6 +134,8 @@ export default async function handler(req) {
     }
     if (body.assignedToId || 'taggedIds' in body) {
       const members = await loadMembers();
+      const oldAssigneeId = target.assignedToId;
+      const oldTagIds = new Set((target.tags || []).map(x => x.id));
       if (body.assignedToId) {
         const assignee = members.find(m => m.id === body.assignedToId);
         if (!assignee) return json({ ok: false, error: 'Assignee not found.' }, 404);
@@ -119,6 +146,21 @@ export default async function handler(req) {
       if ('taggedIds' in body) {
         target.tags = buildTags(body.taggedIds, members).filter(t => t.id !== target.assignedToId);
       }
+
+      const notifyJobs = [];
+      if (body.assignedToId && body.assignedToId !== oldAssigneeId) {
+        const assignee = members.find(m => m.id === target.assignedToId);
+        if (assignee?.email) {
+          notifyJobs.push(sendEmail({ to: assignee.email, subject: `Task assigned: ${target.title}`, html: taskEmailHtml(target, auth.user.name, 'assigned you') }));
+        }
+      }
+      for (const tag of target.tags.filter(t => !oldTagIds.has(t.id))) {
+        const m = members.find(x => x.id === tag.id);
+        if (m?.email) {
+          notifyJobs.push(sendEmail({ to: m.email, subject: `Tagged on a task: ${target.title}`, html: taskEmailHtml(target, auth.user.name, `tagged you on a task assigned to ${target.assignedToName}`) }));
+        }
+      }
+      try { await Promise.allSettled(notifyJobs); } catch {}
     }
     target.updatedAt = new Date().toISOString();
     await setCollection('tasks', tasks);

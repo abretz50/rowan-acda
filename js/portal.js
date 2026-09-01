@@ -16,6 +16,7 @@ const CONTENT_URL  = '/.netlify/functions/portal-content';
 const GALLERY_URL  = '/.netlify/functions/portal-gallery';
 const UPLOAD_URL   = '/.netlify/functions/portal-upload';
 const BACKUP_URL   = '/.netlify/functions/portal-backup';
+const REMINDERS_URL = '/.netlify/functions/portal-reminders';
 const STATS_URL    = '/.netlify/functions/portal-stats';
 const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
 const TASKS_URL = '/.netlify/functions/portal-tasks';
@@ -250,6 +251,7 @@ function showDashboard() {
   if (canUse('accounts')) loadAccounts();
   document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
   document.getElementById('backup-section').style.display = canUse('permissions') ? '' : 'none';
+  document.getElementById('reminders-section').style.display = canUse('permissions') ? '' : 'none';
   if (canUse('permissions')) loadPermissions();
   // loadEvents() populates the shared `allEvents` list, which the Points tab's
   // "Event Point Values" section also needs — so load it for either permission.
@@ -542,6 +544,18 @@ function wirePermissionsPanel() {
     if (!ok) { statusEl.textContent = data.error || 'Backup failed.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = `Backed up successfully at ${new Date(data.generatedAt).toLocaleString()}.`;
     statusEl.className = 'admin-status ok';
+  });
+
+  document.getElementById('reminders-now-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('reminders-now-btn');
+    const statusEl = document.getElementById('reminders-status');
+    btn.disabled = true;
+    statusEl.textContent = 'Sending…'; statusEl.className = 'admin-status';
+    const { ok, data } = await api(REMINDERS_URL, { method: 'POST' });
+    btn.disabled = false;
+    if (!ok) { statusEl.textContent = data.error || 'Could not send reminders.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = `Sent ${data.emailsSent} email(s) — ${data.taskReminders} task reminder(s), ${data.eventReminders} event(s)${data.emailsFailed ? `, ${data.emailsFailed} failed` : ''}.`;
+    statusEl.className = data.emailsFailed ? 'admin-status err' : 'admin-status ok';
   });
 }
 
