@@ -156,6 +156,7 @@
             <button class="cat-chip" type="button" data-task-view="mine">My Tasks</button>
             <button class="cat-chip" type="button" data-task-view="history">Task History</button>
           </div>
+          <p class="small muted" id="task-next-auto-label"></p>
           <div id="task-search-bar" style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
             <input class="admin-input" type="search" id="task-search" placeholder="Search tasks…" autocomplete="off" style="flex:1;min-width:160px"/>
             <select class="admin-input" id="task-sort" style="width:auto">
@@ -395,6 +396,7 @@
 
         <div class="admin-card">
           <h3>Upcoming Events</h3>
+          <p class="small muted" id="event-next-auto-label"></p>
           <div id="events-upcoming-list"><p class="small muted">Loading…</p></div>
           <h3 style="margin-top:1.25rem">Past Events</h3>
           <div id="events-past-list"></div>
@@ -889,6 +891,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=53"></script>
+<script defer src="/js/portal.js?v=54"></script>
 </body>
 </html>

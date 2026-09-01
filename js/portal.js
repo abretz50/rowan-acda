@@ -20,6 +20,8 @@ const REMINDERS_URL = '/.netlify/functions/portal-reminders';
 const STATS_URL    = '/.netlify/functions/portal-stats';
 const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
 const TASKS_URL = '/.netlify/functions/portal-tasks';
+const TASK_REMIND_URL = '/.netlify/functions/portal-task-remind';
+const EVENT_REMIND_URL = '/.netlify/functions/portal-event-remind';
 // The chapter's permanent site-owner account — mirrors _lib/permissions.mjs's
 // isPermanentAdmin(); the server is the source of truth, this is only for
 // hiding the buttons it would reject anyway.
@@ -48,6 +50,7 @@ let selectedMemberId = null;
 let lastMemberStats = null;
 let allTasks = [];
 let taskAssignableMembers = [];
+let nextAutomatedRunAt = null;
 let taskViewMode = 'board';
 let taskSearchTerm = '';
 let taskSortBy = 'priority';
@@ -95,6 +98,28 @@ function fmtDashDate(iso) {
   if (!iso) return '';
   const d = new Date(iso);
   return `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}`;
+}
+
+// "(automated emails send 09/03/2026 @ 4:00 AM)" — always computed from the
+// scheduled function's actual UTC cron hour (see portal-reminders.mjs GET),
+// so it stays honest across the DST shift rather than hardcoding a time.
+function formatNextRunLabel(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const [y, m, day] = d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }).split('-');
+  const time = d.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' });
+  return `(automated emails send ${m}/${day}/${y} @ ${time} ET)`;
+}
+
+async function loadNextAutomatedRun() {
+  const { ok, data } = await api(REMINDERS_URL, { method: 'GET' });
+  if (!ok) return;
+  nextAutomatedRunAt = data.nextRunAt;
+  const label = formatNextRunLabel(nextAutomatedRunAt);
+  const taskEl = document.getElementById('task-next-auto-label');
+  const eventEl = document.getElementById('event-next-auto-label');
+  if (taskEl) taskEl.textContent = label;
+  if (eventEl) eventEl.textContent = label;
 }
 
 function toISOFromLocalInput(v){ return v ? new Date(v).toISOString() : ''; }
@@ -248,6 +273,7 @@ function showDashboard() {
   loadOverviewStats();
   loadRecentComments(); // shown on both Overview and Members — open to any E-Board account
   loadTasks(); // Tasks is open to any E-Board account, not permission-gated
+  loadNextAutomatedRun();
   if (canUse('accounts')) loadAccounts();
   document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
   document.getElementById('backup-section').style.display = canUse('permissions') ? '' : 'none';
@@ -628,6 +654,7 @@ function taskRowHTML(t) {
       </div>
       <div class="actions">
         <button class="btn-sm outline" data-toggle-task="${escHtml(t.id)}" data-next="${t.status === 'done' ? 'open' : 'done'}">${t.status === 'done' ? 'Reopen' : 'Mark Done'}</button>
+        <button class="btn-sm outline" data-remind-task="${escHtml(t.id)}">Send Reminder</button>
         <button class="btn-sm edit" data-edit-task="${escHtml(t.id)}">Edit</button>
         <button class="btn-sm delete" data-delete-task="${escHtml(t.id)}">Delete</button>
       </div>
@@ -808,6 +835,15 @@ function wireTasksPanel() {
       loadTasks();
       return;
     }
+    const remindBtn = e.target.closest('[data-remind-task]');
+    if (remindBtn) {
+      remindBtn.disabled = true; const original = remindBtn.textContent; remindBtn.textContent = 'Sending…';
+      const { ok, data } = await api(TASK_REMIND_URL, { method: 'POST', body: JSON.stringify({ id: remindBtn.dataset.remindTask }) });
+      remindBtn.disabled = false; remindBtn.textContent = original;
+      if (!ok) { alert(data.error || 'Could not send reminder.'); return; }
+      alert(data.sent ? `Sent ${data.sent} email(s)${data.failed ? `, ${data.failed} failed` : ''}.` : 'No one to email for this task.');
+      return;
+    }
     const toggleArea = e.target.closest('[data-task-toggle]');
     if (toggleArea) {
       const panel = document.getElementById(`task-detail-${toggleArea.dataset.taskToggle}`);
@@ -867,6 +903,7 @@ function eventRowHTML(ev) {
       <button class="btn-sm edit" data-edit-event="${escHtml(ev.id)}">Edit</button>
       <button class="btn-sm delete" data-delete-event="${escHtml(ev.id)}">Delete</button>
       <button class="btn-sm outline" data-export-attendance="${escHtml(ev.id)}">Export Attendance</button>
+      <button class="btn-sm outline" data-remind-event="${escHtml(ev.id)}">Send Reminder</button>
     </div>
   </div>`;
 }
@@ -1057,6 +1094,16 @@ function wireEventsPanel() {
       } catch {
         alert('Could not copy — your browser blocked clipboard access.');
       }
+      return;
+    }
+    const remindBtn = e.target.closest('[data-remind-event]');
+    if (remindBtn) {
+      if (!confirm('Email every active member a reminder about this event right now?')) return;
+      remindBtn.disabled = true; const original = remindBtn.textContent; remindBtn.textContent = 'Sending…';
+      const { ok, data } = await api(EVENT_REMIND_URL, { method: 'POST', body: JSON.stringify({ id: remindBtn.dataset.remindEvent }) });
+      remindBtn.disabled = false; remindBtn.textContent = original;
+      if (!ok) { alert(data.error || 'Could not send reminder.'); return; }
+      alert(`Sent ${data.sent} email(s)${data.failed ? `, ${data.failed} failed` : ''}.`);
     }
   };
   document.getElementById('events-upcoming-list').addEventListener('click', onEventsListClick);
