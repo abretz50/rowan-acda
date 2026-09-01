@@ -1,5 +1,29 @@
 import { loadMembers, saveMembers, accountMember } from './_lib/loadMembers.mjs';
+import { getCollection } from './_lib/blobs.mjs';
 import { requireAuth, hashPassword, verifyPassword, json } from './_lib/auth.mjs';
+
+// Ranks every active member by total approved points. Used for the "My
+// Account" leaderboard, which only ever shows rank + name/photo — never the
+// point totals themselves — so ties are just broken alphabetically rather
+// than needing a tiebreaker anyone could reverse-engineer a score from.
+function computeLeaderboard(members, points, myId) {
+  const totalByMember = new Map();
+  for (const p of points) {
+    if (p.status !== 'approved') continue;
+    totalByMember.set(p.memberId, (totalByMember.get(p.memberId) || 0) + p.amount);
+  }
+  const ranked = members.filter(m => m.active !== false)
+    .map(m => ({ id: m.id, name: m.name, photoUrl: m.photoUrl || null, total: totalByMember.get(m.id) || 0 }))
+    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+  const myIndex = ranked.findIndex(r => r.id === myId);
+  if (myIndex === -1) return { myRank: null, totalMembers: ranked.length, entries: [] };
+  const start = Math.max(0, myIndex - 2);
+  const end = Math.min(ranked.length, myIndex + 3);
+  const entries = ranked.slice(start, end).map((r, i) => ({
+    rank: start + i + 1, id: r.id, name: r.name, photoUrl: r.photoUrl, isMe: r.id === myId,
+  }));
+  return { myRank: myIndex + 1, totalMembers: ranked.length, entries };
+}
 
 export default async function handler(req) {
   const auth = await requireAuth(req);
@@ -7,6 +31,10 @@ export default async function handler(req) {
   const { user: me, members } = auth;
 
   if (req.method === 'GET') {
+    if (new URL(req.url).searchParams.get('leaderboard')) {
+      const points = await getCollection('points', []);
+      return json({ ok: true, ...computeLeaderboard(members, points, me.id) });
+    }
     return json({ ok: true, user: me });
   }
 

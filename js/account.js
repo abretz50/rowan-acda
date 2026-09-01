@@ -79,6 +79,7 @@ function showSignedIn() {
   fillProfileView();
   document.getElementById('pf-name').value = me.name || '';
   document.getElementById('pf-email').value = me.email || '';
+  loadLeaderboard();
   const historyLoaded = loadEventsHistory();
   if (!isEboardRole(me.role)) {
     historyLoaded.then(loadCheckinEvents);
@@ -106,6 +107,27 @@ async function loadEventsHistory() {
       <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status === 'pending' ? 'pending review' : p.status}</span></div>
     </div>`;
     }).join('') || '<p class="small muted">No Events yet, see the events page to attend your first event!</p>';
+}
+
+// ── Points leaderboard: rank + name/photo only, never point totals ──────
+function leaderboardRowHTML(entry) {
+  const avatar = entry.photoUrl
+    ? `<img src="${escHtml(entry.photoUrl)}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`
+    : `<div style="width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--muted)">👤</div>`;
+  return `<div class="admin-row"${entry.isMe ? ' style="background:var(--surface)"' : ''}>
+    <div style="display:flex;align-items:center;gap:.6rem">
+      <span class="name" style="min-width:2rem">#${entry.rank}</span>
+      ${avatar}
+      <span>${escHtml(entry.name)}${entry.isMe ? ' <span class="badge-role eboard">you</span>' : ''}</span>
+    </div>
+  </div>`;
+}
+
+async function loadLeaderboard() {
+  const listEl = document.getElementById('leaderboard-list');
+  const { ok, data } = await api(`${ME_URL}?leaderboard=1`, { method: 'GET' });
+  if (!ok || !data.entries) { listEl.innerHTML = '<p class="small muted">Could not load leaderboard.</p>'; return; }
+  listEl.innerHTML = data.entries.map(leaderboardRowHTML).join('') || '<p class="small muted">Not enough data yet.</p>';
 }
 
 // ── Check into an event (no code — just events open right now) ──────────
