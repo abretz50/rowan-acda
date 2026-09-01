@@ -13,7 +13,11 @@ function normEmail(e) { return String(e || '').trim().toLowerCase(); }
 // for these particular numbers (recurring members, attendance %, etc).
 async function computeMemberStats(members) {
   const now = new Date();
-  const [events, points] = await Promise.all([getCollection('events', []), getCollection('points', [])]);
+  const [events, allPoints] = await Promise.all([getCollection('events', []), getCollection('points', [])]);
+  // Scoped to whoever the caller passed in (e.g. admin already excluded),
+  // so a non-roster account's check-ins never skew these numbers.
+  const memberIds = new Set(members.map(m => m.id));
+  const points = allPoints.filter(p => memberIds.has(p.memberId));
   const activeMembers = members.filter(m => m.active !== false);
 
   const meetings = events.filter(e => (e.tags || []).includes('Meeting') && new Date(e.end || e.start) <= now);
@@ -81,7 +85,10 @@ export default async function handler(req) {
   const { members } = auth;
 
   if (req.method === 'GET') {
-    const stats = await computeMemberStats(members);
+    // Admin is a technical/site-owner account, not a club member — kept out
+    // of the roster and its stats (it still functions fully for tasks).
+    const rosterMembers = members.filter(m => m.role !== 'admin');
+    const stats = await computeMemberStats(rosterMembers);
     // ProfLink verification isn't its own field — it's just whether a member
     // has an approved "ProfLink verified" manual award — so the roster can
     // show Verify vs. Unverify without a separate flag to keep in sync.
@@ -90,7 +97,7 @@ export default async function handler(req) {
     for (const p of points) {
       if (p.status === 'approved' && p.reason === 'ProfLink verified') proflinkPointsIdByMember.set(p.memberId, p.id);
     }
-    const membersOut = members.map(m => ({ ...publicMember(m), proflinkPointsId: proflinkPointsIdByMember.get(m.id) || null }));
+    const membersOut = rosterMembers.map(m => ({ ...publicMember(m), proflinkPointsId: proflinkPointsIdByMember.get(m.id) || null }));
     return json({ ok: true, members: membersOut, stats });
   }
 

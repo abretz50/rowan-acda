@@ -12,7 +12,7 @@ function computeLeaderboard(members, points, myId) {
     if (p.status !== 'approved') continue;
     totalByMember.set(p.memberId, (totalByMember.get(p.memberId) || 0) + p.amount);
   }
-  const ranked = members.filter(m => m.active !== false)
+  const ranked = members.filter(m => m.active !== false && m.role !== 'admin')
     .map(m => ({ id: m.id, name: m.name, photoUrl: m.photoUrl || null, total: totalByMember.get(m.id) || 0 }))
     .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
   const myIndex = ranked.findIndex(r => r.id === myId);

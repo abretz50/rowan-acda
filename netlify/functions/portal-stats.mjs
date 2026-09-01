@@ -11,12 +11,18 @@ export default async function handler(req) {
   const auth = await requireAuth(req);
   if (auth.deny) return auth.deny;
 
-  const [members, events, points, tasks] = await Promise.all([
+  const [allMembers, events, allPoints, tasks] = await Promise.all([
     loadMembers(),
     getCollection('events', []),
     getCollection('points', []),
     getCollection('tasks', []),
   ]);
+  // Admin is a technical/site-owner account, not a club member — it keeps
+  // full task capability (assign/be assigned) but is excluded from member
+  // counts and point leaderboards.
+  const members = allMembers.filter(m => m.role !== 'admin');
+  const adminIds = new Set(allMembers.filter(m => m.role === 'admin').map(m => m.id));
+  const points = allPoints.filter(p => !adminIds.has(p.memberId));
 
   const now = new Date();
   const activeMembers = members.filter(m => m.active !== false);
