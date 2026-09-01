@@ -749,6 +749,14 @@ function localDateOnly(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+// Same "wrapping headline on top, actual value below" layout as
+// mostAttendedCardHTML, generalized for any multi-word label — used
+// wherever the label itself needs a forced line break rather than the
+// usual big-number-on-top orientation.
+function headlineStatCardHTML(headlineHtml, valueText) {
+  return `<div class="stat-card"><span class="stat-number" style="font-size:1.1rem;line-height:1.3">${headlineHtml}</span><span class="stat-label">${escHtml(valueText)}</span></div>`;
+}
+
 function renderTaskStats() {
   const total = allTasks.length;
   const completed = allTasks.filter(t => t.status === 'done').length;
@@ -758,10 +766,14 @@ function renderTaskStats() {
   const weekEnd = localDateOnly(weekEndDate);
   const upcoming = allTasks.filter(t => t.status === 'open' && t.dueDate && t.dueDate >= today && t.dueDate <= weekEnd).length;
 
+  const now = new Date();
   const completionCounts = new Map();
   for (const t of allTasks) {
     for (const h of (t.history || [])) {
-      if (h.event === 'completed' && h.byName) completionCounts.set(h.byName, (completionCounts.get(h.byName) || 0) + 1);
+      if (h.event !== 'completed' || !h.byName) continue;
+      const at = new Date(h.at);
+      if (at.getFullYear() !== now.getFullYear() || at.getMonth() !== now.getMonth()) continue;
+      completionCounts.set(h.byName, (completionCounts.get(h.byName) || 0) + 1);
     }
   }
   let topName = null, topCount = 0;
@@ -773,8 +785,8 @@ function renderTaskStats() {
     statCardHTML(total, 'Total Tasks'),
     statCardHTML(outstanding, 'Outstanding Tasks'),
     statCardHTML(completed, 'Completed Tasks'),
-    statCardHTML(upcoming, 'Upcoming Tasks (This Week)'),
-    statCardHTML(topName ? escHtml(topName) : '—', 'Most Tasks Completed', topName ? `${topCount} completed` : ''),
+    headlineStatCardHTML('Upcoming Tasks<br>(This Week)', String(upcoming)),
+    headlineStatCardHTML('Most Tasks Completed<br>This Month', topName ? `${topName} (${topCount})` : '—'),
   ].join('');
 }
 
