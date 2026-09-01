@@ -654,11 +654,14 @@ function taskRowHTML(t) {
         ${descPreview ? `<p class="small" style="margin:.35rem 0 0">${escHtml(descPreview)}</p>` : ''}
       </div>
       <div class="actions">
+        ${taskViewMode === 'completed' ? `
+        <button class="btn-sm outline" data-toggle-task="${escHtml(t.id)}" data-next="open">Unarchive</button>
+        <button class="btn-sm delete" data-delete-task="${escHtml(t.id)}">Delete</button>` : `
         <button class="btn-sm outline" data-toggle-task="${escHtml(t.id)}" data-next="${t.status === 'done' ? 'open' : 'done'}">${t.status === 'done' ? 'Reopen' : 'Mark Done'}</button>
         <button class="btn-sm outline" data-remind-task="${escHtml(t.id)}">Send Reminder</button>
         <button class="btn-sm outline" data-task-toggle="${escHtml(t.id)}">History</button>
         <button class="btn-sm edit" data-edit-task="${escHtml(t.id)}">Edit</button>
-        <button class="btn-sm delete" data-delete-task="${escHtml(t.id)}">Delete</button>
+        <button class="btn-sm delete" data-delete-task="${escHtml(t.id)}">Delete</button>`}
       </div>
     </div>
     <div class="task-detail-panel" id="task-detail-${escHtml(t.id)}" style="display:none;margin:.3rem 0 .7rem;padding:.6rem .8rem;background:var(--surface);border:1px solid var(--border);border-radius:.55rem">

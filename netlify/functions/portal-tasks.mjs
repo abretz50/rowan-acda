@@ -17,6 +17,22 @@ function taskEmailHtml(task, actorName, verb) {
   `);
 }
 
+// Sent to the whole E-Board (not just the assignee) when a task is marked
+// done, so anyone can spot-check the submission comment without having to
+// dig through Task History.
+function taskCompletedEmailHtml(task, comment, completedByName) {
+  return emailLayout(`
+    <p style="font-size:1.05rem;margin-bottom:1rem"><strong>Task Completed!</strong> "${escapeHtml(task.title)}"</p>
+    <p><strong>Assigned by:</strong> ${escapeHtml(task.assignedByName)}</p>
+    <p><strong>Assigned to:</strong> ${escapeHtml(task.assignedToName)}</p>
+    ${task.description ? `<p><strong>Description:</strong> ${escapeHtml(task.description)}</p>` : ''}
+    <p><strong>Due date:</strong> ${task.dueDate ? escapeHtml(mdySlash(task.dueDate)) : 'No due date'}</p>
+    ${comment ? `<p><strong>Submission comment:</strong> ${escapeHtml(comment)}</p>` : ''}
+    <p><strong>Marked complete by:</strong> ${escapeHtml(completedByName)}</p>
+    ${ctaButton('https://rowanacda.org/portal.html', 'Open the E-Board Portal')}
+  `);
+}
+
 // Backfills a `history` log (created/completed/reopened entries) onto any
 // task saved before this feature existed, so the Task History view has
 // something to show for old tasks too. Who actually completed an
@@ -126,11 +142,23 @@ export default async function handler(req) {
     if (body.status && ['open', 'done'].includes(body.status) && body.status !== target.status) {
       const now = new Date().toISOString();
       if (body.status === 'done') {
-        target.history.push({ event: 'completed', byId: auth.user.id, byName: auth.user.name, at: now, comment: String(body.completionComment || '').trim() });
+        const comment = String(body.completionComment || '').trim();
+        target.history.push({ event: 'completed', byId: auth.user.id, byName: auth.user.name, at: now, comment });
+        target.status = body.status;
+        try {
+          const members = await loadMembers();
+          const eboardAccounts = members.filter(m => m.hasAccount && m.active !== false && m.role !== 'member');
+          const html = taskCompletedEmailHtml(target, comment, auth.user.name);
+          const jobs = eboardAccounts
+            .map(m => memberEmails(m))
+            .filter(emails => emails.length)
+            .map(emails => sendEmail({ to: emails, subject: `Task Completed! "${target.title}"`, html }));
+          await Promise.allSettled(jobs);
+        } catch {}
       } else {
         target.history.push({ event: 'reopened', byId: auth.user.id, byName: auth.user.name, at: now });
+        target.status = body.status;
       }
-      target.status = body.status;
     }
     if (body.assignedToId || 'taggedIds' in body) {
       const members = await loadMembers();
