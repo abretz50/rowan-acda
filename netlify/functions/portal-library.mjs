@@ -51,7 +51,7 @@ function applyLibraryOp(lib, op, body) {
       composer_first: s.composer_first || '', composer_last: s.composer_last || '',
       arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
       year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
-      tags: Array.isArray(s.tags) ? s.tags : [],
+      tags: Array.isArray(s.tags) ? s.tags : [], notes: s.notes || '',
     });
     return null;
   }
@@ -66,7 +66,7 @@ function applyLibraryOp(lib, op, body) {
       composer_first: s.composer_first || '', composer_last: s.composer_last || '',
       arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
       year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
-      tags: Array.isArray(s.tags) ? s.tags : [],
+      tags: Array.isArray(s.tags) ? s.tags : [], notes: s.notes || '',
     });
     if (body.oldUrl !== s.url) {
       lib.sessions.forEach(sess => {

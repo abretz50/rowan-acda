@@ -1596,6 +1596,7 @@ function scoreManageRowHTML(s) {
     <div>
       <span class="name">${escHtml(s.title)}</span>
       <div class="meta">${escHtml(credit)}${credit && meta ? ' · ' : ''}${escHtml(meta)}</div>
+      ${s.notes ? `<div class="meta" style="font-style:italic;">${escHtml(s.notes)}</div>` : ''}
     </div>
     <div class="actions">
       <a class="btn-sm outline" href="${escHtml(s.url)}" target="_blank" rel="noopener">View PDF</a>
@@ -1805,6 +1806,7 @@ function wireLibraryPanel() {
         voicing: getSelectOrOther('sc-voicing', 'sc-voicing-other'),
         instrumentation: getSelectOrOther('sc-instr', 'sc-instr-other'),
         tags: Array.from(document.getElementById('sc-tags').selectedOptions).map(o => o.value),
+        notes: document.getElementById('sc-notes').value.trim(),
       };
 
       statusEl.textContent = 'Saving…'; statusEl.className = 'admin-status';
@@ -1852,6 +1854,7 @@ function wireLibraryPanel() {
       document.getElementById('sc-url').value = s.url;
       document.getElementById('sc-file-current').textContent = `Current file: ${s.url} — choose a new PDF only if you want to replace it.`;
       Array.from(document.getElementById('sc-tags').options).forEach(o => { o.selected = s.tags.includes(o.value); });
+      document.getElementById('sc-notes').value = s.notes || '';
       document.getElementById('score-form-heading').textContent = 'Edit Score';
       document.getElementById('score-form-submit').textContent = 'Save changes';
       document.getElementById('score-form-cancel').style.display = '';
