@@ -567,7 +567,8 @@ function wirePermissionsPanel() {
     const { ok, data } = await api(REMINDERS_URL, { method: 'POST' });
     btn.disabled = false;
     if (!ok) { statusEl.textContent = data.error || 'Could not send reminders.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = `Sent ${data.emailsSent} email(s) — ${data.taskReminders} task reminder(s), ${data.eventReminders} event(s)${data.emailsFailed ? `, ${data.emailsFailed} failed` : ''}.`;
+    const errorBit = data.emailsFailed && data.sampleErrors?.length ? ` Error: ${data.sampleErrors.join(' | ')}` : '';
+    statusEl.textContent = `Sent ${data.emailsSent} email(s) — ${data.taskReminders} task reminder(s), ${data.eventReminders} event(s)${data.emailsFailed ? `, ${data.emailsFailed} failed.` : '.'}${errorBit}`;
     statusEl.className = data.emailsFailed ? 'admin-status err' : 'admin-status ok';
   });
 }

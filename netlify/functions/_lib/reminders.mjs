@@ -61,6 +61,11 @@ export async function runDailyReminders() {
   }
 
   const results = await Promise.allSettled(jobs);
-  const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && r.value?.ok === false)).length;
-  return { taskReminders, eventReminders, emailsSent: jobs.length, emailsFailed: failed };
+  const errors = results
+    .map(r => r.status === 'rejected' ? (r.reason?.message || String(r.reason)) : (r.value?.ok === false ? r.value.error : null))
+    .filter(Boolean);
+  return {
+    taskReminders, eventReminders, emailsSent: jobs.length, emailsFailed: errors.length,
+    sampleErrors: [...new Set(errors)].slice(0, 3),
+  };
 }
