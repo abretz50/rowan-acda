@@ -1744,6 +1744,7 @@ function wireLibraryPanel() {
   document.getElementById('score-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('score-form-status');
+    const submitBtn = document.getElementById('score-form-submit');
     const title = document.getElementById('sc-title').value.trim();
     const file = document.getElementById('sc-file').files[0];
     let url = document.getElementById('sc-url').value.trim();
@@ -1751,33 +1752,42 @@ function wireLibraryPanel() {
     if (!title) { statusEl.textContent = 'Title is required.'; statusEl.className = 'admin-status err'; return; }
     if (!file && !url) { statusEl.textContent = 'Choose a PDF to upload.'; statusEl.className = 'admin-status err'; return; }
 
-    if (file) {
-      statusEl.textContent = 'Uploading PDF…'; statusEl.className = 'admin-status';
-      const up = await uploadFile(file, 'library');
-      if (!up.ok) { statusEl.textContent = up.data.error || 'Upload failed.'; statusEl.className = 'admin-status err'; return; }
-      url = up.data.url;
+    // Disabled for the whole upload+save flow — a slow upload is exactly
+    // when someone's likely to click again, and two overlapping "add score"
+    // requests is how one of them silently loses the other's addition.
+    submitBtn.disabled = true;
+    try {
+      if (file) {
+        statusEl.textContent = 'Uploading PDF…'; statusEl.className = 'admin-status';
+        const up = await uploadFile(file, 'library');
+        if (!up.ok) { statusEl.textContent = up.data.error || 'Upload failed.'; statusEl.className = 'admin-status err'; return; }
+        url = up.data.url;
+      }
+
+      const score = {
+        title, url,
+        composer_first: document.getElementById('sc-cfirst').value.trim(),
+        composer_last: document.getElementById('sc-clast').value.trim(),
+        arranger_first: document.getElementById('sc-afirst').value.trim(),
+        arranger_last: document.getElementById('sc-alast').value.trim(),
+        year: document.getElementById('sc-year').value.trim(),
+        voicing: getSelectOrOther('sc-voicing', 'sc-voicing-other'),
+        instrumentation: getSelectOrOther('sc-instr', 'sc-instr-other'),
+        tags: Array.from(document.getElementById('sc-tags').selectedOptions).map(o => o.value),
+      };
+
+      statusEl.textContent = 'Saving…'; statusEl.className = 'admin-status';
+      const { ok, data } = editingScoreUrl
+        ? await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'updateScore', oldUrl: editingScoreUrl, score }) })
+        : await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'addScore', score }) });
+      if (!ok) { statusEl.textContent = data.error || 'Could not save score.'; statusEl.className = 'admin-status err'; return; }
+      statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
+      libScores = data.scores; libSessions = data.sessions;
+      resetScoreForm();
+      renderLibManageChips(); renderLibManageList(); renderSetsManageList();
+    } finally {
+      submitBtn.disabled = false;
     }
-
-    const score = {
-      title, url,
-      composer_first: document.getElementById('sc-cfirst').value.trim(),
-      composer_last: document.getElementById('sc-clast').value.trim(),
-      arranger_first: document.getElementById('sc-afirst').value.trim(),
-      arranger_last: document.getElementById('sc-alast').value.trim(),
-      year: document.getElementById('sc-year').value.trim(),
-      voicing: getSelectOrOther('sc-voicing', 'sc-voicing-other'),
-      instrumentation: getSelectOrOther('sc-instr', 'sc-instr-other'),
-      tags: Array.from(document.getElementById('sc-tags').selectedOptions).map(o => o.value),
-    };
-
-    const { ok, data } = editingScoreUrl
-      ? await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'updateScore', oldUrl: editingScoreUrl, score }) })
-      : await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'addScore', score }) });
-    if (!ok) { statusEl.textContent = data.error || 'Could not save score.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
-    libScores = data.scores; libSessions = data.sessions;
-    resetScoreForm();
-    renderLibManageChips(); renderLibManageList(); renderSetsManageList();
   });
   document.getElementById('score-form-cancel').addEventListener('click', resetScoreForm);
   document.getElementById('lib-manage-search').addEventListener('input', renderLibManageList);

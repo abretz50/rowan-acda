@@ -1,4 +1,4 @@
-import { getCollection, setCollection } from './_lib/blobs.mjs';
+import { getCollection, setCollection, updateCollection } from './_lib/blobs.mjs';
 import { requireAuth, getSessionUser, json } from './_lib/auth.mjs';
 import { parseDat } from './_lib/parseDat.mjs';
 import { SEED_DAT_TEXT } from './_lib/librarySeed.mjs';
@@ -36,6 +36,128 @@ async function canManageLibrary(req) {
   return m ? await hasPermission(m.role, 'library') : false;
 }
 
+// Pure mutation of `lib` for one op — called from inside updateCollection's
+// retry loop (portal-gallery.mjs's applyGalleryOp is the same pattern), so
+// it may run more than once per request if a concurrent write is detected.
+// Returns null on success, or { message, status } on a validation failure.
+function applyLibraryOp(lib, op, body) {
+  // ── Scores ────────────────────────────────────────────
+  if (op === 'addScore') {
+    const s = body.score || {};
+    if (!s.title || !s.url) return { message: 'Title and PDF URL are required.', status: 400 };
+    if (lib.scores.some(x => x.url === s.url)) return { message: 'A score with that URL already exists.', status: 409 };
+    lib.scores.push({
+      title: s.title, url: s.url,
+      composer_first: s.composer_first || '', composer_last: s.composer_last || '',
+      arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
+      year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
+      tags: Array.isArray(s.tags) ? s.tags : [],
+    });
+    return null;
+  }
+
+  if (op === 'updateScore') {
+    const target = lib.scores.find(x => x.url === body.oldUrl);
+    if (!target) return { message: 'Score not found.', status: 404 };
+    const s = body.score || {};
+    if (!s.title || !s.url) return { message: 'Title and PDF URL are required.', status: 400 };
+    Object.assign(target, {
+      title: s.title, url: s.url,
+      composer_first: s.composer_first || '', composer_last: s.composer_last || '',
+      arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
+      year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
+      tags: Array.isArray(s.tags) ? s.tags : [],
+    });
+    if (body.oldUrl !== s.url) {
+      lib.sessions.forEach(sess => {
+        const i = sess.scoreUrls.indexOf(body.oldUrl);
+        if (i > -1) sess.scoreUrls[i] = s.url;
+      });
+    }
+    return null;
+  }
+
+  if (op === 'deleteScore') {
+    if (!lib.scores.some(x => x.url === body.url)) return { message: 'Score not found.', status: 404 };
+    lib.scores = lib.scores.filter(x => x.url !== body.url);
+    lib.sessions.forEach(sess => { sess.scoreUrls = sess.scoreUrls.filter(u => u !== body.url); });
+    return null;
+  }
+
+  // ── Sessions / sets ───────────────────────────────────
+  if (op === 'addSession') {
+    const { num, name } = body;
+    if (!num || !name) return { message: 'ID and name are required.', status: 400 };
+    if (lib.sessions.some(s => s.num === num)) return { message: `${num} already exists.`, status: 409 };
+    lib.sessions.unshift({ num, name, scoreUrls: [], archived: false, archivedAt: null, archiveFolder: null });
+    return null;
+  }
+
+  if (op === 'setSessionArchived') {
+    const sess = lib.sessions.find(s => s.num === body.num);
+    if (!sess) return { message: 'Set not found.', status: 404 };
+    sess.archived = !!body.archived;
+    sess.archivedAt = sess.archived ? new Date().toISOString() : null;
+    if (sess.archived) {
+      const folder = String(body.folder || '').trim();
+      if (!folder) return { message: 'Choose or create a folder to archive into.', status: 400 };
+      sess.archiveFolder = folder;
+      if (!lib.archiveFolders.includes(folder)) lib.archiveFolders.push(folder);
+    } else {
+      sess.archiveFolder = null;
+    }
+    return null;
+  }
+
+  if (op === 'createArchiveFolder') {
+    const name = String(body.name || '').trim();
+    if (!name) return { message: 'A folder name is required.', status: 400 };
+    if (lib.archiveFolders.some(f => f.toLowerCase() === name.toLowerCase())) {
+      return { message: 'A folder with that name already exists.', status: 409 };
+    }
+    lib.archiveFolders.push(name);
+    return null;
+  }
+
+  if (op === 'updateSession') {
+    const sess = lib.sessions.find(s => s.num === body.oldNum);
+    if (!sess) return { message: 'Set not found.', status: 404 };
+    if (!body.num || !body.name) return { message: 'ID and name are required.', status: 400 };
+    sess.num = body.num; sess.name = body.name;
+    return null;
+  }
+
+  if (op === 'deleteSession') {
+    if (!lib.sessions.some(s => s.num === body.num)) return { message: 'Set not found.', status: 404 };
+    lib.sessions = lib.sessions.filter(s => s.num !== body.num);
+    return null;
+  }
+
+  if (op === 'setSessionScores') {
+    const sess = lib.sessions.find(s => s.num === body.num);
+    if (!sess) return { message: 'Set not found.', status: 404 };
+    const valid = new Set(lib.scores.map(s => s.url));
+    sess.scoreUrls = Array.isArray(body.urls) ? body.urls.filter(u => valid.has(u)) : [];
+    return null;
+  }
+
+  if (op === 'addToSet') {
+    const sess = lib.sessions.find(s => s.num === body.num);
+    if (!sess) return { message: 'Set not found.', status: 404 };
+    if (!sess.scoreUrls.includes(body.url)) sess.scoreUrls.push(body.url);
+    return null;
+  }
+
+  if (op === 'removeFromSet') {
+    const sess = lib.sessions.find(s => s.num === body.num);
+    if (!sess) return { message: 'Set not found.', status: 404 };
+    sess.scoreUrls = sess.scoreUrls.filter(u => u !== body.url);
+    return null;
+  }
+
+  return { message: 'Unknown operation.', status: 400 };
+}
+
 export default async function handler(req) {
   if (req.method === 'GET') {
     const lib = await loadLibrary();
@@ -59,132 +181,22 @@ export default async function handler(req) {
   let body;
   try { body = await req.json(); } catch { return json({ ok: false, error: 'Bad JSON' }, 400); }
   const { op } = body;
-  const lib = await loadLibrary();
 
-  // ── Scores ────────────────────────────────────────────
-  if (op === 'addScore') {
-    const s = body.score || {};
-    if (!s.title || !s.url) return json({ ok: false, error: 'Title and PDF URL are required.' }, 400);
-    if (lib.scores.some(x => x.url === s.url)) return json({ ok: false, error: 'A score with that URL already exists.' }, 409);
-    lib.scores.push({
-      title: s.title, url: s.url,
-      composer_first: s.composer_first || '', composer_last: s.composer_last || '',
-      arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
-      year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
-      tags: Array.isArray(s.tags) ? s.tags : [],
-    });
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
+  // Seed/migrate first (idempotent, rare) so the retry loop below always
+  // starts from a real, already-shaped collection.
+  await loadLibrary();
 
-  if (op === 'updateScore') {
-    const target = lib.scores.find(x => x.url === body.oldUrl);
-    if (!target) return json({ ok: false, error: 'Score not found.' }, 404);
-    const s = body.score || {};
-    if (!s.title || !s.url) return json({ ok: false, error: 'Title and PDF URL are required.' }, 400);
-    Object.assign(target, {
-      title: s.title, url: s.url,
-      composer_first: s.composer_first || '', composer_last: s.composer_last || '',
-      arranger_first: s.arranger_first || '', arranger_last: s.arranger_last || '',
-      year: s.year || '', voicing: s.voicing || '', instrumentation: s.instrumentation || '',
-      tags: Array.isArray(s.tags) ? s.tags : [],
-    });
-    if (body.oldUrl !== s.url) {
-      lib.sessions.forEach(sess => {
-        const i = sess.scoreUrls.indexOf(body.oldUrl);
-        if (i > -1) sess.scoreUrls[i] = s.url;
-      });
-    }
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
+  // Every mutation is applied inside updateCollection's retry loop, which
+  // re-reads the freshest stored library right before each write attempt
+  // and re-runs applyLibraryOp against it if a concurrent request wrote
+  // first — this is what actually fixes "one added score makes another
+  // vanish," not just a client-side workaround.
+  let opError = null;
+  const lib = await updateCollection('library', null, async (stored) => {
+    opError = applyLibraryOp(stored, op, body);
+    return stored;
+  });
 
-  if (op === 'deleteScore') {
-    if (!lib.scores.some(x => x.url === body.url)) return json({ ok: false, error: 'Score not found.' }, 404);
-    lib.scores = lib.scores.filter(x => x.url !== body.url);
-    lib.sessions.forEach(sess => { sess.scoreUrls = sess.scoreUrls.filter(u => u !== body.url); });
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  // ── Sessions / sets ───────────────────────────────────
-  if (op === 'addSession') {
-    const { num, name } = body;
-    if (!num || !name) return json({ ok: false, error: 'ID and name are required.' }, 400);
-    if (lib.sessions.some(s => s.num === num)) return json({ ok: false, error: `${num} already exists.` }, 409);
-    lib.sessions.unshift({ num, name, scoreUrls: [], archived: false, archivedAt: null, archiveFolder: null });
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  if (op === 'setSessionArchived') {
-    const sess = lib.sessions.find(s => s.num === body.num);
-    if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
-    sess.archived = !!body.archived;
-    sess.archivedAt = sess.archived ? new Date().toISOString() : null;
-    if (sess.archived) {
-      const folder = String(body.folder || '').trim();
-      if (!folder) return json({ ok: false, error: 'Choose or create a folder to archive into.' }, 400);
-      sess.archiveFolder = folder;
-      if (!lib.archiveFolders.includes(folder)) lib.archiveFolders.push(folder);
-    } else {
-      sess.archiveFolder = null;
-    }
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  if (op === 'createArchiveFolder') {
-    const name = String(body.name || '').trim();
-    if (!name) return json({ ok: false, error: 'A folder name is required.' }, 400);
-    if (lib.archiveFolders.some(f => f.toLowerCase() === name.toLowerCase())) {
-      return json({ ok: false, error: 'A folder with that name already exists.' }, 409);
-    }
-    lib.archiveFolders.push(name);
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  if (op === 'updateSession') {
-    const sess = lib.sessions.find(s => s.num === body.oldNum);
-    if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
-    if (!body.num || !body.name) return json({ ok: false, error: 'ID and name are required.' }, 400);
-    sess.num = body.num; sess.name = body.name;
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  if (op === 'deleteSession') {
-    if (!lib.sessions.some(s => s.num === body.num)) return json({ ok: false, error: 'Set not found.' }, 404);
-    lib.sessions = lib.sessions.filter(s => s.num !== body.num);
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  if (op === 'setSessionScores') {
-    const sess = lib.sessions.find(s => s.num === body.num);
-    if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
-    const valid = new Set(lib.scores.map(s => s.url));
-    sess.scoreUrls = Array.isArray(body.urls) ? body.urls.filter(u => valid.has(u)) : [];
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  if (op === 'addToSet') {
-    const sess = lib.sessions.find(s => s.num === body.num);
-    if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
-    if (!sess.scoreUrls.includes(body.url)) sess.scoreUrls.push(body.url);
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  if (op === 'removeFromSet') {
-    const sess = lib.sessions.find(s => s.num === body.num);
-    if (!sess) return json({ ok: false, error: 'Set not found.' }, 404);
-    sess.scoreUrls = sess.scoreUrls.filter(u => u !== body.url);
-    await setCollection('library', lib);
-    return json({ ok: true, ...lib });
-  }
-
-  return json({ ok: false, error: 'Unknown operation.' }, 400);
+  if (opError) return json({ ok: false, error: opError.message }, opError.status);
+  return json({ ok: true, ...lib });
 }
