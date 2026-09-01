@@ -60,6 +60,8 @@ let libScores = [];
 let libSessions = [];
 let libArchiveFolders = [];
 let editingScoreUrl = null;
+let uploadQueue = [];
+let uploadQueueNextId = 1;
 let eboardRoster = [];
 let editingEboardId = null;
 let siteTextData = {};
@@ -1728,6 +1730,27 @@ function resetScoreForm() {
   document.getElementById('score-form-cancel').style.display = 'none';
 }
 
+// In-session log of add/update-score attempts (not persisted) so an
+// upload's outcome is visible even after the status line above resets —
+// most relevant for the exact "did it actually save" confusion that comes
+// from a slow upload or a save that silently didn't stick.
+const UPLOAD_QUEUE_BADGE = { pending: 'admin', confirmed: 'badge-success', failed: 'badge-priority-high' };
+const UPLOAD_QUEUE_LABEL = { pending: 'Pending', confirmed: 'Confirmed', failed: 'Failed' };
+
+function uploadQueueRowHTML(item) {
+  return `<div class="admin-row">
+    <div><span class="name">${escHtml(item.title)}</span>${item.status === 'failed' && item.error ? `<div class="meta">${escHtml(item.error)}</div>` : ''}</div>
+    <div class="actions"><span class="badge-role ${UPLOAD_QUEUE_BADGE[item.status]}">${UPLOAD_QUEUE_LABEL[item.status]}</span></div>
+  </div>`;
+}
+
+function renderUploadQueue() {
+  const el = document.getElementById('upload-queue');
+  if (!uploadQueue.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = '';
+  el.innerHTML = uploadQueue.map(uploadQueueRowHTML).join('');
+}
+
 function wireLibraryPanel() {
   initOtherSelect('sc-voicing', 'sc-voicing-other');
   initOtherSelect('sc-instr', 'sc-instr-other');
@@ -1752,6 +1775,10 @@ function wireLibraryPanel() {
     if (!title) { statusEl.textContent = 'Title is required.'; statusEl.className = 'admin-status err'; return; }
     if (!file && !url) { statusEl.textContent = 'Choose a PDF to upload.'; statusEl.className = 'admin-status err'; return; }
 
+    const queueItem = { id: uploadQueueNextId++, title, status: 'pending' };
+    uploadQueue.unshift(queueItem);
+    renderUploadQueue();
+
     // Disabled for the whole upload+save flow — a slow upload is exactly
     // when someone's likely to click again, and two overlapping "add score"
     // requests is how one of them silently loses the other's addition.
@@ -1760,7 +1787,11 @@ function wireLibraryPanel() {
       if (file) {
         statusEl.textContent = 'Uploading PDF…'; statusEl.className = 'admin-status';
         const up = await uploadFile(file, 'library');
-        if (!up.ok) { statusEl.textContent = up.data.error || 'Upload failed.'; statusEl.className = 'admin-status err'; return; }
+        if (!up.ok) {
+          statusEl.textContent = up.data.error || 'Upload failed.'; statusEl.className = 'admin-status err';
+          queueItem.status = 'failed'; queueItem.error = up.data.error || 'Upload failed.'; renderUploadQueue();
+          return;
+        }
         url = up.data.url;
       }
 
@@ -1780,8 +1811,13 @@ function wireLibraryPanel() {
       const { ok, data } = editingScoreUrl
         ? await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'updateScore', oldUrl: editingScoreUrl, score }) })
         : await api(LIBRARY_URL, { method: 'POST', body: JSON.stringify({ op: 'addScore', score }) });
-      if (!ok) { statusEl.textContent = data.error || 'Could not save score.'; statusEl.className = 'admin-status err'; return; }
+      if (!ok) {
+        statusEl.textContent = data.error || 'Could not save score.'; statusEl.className = 'admin-status err';
+        queueItem.status = 'failed'; queueItem.error = data.error || 'Could not save score.'; renderUploadQueue();
+        return;
+      }
       statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
+      queueItem.status = 'confirmed'; renderUploadQueue();
       libScores = data.scores; libSessions = data.sessions;
       resetScoreForm();
       renderLibManageChips(); renderLibManageList(); renderSetsManageList();
