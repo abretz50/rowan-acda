@@ -278,13 +278,17 @@
     const text = encodeURIComponent(ev.title || 'ACDA Event');
     const details = encodeURIComponent((ev.details || ev.description || '') + (ev.signin_link ? '\n\nRSVP: ' + ev.signin_link : ''));
     const location = encodeURIComponent(ev.location || '');
-    const tz = 'America/New_York';
     const s = ev.startDateTime, e = ev.endDateTime;
-    const dates = s.getFullYear()+String(s.getMonth()+1).padStart(2,'0')+String(s.getDate()).padStart(2,'0')+'T'+
-                  String(s.getHours()).padStart(2,'0')+String(s.getMinutes()).padStart(2,'0')+'00/'+
-                  e.getFullYear()+String(e.getMonth()+1).padStart(2,'0')+String(e.getDate()).padStart(2,'0')+'T'+
-                  String(e.getHours()).padStart(2,'0')+String(e.getMinutes()).padStart(2,'0')+'00';
-    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&ctz='+tz+'&details='+details+'&location='+location;
+    // UTC components with a trailing Z represent an absolute instant, so
+    // this is correct no matter what timezone the viewer's device is set
+    // to — using local getters here (as this used to) would silently
+    // shift the event by however many hours the viewer's timezone differs
+    // from Eastern.
+    const dates = s.getUTCFullYear()+String(s.getUTCMonth()+1).padStart(2,'0')+String(s.getUTCDate()).padStart(2,'0')+'T'+
+                  String(s.getUTCHours()).padStart(2,'0')+String(s.getUTCMinutes()).padStart(2,'0')+'00Z/'+
+                  e.getUTCFullYear()+String(e.getUTCMonth()+1).padStart(2,'0')+String(e.getUTCDate()).padStart(2,'0')+'T'+
+                  String(e.getUTCHours()).padStart(2,'0')+String(e.getUTCMinutes()).padStart(2,'0')+'00Z';
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&details='+details+'&location='+location;
   }
   function badgeHTML(tags){ return (tags||[]).map(t=>'<span class="badge" data-tag="'+tagSlug(t)+'">'+t+'</span>').join(' '); }
 

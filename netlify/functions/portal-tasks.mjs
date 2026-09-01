@@ -2,14 +2,14 @@ import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
-import { sendEmail, emailLayout, escapeHtml, ctaButton } from './_lib/email.mjs';
+import { sendEmail, emailLayout, escapeHtml, ctaButton, priorityBadge } from './_lib/email.mjs';
 
 const PRIORITIES = ['low', 'medium', 'high'];
 
 function taskEmailHtml(task, actorName, verb) {
   const dueBit = task.dueDate ? `<p style="margin-top:1rem"><strong>Due:</strong> ${escapeHtml(task.dueDate)}</p>` : '';
   return emailLayout(`
-    <p>${escapeHtml(actorName)} ${verb} <strong>"${escapeHtml(task.title)}"</strong>.</p>
+    <p>${escapeHtml(actorName)} ${verb} <strong>"${escapeHtml(task.title)}"</strong>. ${priorityBadge(task.priority)}</p>
     ${task.description ? `<p style="color:#444">${escapeHtml(task.description)}</p>` : ''}
     ${dueBit}
     ${ctaButton('https://rowanacda.org/portal.html', 'Open the E-Board Portal')}

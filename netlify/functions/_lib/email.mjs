@@ -47,20 +47,42 @@ export function ctaButton(href, label) {
   return `<p style="margin:1.5rem 0 0"><a href="${href}" style="display:inline-block;background:#7A0A0A;color:#ffffff;text-decoration:none;padding:.65rem 1.4rem;border-radius:6px;font-weight:bold;font-size:.9rem">${escapeHtml(label)}</a></p>`;
 }
 
+// Uploaded photos are stored as site-relative paths (/assets/img/...),
+// which resolve fine on the website but not in an email with no base URL —
+// every image src in an email needs to be absolute.
+function absoluteUrl(url) {
+  return url.startsWith('http') ? url : `https://rowanacda.org${url}`;
+}
+
 // A full-bleed photo, used for event reminders. Capped width so it never
 // overflows narrow mobile mail clients.
 export function emailPhoto(url, alt) {
   if (!url) return '';
-  return `<img src="${url}" alt="${escapeHtml(alt || '')}" style="display:block;width:100%;max-width:480px;height:auto;border-radius:10px;margin:.75rem 0;border:1px solid #eee"/>`;
+  return `<img src="${absoluteUrl(url)}" alt="${escapeHtml(alt || '')}" style="display:block;width:100%;max-width:480px;height:auto;border-radius:10px;margin:.75rem 0;border:1px solid #eee"/>`;
+}
+
+const PRIORITY_COLORS = { high: '#ef4444', medium: '#eab308', low: '#3b82f6' };
+
+// Matches the color coding used for priority badges on the Task Board.
+export function priorityBadge(priority) {
+  const color = PRIORITY_COLORS[priority] || PRIORITY_COLORS.medium;
+  return `<span style="display:inline-block;padding:.15rem .6rem;border-radius:999px;font-size:.72rem;font-weight:bold;color:#ffffff;background:${color};text-transform:capitalize;vertical-align:middle">${escapeHtml(priority || 'medium')} priority</span>`;
 }
 
 // Small shared wrapper so every notification email looks like it's from the
-// same place, without every call site repeating the boilerplate.
+// same place, without every call site repeating the boilerplate. Uses a
+// table for the header row (not flexbox) since Outlook desktop's rendering
+// engine doesn't support flexbox in HTML email.
 export function emailLayout(bodyHtml) {
   return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;background:#ffffff;border:1px solid #eee;border-radius:12px;overflow:hidden">
-    <div style="background:#7A0A0A;padding:1.1rem 1.5rem">
-      <h1 style="margin:0;color:#ffffff;font-size:1.2rem;letter-spacing:.02em">Rowan ACDA</h1>
-    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#7A0A0A">
+      <tr>
+        <td style="padding:1.1rem 1.5rem" valign="middle">
+          <img src="${absoluteUrl('/assets/icons/logo2.png')}" alt="" width="32" height="32" style="vertical-align:middle;border-radius:6px"/>
+          <span style="color:#ffffff;font-size:1.2rem;font-weight:bold;letter-spacing:.02em;vertical-align:middle;margin-left:.6rem">Rowan ACDA</span>
+        </td>
+      </tr>
+    </table>
     <div style="padding:1.5rem;color:#1a1a1a;line-height:1.55;font-size:.95rem">
       ${bodyHtml}
     </div>

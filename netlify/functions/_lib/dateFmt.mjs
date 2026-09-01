@@ -14,3 +14,11 @@ export function academicYearStart(d = new Date()) {
   const y = d.getFullYear();
   return d.getMonth() >= 7 ? new Date(y, 7, 1) : new Date(y - 1, 7, 1);
 }
+
+// The chapter's calendar date in Eastern time — not the server's raw UTC
+// date, which rolls over up to 5 hours before Eastern midnight and would
+// misclassify a late-evening Eastern event as happening "tomorrow" instead
+// of "today" (or vice versa) in any UTC-vs-Eastern date comparison.
+export function easternDateOnly(d) {
+  return new Date(d).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
