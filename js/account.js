@@ -19,6 +19,7 @@ function isEboardRole(role) { return role && role !== 'member'; }
 let me = null;
 let myCheckedInEventIds = new Set();
 let checkinRefreshTimer = null;
+let myEventsHistory = [];
 
 function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function fmtDashDate(iso) {
@@ -49,6 +50,7 @@ function showSignedOut() {
 function fillProfileView() {
   document.getElementById('view-name').textContent = me.name || '—';
   document.getElementById('view-email').textContent = me.email || '—';
+  document.getElementById('view-secondary-email').textContent = me.secondaryEmail || '—';
   const img = document.getElementById('profile-photo-preview');
   const placeholder = document.getElementById('profile-photo-placeholder');
   if (me.photoUrl) {
@@ -79,6 +81,7 @@ function showSignedIn() {
   fillProfileView();
   document.getElementById('pf-name').value = me.name || '';
   document.getElementById('pf-email').value = me.email || '';
+  document.getElementById('pf-secondary-email').value = me.secondaryEmail || '';
   loadLeaderboard();
   const historyLoaded = loadEventsHistory();
   if (!isEboardRole(me.role)) {
@@ -88,25 +91,37 @@ function showSignedIn() {
   }
 }
 
-async function loadEventsHistory() {
-  const { ok, data } = await api(`${POINTS_URL}?mine=1`, { method: 'GET' });
-  const listEl = document.getElementById('events-history-list');
-  if (!ok) { listEl.innerHTML = '<p class="small muted">Could not load.</p>'; return; }
-  myCheckedInEventIds = new Set(data.points.filter(p => p.status !== 'denied').map(p => p.eventId).filter(Boolean));
-  listEl.innerHTML = data.points
-    .slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt))
-    .map(p => {
-      const decided = p.status !== 'pending' && p.decidedAt
-        ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
-        : '';
-      return `<div class="admin-row">
+const EVENTS_HISTORY_DEFAULT_COUNT = 6;
+
+function eventHistoryRowHTML(p) {
+  const decided = p.status !== 'pending' && p.decidedAt
+    ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
+    : '';
+  return `<div class="admin-row">
       <div>
         <span class="name">${escHtml(pointsLabel(p) || 'Event')}</span>
         <div class="meta">${new Date(p.requestedAt).toLocaleDateString()}${decided}</div>
       </div>
       <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status === 'pending' ? 'pending review' : p.status}</span></div>
     </div>`;
-    }).join('') || '<p class="small muted">No Events yet, see the events page to attend your first event!</p>';
+}
+
+function renderEventsHistory() {
+  const listEl = document.getElementById('events-history-list');
+  const term = document.getElementById('events-history-search').value.trim().toLowerCase();
+  const sorted = myEventsHistory.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt));
+  const filtered = term ? sorted.filter(p => (pointsLabel(p) || '').toLowerCase().includes(term)) : sorted.slice(0, EVENTS_HISTORY_DEFAULT_COUNT);
+  listEl.innerHTML = filtered.map(eventHistoryRowHTML).join('')
+    || `<p class="small muted">${term ? 'No matches.' : 'No Events yet, see the events page to attend your first event!'}</p>`;
+}
+
+async function loadEventsHistory() {
+  const { ok, data } = await api(`${POINTS_URL}?mine=1`, { method: 'GET' });
+  const listEl = document.getElementById('events-history-list');
+  if (!ok) { listEl.innerHTML = '<p class="small muted">Could not load.</p>'; return; }
+  myCheckedInEventIds = new Set(data.points.filter(p => p.status !== 'denied').map(p => p.eventId).filter(Boolean));
+  myEventsHistory = data.points;
+  renderEventsHistory();
 }
 
 // ── Points leaderboard: rank + name/photo only, never point totals ──────
@@ -179,6 +194,8 @@ async function loadCheckinEvents() {
     </div>`;
   }).join('');
 }
+
+document.getElementById('events-history-search').addEventListener('input', renderEventsHistory);
 
 document.getElementById('checkin-events-list').addEventListener('click', async (e) => {
   const btn = e.target.closest('[data-checkin-event]');
@@ -275,6 +292,7 @@ function showProfileForm() {
   document.getElementById('profile-edit-btn').style.display = 'none';
   document.getElementById('pf-name').value = me.name || '';
   document.getElementById('pf-email').value = me.email || '';
+  document.getElementById('pf-secondary-email').value = me.secondaryEmail || '';
 }
 document.getElementById('profile-edit-btn').addEventListener('click', showProfileForm);
 document.getElementById('profile-cancel-btn').addEventListener('click', showProfileView);
@@ -285,6 +303,7 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
   const body = {
     name: document.getElementById('pf-name').value.trim(),
     email: document.getElementById('pf-email').value.trim(),
+    secondaryEmail: document.getElementById('pf-secondary-email').value.trim(),
   };
   const { ok, data } = await api(ME_URL, { method: 'PATCH', body: JSON.stringify(body) });
   if (!ok) { statusEl.textContent = data.error || 'Could not save.'; statusEl.className = 'admin-status err'; return; }

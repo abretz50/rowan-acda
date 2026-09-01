@@ -96,12 +96,15 @@
         <div id="profile-view" class="kv" style="margin-top:.6rem">
           <dt>Name</dt><dd id="view-name"></dd>
           <dt>Email</dt><dd id="view-email"></dd>
+          <dt>Secondary Email</dt><dd id="view-secondary-email"></dd>
         </div>
         <form class="admin-form" id="profile-form" novalidate style="display:none;margin-top:.6rem">
           <div class="form-row">
             <input class="admin-input" type="text" id="pf-name" placeholder="Full name" required/>
             <input class="admin-input" type="email" id="pf-email" placeholder="Email" required/>
           </div>
+          <input class="admin-input" type="email" id="pf-secondary-email" placeholder="Secondary email (optional)"/>
+          <p class="form-hint">Notifications go to both addresses if a secondary is set — useful if the primary isn't reliably reaching your inbox.</p>
           <button class="btn-sm" type="submit">Save changes</button>
           <button class="btn-sm outline" type="button" id="profile-cancel-btn">Cancel</button>
           <div class="admin-status" id="profile-status"></div>
@@ -128,7 +131,8 @@
 
         <div class="admin-card" style="margin-top:1rem">
           <h3>My Events</h3>
-          <div id="events-history-list"><p class="small muted">Loading…</p></div>
+          <input class="admin-input" type="search" id="events-history-search" placeholder="Search my events…" autocomplete="off" style="margin-bottom:.6rem"/>
+          <div id="events-history-list" style="max-height:340px;overflow-y:auto"><p class="small muted">Loading…</p></div>
         </div>
       </div>
     </div>
@@ -174,6 +178,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/account.js?v=10"></script>
+<script defer src="/js/account.js?v=11"></script>
 </body>
 </html>

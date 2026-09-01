@@ -12,6 +12,14 @@
 const RESEND_API_URL = 'https://api.resend.com/emails';
 const DEFAULT_FROM = 'Rowan ACDA <onboarding@resend.dev>';
 
+// A member's primary + optional secondary email, for every notification
+// site that emails "this specific person" — sent as one call with both
+// addresses in `to`, so it's clearly one notification landing in two
+// inboxes, not two separate emails.
+export function memberEmails(m) {
+  return [m?.email, m?.secondaryEmail].filter(Boolean);
+}
+
 export async function sendEmail({ to, subject, html }) {
   const recipients = (Array.isArray(to) ? to : [to]).filter(Boolean);
   if (!recipients.length) return { ok: false, error: 'No recipients.' };

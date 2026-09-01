@@ -493,7 +493,7 @@
     }
     const ev = ALL_EVENTS.find(e => e.id === eventId);
     if(ev && !ev.checkinOpen){
-      showNotice('Check-in isn’t open for this event yet — try again closer to the start time.');
+      showNotice('Check-in isn’t open for this event yet');
       return;
     }
     const original = btn.textContent;
@@ -521,7 +521,7 @@
     const btn = e.target.closest('[data-checkin]');
     if(!btn) return;
     if(btn.classList.contains('is-disabled')){
-      showNotice('Check-in isn’t open for this event yet — try again closer to the start time.');
+      showNotice('Check-in isn’t open for this event yet');
       return;
     }
     handleCheckin(btn.getAttribute('data-checkin'), btn);

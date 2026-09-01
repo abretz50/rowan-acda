@@ -655,6 +655,7 @@ function taskRowHTML(t) {
       <div class="actions">
         <button class="btn-sm outline" data-toggle-task="${escHtml(t.id)}" data-next="${t.status === 'done' ? 'open' : 'done'}">${t.status === 'done' ? 'Reopen' : 'Mark Done'}</button>
         <button class="btn-sm outline" data-remind-task="${escHtml(t.id)}">Send Reminder</button>
+        <button class="btn-sm outline" data-task-toggle="${escHtml(t.id)}">History</button>
         <button class="btn-sm edit" data-edit-task="${escHtml(t.id)}">Edit</button>
         <button class="btn-sm delete" data-delete-task="${escHtml(t.id)}">Delete</button>
       </div>
@@ -662,12 +663,15 @@ function taskRowHTML(t) {
     <div class="task-detail-panel" id="task-detail-${escHtml(t.id)}" style="display:none;margin:.3rem 0 .7rem;padding:.6rem .8rem;background:var(--surface);border:1px solid var(--border);border-radius:.55rem">
       <p class="small" style="white-space:pre-wrap;margin:0 0 .5rem">${escHtml(t.description || 'No description.')}</p>
       <div class="meta">Created ${fmtDashDate(t.createdAt)} · Last updated ${fmtDashDate(t.updatedAt)}</div>
+      <div style="margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem">
+        ${(t.history || []).slice().sort((a, b) => new Date(b.at) - new Date(a.at)).map(h => taskHistoryRowHTML({ ...h, taskTitle: t.title, dueDate: t.dueDate })).join('') || '<p class="small muted">No history yet.</p>'}
+      </div>
     </div>
   </div>`;
 }
 
-const TASK_HISTORY_EVENT_LABELS = { created: 'Created', completed: 'Completed', reopened: 'Reopened' };
-const TASK_HISTORY_EVENT_BADGE = { created: 'inactive', completed: 'badge-success', reopened: 'admin' };
+const TASK_HISTORY_EVENT_LABELS = { created: 'Created', completed: 'Completed', reopened: 'Reopened', reminded: 'Reminder Sent' };
+const TASK_HISTORY_EVENT_BADGE = { created: 'inactive', completed: 'badge-success', reopened: 'admin', reminded: 'eboard' };
 
 // A "completed" entry is shown in red as overdue if it landed after the
 // task's due date at that time — same red used for overdue tasks on the
@@ -724,16 +728,17 @@ function renderTasksList() {
   document.getElementById('task-search-bar').style.display = taskViewMode === 'history' ? 'none' : '';
   if (taskViewMode === 'history') { renderTaskHistoryList(); return; }
   const term = taskSearchTerm.trim().toLowerCase();
-  const visible = (taskViewMode === 'mine'
-    ? allTasks.filter(t => me && (t.assignedToId === me.id || (t.tags || []).some(x => x.id === me.id)))
-    : allTasks
-  ).filter(t => taskMatchesSearch(t, term));
+  let base = allTasks;
+  if (taskViewMode === 'mine') base = allTasks.filter(t => me && (t.assignedToId === me.id || (t.tags || []).some(x => x.id === me.id)));
+  else if (taskViewMode === 'completed') base = allTasks.filter(t => t.status === 'done');
+  const visible = base.filter(t => taskMatchesSearch(t, term));
   const dir = taskSortDir === 'desc' ? -1 : 1;
   const sorted = visible.slice().sort((a, b) => {
-    if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
+    if (taskViewMode !== 'completed' && (a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
     return compareTasksBy(a, b, taskSortBy) * dir;
   });
-  el.innerHTML = sorted.map(taskRowHTML).join('') || `<p class="small muted">${term ? 'No matching tasks.' : (taskViewMode === 'mine' ? 'No tasks assigned to you.' : 'No tasks yet.')}</p>`;
+  const emptyMsg = term ? 'No matching tasks.' : taskViewMode === 'mine' ? 'No tasks assigned to you.' : taskViewMode === 'completed' ? 'No completed tasks yet.' : 'No tasks yet.';
+  el.innerHTML = sorted.map(taskRowHTML).join('') || `<p class="small muted">${emptyMsg}</p>`;
 }
 
 async function loadTasks() {
@@ -2283,6 +2288,35 @@ function renderGalleryBreadcrumb() {
   }
 }
 
+function downloadImageOriginal(url, caption) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = caption || url.split('/').pop() || 'photo';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+// Redraws the image onto a canvas to re-encode it as PNG regardless of its
+// original format — works for same-origin uploads without a CORS issue.
+function downloadImageAsPng(url, caption) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    canvas.toBlob((blob) => {
+      if (!blob) { alert('Could not convert this image.'); return; }
+      const objUrl = URL.createObjectURL(blob);
+      const base = (caption || url.split('/').pop() || 'photo').replace(/\.[a-z0-9]+$/i, '');
+      const a = document.createElement('a');
+      a.href = objUrl; a.download = `${base}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(objUrl);
+    }, 'image/png');
+  };
+  img.onerror = () => alert('Could not load this image to convert it.');
+  img.src = url;
+}
+
 // Shared "⋮" menu (Rename / Move / Copy / Delete) for both folder and image
 // tiles, plus a folder-picker panel used by both Move and Copy.
 function galleryMenuHTML(kind, id) {
@@ -2290,6 +2324,9 @@ function galleryMenuHTML(kind, id) {
     <button class="btn-sm outline" data-gallery-menu-toggle="${escHtml(id)}" title="More">⋮</button>
     <div class="gallery-menu-panel" id="gallery-menu-${escHtml(id)}" style="display:none;position:absolute;right:0;top:100%;z-index:5;background:#fff;border:1px solid var(--border);border-radius:.5rem;box-shadow:0 4px 14px rgba(0,0,0,.15);padding:.4rem;min-width:170px;text-align:left">
       <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-rename="${escHtml(id)}" data-gallery-kind="${kind}">Rename</button>
+      ${kind === 'image' ? `
+      <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-download="${escHtml(id)}">Download</button>
+      <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-download-png="${escHtml(id)}">Download as PNG</button>` : ''}
       <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-mover="${escHtml(id)}" data-gallery-mover-kind="${kind}" data-gallery-mover-action="move">Move to folder</button>
       <button class="btn-sm outline" style="width:100%;margin-bottom:.3rem" data-gallery-mover="${escHtml(id)}" data-gallery-mover-kind="${kind}" data-gallery-mover-action="copy">Copy to folder</button>
       <button class="btn-sm delete" style="width:100%" data-gallery-delete="${escHtml(id)}" data-gallery-kind="${kind}">Delete</button>
@@ -2446,6 +2483,21 @@ function wireGalleryPanel() {
       const wasOpen = panel.style.display !== 'none';
       closeGalleryMenus();
       panel.style.display = wasOpen ? 'none' : '';
+      return;
+    }
+
+    const downloadBtn = e.target.closest('[data-gallery-download]');
+    if (downloadBtn) {
+      closeGalleryMenus();
+      const img = galleryImages.find(i => i.id === downloadBtn.dataset.galleryDownload);
+      if (img) downloadImageOriginal(img.url, img.caption);
+      return;
+    }
+    const downloadPngBtn = e.target.closest('[data-gallery-download-png]');
+    if (downloadPngBtn) {
+      closeGalleryMenus();
+      const img = galleryImages.find(i => i.id === downloadPngBtn.dataset.galleryDownloadPng);
+      if (img) downloadImageAsPng(img.url, img.caption);
       return;
     }
 

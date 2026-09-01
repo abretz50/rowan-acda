@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
-import { sendEmail, emailLayout, escapeHtml, ctaButton, priorityBadge } from './_lib/email.mjs';
+import { sendEmail, emailLayout, escapeHtml, ctaButton, priorityBadge, memberEmails } from './_lib/email.mjs';
 
 const PRIORITIES = ['low', 'medium', 'high'];
 
@@ -101,13 +101,13 @@ export default async function handler(req) {
     await setCollection('tasks', tasks);
 
     const notifyJobs = [];
-    if (assignee.email) {
-      notifyJobs.push(sendEmail({ to: assignee.email, subject: `New task assigned: ${task.title}`, html: taskEmailHtml(task, auth.user.name, 'assigned you') }));
+    if (memberEmails(assignee).length) {
+      notifyJobs.push(sendEmail({ to: memberEmails(assignee), subject: `New task assigned: ${task.title}`, html: taskEmailHtml(task, auth.user.name, 'assigned you') }));
     }
     for (const tag of task.tags) {
       const m = members.find(x => x.id === tag.id);
-      if (m?.email) {
-        notifyJobs.push(sendEmail({ to: m.email, subject: `Tagged on a task: ${task.title}`, html: taskEmailHtml(task, auth.user.name, `tagged you on a task assigned to ${task.assignedToName}`) }));
+      if (m && memberEmails(m).length) {
+        notifyJobs.push(sendEmail({ to: memberEmails(m), subject: `Tagged on a task: ${task.title}`, html: taskEmailHtml(task, auth.user.name, `tagged you on a task assigned to ${task.assignedToName}`) }));
       }
     }
     try { await Promise.allSettled(notifyJobs); } catch {}
@@ -149,14 +149,14 @@ export default async function handler(req) {
       const notifyJobs = [];
       if (body.assignedToId && body.assignedToId !== oldAssigneeId) {
         const assignee = members.find(m => m.id === target.assignedToId);
-        if (assignee?.email) {
-          notifyJobs.push(sendEmail({ to: assignee.email, subject: `Task assigned: ${target.title}`, html: taskEmailHtml(target, auth.user.name, 'assigned you') }));
+        if (assignee && memberEmails(assignee).length) {
+          notifyJobs.push(sendEmail({ to: memberEmails(assignee), subject: `Task assigned: ${target.title}`, html: taskEmailHtml(target, auth.user.name, 'assigned you') }));
         }
       }
       for (const tag of target.tags.filter(t => !oldTagIds.has(t.id))) {
         const m = members.find(x => x.id === tag.id);
-        if (m?.email) {
-          notifyJobs.push(sendEmail({ to: m.email, subject: `Tagged on a task: ${target.title}`, html: taskEmailHtml(target, auth.user.name, `tagged you on a task assigned to ${target.assignedToName}`) }));
+        if (m && memberEmails(m).length) {
+          notifyJobs.push(sendEmail({ to: memberEmails(m), subject: `Tagged on a task: ${target.title}`, html: taskEmailHtml(target, auth.user.name, `tagged you on a task assigned to ${target.assignedToName}`) }));
         }
       }
       try { await Promise.allSettled(notifyJobs); } catch {}

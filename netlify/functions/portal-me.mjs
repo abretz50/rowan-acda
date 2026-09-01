@@ -46,6 +46,8 @@ export default async function handler(req) {
   const target = members.find(m => m.id === me.id);
   if (body.name) target.name = body.name;
   if (body.email) target.email = body.email;
+  // Not required, and 'in' (not truthy) so an empty string can clear it.
+  if ('secondaryEmail' in body) target.secondaryEmail = String(body.secondaryEmail || '').trim();
   if ('photoUrl' in body) target.photoUrl = body.photoUrl;
 
   if (body.password) {

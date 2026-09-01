@@ -1,10 +1,10 @@
 // Manual "Send Reminder" for a single task, from the Task Board — emails
 // the assignee and anyone tagged on it, right now, regardless of due date.
 // Gated the same way portal-tasks.mjs itself is (any signed-in non-member).
-import { getCollection } from './_lib/blobs.mjs';
+import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
-import { sendEmail } from './_lib/email.mjs';
+import { sendEmail, memberEmails } from './_lib/email.mjs';
 import { taskReminderEmailHtml } from './_lib/reminders.mjs';
 
 export default async function handler(req) {
@@ -22,16 +22,21 @@ export default async function handler(req) {
   if (!task) return json({ ok: false, error: 'Task not found.' }, 404);
 
   const members = await loadMembers();
-  const emailById = new Map(members.map(m => [m.id, m.email]));
+  const membersById = new Map(members.map(m => [m.id, m]));
   const recipientIds = new Set([task.assignedToId, ...(task.tags || []).map(x => x.id)]);
   const html = taskReminderEmailHtml(task, null);
 
   const jobs = [];
   for (const id of recipientIds) {
-    const email = emailById.get(id);
-    if (email) jobs.push(sendEmail({ to: email, subject: `Reminder: ${task.title}`, html }));
+    const emails = memberEmails(membersById.get(id));
+    if (emails.length) jobs.push(sendEmail({ to: emails, subject: `Reminder: ${task.title}`, html }));
   }
   const results = await Promise.allSettled(jobs);
   const failed = results.filter(r => r.status === 'rejected' || r.value?.ok === false).length;
+
+  if (!task.history) task.history = [];
+  task.history.push({ event: 'reminded', byId: auth.user.id, byName: auth.user.name, at: new Date().toISOString() });
+  await setCollection('tasks', tasks);
+
   return json({ ok: true, sent: jobs.length, failed });
 }

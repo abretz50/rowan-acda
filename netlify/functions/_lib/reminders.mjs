@@ -4,9 +4,9 @@
 // trigger. The per-task/per-event manual "Send Reminder" buttons reuse the
 // same email templates (taskReminderEmailHtml/eventReminderEmailHtml) with
 // generic wording since they can fire on any day, not just today/tomorrow.
-import { getCollection } from './blobs.mjs';
+import { getCollection, setCollection } from './blobs.mjs';
 import { loadMembers } from './loadMembers.mjs';
-import { sendEmail, emailLayout, escapeHtml, ctaButton, emailPhoto, priorityBadge } from './email.mjs';
+import { sendEmail, emailLayout, escapeHtml, ctaButton, emailPhoto, priorityBadge, memberEmails } from './email.mjs';
 import { easternDateOnly } from './dateFmt.mjs';
 
 function addDays(base, n) { const d = new Date(base); d.setUTCDate(d.getUTCDate() + n); return d; }
@@ -57,11 +57,12 @@ export async function runDailyReminders() {
   const [tasks, events, members] = await Promise.all([
     getCollection('tasks', []), getCollection('events', []), loadMembers(),
   ]);
-  const emailById = new Map(members.map(m => [m.id, m.email]));
-  const activeEmails = [...new Set(members.filter(m => m.active !== false && m.email).map(m => m.email))];
+  const membersById = new Map(members.map(m => [m.id, m]));
+  const activeEmails = [...new Set(members.filter(m => m.active !== false).flatMap(memberEmails))];
 
   const jobs = [];
   let taskReminders = 0, eventReminders = 0;
+  let tasksChanged = false;
 
   // Task deadlines — the assignee and anyone tagged on it, due today or tomorrow.
   for (const t of tasks) {
@@ -70,13 +71,21 @@ export async function runDailyReminders() {
     const when = t.dueDate === today ? 'today' : 'tomorrow';
     const html = taskReminderEmailHtml(t, when);
     const recipientIds = new Set([t.assignedToId, ...(t.tags || []).map(x => x.id)]);
+    let sentAny = false;
     for (const id of recipientIds) {
-      const email = emailById.get(id);
-      if (!email) continue;
+      const emails = memberEmails(membersById.get(id));
+      if (!emails.length) continue;
       taskReminders++;
-      jobs.push(sendEmail({ to: email, subject: `Task due ${when}: ${t.title}`, html }));
+      sentAny = true;
+      jobs.push(sendEmail({ to: emails, subject: `Task due ${when}: ${t.title}`, html }));
+    }
+    if (sentAny) {
+      if (!t.history) t.history = [];
+      t.history.push({ event: 'reminded', byId: null, byName: 'Automated', at: now.toISOString() });
+      tasksChanged = true;
     }
   }
+  if (tasksChanged) await setCollection('tasks', tasks);
 
   // Upcoming events — every active member, sent one-at-a-time so no
   // recipient sees anyone else's email address in the To: header.
