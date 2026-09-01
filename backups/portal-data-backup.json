@@ -1,0 +1,3339 @@
+{
+  "generatedAt": "2026-09-01T01:22:05.387Z",
+  "collections": {
+    "budget": {
+      "accounts": {
+        "regular": {
+          "targetAmount": 3000,
+          "label": "Regular Account",
+          "startingBalance": 0
+        },
+        "fundraising": {
+          "targetAmount": 1000,
+          "label": "Extra Account",
+          "startingBalance": 3355.22
+        },
+        "convention": {
+          "targetAmount": 12000,
+          "label": "Convention Trip (2027 ACDA National Conference)",
+          "startingBalance": 0,
+          "attendeeCount": 10
+        }
+      },
+      "categories": [
+        {
+          "id": "29b58970-16bb-4acd-a7fc-b32a0a5d88da",
+          "account": "regular",
+          "name": "Membership & Fees",
+          "plannedAmount": 150
+        },
+        {
+          "id": "e512a6e2-7ed6-4a8c-9ac1-82e3b300db1e",
+          "account": "regular",
+          "name": "Meetings & Food",
+          "plannedAmount": 300
+        },
+        {
+          "id": "fd08f2d4-fa47-4898-becb-6dbde95ec28b",
+          "account": "regular",
+          "name": "Supplies",
+          "plannedAmount": 455
+        },
+        {
+          "id": "38767f2b-2d66-4bce-a4e1-d64f36911710",
+          "account": "regular",
+          "name": "Technology & Operations",
+          "plannedAmount": 164
+        },
+        {
+          "id": "dbe837e4-c3eb-4a99-9fa8-25d965fac8d1",
+          "account": "regular",
+          "name": "Professional Development",
+          "plannedAmount": 640
+        },
+        {
+          "id": "a76a08ca-68a6-4829-afb3-5b8608cacec6",
+          "account": "regular",
+          "name": "Prizes & Awards",
+          "plannedAmount": 650
+        },
+        {
+          "id": "b580deb7-09d2-4adf-90ab-988ffa75aca2",
+          "account": "regular",
+          "name": "On Campus Events & Programming",
+          "plannedAmount": 401.05
+        },
+        {
+          "id": "ede623a5-086f-4e95-8c6f-371abcf56c65",
+          "account": "regular",
+          "name": "Merchandise",
+          "plannedAmount": 450
+        },
+        {
+          "id": "bf626ea0-ece0-4d2d-b48a-965af59e29bc",
+          "account": "regular",
+          "name": "Travel",
+          "plannedAmount": 1050
+        },
+        {
+          "id": "6bdddc81-4676-45af-83e2-dbd55be708b6",
+          "account": "fundraising",
+          "name": "Bake Sales",
+          "plannedAmount": 500,
+          "plannedRevenue": 800
+        },
+        {
+          "id": "12490833-8371-4595-8a7f-fc745094fa87",
+          "account": "fundraising",
+          "name": "Hispanic Heritage Month Fundraiser",
+          "plannedAmount": 100,
+          "plannedRevenue": 200
+        },
+        {
+          "id": "b5674fbf-4db7-4494-ba31-87cd6a16bd97",
+          "account": "fundraising",
+          "name": "Asian Heritage Month Fundraiser",
+          "plannedAmount": 50,
+          "plannedRevenue": 100
+        },
+        {
+          "id": "a338988a-126f-419d-8375-b5cdb92f6dec",
+          "account": "fundraising",
+          "name": "Carnival Foods",
+          "plannedAmount": 80,
+          "plannedRevenue": 150
+        },
+        {
+          "id": "554e9247-8b45-4c38-a128-ae22eeda4522",
+          "account": "fundraising",
+          "name": "TB Merch",
+          "plannedAmount": 1200,
+          "plannedRevenue": 2000
+        },
+        {
+          "id": "8f2f9b26-357d-49f0-8b15-a62237c56b09",
+          "account": "fundraising",
+          "name": "Christmas Caroling",
+          "plannedAmount": 0,
+          "plannedRevenue": 100
+        },
+        {
+          "id": "cc321064-1f91-41fb-a326-5e777f9e946d",
+          "account": "fundraising",
+          "name": "Spring Musical",
+          "plannedAmount": 400,
+          "plannedRevenue": 1000
+        },
+        {
+          "id": "9a6a59fe-9c7c-43bb-897c-ff5efe5103bb",
+          "account": "fundraising",
+          "name": "Songs of the Seasons",
+          "plannedAmount": 200,
+          "plannedRevenue": 400
+        },
+        {
+          "id": "4e695f6a-dc95-4a62-b9e4-290f89ec5d4f",
+          "account": "convention",
+          "name": "Registration",
+          "plannedAmount": 2500,
+          "perPerson": true,
+          "unitCost": 250
+        },
+        {
+          "id": "1be0dc0d-659c-4846-8a83-d01dabd810ba",
+          "account": "convention",
+          "name": "Flights",
+          "plannedAmount": 3000,
+          "perPerson": true,
+          "unitCost": 300
+        },
+        {
+          "id": "6471689b-56af-4448-bd46-f301638083f3",
+          "account": "convention",
+          "name": "Hotel",
+          "plannedAmount": 2400,
+          "perPerson": true,
+          "unitCost": 240
+        }
+      ],
+      "transactions": [],
+      "_fundraisingBalanceSeeded": true,
+      "_conventionPerPersonMigrated": true,
+      "_onCampusHyphenFixed": true,
+      "_fundraisingGoal1000Migrated": true
+    },
+    "events": [
+      {
+        "id": "3c7d8c5f-1356-4c6a-82d6-1ad01d50c74c",
+        "title": "Sight Singing Musical Theatre & Cabaret Rehearsal",
+        "description": "Sight sing your favorite musical theatre harmonies, then rehearse for our Cabaret!",
+        "location": "Wilson 107",
+        "start": "2025-09-12T15:00:00-04:00",
+        "end": "2025-09-12T16:00:00-04:00",
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "",
+        "imageUrl": "https://loving-newyork.com/wp-content/uploads/2018/12/musicals-broadway-shows-new-york.jpg",
+        "checkinCode": "DZPNS2",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "202a528e-2e19-4699-babe-6533a0f14619",
+        "title": "Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2025-09-17T09:30:00-04:00",
+        "end": "2025-09-17T14:00:00-04:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/1xEUjFyF7eIuK1tbGR_cPCbArKpMBbHLEJCIGMfKvG_I/edit?usp=sharing",
+        "imageUrl": "https://www.mykidstime.com/wp-content/uploads/2015/05/bake-sale-ideas-lead.jpg",
+        "checkinCode": "XPNWJ6",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "e23792d0-cf12-42d0-86ef-c95880828e8a",
+        "title": "Treasures of Elementary Music",
+        "description": "Understand the stigmas of Elementary Music and how we can combat them as choral direcotors and educators!",
+        "location": "Wilson 107",
+        "start": "2025-09-19T15:30:00-04:00",
+        "end": "2025-09-19T16:30:00-04:00",
+        "tags": [
+          "Professional Development"
+        ],
+        "signinLink": "",
+        "imageUrl": "https://i.ytimg.com/vi/PrEmhSPhnQ4/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGH8gFygTMA8=&rs=AOn4CLDzaFIFI2FbDWT--VOXgTL2GrOgCw",
+        "checkinCode": "CB9SMW",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "1cce3f59-5db5-40d9-8a36-ee4cd6d52e3e",
+        "title": "Sight-Singing & Cabaret Rehearsal",
+        "description": "Come read some scores and rehearse our group piece for cabaret!",
+        "location": "Wilson 107",
+        "start": "2025-09-26T15:00:00-04:00",
+        "end": "2025-09-26T16:00:00-04:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://www.rowan.edu/arts/_images/vocalcamp20191.jpeg",
+        "checkinCode": "CK8NUM",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "617f4699-d91a-4e06-81cc-4cdf29e155aa",
+        "title": "Cabaret Virtual Auditions Due",
+        "description": "Virtual Auditions for our annual Cabaret—any style, any act, all are welcome! Details Below!",
+        "location": "Online",
+        "start": "2025-09-29T17:00:00-04:00",
+        "end": "2025-09-29T23:59:00-04:00",
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://www.wilmingtoncityschools.com/media/site/wilmington-high-school-news/auditions-669.jpeg",
+        "checkinCode": "7X9E9Y",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "70bc6640-71cd-4d0b-8dc1-95ac49df0cfa",
+        "title": "Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2025-10-01T09:30:00-04:00",
+        "end": "2025-10-01T14:00:00-04:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/1BOj4wOAssgyJJQxSXTIDFjF575xrLaKkWf-ELQlSYEI/edit?usp=sharing",
+        "imageUrl": "https://www.mykidstime.com/wp-content/uploads/2015/05/bake-sale-ideas-lead.jpg",
+        "checkinCode": "A8X76X",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "fcd6a659-069d-49ff-bb27-3ac0a5576534",
+        "title": "Church Gig 101",
+        "description": "Learn the ins and outs of preparing for a church gig!",
+        "location": "Wilson 107",
+        "start": "2025-10-03T15:00:00-04:00",
+        "end": "2025-10-03T16:00:00-04:00",
+        "tags": [
+          "Workshop"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://www.encirclephotos.com/wp-content/uploads/Sweden-Malmo-Sankt-Petri-Church-Choir-Sing-1440x961.jpg",
+        "checkinCode": "GYY9JU",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "f9fdd742-7797-4a89-b4cf-0baca1cb682a",
+        "title": "Cabaret Dress Rehearsal",
+        "description": "Final run-through before Cabaret—polish your act and rehearse the group song together!",
+        "location": "Boyd Recital Hall",
+        "start": "2025-10-10T17:00:00-04:00",
+        "end": "2025-10-10T18:30:00-04:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://i.ytimg.com/vi/4EHbp1ohHuo/maxresdefault.jpg",
+        "checkinCode": "WHHYQY",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "ad887ccd-0dcc-4d81-a753-417d0349b0f3",
+        "title": "Cabaret",
+        "description": "Don't miss our annual Cabaret showcasing Rowan talent!",
+        "location": "Boyd Recital Hall",
+        "start": "2025-10-10T19:00:00-04:00",
+        "end": "2025-10-10T21:00:00-04:00",
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "",
+        "imageUrl": "https://logodix.com/logo/1967883.jpg",
+        "checkinCode": "25PJNQ",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "c8aad5b6-6d85-42c7-a7f4-c05b9f396b6f",
+        "title": "Tenor Bass Festival",
+        "description": "Volunteer to support the Tenor Bass Festival!",
+        "location": "Pfleeger Concert Hall",
+        "start": "2025-10-15T08:00:00-04:00",
+        "end": "2025-10-15T15:00:00-04:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "",
+        "imageUrl": "https://i.ytimg.com/vi/2EfcSsubM6Y/maxresdefault.jpg",
+        "checkinCode": "P3BXAQ",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "f902d485-428a-4ac5-9bdb-2f1c068d0a7d",
+        "title": "ACIT Workshop",
+        "description": "Students from the Atlantic County Institute of Technology will join us for coachings from our vocal pedagogues!",
+        "location": "Wilson 107",
+        "start": "2025-10-17T15:00:00-04:00",
+        "end": "2025-10-17T16:00:00-04:00",
+        "tags": [
+          "Workshop"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://3.files.edl.io/c102/25/07/03/154907-2f0095b9-9ef9-46f0-92c3-34e6720742af.jpg",
+        "checkinCode": "BGG8QE",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "64c0296a-0c6a-430f-bce3-4f2ab5f69a76",
+        "title": "Emily Dickinson in Art Song",
+        "description": "Rowan students join renowned Lyric Fest artists for an evening of Emily Dickinson-inspired art song.",
+        "location": "Boyd Recital Hall",
+        "start": "2025-10-23T19:30:00-04:00",
+        "end": "2025-10-23T21:30:00-04:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249966?performanceId=11686741",
+        "imageUrl": "https://fthmb.tqn.com/KklS-SUmv7AmDvKtwp7S5CE45xE=/3847x2565/filters:fill(auto,1)/Emily-Dickinson-3072437x1-56aa250b5f9b58b7d000fc55.jpg",
+        "checkinCode": "7G3GEJ",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "60960d39-dade-40a9-9536-2a23499623b5",
+        "title": "Concert Choir Concert",
+        "description": "Hear Rowan's Concert Choir in a powerful performance!",
+        "location": "Pfleeger Concert Hall",
+        "start": "2025-10-25T19:30:00-04:00",
+        "end": "2025-10-25T21:30:00-04:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249784?performanceId=11686063",
+        "imageUrl": "https://i.ytimg.com/vi/N61VWGXr2VA/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGHIgTig2MA8=&rs=AOn4CLAaeW5vpOOGzTi-mMj_jHyPit0IaA",
+        "checkinCode": "SZRCFT",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "56c4ff4f-4731-4546-9209-c570b1e7e219",
+        "title": "Pumpkin Painting & Root Beer Floats",
+        "description": "Paint pumpkins and enjoy root beer floats at our fall collab event!",
+        "location": "Wilson 107",
+        "start": "2025-10-31T15:00:00-04:00",
+        "end": "2025-10-31T16:00:00-04:00",
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://www.loveandrenovations.com/wp-content/uploads/2024/10/painted-pumpkins5.jpg",
+        "checkinCode": "GJAQZD",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "ce64ee8f-00d1-4796-9780-62d68264b3ce",
+        "title": "Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2025-11-05T09:30:00-05:00",
+        "end": "2025-11-05T14:00:00-05:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/12HKi50Daq_16PM__h3f97k5CV9mIsUs-s3XymPLDAjE/edit?usp=sharing",
+        "imageUrl": "https://www.mykidstime.com/wp-content/uploads/2015/05/bake-sale-ideas-lead.jpg",
+        "checkinCode": "S9FS32",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "a755d270-be6c-4eb7-83a1-2fd25bf28697",
+        "title": "Learn Latin American Music",
+        "description": "Discover and sing a beautiful piece of Latin American choral music.",
+        "location": "Wilson 107",
+        "start": "2025-11-07T15:00:00-05:00",
+        "end": "2025-11-07T16:00:00-05:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/631d1798c001211985a44cce/4ea306eb-a830-4747-b6d7-c21a62801034/7a3db0_5f0d2463952d46468ceefa48b82690b2-2.jpg",
+        "checkinCode": "8TFEHB",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "59288e11-1519-4ddb-a8b6-3060815b822d",
+        "title": "Collegium Musicum Fall Concert",
+        "description": "Enjoy an early music concert featuring many of our members!",
+        "location": "Boyd Recital Hall",
+        "start": "2025-11-10T19:30:00-05:00",
+        "end": "2025-11-10T21:30:00-05:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249229?performanceId=11684729",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(585100)",
+        "checkinCode": "EQMJG9",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "bb6461cc-9ef3-4779-b92f-e7a63e256d0c",
+        "title": "Choral Conducting 101",
+        "description": "Learn the basics of choral conducting with a choir and accompaniment!",
+        "location": "Wilson 203",
+        "start": "2025-11-14T15:00:00-05:00",
+        "end": "2025-11-14T16:00:00-05:00",
+        "tags": [
+          "Workshop"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://bostonconservatory.berklee.edu/sites/default/files/styles/scale_and_crop_16_9_large/public/d7/bcm/program_images/BCB-conducting.jpg?itok=qmb4iP1s",
+        "checkinCode": "98RDJ5",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "81f43849-52fc-4f62-90ac-1a7b093523c6",
+        "title": "Rowan Opera Company: Fall Opera Collage",
+        "description": "Enjoy a collage of opera scenes performed by the Rowan Opera Company.",
+        "location": "Pfleeger Concert Hall",
+        "start": "2025-11-21T19:30:00-05:00",
+        "end": "2025-11-21T21:30:00-05:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249968",
+        "imageUrl": "https://today.rowan.edu/news/2025/01/images/cpa-springarts-2025.jpg",
+        "checkinCode": "PYWMHB",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "56adbd41-9bce-4ddf-a1ae-4ed79ff8a697",
+        "title": "Rowan Opera Company: Fall Opera Collage",
+        "description": "Enjoy a collage of opera scenes performed by the Rowan Opera Company.",
+        "location": "Pfleeger Concert Hall",
+        "start": "2025-11-22T19:30:00-05:00",
+        "end": "2025-11-22T21:30:00-05:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249968",
+        "imageUrl": "https://today.rowan.edu/news/2025/01/images/cpa-springarts-2025.jpg",
+        "checkinCode": "9QB3R3",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "e8282b15-4f25-4192-ad4b-abfa48e01087",
+        "title": "Rowan University Chorus & Voces Chamber Ensemble",
+        "description": "Hear performances from both the Rowan University Chorus and the Voces Chamber Ensemble in one evening of diverse choral music.",
+        "location": "Pfleeger Concert Hall",
+        "start": "2025-11-25T19:30:00-05:00",
+        "end": "2025-11-25T21:30:00-05:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249813?performanceId=11686180",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(584589)",
+        "checkinCode": "TJEQJB",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "3a0c06d7-61bb-4d6f-bdad-79085880e2c3",
+        "title": "Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2025-12-02T09:30:00-05:00",
+        "end": "2025-12-02T14:00:00-05:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/1q1GQ5GK_0vtqEbod6MGSVZfM8DEsdhu1Ggo2Mte1ga0/edit?usp=sharing",
+        "imageUrl": "https://tse2.mm.bing.net/th/id/OIP.K84As_oYRDqIJjtp6w4QiwHaE7?cb=ucfimgc2&rs=1&pid=ImgDetMain&o=7&rm=3",
+        "checkinCode": "EN3XCM",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "19506a9b-edbf-42f4-ad4f-123bddb96dc2",
+        "title": "Mozart's Requiem: Rowan University Concert Choir & Symphony Orchestra",
+        "description": "Experience the power of Mozart's Requiem performed by the Concert Choir and Symphony Orchestra.",
+        "location": "Pfleeger Concert Hall",
+        "start": "2025-12-06T19:30:00-05:00",
+        "end": "2025-12-06T21:30:00-05:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249815?performanceId=11686187",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(584591)",
+        "checkinCode": "S9CHG5",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "657b4f2f-d4cd-4f72-8479-97c7909a4a0c",
+        "title": "Songs of the Season: A Festive Evening of Brass & Voice",
+        "description": "",
+        "location": "Pfleeger Concert Hall",
+        "start": "2025-12-13T19:30:00-05:00",
+        "end": "2025-12-13T21:30:00-05:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1247041?performanceId=11675327",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(580806)",
+        "checkinCode": "JHDHH6",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "9d0a3680-cac5-4507-9c11-d6f9e36409ed",
+        "title": "Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2026-01-21T09:30:00-05:00",
+        "end": "2026-01-21T14:00:00-05:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/1WVIH4KCtlRfZRzYYWK3BatmAz2ls-mlBa2HVRoSoao4/edit?usp=sharing",
+        "imageUrl": "https://www.mykidstime.com/wp-content/uploads/2015/05/bake-sale-ideas-lead.jpg",
+        "checkinCode": "NVWQUQ",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "ad8486ae-626d-4839-b49e-619d9424c87a",
+        "title": "Sight Singing Musical Theatre & Semester Kickoff",
+        "description": "Join us as we revisit your favorite musical theatre harmonies and prepare for the semester!",
+        "location": "Wilson 107",
+        "start": "2026-01-23T15:00:00-05:00",
+        "end": "2026-01-23T16:00:00-05:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://loving-newyork.com/wp-content/uploads/2018/12/musicals-broadway-shows-new-york.jpg",
+        "checkinCode": "CDUEJM",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "4087b246-40d4-4b36-ac3a-25bdc0ebecf9",
+        "title": "Musical Game Day",
+        "description": "Play some musical games for the chance to win ACDA Merch!",
+        "location": "Wilson 107",
+        "start": "2026-01-30T15:00:00-05:00",
+        "end": "2026-01-30T16:00:00-05:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://www.musictogether.com/content/media-files/musical-hot-potato-game-photo.png",
+        "checkinCode": "BNRDGJ",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "4f04bec0-4af0-4af5-9f13-e5def3a74a22",
+        "title": "Conducting Showcase Rehearsal",
+        "description": "Rehearsal for our Spring Student Conductor's Showcase",
+        "location": "Wilson 107",
+        "start": "2026-02-06T15:00:00-05:00",
+        "end": "2026-02-06T16:00:00-05:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYnJvOHuAU_GiCUvwB-25KmbhMAqyOwBzg5Q&s",
+        "checkinCode": "FUYD6C",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "79a9e802-80b4-4d12-98a4-6b56cb03cdbf",
+        "title": "Valentine's Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2026-02-10T09:30:00-05:00",
+        "end": "2026-02-10T14:00:00-05:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/1MJJ_ei7zix-Gbqyj6mdUx5zZ_NvaRi_x_WJo0Tdvs74/edit?usp=sharing",
+        "imageUrl": "https://www.mykidstime.com/wp-content/uploads/2015/05/bake-sale-ideas-lead.jpg",
+        "checkinCode": "6WTPTW",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "c60efdd5-d4a2-492d-b1f6-8c9caf725ed5",
+        "title": "General Meeting",
+        "description": "Come hang with us for some sight-singing, conducting opportunities and some choral show and tell!",
+        "location": "Wilson 107",
+        "start": "2026-02-13T15:00:00-05:00",
+        "end": "2026-02-13T16:00:00-05:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://crc.losrios.edu//crc/main/img/social-1200-630/programs-majors-social-share/music-social.jpg",
+        "checkinCode": "3DCKTW",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "1b74944c-13e1-4818-b35a-a622e09325e6",
+        "title": "Conducting Showcase Rehearsal",
+        "description": "Rehearsal for our Spring Student Conductor's Showcase",
+        "location": "Wilson 107",
+        "start": "2026-02-27T15:00:00-05:00",
+        "end": "2026-02-27T16:00:00-05:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYnJvOHuAU_GiCUvwB-25KmbhMAqyOwBzg5Q&s",
+        "checkinCode": "7Z3Y53",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "795751e8-487a-431f-9772-d9dcf370d7e5",
+        "title": "Inclusivity in the Choral Classroom",
+        "description": "Join us with our clinican Libby Gopal who will lead a session in inclusivity more details below",
+        "location": "Wilson 107",
+        "start": "2026-03-06T15:00:00-05:00",
+        "end": "2026-03-06T16:00:00-05:00",
+        "tags": [
+          "Professional Development"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://media.licdn.com/dms/image/v2/C4E03AQHoVFxZcKFrAw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1649991044713?e=2147483647&v=beta&t=m7-uBNjhyZ7RVvbGG9PIn-qdqHwuRoIIS7qu9rCyCWY",
+        "checkinCode": "GS85CF",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "5b5a2c9b-e35c-4736-8027-f3619dd864aa",
+        "title": "Rowan University Concert Choir Spring Concert",
+        "description": "Hear Rowan's Concert Choir in a powerful performance!",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-03-07T19:30:00-05:00",
+        "end": "2026-03-07T21:30:00-05:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249824?performanceId=11686216",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(584613)",
+        "checkinCode": "BHZMVU",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "20384236-89c1-4fb9-9dc8-0c9817580212",
+        "title": "Elections Info + Conducting Showcase Rehearsal",
+        "description": "Rehearsal for our Spring Student Conductor's Showcase",
+        "location": "Wilson 107",
+        "start": "2026-03-13T15:00:00-04:00",
+        "end": "2026-03-13T16:00:00-04:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYnJvOHuAU_GiCUvwB-25KmbhMAqyOwBzg5Q&s",
+        "checkinCode": "J48J78",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "4bf40e98-d3e3-4f9d-a439-4719c52172dd",
+        "title": "Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2026-03-25T09:30:00-04:00",
+        "end": "2026-03-25T14:00:00-04:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/1Z8WwSrCNeqC1O8qBRA5gFvR1mO7IB2k644Br_19MCRY/edit?usp=sharing",
+        "imageUrl": "https://www.mykidstime.com/wp-content/uploads/2015/05/bake-sale-ideas-lead.jpg",
+        "checkinCode": "VCBMNR",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "e1ed4db5-d587-4dbd-8082-89a42d820c0f",
+        "title": "Dr. Nick McBride",
+        "description": "Join us and our guest clinician to develop your skills and explore some new and emerging works.",
+        "location": "Wilson 107",
+        "start": "2026-03-27T15:00:00-04:00",
+        "end": "2026-03-27T16:00:00-04:00",
+        "tags": [
+          "Professional Development"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://faculty180.interfolio.com/app_data/tcnj/faculty/211613/photo/photo.jpeg",
+        "checkinCode": "44FD94",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "ef54e7fc-819a-4590-b8ff-1e6a4e99ec0d",
+        "title": "107 Decorating Day",
+        "description": "Join us at 2pm (not 3!) to make decorations that we will hang up in 107!",
+        "location": "Wilson 107",
+        "start": "2026-04-10T14:00:00-04:00",
+        "end": "2026-04-10T15:00:00-04:00",
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=11746730513392915153",
+        "imageUrl": "https://images.pexels.com/photos/27837183/pexels-photo-27837183/free-photo-of-a-group-of-people-making-crafts-at-a-table.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        "checkinCode": "M3JUH5",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "4c72178f-d157-4f80-829f-e7b1d7d70d45",
+        "title": "Conducting Showcase Rehearsal",
+        "description": "Rehearsal for our Spring Student Conductor's Showcase!",
+        "location": "Wilson 107",
+        "start": "2026-04-10T15:00:00-04:00",
+        "end": "2026-04-10T16:00:00-04:00",
+        "tags": [
+          "Rehearsal"
+        ],
+        "signinLink": "",
+        "imageUrl": "",
+        "checkinCode": "YE6BVS",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "4306a799-d0d1-4f58-a983-4303b4aa249e",
+        "title": "Rodgers & Hammerstein's Cinderella",
+        "description": "The original story of this beloved musical presented by the Department of Music and the Department of Theatre and Dance",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-04-10T19:30:00-04:00",
+        "end": "2026-04-10T21:30:00-04:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249981",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(595446)",
+        "checkinCode": "5PFSSR",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "c6724fdf-3465-4be7-95fd-1eb382fa3a57",
+        "title": "Rodgers & Hammerstein's Cinderella",
+        "description": "The original story of this beloved musical presented by the Department of Music and the Department of Theatre and Dance",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-04-11T19:30:00-04:00",
+        "end": "2026-04-11T21:30:00-04:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249981",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(595446)",
+        "checkinCode": "AFSX8S",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "75fd0c1b-4fe6-4e53-a75c-61653589c44d",
+        "title": "Rodgers & Hammerstein's Cinderella",
+        "description": "The original story of this beloved musical presented by the Department of Music and the Department of Theatre and Dance",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-04-12T16:00:00-04:00",
+        "end": "2026-04-12T18:00:00-04:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249981",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(595446)",
+        "checkinCode": "CZAVRB",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "503f0c0c-2b91-49ff-809a-68b9a4fc5cd6",
+        "title": "Conductor's Showcase Dress Rehearsal",
+        "description": "Final rehearsal for the Student Conductor's Showcase",
+        "location": "Wilson 205",
+        "start": "2026-04-15T18:30:00-04:00",
+        "end": "2026-04-15T19:30:00-04:00",
+        "tags": [
+          "Dress Rehearsal"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=117467305133929151537",
+        "imageUrl": "https://www.musicnotes.com/blog/content/images/now/wp-content/uploads/header-conduct-your-choir.jpg",
+        "checkinCode": "PHXRME",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "864a384a-b36c-495c-a799-f284fdfc77d3",
+        "title": "Conductor's Showcase",
+        "description": "Support our Student Conductors in their debut performance with our ACDA choir!",
+        "location": "Wilson 153",
+        "start": "2026-04-15T20:00:00-04:00",
+        "end": "2026-04-15T21:00:00-04:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "",
+        "imageUrl": "https://music.washington.edu/sites/music/files/styles/slideshow_content/public/images/choral_conducting_womenschoir.jpg?h=3beec83f&itok=aCah0my0",
+        "checkinCode": "C4G9HX",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "648c4c42-7ae0-4509-ab62-992262a5306e",
+        "title": "End of Year Celebration with NAfME",
+        "description": "Join us for an end of semester celebration with NAfME on the Wilson Green!",
+        "location": "Wilson Green",
+        "start": "2026-04-17T14:00:00-04:00",
+        "end": "2026-04-17T16:00:00-04:00",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "https://docs.google.com/forms/d/e/1FAIpQLSewJ4GItb_yYa6VwpKyYG1V5gPf-d4oX9PXCxy4s8-VyyY7zg/viewform?usp=sharing&ouid=11746730513392915153",
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9IyNDYnQEtZnq1tdMCBvm9gLNanXXN8i5Q&s",
+        "checkinCode": "P7GZJ4",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "0e651037-610a-48ed-a8fd-452f3fb9084b",
+        "title": "Rowan University Concert Choir Concert",
+        "description": "Hear Rowan's Concert Choir in a powerful performance!",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-04-27T19:30:00-04:00",
+        "end": "2026-04-27T21:30:00-04:00",
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "https://ci.ovationtix.com/35360/production/1249828?performanceId=11686650",
+        "imageUrl": "https://web.ovationtix.com/trs/api/rest/ClientFile(584758)",
+        "checkinCode": "UY5S6M",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "e3aa9e5f-1e0f-455b-94dd-ae3b854aac8f",
+        "title": "Bake Sale",
+        "description": "Sign up for as many 30-minute shifts as you'd like, and/or bring baked goods to earn points!",
+        "location": "Wilson Lobby",
+        "start": "2026-04-29T09:30:00-04:00",
+        "end": "2026-04-29T14:00:00-04:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://docs.google.com/spreadsheets/d/1a2oPlCrt0puQq752RJ5yJePK5FWod1llKDQ02_yovGw/edit?usp=sharing",
+        "imageUrl": "https://www.mykidstime.com/wp-content/uploads/2015/05/bake-sale-ideas-lead.jpg",
+        "checkinCode": "9TUFAC",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "0e2b6af8-1ebd-4ec4-bc6c-076d5834c5f8",
+        "title": "HS Choral Festival",
+        "description": "Volunteer to support the NJ-ACDA HS Choral Festival here at Rowan",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-05-18T08:00:00-04:00",
+        "end": "2026-05-18T14:00:00-04:00",
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "https://www.njacda.org/event-details/2026-hs-choral-festival",
+        "imageUrl": "https://static.wixstatic.com/media/f1a70e_554ebcd70b514efe8d0273cd56990ca9~mv2.png/v1/fill/w_564,h_564,fp_0.50_0.50,q_85,usm_0.66_1.00_0.01,enc_auto/f1a70e_554ebcd70b514efe8d0273cd56990ca9~mv2.png",
+        "checkinCode": "KRP77Y",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "22c78767-bb49-4b7b-a78b-1b6eb9f84c2b",
+        "title": "NJ-ACDA Summer Conference",
+        "description": "Represent Rowan ACDA at the New Jersey ACDA Conference",
+        "location": "Rutgers University",
+        "start": "2026-08-05T08:00:00-04:00",
+        "end": "2026-08-05T20:00:00-04:00",
+        "tags": [
+          "Workshop"
+        ],
+        "signinLink": "https://www.njacda.org/summerconference",
+        "imageUrl": "https://static.wixstatic.com/media/f1a70e_4fece902454e449d8d4bde3a92eeb408~mv2.png/v1/fill/w_954,h_535,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Summer%20Conference%20Website%20Promo%20(Facebook%20Cover)%20(2).png",
+        "checkinCode": "GKYWE9",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "fbda26b4-9932-4057-a4f0-b2286c05f7c6",
+        "title": "NJ-ACDA Summer Conference",
+        "description": "Represent Rowan ACDA at the New Jersey ACDA Conference",
+        "location": "Rutgers University",
+        "start": "2026-08-06T08:00:00-04:00",
+        "end": "2026-08-06T20:00:00-04:00",
+        "tags": [
+          "Workshop"
+        ],
+        "signinLink": "https://www.njacda.org/summerconference",
+        "imageUrl": "https://static.wixstatic.com/media/f1a70e_4fece902454e449d8d4bde3a92eeb408~mv2.png/v1/fill/w_954,h_535,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Summer%20Conference%20Website%20Promo%20(Facebook%20Cover)%20(2).png",
+        "checkinCode": "7BS4QX",
+        "checkinOpensAt": "",
+        "checkinClosesAt": ""
+      },
+      {
+        "id": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "title": "Musical Theatre Sight-Reading Day",
+        "description": "Join us for our first meeting of the semester, Musical Theatre Sight-Reading! Sight-sing your favorite musical theatre songs and harmonies with the Rowan ACDA! Whether you're an experienced sight-singer or trying it out for the first time, come sing, have fun, and enjoy some musical theatre!",
+        "location": "Wilson 107",
+        "start": "2026-09-04T19:00:00.000Z",
+        "end": "2026-09-04T20:00:00.000Z",
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1787888548242-635864765938050157-GettyImages-90536934_174836_ver1.0.jpg",
+        "checkinCode": "PAK7FF",
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "points": 300
+      },
+      {
+        "id": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "title": "Sight Singing & Student Conductors Song Vote",
+        "description": "Sight-Sing with the Rowan ACDA for our second General Meeting!\n\nSing-Read popular choral tunes and vote for the conductor's pieces in the Cabaret!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-09-18T19:00:00.000Z",
+        "end": "2026-09-18T20:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788130381604-IMG_6665.jpg",
+        "points": 200,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "title": "Sight Singing & Cabaret Rehearsal",
+        "description": "Sight-Sing and Rehearse the Rowan ACDA Cabaret Group Pieces! \n\nThese pieces will be featured in the annual Rowan ACDA Cabaret on October 23rd at 7:00 pm!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-10-09T19:00:00.000Z",
+        "end": "2026-10-09T20:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788132510054-IMG_3048.jpg",
+        "points": 200,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "82d0f546-ae7b-4390-b59b-9de84bc50ecd",
+        "title": "Sight Singing & Cabaret Rehearsal #2",
+        "description": "Sight-Sing and Rehearse the Rowan ACDA Cabaret Group Pieces!\n\nThese pieces will be featured in the annual Rowan ACDA Cabaret on October 23rd at 7:00 pm!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-10-16T19:00:00.000Z",
+        "end": "2026-10-16T20:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788133305414-Screenshot_2026-08-30_7.37.37_PM.png",
+        "points": 200,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      }
+    ],
+    "content": {
+      "eboard": [
+        {
+          "id": "makayli-matias",
+          "name": "Makayli Matias",
+          "role": "President",
+          "email": "matias85@rowan.edu",
+          "photo": "/assets/img/makayli-matias.jpg",
+          "desc": "Leads meetings and represents the chapter.",
+          "bio": "Makayli Matias is a junior studying Vocal Music Education, now serving as President of Rowan's ACDA chapter after previously serving as Secretary. She leads meetings and represents the chapter, building on her experience managing communication and point totals for the organization. Makayli sings with both the Concert Choir and Voces ensemble and is also a member of Rowan's Opera Company. Most recently, she was seen as the Dew Fairy in Hansel and Gretel. She looks forward to continuing to grow as a musician and leader through her involvement at Rowan."
+        },
+        {
+          "id": "lizzie-hitchner",
+          "name": "Lizzie Hitchner",
+          "role": "Vice President",
+          "email": "hitchn55@rowan.edu",
+          "photo": "/assets/img/lizzie-hitchner.jpg",
+          "desc": "Supports the president and helps with club activities.",
+          "bio": "Lizzie Hitchner is a sophomore Vocal Music Education major and currently serves as the Vice President of Rowan's ACDA chapter. In this role, she collaborates with the e-board to plan and organize professional development opportunities, as well as chapter events/trips. Lizzie is an active member of Rowan's Concert Choir and is also involved with local theater companies and a marching band, contributing her skills in both performance and production."
+        },
+        {
+          "id": "adam-bretz",
+          "name": "Adam Bretz",
+          "role": "Treasurer",
+          "email": "bretza67@students.rowan.edu",
+          "photo": "/assets/img/adam-bretz.jpg",
+          "desc": "Oversees the club's finances and plans fundraisers.",
+          "bio": "Adam Bretz is a senior Electrical & Computer Engineering major with a minor in music (Organ), now serving as Treasurer. He oversees the club's finances and helps plan fundraisers, and also maintains the chapter's website."
+        },
+        {
+          "id": "sadie-frame",
+          "name": "Sadie Frame",
+          "role": "Secretary",
+          "email": "frames27@rowan.edu",
+          "photo": "/assets/img/sadie-frame.jpg",
+          "desc": "Manages communication and tracks point totals.",
+          "bio": "Sadie Frame is a Sophomore studying Vocal Music Education while serving this year as ACDA's Secretary for the 2026-2027 school year! Sadie is an advocate for the arts and music education. She has worked hard and gained numerous opportunities to proudly perform with esteemed choir ensembles including: All South Jersey Chorus, NJ All State Treble Chorus, All Eastern Treble Chorus, and most recently, Rowan's University Chorus. Sadie's main priority for this chapter is to manage communication and keeping track of points totals for our members. Sadie hopes to continue to develop her skills not only as a performer, but leader and educator, and hopes to see ACDA and its members flourish this year!"
+        },
+        {
+          "id": "jessenia-zavala",
+          "name": "Jessenia Zavala",
+          "role": "Event Coordinator",
+          "email": "zavala34@students.rowan.edu",
+          "photo": "/assets/img/jessenia-zavala.jpg",
+          "desc": "Plans and coordinates ACDA's events.",
+          "bio": "Jessenia Zavala is a senior Vocal Music Education major at Rowan University, now serving as Event Coordinator for ACDA. In this role, she plans and coordinates the chapter's events, including trips and outings to opera performances. Jessenia also serves as Treasurer for NAfME, is a proud member of Tri Alpha, sings with Concert Choir, and studies voice with Professor Marian Stieber. She has previously performed with Rowan's Opera Company, appearing as the Sandman in Hansel and Gretel and performing in the Fall Opera Scenes. Jessenia has also performed in several productions at Ocean County College, including All Shook Up, Kiss Me Kate, and Broadway for the Holidays 2 & 3."
+        },
+        {
+          "id": "vera-caruso",
+          "name": "Vera Caruso",
+          "role": "Social Media Coordinator",
+          "email": "caruso83@students.rowan.edu",
+          "photo": "/assets/img/vera-caruso.jpg",
+          "desc": "Manages the club's social media and photo archives.",
+          "bio": "Vera Caruso is a senior vocal BA and English BA double major. She also holds a CUGs in jazz performance. She is involved with several ensembles at Rowan, such as the Rowan Opera Company, Concert Choir, and Voces chamber ensemble. As social media coordinator, she manages the organization's social media accounts and photo archives."
+        },
+        {
+          "id": "dan-suiliguin",
+          "name": "Dan Suiliguin",
+          "role": "Senator",
+          "email": "suligu56@rowan.edu",
+          "photo": "/assets/img/dan-suiliguin.jpg",
+          "desc": "Represents the club's interests to the school.",
+          "bio": "Dan Suiliguin is a junior Vocal Music Education student at Rowan University. He is thrilled to be serving as ACDA's Senator, representing the club's interests as NAfME's Student Government representative. In this role, he attends Student Government meetings on behalf of the chapter. He looks forward to assisting many students through his major and as an E-Board member."
+        }
+      ],
+      "siteText": {
+        "home.whatIs.heading": "What is Rowan ACDA?",
+        "home.whatIs.description": "The Rowan American Choral Directors Association's mission is to create opportunities for students to learn more about an array of different choral techniques and aspects that will enrich and supplement their education. This includes fundraising, holding events and activities that either interest or inform members, and bringing in presenters from on and off-campus to hold workshops and masterclasses. Our goal is to allow everyone to learn about and experience choral music while acquiring various choral directing skills.",
+        "home.choralEngagement.description": "Did you love choir in High School? Want to sing in a growing choral community of many majors? Join Rowan's own \"Choir Club\"! Rowan's chapter of the American Choral Directors Association is committed to providing musically engaging choral experiences for students of all skill levels. Join us on Fridays at 3:00pm in Wilson 107!",
+        "home.sightReading.description": "Our chapter hosts themed weekly sight-reading sessions for students to grow their aural music theory skills. Students will have the opportunity to sing a broad range of repertoire in sessions hosted by our executive board. Everyone is encouraged to bring their own material for the group to read with prior approval!",
+        "home.development.description": "In sessions coordinated by our Vice President, industry professionals will present development sessions on varying relevant topics in the modern Choral Direction and Education field. The chapter also facilitates student and faculty led workshops on conducting, sight-reading techniques, and other choral skills per the Chapter's interests and needs.",
+        "events.bannerSubtext": "Performances, Volunteer Opportunities, Meetings, and Workshops",
+        "members.join.description": "Open to all Rowan students who love choral music. Join on ProfLink to get involved!",
+        "members.about.description": "Rowan ACDA is a student-run community where singers, future educators, and developing musicians grow together. We rehearse, read new music, host conducting labs, and invite guest clinicians to share practical tools you can use in choral career.\n\nWhether you're preparing for a career in music or simply love to sing, you'll find welcoming rehearsals, hands-on workshops, and plenty of ways to serve the campus and local community.",
+        "members.mission.description": "To cultivate choral artistry, leadership, and service by providing inclusive music-making, practical training, and professional connections for all Rowan students.",
+        "members.eventsActivities.description": "We plan a balanced mix of artistry, growth, and service throughout the year:"
+      },
+      "resources": {
+        "pd": [],
+        "showAndTell": []
+      },
+      "merch": [
+        {
+          "id": "tshirt-original",
+          "name": "T-Shirt",
+          "price": 15,
+          "sizes": [
+            "Small",
+            "Medium",
+            "Large",
+            "X-Large",
+            "XX-Large"
+          ],
+          "photos": [
+            "/assets/img/merch-tshirt-model.jpg",
+            "/assets/img/merch-tshirt-flat.jpg",
+            "/assets/img/merch-tshirt-folded.jpg"
+          ],
+          "active": true
+        }
+      ]
+    },
+    "eventComments": [
+      {
+        "id": "8fcc9906-9477-4b5b-a41f-826d7f510877",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "text": "So excited!!!",
+        "createdAt": "2026-08-29T16:55:31.629Z"
+      },
+      {
+        "id": "4ca40f82-e229-45e2-b28d-b63dade418ae",
+        "eventId": "572badea-6386-4728-9e45-0e13f93d5c78",
+        "parentId": null,
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "text": "Love This!!!",
+        "createdAt": "2026-08-31T23:45:25.636Z"
+      }
+    ],
+    "library": {
+      "scores": [
+        {
+          "title": "Break Forth, O Beauteous Heavenly Light",
+          "composer_first": "Johann Sebastian",
+          "composer_last": "Bach",
+          "year": "1734",
+          "voicing": "SATB",
+          "instrumentation": "Organ",
+          "tags": [
+            "Classical",
+            "Sacred"
+          ],
+          "url": "/assets/pdfs/choral-rep/Break Forth.pdf"
+        },
+        {
+          "title": "Danny Boy",
+          "composer_first": "arr.",
+          "composer_last": "Knight",
+          "year": "",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Folk"
+          ],
+          "url": "/assets/pdfs/choral-rep/Danny Boy.pdf"
+        },
+        {
+          "title": "Shenandoah",
+          "composer_first": "arr. James",
+          "composer_last": "Adams",
+          "year": "",
+          "voicing": "SATB",
+          "instrumentation": "A Cappella",
+          "tags": [
+            "Folk"
+          ],
+          "url": "/assets/pdfs/choral-rep/Shenandoah.pdf"
+        },
+        {
+          "title": "The Pasture",
+          "composer_first": "Z.",
+          "composer_last": "Stroope",
+          "year": "2001",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Contemporary"
+          ],
+          "url": "/assets/pdfs/choral-rep/The Pasture.pdf"
+        },
+        {
+          "title": "The Road Home",
+          "composer_first": "Stephen",
+          "composer_last": "Paulus",
+          "year": "1994",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Contemporary"
+          ],
+          "url": "/assets/pdfs/choral-rep/The Road Home.pdf"
+        },
+        {
+          "title": "Gloria in Excelsis",
+          "composer_first": "Antonio",
+          "composer_last": "Vivaldi",
+          "year": "1715",
+          "voicing": "SATB",
+          "instrumentation": "Orchestra",
+          "tags": [
+            "Classical",
+            "Sacred"
+          ],
+          "url": "/assets/pdfs/choral-rep/Gloria in excelsis.pdf"
+        },
+        {
+          "title": "Dies Irae",
+          "composer_first": "Ryan",
+          "composer_last": "Main",
+          "year": "",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Classical",
+            "Sacred"
+          ],
+          "url": "/assets/pdfs/choral-rep/Dies Irae - Ryan Main.pdf"
+        },
+        {
+          "title": "Count the Stars",
+          "composer_first": "Brandon",
+          "composer_last": "Beck",
+          "year": "",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Contemporary"
+          ],
+          "url": "/assets/pdfs/choral-rep/Count the Stars.pdf"
+        },
+        {
+          "title": "Let the Sunshine In",
+          "composer_first": "Galt",
+          "composer_last": "MacDermot",
+          "year": "1967",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Hair - Let the Sunshine In.pdf"
+        },
+        {
+          "title": "My Shot",
+          "composer_first": "Lin-Manuel",
+          "composer_last": "Miranda",
+          "year": "2015",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Hamilton - My Shot.pdf"
+        },
+        {
+          "title": "Nothing Changes",
+          "composer_first": "Anaïs",
+          "composer_last": "Mitchell",
+          "year": "2019",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Hadestown - Nothing Changes.pdf"
+        },
+        {
+          "title": "Seasons of Love",
+          "composer_first": "Jonathan",
+          "composer_last": "Larson",
+          "year": "1996",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Rent - Seasons of Love.pdf"
+        },
+        {
+          "title": "Opening Up",
+          "composer_first": "Sara",
+          "composer_last": "Bareilles",
+          "year": "2019",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Waitress - Opening Up.pdf"
+        },
+        {
+          "title": "Once and for All",
+          "composer_first": "Alan",
+          "composer_last": "Menken",
+          "year": "2017",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Newsies - Once and for All.pdf"
+        },
+        {
+          "title": "Louder Than Words",
+          "composer_first": "Jonathan",
+          "composer_last": "Larson",
+          "year": "2001",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Tick Tick Boom - Louder Than Words.pdf"
+        },
+        {
+          "title": "Being Alive",
+          "composer_first": "Stephen",
+          "composer_last": "Sondheim",
+          "year": "1970",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Company - Being Alive.pdf"
+        },
+        {
+          "title": "What I Did for Love",
+          "composer_first": "Marvin",
+          "composer_last": "Hamlisch",
+          "year": "1975",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/A Chorus Line - What I Did for Love.pdf"
+        },
+        {
+          "title": "Abide With Me",
+          "composer_first": "Henry",
+          "composer_last": "Lyte",
+          "year": "1847",
+          "voicing": "SATB",
+          "instrumentation": "Organ",
+          "tags": [
+            "Church Music",
+            "Sacred"
+          ],
+          "url": "/assets/pdfs/church-music/Abide With Me.pdf"
+        },
+        {
+          "title": "How Great Thou Art",
+          "composer_first": "Carl",
+          "composer_last": "Boberg",
+          "year": "1885",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Church Music",
+            "Sacred"
+          ],
+          "url": "/assets/pdfs/church-music/How Great Thou Art.pdf"
+        },
+        {
+          "title": "Earth Song",
+          "composer_first": "Frank",
+          "composer_last": "Ticheli",
+          "year": "1993",
+          "voicing": "SATB",
+          "instrumentation": "A Cappella",
+          "tags": [
+            "Contemporary"
+          ],
+          "url": "/assets/pdfs/choral-rep/Earth Song.pdf"
+        },
+        {
+          "title": "Damask Roses",
+          "composer_first": "",
+          "composer_last": "",
+          "year": "",
+          "voicing": "",
+          "instrumentation": "",
+          "tags": [],
+          "url": "/assets/pdfs/acit/Damask Roses .pdf"
+        },
+        {
+          "title": "Let Me Be Your Star",
+          "composer_first": "",
+          "composer_last": "",
+          "year": "",
+          "voicing": "",
+          "instrumentation": "",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/acit/Let Me Be Your Star .pdf"
+        },
+        {
+          "title": "Loneliness of Evening",
+          "composer_first": "Richard",
+          "composer_last": "Rodgers",
+          "year": "1949",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/acit/Loneliness of Evening.pdf"
+        },
+        {
+          "title": "The Year's at the Spring",
+          "composer_first": "Amy",
+          "composer_last": "Beach",
+          "year": "1899",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Classical"
+          ],
+          "url": "/assets/pdfs/acit/The year's at the spring.pdf"
+        },
+        {
+          "title": "Weep You No More, Sad Fountains",
+          "composer_first": "",
+          "composer_last": "",
+          "year": "",
+          "voicing": "",
+          "instrumentation": "",
+          "tags": [],
+          "url": "/assets/pdfs/acit/scan_rmcinnis_2025-10-17-12-08-51.pdf"
+        },
+        {
+          "title": "No One Is Alone",
+          "composer_first": "Stephen",
+          "composer_last": "Sondheim",
+          "year": "1987",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf"
+        },
+        {
+          "title": "Lift Every Voice and Sing",
+          "composer_first": "J. Rosamond",
+          "composer_last": "Johnson",
+          "year": "1900",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Church Music",
+            "Sacred"
+          ],
+          "url": "/assets/pdfs/church-music/Lift Every Voice and Sing .pdf"
+        },
+        {
+          "title": "The Awakening",
+          "composer_first": "John",
+          "composer_last": "Martin",
+          "year": "",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Contemporary"
+          ],
+          "url": "/assets/pdfs/choral-rep/The Awakening - Martin.pdf"
+        },
+        {
+          "title": "Sunday",
+          "composer_first": "Stephen",
+          "composer_last": "Sondheim",
+          "year": "1984",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Sunday in the Park with George - Sunday.pdf"
+        },
+        {
+          "title": "Alexander Hamilton",
+          "composer_first": "Lin-Manuel",
+          "composer_last": "Miranda",
+          "year": "2015",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Hamilton - Alexander Hamilton.pdf"
+        },
+        {
+          "title": "You Will Be Found",
+          "composer_first": "Benj",
+          "composer_last": "Pasek",
+          "year": "2015",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Dear Evan Hansen - You Will Be Found.pdf"
+        },
+        {
+          "title": "Medley",
+          "composer_first": "",
+          "composer_last": "",
+          "year": "",
+          "voicing": "",
+          "instrumentation": "",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Les Miserables - Medley.pdf"
+        },
+        {
+          "title": "Wait for Me",
+          "composer_first": "Anaïs",
+          "composer_last": "Mitchell",
+          "year": "2019",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/Hadestown - Wait for Me.pdf"
+        },
+        {
+          "title": "Somewhere",
+          "composer_first": "Leonard",
+          "composer_last": "Bernstein",
+          "year": "1957",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "url": "/assets/pdfs/musical-theater/West Side - Somewhere.pdf"
+        },
+        {
+          "title": "London By Night",
+          "url": "/assets/pdfs/uploads/1787928510493-London_By_Night.pdf",
+          "composer_first": "Carroll",
+          "composer_last": "Coates",
+          "year": "1951",
+          "voicing": "SATB divisi",
+          "instrumentation": "A Cappella",
+          "tags": [
+            "Jazz & Pop"
+          ]
+        }
+      ],
+      "sessions": [
+        {
+          "num": "SS#01",
+          "name": "Musical Theater Sight-Singing",
+          "scoreUrls": [],
+          "archived": false,
+          "archivedAt": null,
+          "archiveFolder": null
+        },
+        {
+          "num": "SS#9",
+          "name": "General Meeting",
+          "scoreUrls": [
+            "/assets/pdfs/choral-rep/Break Forth.pdf",
+            "/assets/pdfs/choral-rep/Danny Boy.pdf",
+            "/assets/pdfs/choral-rep/Shenandoah.pdf",
+            "/assets/pdfs/choral-rep/The Pasture.pdf"
+          ],
+          "archived": true,
+          "archiveFolder": "25-26"
+        },
+        {
+          "num": "SS#8",
+          "name": "Student Conductor's Showcase",
+          "scoreUrls": [
+            "/assets/pdfs/choral-rep/The Road Home.pdf",
+            "/assets/pdfs/choral-rep/Gloria in excelsis.pdf",
+            "/assets/pdfs/choral-rep/Dies Irae - Ryan Main.pdf",
+            "/assets/pdfs/choral-rep/Count the Stars.pdf"
+          ],
+          "archived": true,
+          "archiveFolder": "25-26"
+        },
+        {
+          "num": "SS#6",
+          "name": "Musical Theater Day II",
+          "scoreUrls": [
+            "/assets/pdfs/musical-theater/Hair - Let the Sunshine In.pdf",
+            "/assets/pdfs/musical-theater/Hamilton - My Shot.pdf",
+            "/assets/pdfs/musical-theater/Hadestown - Nothing Changes.pdf",
+            "/assets/pdfs/musical-theater/Rent - Seasons of Love.pdf",
+            "/assets/pdfs/musical-theater/Waitress - Opening Up.pdf",
+            "/assets/pdfs/musical-theater/Newsies - Once and for All.pdf",
+            "/assets/pdfs/musical-theater/Tick Tick Boom - Louder Than Words.pdf",
+            "/assets/pdfs/musical-theater/Company - Being Alive.pdf",
+            "/assets/pdfs/musical-theater/A Chorus Line - What I Did for Love.pdf"
+          ],
+          "archived": true,
+          "archiveFolder": "25-26"
+        },
+        {
+          "num": "SS#5",
+          "name": "Conducting 101",
+          "scoreUrls": [
+            "/assets/pdfs/church-music/Abide With Me.pdf",
+            "/assets/pdfs/church-music/How Great Thou Art.pdf",
+            "/assets/pdfs/choral-rep/Earth Song.pdf"
+          ],
+          "archived": true,
+          "archiveFolder": "25-26"
+        },
+        {
+          "num": "SS#4",
+          "name": "ACIT Visit",
+          "scoreUrls": [
+            "/assets/pdfs/acit/Damask Roses .pdf",
+            "/assets/pdfs/acit/Let Me Be Your Star .pdf",
+            "/assets/pdfs/acit/Loneliness of Evening.pdf",
+            "/assets/pdfs/acit/The year's at the spring.pdf",
+            "/assets/pdfs/acit/scan_rmcinnis_2025-10-17-12-08-51.pdf"
+          ],
+          "archived": true,
+          "archiveFolder": "25-26"
+        },
+        {
+          "num": "SS#3",
+          "name": "Church Gig 101",
+          "scoreUrls": [
+            "/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf",
+            "/assets/pdfs/church-music/Abide With Me.pdf",
+            "/assets/pdfs/church-music/Lift Every Voice and Sing .pdf",
+            "/assets/pdfs/church-music/How Great Thou Art.pdf"
+          ],
+          "archived": true,
+          "archiveFolder": "25-26"
+        },
+        {
+          "num": "SS#2",
+          "name": "Cabaret Rehearsal",
+          "scoreUrls": [
+            "/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf",
+            "/assets/pdfs/choral-rep/The Awakening - Martin.pdf",
+            "/assets/pdfs/choral-rep/Earth Song.pdf"
+          ],
+          "archived": true,
+          "archiveFolder": "25-26"
+        },
+        {
+          "num": "SS#1",
+          "name": "Musical Theater Day I",
+          "scoreUrls": [
+            "/assets/pdfs/musical-theater/Sunday in the Park with George - Sunday.pdf",
+            "/assets/pdfs/musical-theater/Hamilton - Alexander Hamilton.pdf",
+            "/assets/pdfs/musical-theater/Dear Evan Hansen - You Will Be Found.pdf",
+            "/assets/pdfs/musical-theater/Les Miserables - Medley.pdf",
+            "/assets/pdfs/musical-theater/Hadestown - Wait for Me.pdf",
+            "/assets/pdfs/musical-theater/Into The Woods - No One Is Alone.pdf",
+            "/assets/pdfs/musical-theater/West Side - Somewhere.pdf"
+          ],
+          "archived": true,
+          "archivedAt": "2026-08-29T03:12:40.662Z",
+          "archiveFolder": "25-26"
+        }
+      ],
+      "_archiveFolderMigrated": true,
+      "archiveFolders": [
+        "25-26"
+      ]
+    },
+    "gallery": {
+      "folders": [
+        {
+          "id": "1e092b0f-b98f-4437-9764-45d3cfca510b",
+          "name": "Website Pictures",
+          "parentId": null
+        },
+        {
+          "id": "943fb672-c0e4-4403-b8ae-a2dc2544c918",
+          "name": "Home Page",
+          "parentId": "1e092b0f-b98f-4437-9764-45d3cfca510b"
+        },
+        {
+          "id": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "name": "Chapter Highlights Slideshow",
+          "parentId": "943fb672-c0e4-4403-b8ae-a2dc2544c918",
+          "liveTarget": "homeSlideshow"
+        },
+        {
+          "id": "b9118ff7-b399-4334-b57a-06d058a9cbdc",
+          "name": "Home Page Banner",
+          "parentId": "943fb672-c0e4-4403-b8ae-a2dc2544c918",
+          "liveTarget": "homeBanner"
+        },
+        {
+          "id": "95bf4049-5d1f-41e0-b5c9-e59395d39e49",
+          "name": "Choral Engagement Photo",
+          "parentId": "943fb672-c0e4-4403-b8ae-a2dc2544c918",
+          "liveTarget": "choralEngagement"
+        },
+        {
+          "id": "a90484ce-66a9-4aed-ad04-59100e1d78a1",
+          "name": "Sight Reading Photo",
+          "parentId": "943fb672-c0e4-4403-b8ae-a2dc2544c918",
+          "liveTarget": "sightReading"
+        },
+        {
+          "id": "c464a1ab-b2ad-4412-9054-3ceff20ab85f",
+          "name": "Development Photo",
+          "parentId": "943fb672-c0e4-4403-b8ae-a2dc2544c918",
+          "liveTarget": "development"
+        },
+        {
+          "id": "b3b957ac-0c42-440b-bef5-6ccf14887405",
+          "name": "Events",
+          "parentId": "1e092b0f-b98f-4437-9764-45d3cfca510b"
+        },
+        {
+          "id": "2fa5294c-0076-4aaf-90c0-732d14d76fdd",
+          "name": "Events Banner",
+          "parentId": "b3b957ac-0c42-440b-bef5-6ccf14887405",
+          "liveTarget": "eventsBanner"
+        },
+        {
+          "id": "5cbffc5d-9c2d-455d-b73e-238e9e67771a",
+          "name": "Members Page",
+          "parentId": "1e092b0f-b98f-4437-9764-45d3cfca510b"
+        },
+        {
+          "id": "3968453f-35b9-4262-bfb8-37fa3ad4d502",
+          "name": "Member Banner",
+          "parentId": "5cbffc5d-9c2d-455d-b73e-238e9e67771a",
+          "liveTarget": "membersBanner"
+        },
+        {
+          "id": "f3ac88a8-619a-4250-835b-a1b6f2eb0787",
+          "name": "Join Rowan ACDA Picture",
+          "parentId": "5cbffc5d-9c2d-455d-b73e-238e9e67771a",
+          "liveTarget": "joinPicture"
+        },
+        {
+          "id": "51904027-068d-43ca-90a9-6ad185544943",
+          "name": "Perks Picture",
+          "parentId": "5cbffc5d-9c2d-455d-b73e-238e9e67771a",
+          "liveTarget": "perksPicture"
+        },
+        {
+          "id": "055bab31-60f0-40ed-b40a-3f397982a764",
+          "name": "Quick Links Picture",
+          "parentId": "5cbffc5d-9c2d-455d-b73e-238e9e67771a",
+          "liveTarget": "quickLinksPicture"
+        },
+        {
+          "id": "b11775df-e2f8-456a-8d90-bc517835e3e7",
+          "name": "E-Board",
+          "parentId": "5cbffc5d-9c2d-455d-b73e-238e9e67771a",
+          "note": "E-Board profile pictures are updated from the Site Content tab."
+        },
+        {
+          "id": "6cb3a073-792e-4dc5-aeb3-f4bef7e7040f",
+          "name": "E-Board Banner Photo",
+          "parentId": "b11775df-e2f8-456a-8d90-bc517835e3e7",
+          "liveTarget": "eboardBanner"
+        },
+        {
+          "id": "30189cfb-6cc6-4e83-b1fd-8c73e9c191e1",
+          "name": "Resources",
+          "parentId": "1e092b0f-b98f-4437-9764-45d3cfca510b"
+        },
+        {
+          "id": "6199dc74-b5c3-43eb-8c4b-bc27b1a12115",
+          "name": "Resource Banner",
+          "parentId": "30189cfb-6cc6-4e83-b1fd-8c73e9c191e1",
+          "liveTarget": "resourcesBanner"
+        },
+        {
+          "id": "3ae5bf44-98ef-4658-b818-e57c46653ec2",
+          "name": "Logo",
+          "parentId": "1e092b0f-b98f-4437-9764-45d3cfca510b",
+          "liveTarget": "logo"
+        },
+        {
+          "id": "30f7dc1d-c8e0-4996-b2e1-ea69f7baf908",
+          "name": "Full Gallery",
+          "parentId": null,
+          "isMasterGallery": true
+        },
+        {
+          "id": "35f51528-b7f6-4a3f-873c-d959cde59a33",
+          "name": "25-26",
+          "parentId": "30f7dc1d-c8e0-4996-b2e1-ea69f7baf908"
+        },
+        {
+          "id": "233c8d67-b175-4819-985c-ebb26786cdc1",
+          "name": "ACIT Collab",
+          "parentId": "35f51528-b7f6-4a3f-873c-d959cde59a33"
+        },
+        {
+          "id": "bfd8840b-35c1-4f4e-8f59-0d41ef11b2a5",
+          "name": "Latin Music Day",
+          "parentId": "35f51528-b7f6-4a3f-873c-d959cde59a33"
+        },
+        {
+          "id": "40139c3b-c6dc-4a41-92f0-e86e85d76c29",
+          "name": "Professional Developments",
+          "parentId": "35f51528-b7f6-4a3f-873c-d959cde59a33"
+        },
+        {
+          "id": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "name": "Generic Photos",
+          "parentId": "35f51528-b7f6-4a3f-873c-d959cde59a33"
+        },
+        {
+          "id": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "name": "Musical Theater Day",
+          "parentId": "35f51528-b7f6-4a3f-873c-d959cde59a33"
+        },
+        {
+          "id": "7c987d82-620c-47fe-a8c2-55e4b5f84938",
+          "name": "Musical Games Day",
+          "parentId": "35f51528-b7f6-4a3f-873c-d959cde59a33"
+        },
+        {
+          "id": "6619181a-f7b0-459f-a7c9-b513634381dd",
+          "name": "Libby Gopal",
+          "parentId": "40139c3b-c6dc-4a41-92f0-e86e85d76c29"
+        },
+        {
+          "id": "8827e92d-0e71-4f4b-a44e-aabd8972488e",
+          "name": "Nick McBride",
+          "parentId": "40139c3b-c6dc-4a41-92f0-e86e85d76c29"
+        },
+        {
+          "id": "24cb339b-830e-4921-a231-38e806068e9e",
+          "name": "John Wernega",
+          "parentId": "40139c3b-c6dc-4a41-92f0-e86e85d76c29"
+        },
+        {
+          "id": "c42a6025-7ab5-4946-bb7a-667fbdbafe4d",
+          "name": "26-27",
+          "parentId": "30f7dc1d-c8e0-4996-b2e1-ea69f7baf908"
+        }
+      ],
+      "images": [
+        {
+          "id": "e353e8d2-293f-4022-8961-b2a177fd6027",
+          "url": "/assets/img/Screenshot 2026-02-06 222534.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 1
+        },
+        {
+          "id": "64f697df-aff2-46fa-a307-8dd77baeff3b",
+          "url": "/assets/img/Screenshot 2026-02-06 222526.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 2
+        },
+        {
+          "id": "436b4a7c-624f-4851-82e3-81aedb6b0145",
+          "url": "/assets/img/Screenshot 2026-02-06 222515.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 0
+        },
+        {
+          "id": "cb5ed6c8-84b6-4199-a0bf-0ec531eddb77",
+          "url": "/assets/img/Screenshot 2026-02-06 222506.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 3
+        },
+        {
+          "id": "55cc6fee-144b-442a-b013-fad4f5510505",
+          "url": "/assets/img/Screenshot 2026-02-06 222458.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 4
+        },
+        {
+          "id": "4a1363e9-cb0c-4cc1-bdc0-e78e0db0d10b",
+          "url": "/assets/img/Screenshot 2026-02-06 222447.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 5
+        },
+        {
+          "id": "1409d99d-613f-4aaf-8423-ea4b47e1fda8",
+          "url": "/assets/img/Screenshot 2026-02-06 222423.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 6
+        },
+        {
+          "id": "b973c1cd-979c-4932-9eb4-051c3fe6e2ab",
+          "url": "/assets/img/Screenshot 2026-02-06 222431.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 7
+        },
+        {
+          "id": "3cec5776-e0df-4d04-aeeb-eed3a0a2c700",
+          "url": "/assets/img/Screenshot 2026-02-06 222403.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 8
+        },
+        {
+          "id": "4a64316c-42aa-47ad-ba45-7d33deaff54e",
+          "url": "/assets/img/Screenshot 2026-02-06 222355.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 9
+        },
+        {
+          "id": "e673e332-5570-424d-bc7e-0f78fff4e970",
+          "url": "/assets/img/Screenshot 2026-02-06 222337.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 10
+        },
+        {
+          "id": "2c440968-2227-4967-92b7-eac8e94ab75d",
+          "url": "/assets/img/Screenshot 2026-02-06 222328.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 11
+        },
+        {
+          "id": "cd384cef-cc15-4c10-87c9-57d6ee4090e9",
+          "url": "/assets/img/Screenshot 2026-02-06 222311.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 12
+        },
+        {
+          "id": "6f9a0e86-2d4f-4e3e-aa5e-d2e9326ad7e3",
+          "url": "/assets/img/Screenshot 2026-02-06 222301.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 13
+        },
+        {
+          "id": "9acb01fc-09cb-4eac-9af1-69fb1b50b962",
+          "url": "/assets/img/Screenshot 2026-02-06 222244.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 14
+        },
+        {
+          "id": "877f685d-958d-4187-9217-9951d750e64c",
+          "url": "/assets/img/Screenshot 2026-02-06 222224.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 15
+        },
+        {
+          "id": "073e9d6e-e6bf-46c9-b2ad-2c7c350cbe8a",
+          "url": "/assets/img/Screenshot 2026-02-06 222156.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 16
+        },
+        {
+          "id": "55b51edc-4ade-42bc-aa27-9efc21f7d027",
+          "url": "/assets/img/Screenshot 2026-02-06 222215.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 17
+        },
+        {
+          "id": "c92f67d0-0cad-4d96-85d5-69b162edfb7e",
+          "url": "/assets/img/52854312589_d89aa02f51_o-scaled.jpg",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 18
+        },
+        {
+          "id": "5f946423-211f-4269-8297-cca91af2d264",
+          "url": "/assets/img/Screenshot 2025-09-24 094012.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 19
+        },
+        {
+          "id": "3ef5dc5e-a5a5-4cfa-b803-5288a23748ff",
+          "url": "/assets/img/Screenshot 2025-09-24 093949.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 20
+        },
+        {
+          "id": "045a5e34-521a-4471-b797-61778bd24c61",
+          "url": "/assets/img/Screenshot 2025-09-24 094001.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 21
+        },
+        {
+          "id": "7c157508-1e53-47fa-bc72-9e4807e1cd32",
+          "url": "/assets/img/Screenshot 2025-09-24 094018.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 22
+        },
+        {
+          "id": "58803d5b-82af-4d1b-91ca-3190160612bc",
+          "url": "/assets/img/Screenshot 2025-09-24 094022.png",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 23
+        },
+        {
+          "id": "5778e7ee-7c37-4a9f-95d8-6e95fe340504",
+          "url": "/assets/img/52854526795_0c57dd3603_o-1170x500.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 30
+        },
+        {
+          "id": "4e1f2310-c760-4339-8e8a-7b5a5a9b369b",
+          "url": "/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 27
+        },
+        {
+          "id": "bbbfe0cc-37d0-43f2-a4d2-07bf573c3117",
+          "url": "/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 31
+        },
+        {
+          "id": "ddac8f8b-055e-489a-b182-78a1e73cb372",
+          "url": "/assets/img/Screenshot 2025-08-28 154922.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 14
+        },
+        {
+          "id": "9a0e95b1-8dab-4b71-9769-df3360df90ac",
+          "url": "/assets/img/Screenshot 2025-08-28 154928.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 33
+        },
+        {
+          "id": "68db14af-65ee-4ae4-b99b-7b29393699c3",
+          "url": "/assets/img/Screenshot 2025-08-28 154950.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 34
+        },
+        {
+          "id": "9c77d7db-6815-4048-92e2-e28ff81210ba",
+          "url": "/assets/img/Screenshot 2025-08-28 155003.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 35
+        },
+        {
+          "id": "2198a8cc-8f03-4ebd-bdf9-4cf9323fe859",
+          "url": "/assets/img/Screenshot 2025-08-28 154905.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 29
+        },
+        {
+          "id": "468f46b3-f2ca-4515-9610-41882136ea67",
+          "url": "/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 28
+        },
+        {
+          "id": "2b2285e9-648a-4f77-ab56-54b6cb1fe502",
+          "url": "/assets/img/ext2_Screenshot 2025-08-28 154916.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 32
+        },
+        {
+          "id": "2e9dee09-ee70-4123-bdab-ff032360c9ac",
+          "url": "/assets/img/ext_gallery4.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 12
+        },
+        {
+          "id": "b464e09f-ef28-464e-b983-fbaf5ea5a0ea",
+          "url": "/assets/img/members-banner.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 8
+        },
+        {
+          "id": "589ef916-c260-44d8-b0fc-34fec827a41d",
+          "url": "/assets/img/index-header.jpg",
+          "caption": "",
+          "folderId": "b9118ff7-b399-4334-b57a-06d058a9cbdc",
+          "order": 36
+        },
+        {
+          "id": "493309b1-cbdc-4153-8aa0-c3931980aa1f",
+          "url": "/assets/img/about2.png",
+          "caption": "",
+          "folderId": "95bf4049-5d1f-41e0-b5c9-e59395d39e49",
+          "order": 37
+        },
+        {
+          "id": "ef8410bf-58fb-4a7e-aef6-6c7bf67759a3",
+          "url": "/assets/img/about1.png",
+          "caption": "",
+          "folderId": "a90484ce-66a9-4aed-ad04-59100e1d78a1",
+          "order": 38
+        },
+        {
+          "id": "6849a02b-47c7-4c75-b12a-53587c737d9b",
+          "url": "/assets/img/about.png",
+          "caption": "",
+          "folderId": "c464a1ab-b2ad-4412-9054-3ceff20ab85f",
+          "order": 39
+        },
+        {
+          "id": "7638316f-8740-41c1-8d0b-074faa5e7603",
+          "url": "/assets/img/events-banner.png",
+          "caption": "",
+          "folderId": "2fa5294c-0076-4aaf-90c0-732d14d76fdd",
+          "order": 40
+        },
+        {
+          "id": "1af5d64e-e763-40f0-a0d0-732cecd883a9",
+          "url": "/assets/img/members-banner.jpg",
+          "caption": "",
+          "folderId": "3968453f-35b9-4262-bfb8-37fa3ad4d502",
+          "order": 41
+        },
+        {
+          "id": "4eca49c2-c18b-49de-bfc5-4b8b94855f17",
+          "url": "/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg",
+          "caption": "",
+          "folderId": "f3ac88a8-619a-4250-835b-a1b6f2eb0787",
+          "order": 42
+        },
+        {
+          "id": "d308efa3-66a4-4b88-856b-6ae78bcb0c88",
+          "url": "/assets/img/ext_gallery4.png",
+          "caption": "",
+          "folderId": "51904027-068d-43ca-90a9-6ad185544943",
+          "order": 43
+        },
+        {
+          "id": "922de2e6-01ea-4b0b-985b-6933a9f30a10",
+          "url": "/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg",
+          "caption": "",
+          "folderId": "055bab31-60f0-40ed-b40a-3f397982a764",
+          "order": 44
+        },
+        {
+          "id": "5978b2ec-cc57-4659-b815-8542543e1989",
+          "url": "/assets/img/eboard-header.jpg",
+          "caption": "",
+          "folderId": "6cb3a073-792e-4dc5-aeb3-f4bef7e7040f",
+          "order": 45
+        },
+        {
+          "id": "b7d45626-14f3-4d46-a737-35b8a9cab767",
+          "url": "/assets/img/resources-banner.png",
+          "caption": "",
+          "folderId": "6199dc74-b5c3-43eb-8c4b-bc27b1a12115",
+          "order": 46
+        },
+        {
+          "id": "54210c1e-938d-4bea-aa2f-032703a3ca04",
+          "url": "/assets/icons/logo2.png",
+          "caption": "",
+          "folderId": "3ae5bf44-98ef-4658-b818-e57c46653ec2",
+          "order": 47
+        },
+        {
+          "id": "74aa490a-c741-44c1-a517-0631078b5aab",
+          "url": "/assets/img/Screenshot 2026-02-06 222534.png",
+          "caption": "",
+          "folderId": "24cb339b-830e-4921-a231-38e806068e9e",
+          "order": 1
+        },
+        {
+          "id": "07962d8f-2f66-4436-a5c9-6fd59c2bca29",
+          "url": "/assets/img/Screenshot 2026-02-06 222526.png",
+          "caption": "",
+          "folderId": "24cb339b-830e-4921-a231-38e806068e9e",
+          "order": 0
+        },
+        {
+          "id": "1a57f9e1-1aa6-45c4-a3d5-f0be4688f14f",
+          "url": "/assets/img/Screenshot 2026-02-06 222515.png",
+          "caption": "",
+          "folderId": "233c8d67-b175-4819-985c-ebb26786cdc1",
+          "order": 4
+        },
+        {
+          "id": "5ad94dd4-0fe6-4a59-91ef-c1fc48dc68c8",
+          "url": "/assets/img/Screenshot 2026-02-06 222506.png",
+          "caption": "",
+          "folderId": "233c8d67-b175-4819-985c-ebb26786cdc1",
+          "order": 1
+        },
+        {
+          "id": "191ffcb6-a36b-4e12-a71c-b9e1d487f5b8",
+          "url": "/assets/img/Screenshot 2026-02-06 222458.png",
+          "caption": "",
+          "folderId": "233c8d67-b175-4819-985c-ebb26786cdc1",
+          "order": 2
+        },
+        {
+          "id": "c76eeb7b-a8bc-4729-b641-c2b76811d627",
+          "url": "/assets/img/Screenshot 2026-02-06 222447.png",
+          "caption": "",
+          "folderId": "bfd8840b-35c1-4f4e-8f59-0d41ef11b2a5",
+          "order": 10
+        },
+        {
+          "id": "3ac515b2-5069-4c9d-9bea-b2a8c0b486ce",
+          "url": "/assets/img/Screenshot 2026-02-06 222423.png",
+          "caption": "",
+          "folderId": "bfd8840b-35c1-4f4e-8f59-0d41ef11b2a5",
+          "order": 5
+        },
+        {
+          "id": "1756f63f-07ba-4834-b1b1-83b5afe227f2",
+          "url": "/assets/img/Screenshot 2026-02-06 222431.png",
+          "caption": "",
+          "folderId": "bfd8840b-35c1-4f4e-8f59-0d41ef11b2a5",
+          "order": 6
+        },
+        {
+          "id": "2a91f511-a4f7-4583-b2ce-6eff1772eef0",
+          "url": "/assets/img/Screenshot 2026-02-06 222403.png",
+          "caption": "",
+          "folderId": "bfd8840b-35c1-4f4e-8f59-0d41ef11b2a5",
+          "order": 7
+        },
+        {
+          "id": "cb6715f4-d81b-40bf-82ba-8c11dfbcab07",
+          "url": "/assets/img/Screenshot 2026-02-06 222355.png",
+          "caption": "",
+          "folderId": "bfd8840b-35c1-4f4e-8f59-0d41ef11b2a5",
+          "order": 4
+        },
+        {
+          "id": "254f9783-6893-47ea-9c58-0336af19111e",
+          "url": "/assets/img/Screenshot 2026-02-06 222337.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 25
+        },
+        {
+          "id": "65599aaa-94e0-42b3-a101-8f8b4fc60993",
+          "url": "/assets/img/Screenshot 2026-02-06 222328.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 29
+        },
+        {
+          "id": "b78c2c18-578c-4727-8316-81f8f19dfc6c",
+          "url": "/assets/img/Screenshot 2026-02-06 222311.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 28
+        },
+        {
+          "id": "987027f8-a1b2-4cef-a2f8-33455b3f65bd",
+          "url": "/assets/img/Screenshot 2026-02-06 222301.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 27
+        },
+        {
+          "id": "d324b984-a27d-4b3c-9d54-9aa1dd39f591",
+          "url": "/assets/img/Screenshot 2026-02-06 222244.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 26
+        },
+        {
+          "id": "0cd18b8c-8e25-4eb7-96f4-05574c53fda4",
+          "url": "/assets/img/Screenshot 2026-02-06 222224.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 30
+        },
+        {
+          "id": "a058fae2-7e9c-4375-9275-9c68b99b1117",
+          "url": "/assets/img/Screenshot 2026-02-06 222156.png",
+          "caption": "",
+          "folderId": "7c987d82-620c-47fe-a8c2-55e4b5f84938",
+          "order": 1
+        },
+        {
+          "id": "49df0cf2-9a8f-485a-af9b-1896ca620193",
+          "url": "/assets/img/Screenshot 2026-02-06 222215.png",
+          "caption": "",
+          "folderId": "7c987d82-620c-47fe-a8c2-55e4b5f84938",
+          "order": 0
+        },
+        {
+          "id": "ac27b7ae-dea1-4310-b368-00dcef1dbb6d",
+          "url": "/assets/img/52854312589_d89aa02f51_o-scaled.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 2
+        },
+        {
+          "id": "3a2b7ced-45b8-42f4-b2d8-ace8c681a788",
+          "url": "/assets/img/Screenshot 2025-09-24 094012.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 22
+        },
+        {
+          "id": "b99d5e1a-1fbc-4e5a-a6dd-186ec3cf2a83",
+          "url": "/assets/img/Screenshot 2025-09-24 093949.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 24
+        },
+        {
+          "id": "3dc029d3-0f66-433f-ab1c-f680c6982c1b",
+          "url": "/assets/img/Screenshot 2025-09-24 094001.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 23
+        },
+        {
+          "id": "a6954160-d8c9-427e-86d2-144c1c8b053f",
+          "url": "/assets/img/Screenshot 2025-09-24 094018.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 20
+        },
+        {
+          "id": "dec6b665-3763-4d72-87c5-bfbf5d5c4f59",
+          "url": "/assets/img/Screenshot 2025-09-24 094022.png",
+          "caption": "",
+          "folderId": "29531f68-415f-4831-9e91-eb4bbee135c5",
+          "order": 21
+        },
+        {
+          "id": "93f890e6-3cd1-46df-bf5e-de316e3d95b4",
+          "url": "/assets/img/52854526795_0c57dd3603_o-1170x500.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 1
+        },
+        {
+          "id": "d958e7d3-9006-4f81-ba12-a29bdac89fd1",
+          "url": "/assets/img/506047153_10235311168936420_6729702158962901355_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 3
+        },
+        {
+          "id": "fe893e3d-0d8c-4e39-80af-789a60931aa9",
+          "url": "/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 10
+        },
+        {
+          "id": "20c35dfd-9162-4f20-8a44-6e6fd703a717",
+          "url": "/assets/img/Screenshot 2025-08-28 154922.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 15
+        },
+        {
+          "id": "60619180-71db-4194-a3ec-66263408c947",
+          "url": "/assets/img/Screenshot 2025-08-28 154928.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 16
+        },
+        {
+          "id": "61d78611-4449-440f-84e5-282d260698a1",
+          "url": "/assets/img/Screenshot 2025-08-28 154950.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 22
+        },
+        {
+          "id": "f3bcf7cc-761d-4521-9d5b-f59624819efe",
+          "url": "/assets/img/Screenshot 2025-08-28 155003.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 4
+        },
+        {
+          "id": "990461e9-92d1-4191-b371-ee2baba926ae",
+          "url": "/assets/img/Screenshot 2025-08-28 154905.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 24
+        },
+        {
+          "id": "0f05d904-b4ea-436c-906f-c9fa9f96fe73",
+          "url": "/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 21
+        },
+        {
+          "id": "ac3a03b0-b0f8-4b55-a069-ab7768dd5c7d",
+          "url": "/assets/img/ext2_Screenshot 2025-08-28 154916.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 23
+        },
+        {
+          "id": "ffc9046b-d92f-4a99-ab18-b6fc8bea4eb7",
+          "url": "/assets/img/ext_gallery4.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 9
+        },
+        {
+          "id": "e06d7131-c756-4ad0-9d15-7de21bdea75d",
+          "url": "/assets/img/members-banner.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 13
+        },
+        {
+          "id": "974420b5-7456-4f3f-9358-7940170d893c",
+          "url": "/assets/img/index-header.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 19
+        },
+        {
+          "id": "d2fe6e8f-3357-4ecd-87e9-23974da77f73",
+          "url": "/assets/img/choral-engagement.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 25
+        },
+        {
+          "id": "4e7ea768-f86e-47dc-b6f3-47b6743f841c",
+          "url": "/assets/img/events-banner.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 7
+        },
+        {
+          "id": "370e9c71-e9dd-4659-a740-39105bb7f777",
+          "url": "/assets/img/members-banner.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 6
+        },
+        {
+          "id": "a3602e49-da6b-4b5a-8e17-5955067ac78f",
+          "url": "/assets/img/53630626_10156972764351558_1406328161368539136_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 11
+        },
+        {
+          "id": "c48bcd5c-46e3-4895-9e0f-67d981f5f4f0",
+          "url": "/assets/img/ext_gallery4.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 20
+        },
+        {
+          "id": "21fcef58-6f4e-40ba-b4fd-2d49ba82b4de",
+          "url": "/assets/img/88321339_1520072311502572_3698786862781956096_n.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 5
+        },
+        {
+          "id": "b31ee91b-2bb6-43b4-a2cf-3851d40da97d",
+          "url": "/assets/img/eboard-header.jpg",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 18
+        },
+        {
+          "id": "36b8835d-6830-4708-b710-6354e2badbf8",
+          "url": "/assets/img/resources-banner.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 17
+        },
+        {
+          "id": "26013b25-b006-438f-8cf2-4435e40d90ce",
+          "url": "/assets/icons/logo2.png",
+          "caption": "",
+          "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
+          "order": 26
+        }
+      ]
+    },
+    "members": [
+      {
+        "id": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "name": "Admin",
+        "email": "abretz50@gmail.com",
+        "year": "",
+        "mailingAddress": "",
+        "role": "admin",
+        "hasAccount": true,
+        "username": "abretz50@gmail.com",
+        "salt": "39d29f4251bd70fd24757878c9e2e212",
+        "hash": "230421f573ea3d15e95c109ce4fb808f324c75512a4ea7c052e080ad3b20d867233df9286d7eac27723f2bb0bcd0d0825851becc77a56f6ca1f3d0825d8f450d",
+        "active": true,
+        "joinedAt": "2026-08-27T23:55:43.772Z",
+        "photoUrl": "/assets/img/profiles/1788023794937-adam-bretz.JPG"
+      },
+      {
+        "id": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "name": "Adam Bretz",
+        "email": "bretza67@rowan.edu",
+        "year": "",
+        "mailingAddress": "",
+        "role": "treasurer",
+        "hasAccount": true,
+        "username": "bretza67",
+        "salt": "69d59c86b90cad1bc905e7833bb61713",
+        "hash": "fe86c2b3690c2df7c25e71bd316ccdf46fb5793d27dd90fd7b90a1f65bf8198a63aa8f41ea9552e0fc77abc9253008495111d31a9bd4b18b77fa85f99c0a5b0c",
+        "active": true,
+        "joinedAt": "2026-08-28T03:30:28.838Z",
+        "photoUrl": "/assets/img/profiles/1788023938612-adam-bretz.JPG"
+      },
+      {
+        "id": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "name": "Sadie Frame",
+        "email": "frames27@rowan.edu",
+        "role": "secretary",
+        "hasAccount": true,
+        "salt": "4ecfd55c631135297017c4c0acfd1f72",
+        "hash": "6fa403950426679beaf041455bc16b718fae8f3fc507427fda0edc4b6195e4c090f5b3dc5c611c6350e7e83bf40b3f48e39e50acbf807b5434e9ed8e4aba6932",
+        "active": true,
+        "joinedAt": "2026-08-28T03:48:02.694Z"
+      },
+      {
+        "id": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "name": "Jessenia Zavala",
+        "email": "zavala34@rowan.edu",
+        "role": "event_coordinator",
+        "hasAccount": true,
+        "salt": "4a70ec198125552d4dae2788adaf2237",
+        "hash": "658e3963681bec03fda77049770b647ccf1d6f264fb0890023d1a14ffb543b642b3542fda22e26cd35dea38f213db2001b66297189d39f6bfaef648cade1f3a8",
+        "active": true,
+        "joinedAt": "2026-08-28T04:28:14.134Z"
+      },
+      {
+        "id": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "name": "Vera Caruso",
+        "email": "caruso83@rowan.edu",
+        "role": "media",
+        "hasAccount": true,
+        "salt": "236d027f0cc497b006792651599b3c00",
+        "hash": "3602df7d2635e336eaea0840f63d7d724e6c2295b7a7f8a87d4f8e49c732fb83e93ffdc1ef8b7d0158ba5d1d0be1e7884d86e68f6fa06c33ec75813ec27e5efa",
+        "active": true,
+        "joinedAt": "2026-08-29T00:15:38.447Z"
+      },
+      {
+        "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "name": "Makayli Matias",
+        "email": "matias85@rowan.edu",
+        "role": "president",
+        "hasAccount": true,
+        "salt": "71d4fc5994f3caf0b7c35548fdc0ef26",
+        "hash": "8fc37e8865b430baac92955c1b8db416e5aaff1a48333ce68a17dc819fc87e34cdabe36c58dfff39b805bc1371f95dbc10c8d3d208e1783954dbfe38168c78e1",
+        "active": true,
+        "joinedAt": "2026-08-29T02:23:20.049Z"
+      },
+      {
+        "id": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "name": "Daniel Suliguin",
+        "email": "dsuliguin30@gmail.com",
+        "role": "senator",
+        "hasAccount": true,
+        "salt": "8dca0cd58814808c8721bef2f3e488c5",
+        "hash": "7e189f0ba5b642cd3c20fd65214a5fe4f6aba3ef6fdefea470319496d67ad8559d0b33e6b44db3da14de68cb29a4afcd2ab8779fd780fdd4e668c127c332feb0",
+        "active": true,
+        "joinedAt": "2026-08-30T01:16:04.814Z",
+        "photoUrl": "/assets/img/profiles/1788052589736-IMG_4176.jpeg"
+      },
+      {
+        "id": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "name": "Lizzie Hitchner",
+        "email": "hitchn55@rowan.edu",
+        "role": "vice_president",
+        "hasAccount": true,
+        "salt": "394534e9ce12fe9e371bb23390b319dc",
+        "hash": "2395ae139017fddbf8090226cf3c631e630fc8dd6df2345c8213c8611ba04e71596ce038726f6e989eee4e0ae8ee0e35335734cb457d971d220d90f928e0837b",
+        "active": true,
+        "joinedAt": "2026-08-31T23:33:01.659Z",
+        "photoUrl": "/assets/img/profiles/1788219216690-37-_MG_9302.jpeg"
+      }
+    ],
+    "users": [
+      {
+        "id": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "username": "abretz50@gmail.com",
+        "name": "Adam Bretz",
+        "salt": "39d29f4251bd70fd24757878c9e2e212",
+        "hash": "230421f573ea3d15e95c109ce4fb808f324c75512a4ea7c052e080ad3b20d867233df9286d7eac27723f2bb0bcd0d0825851becc77a56f6ca1f3d0825d8f450d",
+        "role": "admin",
+        "active": true
+      }
+    ],
+    "points": [
+      {
+        "id": "56612602-6295-4ac3-a1ac-5db1d3c3a8f8",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "event",
+        "eventId": "1bbcbc6a-1930-4a75-8926-4d8b637fe7f1",
+        "eventTitle": "Sample Event",
+        "amount": 1,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-08-28T03:30:36.464Z",
+        "decidedAt": "2026-08-28T03:31:03.538Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "9ae27c4f-6d4a-486a-83ec-f7e4f9c82c12",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": -1,
+        "status": "approved",
+        "reason": "Sample Removal",
+        "requestedAt": "2026-08-28T15:04:47.569Z",
+        "decidedAt": "2026-08-28T15:04:47.571Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "0a370040-63e8-41b3-aeb1-c6d71a0212db",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "event",
+        "eventId": "68d9c865-4511-4e25-a18a-b05a59eaa48c",
+        "eventTitle": "Sample Event",
+        "amount": 50,
+        "status": "denied",
+        "reason": "",
+        "requestedAt": "2026-08-29T03:34:09.901Z",
+        "decidedAt": "2026-08-29T03:34:29.863Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "e9d8be12-613d-48c2-85ad-1e86f226a32c",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "event",
+        "eventId": "68d9c865-4511-4e25-a18a-b05a59eaa48c",
+        "eventTitle": "Sample Event",
+        "amount": 50,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-08-29T03:35:58.665Z",
+        "decidedAt": "2026-08-29T03:37:01.750Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "9effbebd-3d40-4c7d-8502-378b516b232e",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 50,
+        "status": "approved",
+        "reason": "Sample Event Attendance Correction",
+        "requestedAt": "2026-08-29T03:36:57.222Z",
+        "decidedAt": "2026-08-29T03:36:57.222Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "57d8df25-fa3e-413e-bbf7-d6ef399724b2",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": -50,
+        "status": "approved",
+        "reason": "Sample Removal",
+        "requestedAt": "2026-08-29T03:38:18.085Z",
+        "decidedAt": "2026-08-29T03:38:18.085Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "f524da52-2ada-4346-aa10-a9c5932b26e7",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": -50,
+        "status": "approved",
+        "reason": "Sample Removal",
+        "requestedAt": "2026-08-29T03:38:25.810Z",
+        "decidedAt": "2026-08-29T03:38:25.810Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "34ecf9fc-f9e0-42e6-8286-3e946d558e73",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 100,
+        "status": "approved",
+        "reason": "ProfLink verified",
+        "requestedAt": "2026-08-31T23:43:03.101Z",
+        "decidedAt": "2026-08-31T23:43:03.103Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "9d1b0e47-6975-452f-a509-b314210141ef",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 100,
+        "status": "approved",
+        "reason": "ProfLink verified",
+        "requestedAt": "2026-08-31T23:43:10.143Z",
+        "decidedAt": "2026-08-31T23:43:10.143Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "229ee803-18eb-48ac-a260-5aa3ee84aa76",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "event",
+        "eventId": "572badea-6386-4728-9e45-0e13f93d5c78",
+        "eventTitle": "Sample Event",
+        "amount": 400,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-08-31T23:45:02.452Z",
+        "decidedAt": "2026-08-31T23:45:51.579Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "07dd678f-2446-4318-a0b7-104ab9ca66fe",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": -100,
+        "status": "approved",
+        "reason": "Mistake Correction",
+        "requestedAt": "2026-08-31T23:47:18.256Z",
+        "decidedAt": "2026-08-31T23:47:18.256Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "8783216a-a4b1-47d7-844b-a14620ec7f8f",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": -400,
+        "status": "approved",
+        "reason": "Sample Removal",
+        "requestedAt": "2026-09-01T00:34:10.186Z",
+        "decidedAt": "2026-09-01T00:34:10.188Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "d6c5c329-f210-466d-bb7b-218069961957",
+        "title": "Add missing PD event: Spring 2026 SJDCA Luncheon",
+        "description": "",
+        "assignedToId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "assignedToName": "Jessenia Zavala",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "dueDate": "2026-09-18",
+        "priority": "low",
+        "status": "open",
+        "createdAt": "2026-08-28T16:11:06.877Z",
+        "updatedAt": "2026-08-29T15:51:33.022Z",
+        "assignedToRole": "event_coordinator",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-08-28T16:11:06.877Z"
+          }
+        ]
+      },
+      {
+        "id": "88b1a37a-f611-4daf-ad76-8a8783bbdacd",
+        "title": "Upload All Events to Website",
+        "description": "",
+        "assignedToId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "assignedToName": "Jessenia Zavala",
+        "assignedToRole": "event_coordinator",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "dueDate": "2026-09-25",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-08-29T03:04:41.781Z",
+        "updatedAt": "2026-08-29T03:04:41.781Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-08-29T03:04:41.781Z"
+          }
+        ]
+      },
+      {
+        "id": "9c586f91-e304-4b7b-92d7-1a4892ddc6a6",
+        "title": "Add more Instagram posts to Slideshow",
+        "description": "",
+        "assignedToId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "assignedToName": "Vera Caruso",
+        "assignedToRole": "media",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "dueDate": "2026-09-19",
+        "priority": "low",
+        "status": "open",
+        "createdAt": "2026-08-29T18:52:02.910Z",
+        "updatedAt": "2026-08-29T18:52:02.910Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-08-29T18:52:02.910Z"
+          }
+        ]
+      },
+      {
+        "id": "95842940-069f-4142-be29-ff37663f80b2",
+        "title": "Add 2026 PDs to Website slideshow",
+        "description": "Nick McBride, SJCDA Breakfast, Libby Gopal Pics",
+        "assignedToId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "assignedToName": "Vera Caruso",
+        "assignedToRole": "media",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "dueDate": "2026-09-19",
+        "priority": "low",
+        "status": "open",
+        "createdAt": "2026-08-29T18:52:39.453Z",
+        "updatedAt": "2026-08-29T18:53:14.265Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-08-29T18:52:39.453Z"
+          }
+        ]
+      },
+      {
+        "id": "88f00835-35b1-4768-91c8-ff3f7da94793",
+        "title": "New Merch Designs",
+        "description": "",
+        "assignedToId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "assignedToName": "Vera Caruso",
+        "assignedToRole": "media",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "dueDate": "2026-09-19",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-08-29T18:53:04.821Z",
+        "updatedAt": "2026-09-01T00:36:37.883Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-08-29T18:53:04.821Z"
+          }
+        ],
+        "tags": [
+          {
+            "id": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+            "name": "Lizzie Hitchner",
+            "role": "vice_president"
+          },
+          {
+            "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "name": "Makayli Matias",
+            "role": "president"
+          }
+        ]
+      },
+      {
+        "id": "54fdf950-a652-4e7f-af01-b0eed693e314",
+        "title": "Update Resources for previous PDs and add as site config feature",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "dueDate": "2026-09-19",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-08-29T21:21:30.651Z",
+        "updatedAt": "2026-08-29T21:34:39.284Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-08-29T21:21:30.651Z"
+          }
+        ]
+      },
+      {
+        "id": "1b204ff9-f058-41ba-a110-6683845a1fb9",
+        "title": "Configure Paypal for Online Purchases as well as club Venmo, etc",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "dueDate": "2026-09-19",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-08-29T21:44:23.906Z",
+        "updatedAt": "2026-08-29T21:44:23.906Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-08-29T21:44:23.906Z"
+          }
+        ]
+      },
+      {
+        "id": "7488ba4b-be27-4d56-90f2-b596bc3f1b26",
+        "title": "Reimburse Vera for Canva",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "assignedByName": "Vera Caruso",
+        "dueDate": "2026-09-18",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-08-31T23:34:40.085Z",
+        "updatedAt": "2026-08-31T23:34:40.085Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "byName": "Vera Caruso",
+            "at": "2026-08-31T23:34:40.085Z"
+          }
+        ]
+      },
+      {
+        "id": "3cd1c5b4-6a8d-48bb-8f54-a5a8f9d5fbfc",
+        "title": "Make Slides for Foundations",
+        "description": "",
+        "assignedToId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "assignedToName": "Makayli Matias",
+        "assignedToRole": "president",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "dueDate": "2026-09-02",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-08-31T23:39:10.631Z",
+        "updatedAt": "2026-09-01T00:27:08.770Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-08-31T23:39:10.631Z"
+          }
+        ],
+        "tags": [
+          {
+            "id": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "name": "Vera Caruso",
+            "role": "media"
+          }
+        ]
+      },
+      {
+        "id": "adb46cea-8ee0-4289-9548-35863467294e",
+        "title": "Show Sadie Points Tabs",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "dueDate": "2026-09-03",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-01T00:01:47.523Z",
+        "updatedAt": "2026-09-01T00:01:47.523Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T00:01:47.523Z"
+          }
+        ]
+      },
+      {
+        "id": "314b5bff-4714-4112-b79e-76b84a6f9250",
+        "title": "Get Replacement Key for Choral Library",
+        "description": "",
+        "assignedToId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "assignedToName": "Daniel Suliguin",
+        "assignedToRole": "senator",
+        "assignedById": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "assignedByName": "Daniel Suliguin",
+        "dueDate": "2026-09-04",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-09-01T00:10:23.096Z",
+        "updatedAt": "2026-09-01T00:10:23.096Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+            "byName": "Daniel Suliguin",
+            "at": "2026-09-01T00:10:23.096Z"
+          }
+        ]
+      },
+      {
+        "id": "181c796e-44bc-4d31-ab43-a468847b929a",
+        "title": "Setup Volunteer Events & Update Points System",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "dueDate": "2026-09-07",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-01T00:17:00.842Z",
+        "updatedAt": "2026-09-01T00:17:00.842Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T00:17:00.842Z"
+          }
+        ]
+      },
+      {
+        "id": "4c18ee71-ef36-4a5a-a8ef-916df204179a",
+        "title": "Sight Reading Materials For Friday",
+        "description": "",
+        "assignedToId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "assignedToName": "Lizzie Hitchner",
+        "assignedToRole": "vice_president",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "dueDate": "2026-09-01",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-09-01T00:17:30.862Z",
+        "updatedAt": "2026-09-01T00:28:53.187Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T00:17:30.862Z"
+          }
+        ],
+        "tags": []
+      },
+      {
+        "id": "1ae12b0f-f06e-4979-aabc-6adc5bf9c37b",
+        "title": "Pick Concessions Shows",
+        "description": "",
+        "assignedToId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "assignedToName": "Makayli Matias",
+        "assignedToRole": "president",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "dueDate": "2026-09-07",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-01T00:22:56.536Z",
+        "updatedAt": "2026-09-01T00:22:56.536Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T00:22:56.536Z"
+          }
+        ]
+      },
+      {
+        "id": "c2ea0c79-723b-4657-aed4-d8cbb01b2034",
+        "title": "Give Dante D and Hanna S 200 points for Wednesday Presentation",
+        "description": "",
+        "assignedToId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "assignedToName": "Sadie Frame",
+        "assignedToRole": "secretary",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-04",
+        "priority": "low",
+        "status": "open",
+        "createdAt": "2026-09-01T00:26:33.580Z",
+        "updatedAt": "2026-09-01T00:26:33.580Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T00:26:33.580Z"
+          }
+        ]
+      },
+      {
+        "id": "a8be065a-dc82-4c22-afe2-f5bd0ab586d6",
+        "title": "Remove Old Members from Proflink",
+        "description": "",
+        "assignedToId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "assignedToName": "Jessenia Zavala",
+        "assignedToRole": "event_coordinator",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-30",
+        "priority": "low",
+        "status": "open",
+        "createdAt": "2026-09-01T00:27:00.204Z",
+        "updatedAt": "2026-09-01T00:27:00.204Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T00:27:00.204Z"
+          }
+        ]
+      },
+      {
+        "id": "c1bf47e9-4ac5-428e-81c5-7c3215d0758e",
+        "title": "Talk to Dr. Thomas about Piano Tuning Override with Kathy",
+        "description": "",
+        "assignedToId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "assignedToName": "Makayli Matias",
+        "assignedToRole": "president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-28",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-01T00:28:46.461Z",
+        "updatedAt": "2026-09-01T00:28:46.461Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T00:28:46.461Z"
+          }
+        ]
+      },
+      {
+        "id": "9f11a54f-d844-43de-b6d4-a3c63a8b8f0e",
+        "title": "Setup Email Notifications",
+        "description": "Need ACDA Email Login",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "tags": [
+          {
+            "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "name": "Makayli Matias",
+            "role": "president"
+          }
+        ],
+        "dueDate": "2026-09-02",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-09-01T00:36:00.501Z",
+        "updatedAt": "2026-09-01T00:36:00.501Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T00:36:00.501Z"
+          }
+        ]
+      },
+      {
+        "id": "ecee8db0-bda1-4bce-a2a6-adaf30c50124",
+        "title": "Sample Task",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-08-31",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-01T00:37:10.408Z",
+        "updatedAt": "2026-09-01T00:37:10.408Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T00:37:10.408Z"
+          }
+        ]
+      }
+    ],
+    "permissions": {
+      "events": [
+        "event_coordinator",
+        "secretary",
+        "media",
+        "treasurer",
+        "senator",
+        "vice_president"
+      ],
+      "members": [
+        "secretary",
+        "treasurer",
+        "event_coordinator",
+        "vice_president",
+        "senator"
+      ],
+      "points": [
+        "secretary",
+        "event_coordinator",
+        "vice_president"
+      ],
+      "library": [
+        "vice_president"
+      ],
+      "gallery": [
+        "media",
+        "vice_president",
+        "treasurer",
+        "eboard_access",
+        "senator"
+      ],
+      "budget": [
+        "treasurer",
+        "vice_president"
+      ],
+      "_vpMigrated": true,
+      "content": [
+        "media"
+      ],
+      "_contentMigrated": true
+    },
+    "eventPointDefaults": {
+      "Event": 100,
+      "Meeting": 200,
+      "Professional Development": 300,
+      "Workshop": 300,
+      "Performance": 0,
+      "VolunteerSlot": 25,
+      "VolunteerFullDay": 300
+    }
+  }
+}
