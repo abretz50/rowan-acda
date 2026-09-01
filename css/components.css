@@ -1330,3 +1330,9 @@ html, body{ background: var(--page-bg); }
 /* Tasks tab — color-coded by priority via a left accent bar */
 .task-done { opacity: .6; }
 .task-done .name { text-decoration: line-through; }
+.task-overdue { background: #fef2f2; }
+.task-overdue .name { color: #7f1d1d; }
+@media (prefers-color-scheme: dark) {
+  .task-overdue { background: rgba(239, 68, 68, .12); }
+  .task-overdue .name { color: #fca5a5; }
+}
