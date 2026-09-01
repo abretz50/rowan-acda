@@ -1221,6 +1221,7 @@ html, body{ background: var(--page-bg); }
 .badge-role.badge-priority-high { color: #7f1d1d; background: #fee2e2; border: 1px solid #ef4444; }
 .badge-role.badge-priority-medium { color: #713f12; background: #fef9c3; border: 1px solid #eab308; }
 .badge-role.badge-priority-low { color: #1e3a8a; background: #dbeafe; border: 1px solid #3b82f6; }
+.badge-role.badge-success { color: #14532d; background: #dcfce7; border: 1px solid #22c55e; }
 
 .btn-sm {
   display: inline-flex; align-items: center; justify-content: center;

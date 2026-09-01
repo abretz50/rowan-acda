@@ -48,6 +48,9 @@ let lastMemberStats = null;
 let allTasks = [];
 let taskAssignableMembers = [];
 let taskViewMode = 'board';
+let taskSearchTerm = '';
+let taskSortBy = 'priority';
+let taskSortDir = 'asc';
 let editingTaskId = null;
 let libScores = [];
 let libSessions = [];
@@ -609,11 +612,22 @@ function taskRowHTML(t) {
 }
 
 const TASK_HISTORY_EVENT_LABELS = { created: 'Created', completed: 'Completed', reopened: 'Reopened' };
-const TASK_HISTORY_EVENT_BADGE = { created: 'inactive', completed: 'eboard', reopened: 'admin' };
+const TASK_HISTORY_EVENT_BADGE = { created: 'inactive', completed: 'badge-success', reopened: 'admin' };
+
+// A "completed" entry is shown in red as overdue if it landed after the
+// task's due date at that time — same red used for overdue tasks on the
+// board — otherwise green, same as the on-time board default.
+function taskHistoryBadgeClass(entry) {
+  if (entry.event === 'completed' && entry.dueDate && new Date(entry.at) > new Date(entry.dueDate)) {
+    return 'badge-priority-high';
+  }
+  return TASK_HISTORY_EVENT_BADGE[entry.event] || '';
+}
 
 function taskHistoryRowHTML(entry) {
-  const badgeClass = TASK_HISTORY_EVENT_BADGE[entry.event] || '';
-  const label = TASK_HISTORY_EVENT_LABELS[entry.event] || entry.event;
+  const badgeClass = taskHistoryBadgeClass(entry);
+  const late = badgeClass === 'badge-priority-high';
+  const label = late ? 'Completed (Overdue)' : (TASK_HISTORY_EVENT_LABELS[entry.event] || entry.event);
   return `<div class="admin-row">
     <div>
       <span class="name">${escHtml(entry.taskTitle)}</span> <span class="badge-role ${badgeClass}">${label}</span>
@@ -627,28 +641,44 @@ function renderTaskHistoryList() {
   const el = document.getElementById('tasks-list');
   const entries = [];
   for (const t of allTasks) {
-    for (const h of (t.history || [])) entries.push({ ...h, taskTitle: t.title });
+    for (const h of (t.history || [])) entries.push({ ...h, taskTitle: t.title, dueDate: t.dueDate });
   }
   entries.sort((a, b) => new Date(b.at) - new Date(a.at));
   el.innerHTML = entries.map(taskHistoryRowHTML).join('') || '<p class="small muted">No task history yet.</p>';
 }
 
-function renderTasksList() {
-  const el = document.getElementById('tasks-list');
-  if (taskViewMode === 'history') { renderTaskHistoryList(); return; }
-  const visible = taskViewMode === 'mine'
-    ? allTasks.filter(t => me && (t.assignedToId === me.id || (t.tags || []).some(x => x.id === me.id)))
-    : allTasks;
-  const sorted = visible.slice().sort((a, b) => {
-    if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
-    const p = (PRIORITY_ORDER[a.priority] ?? 3) - (PRIORITY_ORDER[b.priority] ?? 3);
-    if (p !== 0) return p;
+function taskMatchesSearch(t, term) {
+  if (!term) return true;
+  const hay = `${t.title} ${t.description || ''} ${t.assignedToName || ''}`.toLowerCase();
+  return hay.includes(term);
+}
+
+function compareTasksBy(a, b, sortBy) {
+  if (sortBy === 'dueDate') {
     if (!a.dueDate && !b.dueDate) return 0;
     if (!a.dueDate) return 1;
     if (!b.dueDate) return -1;
     return new Date(a.dueDate) - new Date(b.dueDate);
+  }
+  if (sortBy === 'name') return a.title.localeCompare(b.title);
+  return (PRIORITY_ORDER[a.priority] ?? 3) - (PRIORITY_ORDER[b.priority] ?? 3);
+}
+
+function renderTasksList() {
+  const el = document.getElementById('tasks-list');
+  document.getElementById('task-search-bar').style.display = taskViewMode === 'history' ? 'none' : '';
+  if (taskViewMode === 'history') { renderTaskHistoryList(); return; }
+  const term = taskSearchTerm.trim().toLowerCase();
+  const visible = (taskViewMode === 'mine'
+    ? allTasks.filter(t => me && (t.assignedToId === me.id || (t.tags || []).some(x => x.id === me.id)))
+    : allTasks
+  ).filter(t => taskMatchesSearch(t, term));
+  const dir = taskSortDir === 'desc' ? -1 : 1;
+  const sorted = visible.slice().sort((a, b) => {
+    if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
+    return compareTasksBy(a, b, taskSortBy) * dir;
   });
-  el.innerHTML = sorted.map(taskRowHTML).join('') || `<p class="small muted">${taskViewMode === 'mine' ? 'No tasks assigned to you.' : 'No tasks yet.'}</p>`;
+  el.innerHTML = sorted.map(taskRowHTML).join('') || `<p class="small muted">${term ? 'No matching tasks.' : (taskViewMode === 'mine' ? 'No tasks assigned to you.' : 'No tasks yet.')}</p>`;
 }
 
 async function loadTasks() {
@@ -668,6 +698,20 @@ function wireTasksPanel() {
       document.querySelectorAll('[data-task-view]').forEach(b => b.classList.toggle('active', b === btn));
       renderTasksList();
     });
+  });
+
+  document.getElementById('task-search').addEventListener('input', (e) => {
+    taskSearchTerm = e.target.value;
+    renderTasksList();
+  });
+  document.getElementById('task-sort').addEventListener('change', (e) => {
+    taskSortBy = e.target.value;
+    renderTasksList();
+  });
+  document.getElementById('task-sort-dir').addEventListener('click', (e) => {
+    taskSortDir = taskSortDir === 'asc' ? 'desc' : 'asc';
+    e.target.textContent = taskSortDir === 'asc' ? '↑' : '↓';
+    renderTasksList();
   });
 
   document.getElementById('task-form').addEventListener('submit', async (e) => {

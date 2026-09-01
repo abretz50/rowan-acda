@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#7A0A0A"/>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/layout.css"/>
-<link rel="stylesheet" href="/css/components.css?v=13"/>
+<link rel="stylesheet" href="/css/components.css?v=14"/>
 <script defer src="/js/live-images.js?v=1"></script>
 </head>
 <body>
@@ -155,6 +155,15 @@
             <button class="cat-chip active" type="button" data-task-view="board">Task Board</button>
             <button class="cat-chip" type="button" data-task-view="mine">My Tasks</button>
             <button class="cat-chip" type="button" data-task-view="history">Task History</button>
+          </div>
+          <div id="task-search-bar" style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
+            <input class="admin-input" type="search" id="task-search" placeholder="Search tasks…" autocomplete="off" style="flex:1;min-width:160px"/>
+            <select class="admin-input" id="task-sort" style="width:auto">
+              <option value="priority" selected>Sort by Priority</option>
+              <option value="dueDate">Sort by Due Date</option>
+              <option value="name">Sort by Name</option>
+            </select>
+            <button class="btn-sm outline" type="button" id="task-sort-dir" title="Toggle ascending/descending">↑</button>
           </div>
           <div id="tasks-list"><p class="small muted">Loading…</p></div>
         </div>
@@ -872,6 +881,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=49"></script>
+<script defer src="/js/portal.js?v=50"></script>
 </body>
 </html>
