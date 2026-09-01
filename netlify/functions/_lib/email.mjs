@@ -95,6 +95,7 @@ export function emailLayout(bodyHtml) {
       ${bodyHtml}
     </div>
     <div style="padding:1rem 1.5rem;background:#f7f7f7;border-top:1px solid #eee">
+      <p style="margin:0 0 .4rem;font-size:.78rem;color:#777">Can't see the images? Click "Trust Sender" in Mail Settings.</p>
       <p style="margin:0;font-size:.78rem;color:#777">You're receiving this because you have a Rowan ACDA account. Manage your account at <a href="https://rowanacda.org/account" style="color:#7A0A0A">rowanacda.org/account</a>.</p>
     </div>
   </div>`;
