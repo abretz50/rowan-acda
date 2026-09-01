@@ -23,6 +23,17 @@ function migrateTaskHistory(tasks) {
   return changed;
 }
 
+// Builds the denormalized `tags` array (id/name/role) for the optional
+// "responsible but not the primary assignee" people on a task, the same way
+// assignedTo is denormalized — so the client never has to look members up.
+function buildTags(taggedIds, members) {
+  if (!Array.isArray(taggedIds)) return [];
+  return taggedIds
+    .map(id => members.find(m => m.id === id))
+    .filter(Boolean)
+    .map(m => ({ id: m.id, name: m.name, role: m.role }));
+}
+
 // Tasks is a shared E-Board coordination tool, not gated by the adjustable
 // permissions system — any signed-in account that isn't a plain club
 // 'member' can see the board, assign a task to anyone else with portal
@@ -43,7 +54,11 @@ export default async function handler(req) {
     // shows up on old tasks too, instead of freezing whatever photo existed
     // when the task was created.
     const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
-    const tasksWithPhotos = tasks.map(t => ({ ...t, assignedToPhotoUrl: photoById.get(t.assignedToId) || null }));
+    const tasksWithPhotos = tasks.map(t => ({
+      ...t,
+      assignedToPhotoUrl: photoById.get(t.assignedToId) || null,
+      tags: (t.tags || []).map(x => ({ ...x, photoUrl: photoById.get(x.id) || null })),
+    }));
     const assignableMembers = members
       .filter(m => m.hasAccount && m.active !== false && m.role !== 'member')
       .map(m => ({ id: m.id, name: m.name, role: m.role }))
@@ -56,7 +71,7 @@ export default async function handler(req) {
   catch { return json({ ok: false, error: 'Bad JSON' }, 400); }
 
   if (req.method === 'POST') {
-    const { title, description, assignedToId, dueDate, priority } = body;
+    const { title, description, assignedToId, dueDate, priority, taggedIds } = body;
     if (!title || !assignedToId) return json({ ok: false, error: 'Title and an assignee are required.' }, 400);
     const members = await loadMembers();
     const assignee = members.find(m => m.id === assignedToId);
@@ -66,6 +81,7 @@ export default async function handler(req) {
       id: randomUUID(), title, description: description || '',
       assignedToId: assignee.id, assignedToName: assignee.name, assignedToRole: assignee.role,
       assignedById: auth.user.id, assignedByName: auth.user.name,
+      tags: buildTags(taggedIds, members).filter(t => t.id !== assignee.id),
       dueDate: dueDate || '', priority: PRIORITIES.includes(priority) ? priority : 'medium',
       status: 'open', createdAt: now, updatedAt: now,
       history: [{ event: 'created', byId: auth.user.id, byName: auth.user.name, at: now }],
@@ -91,13 +107,18 @@ export default async function handler(req) {
       }
       target.status = body.status;
     }
-    if (body.assignedToId) {
+    if (body.assignedToId || 'taggedIds' in body) {
       const members = await loadMembers();
-      const assignee = members.find(m => m.id === body.assignedToId);
-      if (!assignee) return json({ ok: false, error: 'Assignee not found.' }, 404);
-      target.assignedToId = assignee.id;
-      target.assignedToName = assignee.name;
-      target.assignedToRole = assignee.role;
+      if (body.assignedToId) {
+        const assignee = members.find(m => m.id === body.assignedToId);
+        if (!assignee) return json({ ok: false, error: 'Assignee not found.' }, 404);
+        target.assignedToId = assignee.id;
+        target.assignedToName = assignee.name;
+        target.assignedToRole = assignee.role;
+      }
+      if ('taggedIds' in body) {
+        target.tags = buildTags(body.taggedIds, members).filter(t => t.id !== target.assignedToId);
+      }
     }
     target.updatedAt = new Date().toISOString();
     await setCollection('tasks', tasks);

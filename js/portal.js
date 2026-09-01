@@ -559,6 +559,12 @@ function populateTaskAssigneeSelect() {
   if (taskAssignableMembers.some(m => m.id === current)) sel.value = current;
 }
 
+function populateTaskTaggedSelect() {
+  const sel = document.getElementById('task-tagged');
+  const selected = new Set([...sel.selectedOptions].map(o => o.value));
+  sel.innerHTML = taskAssignableMembers.map(m => `<option value="${escHtml(m.id)}" ${selected.has(m.id) ? 'selected' : ''}>${escHtml(m.name)}</option>`).join('');
+}
+
 // Task Board shows everyone's tasks, so its row accent is color-coded by
 // assignee role (useful for scanning who has what); My Tasks is all one
 // person's tasks, so role coloring there would be uniform — its accent is
@@ -577,13 +583,15 @@ function taskRowHTML(t) {
   const overdue = t.status === 'open' && t.dueDate && new Date(t.dueDate) < new Date(new Date().toDateString());
   const priorityBadge = `<span class="badge-role ${PRIORITY_BADGE_CLASSES[t.priority] || ''}">${t.priority}</span>`;
   const isMine = me && t.assignedToId === me.id;
+  const isTagged = me && (t.tags || []).some(x => x.id === me.id);
   const color = taskViewMode === 'mine' ? (PRIORITY_TASK_COLORS[t.priority] || '#9ca3af') : (ROLE_TASK_COLORS[t.assignedToRole] || '#9ca3af');
   const descPreview = t.description && t.description.length > 90 ? t.description.slice(0, 88) + '…' : t.description;
+  const tagsBit = t.tags && t.tags.length ? ` · tagged: ${t.tags.map(x => escHtml(x.name)).join(', ')}` : '';
   return `<div>
     <div class="admin-row${t.status === 'done' ? ' task-done' : ''}" style="cursor:pointer;box-shadow:inset 3px 0 0 ${color}" data-task-toggle="${escHtml(t.id)}">
       <div>
-        <span class="name">${escHtml(t.title)}</span> ${priorityBadge}${overdue ? ' <span class="badge-role inactive">overdue</span>' : ''}${isMine ? ' <span class="badge-role eboard">mine</span>' : ''}
-        <div class="meta" style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap">${avatarHTML(t.assignedToPhotoUrl, 18)}<span>For ${escHtml(t.assignedToName)} · assigned by ${escHtml(t.assignedByName)}${t.dueDate ? ' · due ' + fmtDashDate(t.dueDate) : ''}</span></div>
+        <span class="name">${escHtml(t.title)}</span> ${priorityBadge}${overdue ? ' <span class="badge-role inactive">overdue</span>' : ''}${isMine ? ' <span class="badge-role eboard">mine</span>' : ''}${!isMine && isTagged ? ' <span class="badge-role admin">tagged</span>' : ''}
+        <div class="meta" style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap">${avatarHTML(t.assignedToPhotoUrl, 18)}<span>For ${escHtml(t.assignedToName)} · assigned by ${escHtml(t.assignedByName)}${t.dueDate ? ' · due ' + fmtDashDate(t.dueDate) : ''}${tagsBit}</span></div>
         ${descPreview ? `<p class="small" style="margin:.35rem 0 0">${escHtml(descPreview)}</p>` : ''}
       </div>
       <div class="actions">
@@ -627,7 +635,9 @@ function renderTaskHistoryList() {
 function renderTasksList() {
   const el = document.getElementById('tasks-list');
   if (taskViewMode === 'history') { renderTaskHistoryList(); return; }
-  const visible = taskViewMode === 'mine' ? allTasks.filter(t => me && t.assignedToId === me.id) : allTasks;
+  const visible = taskViewMode === 'mine'
+    ? allTasks.filter(t => me && (t.assignedToId === me.id || (t.tags || []).some(x => x.id === me.id)))
+    : allTasks;
   const sorted = visible.slice().sort((a, b) => {
     if ((a.status === 'done') !== (b.status === 'done')) return a.status === 'done' ? 1 : -1;
     const p = (PRIORITY_ORDER[a.priority] ?? 3) - (PRIORITY_ORDER[b.priority] ?? 3);
@@ -646,6 +656,7 @@ async function loadTasks() {
   allTasks = data.tasks;
   taskAssignableMembers = data.assignableMembers;
   populateTaskAssigneeSelect();
+  populateTaskTaggedSelect();
   renderTasksList();
 }
 
@@ -665,6 +676,7 @@ function wireTasksPanel() {
       title: document.getElementById('task-title').value.trim(),
       description: document.getElementById('task-desc').value.trim(),
       assignedToId: document.getElementById('task-assignee').value,
+      taggedIds: [...document.getElementById('task-tagged').selectedOptions].map(o => o.value),
       dueDate: document.getElementById('task-due').value,
       priority: document.getElementById('task-priority').value,
     };
@@ -705,6 +717,8 @@ function wireTasksPanel() {
       document.getElementById('task-desc').value = t.description || '';
       populateTaskAssigneeSelect();
       document.getElementById('task-assignee').value = t.assignedToId;
+      const taggedIds = new Set((t.tags || []).map(x => x.id));
+      document.querySelectorAll('#task-tagged option').forEach(opt => { opt.selected = taggedIds.has(opt.value); });
       document.getElementById('task-due').value = t.dueDate || '';
       document.getElementById('task-priority').value = t.priority;
       document.getElementById('task-form-heading').textContent = 'Edit Task';

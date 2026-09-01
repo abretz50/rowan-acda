@@ -133,6 +133,11 @@
               </div>
             </div>
             <div class="form-group">
+              <label for="task-tagged">Tag Others (optional)</label>
+              <select class="admin-input" id="task-tagged" multiple size="4"></select>
+              <p class="form-hint">Tagged people are shown as responsible too, alongside the main assignee (hold Ctrl/Cmd to select multiple).</p>
+            </div>
+            <div class="form-group">
               <label for="task-priority">Priority</label>
               <select class="admin-input" id="task-priority">
                 <option value="low">Low</option>
@@ -867,6 +872,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=47"></script>
+<script defer src="/js/portal.js?v=48"></script>
 </body>
 </html>
