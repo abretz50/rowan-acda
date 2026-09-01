@@ -742,6 +742,39 @@ function renderTasksList() {
   el.innerHTML = sorted.map(taskRowHTML).join('') || `<p class="small muted">${emptyMsg}</p>`;
 }
 
+function localDateOnly(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function renderTaskStats() {
+  const total = allTasks.length;
+  const completed = allTasks.filter(t => t.status === 'done').length;
+  const outstanding = total - completed;
+  const today = localDateOnly(new Date());
+  const weekEndDate = new Date(); weekEndDate.setDate(weekEndDate.getDate() + 6);
+  const weekEnd = localDateOnly(weekEndDate);
+  const upcoming = allTasks.filter(t => t.status === 'open' && t.dueDate && t.dueDate >= today && t.dueDate <= weekEnd).length;
+
+  const completionCounts = new Map();
+  for (const t of allTasks) {
+    for (const h of (t.history || [])) {
+      if (h.event === 'completed' && h.byName) completionCounts.set(h.byName, (completionCounts.get(h.byName) || 0) + 1);
+    }
+  }
+  let topName = null, topCount = 0;
+  for (const [name, count] of completionCounts) {
+    if (count > topCount) { topName = name; topCount = count; }
+  }
+
+  document.getElementById('task-stats').innerHTML = [
+    statCardHTML(total, 'Total Tasks'),
+    statCardHTML(outstanding, 'Outstanding Tasks'),
+    statCardHTML(completed, 'Completed Tasks'),
+    statCardHTML(upcoming, 'Upcoming Tasks (This Week)'),
+    statCardHTML(topName ? escHtml(topName) : '—', 'Most Tasks Completed', topName ? `${topCount} completed` : ''),
+  ].join('');
+}
+
 async function loadTasks() {
   const { ok, data } = await api(TASKS_URL, { method: 'GET' });
   if (!ok) { document.getElementById('tasks-list').innerHTML = '<p class="small muted">Could not load tasks.</p>'; return; }
@@ -749,6 +782,7 @@ async function loadTasks() {
   taskAssignableMembers = data.assignableMembers;
   populateTaskAssigneeSelect();
   populateTaskTaggedSelect();
+  renderTaskStats();
   renderTasksList();
 }
 
