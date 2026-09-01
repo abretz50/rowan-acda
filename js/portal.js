@@ -287,7 +287,7 @@ function showDashboard() {
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
   if (canUse('members')) loadMembers();
-  if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); }
+  if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); loadPointsLeaderboard(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) { loadEboardRoster(); loadSiteContentExtras(); }
   if (canUse('gallery')) loadGallery();
@@ -405,17 +405,29 @@ async function loadOverviewStats() {
 
   const earnersCard = document.getElementById('overview-top-earners-card');
   const earnersEl = document.getElementById('overview-top-earners');
-  if (s.topEarners.length) {
+  if (s.leaderboard.length) {
     earnersCard.style.display = '';
-    earnersEl.innerHTML = s.topEarners.map((e, i) => `<div class="admin-row">
-      <div><span class="name">${i + 1}.</span> ${avatarHTML(e.photoUrl)}<span class="name">${escHtml(e.name)}</span></div>
-      <div class="actions"><span class="badge-role eboard">${e.total} pt${e.total !== 1 ? 's' : ''}</span></div>
-    </div>`).join('');
+    earnersEl.innerHTML = s.leaderboard.map((e, i) => pointsLeaderboardRowHTML(e, i + 1)).join('');
   } else {
     earnersCard.style.display = 'none';
   }
 
   document.getElementById('overview-attendance-chart').innerHTML = lineChartSVG(s.attendanceOverTime, 'No attendance yet.');
+}
+
+function pointsLeaderboardRowHTML(e, rank) {
+  return `<div class="admin-row">
+      <div><span class="name">${rank}.</span> ${avatarHTML(e.photoUrl)}<span class="name">${escHtml(e.name)}</span></div>
+      <div class="actions"><span class="badge-role eboard">${e.total} pt${e.total !== 1 ? 's' : ''}</span></div>
+    </div>`;
+}
+
+async function loadPointsLeaderboard() {
+  const el = document.getElementById('points-leaderboard-list');
+  const { ok, data } = await api(STATS_URL, { method: 'GET' });
+  if (!ok) { el.innerHTML = '<p class="small muted">Could not load leaderboard.</p>'; return; }
+  const top10 = data.stats.leaderboard.slice(0, 10);
+  el.innerHTML = top10.map((e, i) => pointsLeaderboardRowHTML(e, i + 1)).join('') || '<p class="small muted">No points awarded yet.</p>';
 }
 
 function initTabs() {

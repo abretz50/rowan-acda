@@ -93,8 +93,8 @@
         <div class="admin-card"><p class="small muted">Loading stats…</p></div>
       </div>
       <div class="admin-card" id="overview-top-earners-card" style="display:none">
-        <h3>Top 5 Point Earners</h3>
-        <div id="overview-top-earners"></div>
+        <h3>Points Leaderboard</h3>
+        <div id="overview-top-earners" style="max-height:300px;overflow-y:auto"></div>
       </div>
       <div class="admin-card" style="margin-top:1rem">
         <h3>Attendance Over Time</h3>
@@ -444,6 +444,11 @@
       <div class="admin-card" style="margin-bottom:1rem">
         <h3>Pending Approval</h3>
         <div id="points-pending-list"><p class="small muted">Loading…</p></div>
+      </div>
+
+      <div class="admin-card" style="margin-bottom:1rem">
+        <h3>Points Leaderboard</h3>
+        <div id="points-leaderboard-list"><p class="small muted">Loading…</p></div>
       </div>
 
       <div class="eboard-panel">
@@ -895,6 +900,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=59"></script>
+<script defer src="/js/portal.js?v=60"></script>
 </body>
 </html>

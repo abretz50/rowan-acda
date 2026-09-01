@@ -45,10 +45,12 @@ export default async function handler(req) {
   }
   const nameById = new Map(members.map(m => [m.id, m.name]));
   const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
-  const topEarners = [...totalsByMember.entries()]
+  // Full ranked list, not just a top-5 slice — the Overview tab shows a
+  // scrollable top-of-list preview, and the Points tab shows the top 10;
+  // both size it themselves client-side from this same full ranking.
+  const leaderboard = [...totalsByMember.entries()]
     .map(([id, total]) => ({ name: nameById.get(id) || 'Unknown', photoUrl: photoById.get(id) || null, total }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
+    .sort((a, b) => b.total - a.total);
 
   // Attendance = one distinct member per event with any non-denied points
   // entry tied to that event (a regular check-in, or any volunteer signup) —
@@ -96,7 +98,7 @@ export default async function handler(req) {
       totalApprovedPoints: approved.reduce((s, p) => s + p.amount, 0),
       pendingPointsCount: points.filter(p => p.status === 'pending').length,
       openTasksCount,
-      topEarners,
+      leaderboard,
       mostAttendedEvent,
       attendanceOverTime,
     },
