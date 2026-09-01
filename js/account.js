@@ -137,13 +137,38 @@ async function loadLeaderboard() {
 }
 
 // ── Check into an event (no code — just events open right now) ──────────
+// Small preview card for the next upcoming event, styled like the events
+// page's cards (photo + title + date), shown when nothing is open to check
+// into right now so the page isn't just an empty state.
+function nextEventCardHTML(ev) {
+  const img = ev.imageUrl || '/assets/img/about.png';
+  const dateStr = new Date(ev.start).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const timeStr = new Date(ev.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  return `<div class="admin-row" style="align-items:center;gap:.7rem">
+    <img src="${escHtml(img)}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:.6rem;border:1px solid var(--border);flex-shrink:0"/>
+    <div>
+      <span class="name">${escHtml(ev.title)}</span>
+      <div class="meta">${escHtml(dateStr)} · ${escHtml(timeStr)}${ev.location ? ' · ' + escHtml(ev.location) : ''}</div>
+    </div>
+  </div>`;
+}
+
 async function loadCheckinEvents() {
   const listEl = document.getElementById('checkin-events-list');
   const { ok, data } = await api(EVENTS_URL, { method: 'GET' });
   if (!ok) { listEl.innerHTML = '<p class="small muted">Could not load events.</p>'; return; }
+  const allEvents = data.events || [];
   // Volunteer events don't use check-in at all — they're signed up for on
   // the Events page instead (slots / bring food / full-event signup).
-  const open = (data.events || []).filter(ev => ev.checkinOpen && !(ev.tags || []).includes('Volunteer'));
+  const open = allEvents.filter(ev => ev.checkinOpen && !(ev.tags || []).includes('Volunteer'));
+  if (!open.length) {
+    const now = new Date();
+    const next = allEvents
+      .filter(ev => new Date(ev.end || ev.start) >= now)
+      .sort((a, b) => new Date(a.start) - new Date(b.start))[0];
+    listEl.innerHTML = `<p class="small muted">No Events open for checkin${next ? ', next event:' : '.'}</p>${next ? nextEventCardHTML(next) : ''}`;
+    return;
+  }
   listEl.innerHTML = open.map(ev => {
     const already = myCheckedInEventIds.has(ev.id);
     return `<div class="admin-row">
@@ -152,7 +177,7 @@ async function loadCheckinEvents() {
         ? '<span class="badge-role eboard">checked in</span>'
         : `<button class="btn-sm" data-checkin-event="${escHtml(ev.id)}">Check In</button>`}</div>
     </div>`;
-  }).join('') || '<p class="small muted">No events are open for check-in right now.</p>';
+  }).join('');
 }
 
 document.getElementById('checkin-events-list').addEventListener('click', async (e) => {
