@@ -125,8 +125,14 @@ function leaderboardRowHTML(entry) {
 
 async function loadLeaderboard() {
   const listEl = document.getElementById('leaderboard-list');
+  const standingEl = document.getElementById('leaderboard-standing');
   const { ok, data } = await api(`${ME_URL}?leaderboard=1`, { method: 'GET' });
-  if (!ok || !data.entries) { listEl.innerHTML = '<p class="small muted">Could not load leaderboard.</p>'; return; }
+  if (!ok || !data.entries) {
+    listEl.innerHTML = '<p class="small muted">Could not load leaderboard.</p>';
+    standingEl.textContent = '';
+    return;
+  }
+  standingEl.textContent = data.myRank ? `Current Standing: #${data.myRank}/${data.totalMembers}` : '';
   listEl.innerHTML = data.entries.map(leaderboardRowHTML).join('') || '<p class="small muted">Not enough data yet.</p>';
 }
 
