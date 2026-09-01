@@ -835,7 +835,8 @@
 
         <div class="admin-card">
           <h3>Current Accounts</h3>
-          <div id="accounts-list"><p class="small muted">Loading…</p></div>
+          <input class="admin-input" type="search" id="accounts-search" placeholder="Search by name or email…" autocomplete="off" style="margin-bottom:.6rem"/>
+          <div id="accounts-list" style="max-height:480px;overflow-y:auto"><p class="small muted">Loading…</p></div>
         </div>
       </div>
 
@@ -847,7 +848,7 @@
 
       <div class="admin-card" id="backup-section" style="margin-top:1rem;display:none">
         <h3>Data Backups</h3>
-        <p class="small muted">Every collection is snapshotted into <code>backups/portal-data-backup.json</code> once a week. You can also trigger one manually here at any time.</p>
+        <p class="small muted">Data is backed up to <code>backups/portal-data-backup.json</code> once a week. You can trigger a manual backup here.</p>
         <p class="small muted" id="last-backup-text">Last data backup: loading…</p>
         <button class="btn-sm" type="button" id="backup-now-btn">Back Up Now</button>
         <div class="admin-status" id="backup-status"></div>
@@ -855,7 +856,7 @@
 
       <div class="admin-card" id="reminders-section" style="margin-top:1rem;display:none">
         <h3>Email Reminders</h3>
-        <p class="small muted">Once a day, task-deadline and event reminders go out automatically to whoever's affected. You can also trigger a sweep manually here — useful for confirming email is set up correctly.</p>
+        <p class="small muted">Once a day, task and event reminders go out automatically to whoever's affected. You can resend reminders here or on the tasks tab.</p>
         <button class="btn-sm" type="button" id="reminders-now-btn">Send Reminders Now</button>
         <div class="admin-status" id="reminders-status"></div>
       </div>
@@ -900,6 +901,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=60"></script>
+<script defer src="/js/portal.js?v=61"></script>
 </body>
 </html>

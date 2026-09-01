@@ -470,14 +470,28 @@ function accountRowHTML(a) {
   </div>`;
 }
 
+let allAccounts = [];
+
+function renderAccountsList() {
+  const listEl = document.getElementById('accounts-list');
+  const term = document.getElementById('accounts-search').value.trim().toLowerCase();
+  const visible = term
+    ? allAccounts.filter(a => a.name.toLowerCase().includes(term) || (a.email || '').toLowerCase().includes(term))
+    : allAccounts;
+  listEl.innerHTML = visible.map(accountRowHTML).join('') || `<p class="small muted">${term ? 'No matches.' : 'No accounts yet.'}</p>`;
+}
+
 async function loadAccounts() {
   const listEl = document.getElementById('accounts-list');
   const { ok, data } = await api(ACCOUNTS_URL, { method: 'GET' });
   if (!ok) { listEl.innerHTML = `<p class="small muted">Could not load accounts.</p>`; return; }
-  listEl.innerHTML = data.accounts.map(accountRowHTML).join('') || `<p class="small muted">No accounts yet.</p>`;
+  allAccounts = data.accounts;
+  renderAccountsList();
 }
 
 function wireAccountsPanel() {
+  document.getElementById('accounts-search').addEventListener('input', renderAccountsList);
+
   document.getElementById('add-account-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('add-account-status');
