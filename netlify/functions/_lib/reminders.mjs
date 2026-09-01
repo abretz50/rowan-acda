@@ -1,5 +1,6 @@
-// Daily reminder sweep: task deadlines (due today/tomorrow) and upcoming
-// events (today = morning-of, tomorrow = heads-up). Runs once a day via the
+// Daily reminder sweep: task deadlines (due today/tomorrow), upcoming
+// events (today = morning-of, tomorrow = heads-up), and — Sundays only — a
+// weekly task overview to every E-Board account. Runs once a day via the
 // scheduled function, or on demand via the manual "Send Reminders Now"
 // trigger. The per-task/per-event manual "Send Reminder" buttons reuse the
 // same email templates (taskReminderEmailHtml/eventReminderEmailHtml) with
@@ -23,12 +24,27 @@ export function nextAutomatedRunAt() {
 }
 
 export function taskReminderEmailHtml(task, when) {
-  const dueBit = task.dueDate
-    ? (when ? ` is due <strong>${when}</strong> (${escapeHtml(task.dueDate)})` : ` (due ${escapeHtml(task.dueDate)})`)
-    : '';
+  let dueBit = '';
+  if (task.dueDate) {
+    if (when === 'today') dueBit = ` due <strong>TODAY ${escapeHtml(task.dueDate)}</strong>`;
+    else if (when === 'tomorrow') dueBit = ` due <strong>TOMORROW ${escapeHtml(task.dueDate)}</strong>`;
+    else dueBit = ` (due ${escapeHtml(task.dueDate)})`;
+  }
   return emailLayout(`
-    <p>Reminder: your task <strong>"${escapeHtml(task.title)}"</strong>${dueBit}. ${priorityBadge(task.priority)}</p>
+    <p>Reminder: <strong>"${escapeHtml(task.title)}"</strong>${dueBit}. ${priorityBadge(task.priority)}</p>
     ${task.description ? `<p style="color:#444">${escapeHtml(task.description)}</p>` : ''}
+    ${ctaButton('https://rowanacda.org/portal.html', 'Open the E-Board Portal')}
+  `);
+}
+
+export function weeklyDigestEmailHtml(tasks) {
+  const rows = tasks.map(t => `
+    <li style="margin-bottom:.5rem">
+      <strong>${escapeHtml(t.title)}</strong> — ${escapeHtml(t.assignedToName)} · due ${escapeHtml(t.dueDate)} ${priorityBadge(t.priority)}
+    </li>`).join('');
+  return emailLayout(`
+    <p>Here's what's due this week:</p>
+    <ul style="padding-left:1.1rem;margin:.5rem 0 0">${rows || '<li>Nothing due this week — nice and clear!</li>'}</ul>
     ${ctaButton('https://rowanacda.org/portal.html', 'Open the E-Board Portal')}
   `);
 }
@@ -100,12 +116,31 @@ export async function runDailyReminders() {
     }
   }
 
+  // Weekly task overview — every Sunday, one email per E-Board account
+  // listing everything due Sun-Sat that week (not just today/tomorrow).
+  let weeklyDigestSent = 0;
+  const isSunday = now.toLocaleDateString('en-US', { timeZone: 'America/New_York', weekday: 'short' }) === 'Sun';
+  if (isSunday) {
+    const weekEnd = easternDateOnly(addDays(now, 6));
+    const dueThisWeek = tasks
+      .filter(t => t.status === 'open' && t.dueDate && t.dueDate >= today && t.dueDate <= weekEnd)
+      .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+    const digestHtml = weeklyDigestEmailHtml(dueThisWeek);
+    const eboardAccounts = members.filter(m => m.hasAccount && m.active !== false && m.role !== 'member');
+    for (const m of eboardAccounts) {
+      const emails = memberEmails(m);
+      if (!emails.length) continue;
+      weeklyDigestSent++;
+      jobs.push(sendEmail({ to: emails, subject: `Weekly Task Overview — week of ${today}`, html: digestHtml }));
+    }
+  }
+
   const results = await Promise.allSettled(jobs);
   const errors = results
     .map(r => r.status === 'rejected' ? (r.reason?.message || String(r.reason)) : (r.value?.ok === false ? r.value.error : null))
     .filter(Boolean);
   return {
-    taskReminders, eventReminders, emailsSent: jobs.length, emailsFailed: errors.length,
+    taskReminders, eventReminders, weeklyDigestSent, emailsSent: jobs.length, emailsFailed: errors.length,
     sampleErrors: [...new Set(errors)].slice(0, 3),
   };
 }
