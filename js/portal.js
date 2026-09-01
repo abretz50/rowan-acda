@@ -252,7 +252,7 @@ function showDashboard() {
   document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
   document.getElementById('backup-section').style.display = canUse('permissions') ? '' : 'none';
   document.getElementById('reminders-section').style.display = canUse('permissions') ? '' : 'none';
-  if (canUse('permissions')) loadPermissions();
+  if (canUse('permissions')) { loadPermissions(); loadLastBackup(); }
   // loadEvents() populates the shared `allEvents` list, which the Points tab's
   // "Event Point Values" section also needs — so load it for either permission.
   if (canUse('events') || canUse('points')) {
@@ -520,6 +520,18 @@ async function loadPermissions() {
   el.innerHTML = lockedRows + adjustableRows || '<p class="small muted">No adjustable roles yet.</p>';
 }
 
+function renderLastBackupText(lastBackupAt) {
+  document.getElementById('last-backup-text').textContent = lastBackupAt
+    ? `Last data backup: ${new Date(lastBackupAt).toLocaleString()}`
+    : 'Last data backup: never';
+}
+
+async function loadLastBackup() {
+  const { ok, data } = await api(BACKUP_URL, { method: 'GET' });
+  if (!ok) { document.getElementById('last-backup-text').textContent = 'Last data backup: could not load.'; return; }
+  renderLastBackupText(data.lastBackupAt);
+}
+
 function wirePermissionsPanel() {
   document.getElementById('permissions-list').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-save-perms]');
@@ -544,6 +556,7 @@ function wirePermissionsPanel() {
     if (!ok) { statusEl.textContent = data.error || 'Backup failed.'; statusEl.className = 'admin-status err'; return; }
     statusEl.textContent = `Backed up successfully at ${new Date(data.generatedAt).toLocaleString()}.`;
     statusEl.className = 'admin-status ok';
+    renderLastBackupText(data.generatedAt);
   });
 
   document.getElementById('reminders-now-btn').addEventListener('click', async () => {

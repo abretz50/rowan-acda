@@ -4,7 +4,7 @@
 // can't take out both the live data and its backup at once. The file lives
 // at a fixed path, so each run's commit is just an update — the full history
 // of past backups is still recoverable from that one file's git log.
-import { getCollection } from './blobs.mjs';
+import { getCollection, setCollection } from './blobs.mjs';
 import { ghFetch, GH_BRANCH } from './github.mjs';
 
 const COLLECTIONS = [
@@ -35,5 +35,12 @@ export async function runBackup() {
     const err = await putRes.json().catch(() => ({}));
     throw new Error(err.message || `GitHub error ${putRes.status}`);
   }
-  return { path: BACKUP_PATH, generatedAt: new Date().toISOString() };
+  const generatedAt = new Date().toISOString();
+  await setCollection('backupMeta', { lastBackupAt: generatedAt });
+  return { path: BACKUP_PATH, generatedAt };
+}
+
+export async function getLastBackupAt() {
+  const meta = await getCollection('backupMeta', null);
+  return meta?.lastBackupAt || null;
 }

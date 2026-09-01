@@ -837,6 +837,7 @@
       <div class="admin-card" id="backup-section" style="margin-top:1rem;display:none">
         <h3>Data Backups</h3>
         <p class="small muted">Every collection is snapshotted into <code>backups/portal-data-backup.json</code> once a week. You can also trigger one manually here at any time.</p>
+        <p class="small muted" id="last-backup-text">Last data backup: loading…</p>
         <button class="btn-sm" type="button" id="backup-now-btn">Back Up Now</button>
         <div class="admin-status" id="backup-status"></div>
       </div>
@@ -888,6 +889,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=51"></script>
+<script defer src="/js/portal.js?v=52"></script>
 </body>
 </html>
