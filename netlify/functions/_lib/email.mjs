@@ -86,7 +86,7 @@ export function emailLayout(bodyHtml) {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#7A0A0A">
       <tr>
         <td style="padding:1.1rem 1.5rem" valign="middle">
-          <img src="${absoluteUrl('/assets/icons/favicon-32.png')}" alt="Rowan ACDA" width="36" height="36" style="vertical-align:middle;border-radius:6px"/>
+          <img src="${absoluteUrl('/assets/icons/logo2-email.png')}" alt="Rowan ACDA" width="36" height="36" style="vertical-align:middle;border-radius:6px"/>
           <span style="color:#ffffff;font-size:1.2rem;font-weight:bold;letter-spacing:.02em;vertical-align:middle;margin-left:.6rem">Rowan ACDA</span>
         </td>
       </tr>
