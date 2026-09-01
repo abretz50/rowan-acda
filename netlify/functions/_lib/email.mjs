@@ -41,12 +41,31 @@ export function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-// Small shared wrapper so every notification email looks like it's from
-// the same place, without every call site repeating the boilerplate.
+// A styled call-to-action link every email template can drop in instead of
+// a plain blue underlined link.
+export function ctaButton(href, label) {
+  return `<p style="margin:1.5rem 0 0"><a href="${href}" style="display:inline-block;background:#7A0A0A;color:#ffffff;text-decoration:none;padding:.65rem 1.4rem;border-radius:6px;font-weight:bold;font-size:.9rem">${escapeHtml(label)}</a></p>`;
+}
+
+// A full-bleed photo, used for event reminders. Capped width so it never
+// overflows narrow mobile mail clients.
+export function emailPhoto(url, alt) {
+  if (!url) return '';
+  return `<img src="${url}" alt="${escapeHtml(alt || '')}" style="display:block;width:100%;max-width:480px;height:auto;border-radius:10px;margin:.75rem 0;border:1px solid #eee"/>`;
+}
+
+// Small shared wrapper so every notification email looks like it's from the
+// same place, without every call site repeating the boilerplate.
 export function emailLayout(bodyHtml) {
-  return `<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;color:#1a1a1a">
-    <h2 style="color:#7A0A0A;margin:0 0 1rem">Rowan ACDA</h2>
-    ${bodyHtml}
-    <p style="margin-top:2rem;font-size:.8rem;color:#666">You're receiving this because you have a Rowan ACDA portal account. Manage your account at rowanacda.org/account.html.</p>
+  return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;background:#ffffff;border:1px solid #eee;border-radius:12px;overflow:hidden">
+    <div style="background:#7A0A0A;padding:1.1rem 1.5rem">
+      <h1 style="margin:0;color:#ffffff;font-size:1.2rem;letter-spacing:.02em">Rowan ACDA</h1>
+    </div>
+    <div style="padding:1.5rem;color:#1a1a1a;line-height:1.55;font-size:.95rem">
+      ${bodyHtml}
+    </div>
+    <div style="padding:1rem 1.5rem;background:#f7f7f7;border-top:1px solid #eee">
+      <p style="margin:0;font-size:.78rem;color:#777">You're receiving this because you have a Rowan ACDA account. Manage your account at <a href="https://rowanacda.org/account" style="color:#7A0A0A">rowanacda.org/account</a>.</p>
+    </div>
   </div>`;
 }

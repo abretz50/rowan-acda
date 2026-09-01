@@ -2,18 +2,17 @@ import { randomUUID } from 'node:crypto';
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
-import { sendEmail, emailLayout, escapeHtml } from './_lib/email.mjs';
+import { sendEmail, emailLayout, escapeHtml, ctaButton } from './_lib/email.mjs';
 
 const PRIORITIES = ['low', 'medium', 'high'];
 
 function taskEmailHtml(task, actorName, verb) {
-  const dueBit = task.dueDate ? `<p><strong>Due:</strong> ${escapeHtml(task.dueDate)}</p>` : '';
+  const dueBit = task.dueDate ? `<p style="margin-top:1rem"><strong>Due:</strong> ${escapeHtml(task.dueDate)}</p>` : '';
   return emailLayout(`
-    <p>${escapeHtml(actorName)} ${verb} a task:</p>
-    <h3 style="margin:.5rem 0">${escapeHtml(task.title)}</h3>
-    ${task.description ? `<p>${escapeHtml(task.description)}</p>` : ''}
+    <p>${escapeHtml(actorName)} ${verb} <strong>"${escapeHtml(task.title)}"</strong>.</p>
+    ${task.description ? `<p style="color:#444">${escapeHtml(task.description)}</p>` : ''}
     ${dueBit}
-    <p><a href="https://rowanacda.org/portal.html" style="color:#7A0A0A">Open the E-Board Portal</a></p>
+    ${ctaButton('https://rowanacda.org/portal.html', 'Open the E-Board Portal')}
   `);
 }
 

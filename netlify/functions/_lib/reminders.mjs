@@ -3,7 +3,7 @@
 // scheduled function, or on demand via the manual trigger.
 import { getCollection } from './blobs.mjs';
 import { loadMembers } from './loadMembers.mjs';
-import { sendEmail, emailLayout, escapeHtml } from './email.mjs';
+import { sendEmail, emailLayout, escapeHtml, ctaButton, emailPhoto } from './email.mjs';
 
 function isoDateOnly(d) { return new Date(d).toISOString().slice(0, 10); }
 function addDays(base, n) { const d = new Date(base); d.setUTCDate(d.getUTCDate() + n); return d; }
@@ -29,10 +29,9 @@ export async function runDailyReminders() {
     const when = t.dueDate === today ? 'today' : 'tomorrow';
     const recipientIds = new Set([t.assignedToId, ...(t.tags || []).map(x => x.id)]);
     const html = emailLayout(`
-      <p>Reminder: your task is due <strong>${when}</strong> (${escapeHtml(t.dueDate)}).</p>
-      <h3 style="margin:.5rem 0">${escapeHtml(t.title)}</h3>
-      ${t.description ? `<p>${escapeHtml(t.description)}</p>` : ''}
-      <p><a href="https://rowanacda.org/portal.html" style="color:#7A0A0A">Open the E-Board Portal</a></p>
+      <p>Reminder: your task <strong>"${escapeHtml(t.title)}"</strong> is due <strong>${when}</strong> (${escapeHtml(t.dueDate)}).</p>
+      ${t.description ? `<p style="color:#444">${escapeHtml(t.description)}</p>` : ''}
+      ${ctaButton('https://rowanacda.org/portal.html', 'Open the E-Board Portal')}
     `);
     for (const id of recipientIds) {
       const email = emailById.get(id);
@@ -50,10 +49,12 @@ export async function runDailyReminders() {
     const when = evDate === today ? 'today' : 'tomorrow';
     eventReminders++;
     const html = emailLayout(`
-      <p>Reminder: this event is happening <strong>${when}</strong>.</p>
-      <h3 style="margin:.5rem 0">${escapeHtml(e.title)}</h3>
-      <p>${escapeHtml(new Date(e.start).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }))}${e.location ? ' · ' + escapeHtml(e.location) : ''}</p>
-      <p><a href="https://rowanacda.org/events.html" style="color:#7A0A0A">See event details</a></p>
+      <p>${when === 'today' ? 'You have an event today:' : 'You have an event coming up tomorrow:'}</p>
+      <h2 style="margin:.5rem 0;color:#7A0A0A">${escapeHtml(e.title)}</h2>
+      ${emailPhoto(e.imageUrl, e.title)}
+      ${e.description ? `<p>${escapeHtml(e.description)}</p>` : ''}
+      <p style="margin-top:1rem"><strong>${escapeHtml(new Date(e.start).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }))}</strong>${e.location ? '<br>' + escapeHtml(e.location) : ''}</p>
+      ${ctaButton('https://rowanacda.org/events.html', 'See Event Details')}
     `);
     for (const email of activeEmails) {
       jobs.push(sendEmail({ to: email, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: ${e.title}`, html }));
