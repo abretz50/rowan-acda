@@ -3,11 +3,12 @@ import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { sendEmail, emailLayout, escapeHtml, ctaButton, priorityBadge, memberEmails } from './_lib/email.mjs';
+import { mdySlash } from './_lib/dateFmt.mjs';
 
 const PRIORITIES = ['low', 'medium', 'high'];
 
 function taskEmailHtml(task, actorName, verb) {
-  const dueBit = task.dueDate ? `<p style="margin-top:1rem"><strong>Due:</strong> ${escapeHtml(task.dueDate)}</p>` : '';
+  const dueBit = task.dueDate ? `<p style="margin-top:1rem"><strong>Due:</strong> ${escapeHtml(mdySlash(task.dueDate))}</p>` : '';
   return emailLayout(`
     <p>${escapeHtml(actorName)} ${verb} <strong>"${escapeHtml(task.title)}"</strong>. ${priorityBadge(task.priority)}</p>
     ${task.description ? `<p style="color:#444">${escapeHtml(task.description)}</p>` : ''}

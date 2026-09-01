@@ -8,7 +8,7 @@
 import { getCollection, setCollection } from './blobs.mjs';
 import { loadMembers } from './loadMembers.mjs';
 import { sendEmail, emailLayout, escapeHtml, ctaButton, emailPhoto, priorityBadge, memberEmails } from './email.mjs';
-import { easternDateOnly } from './dateFmt.mjs';
+import { easternDateOnly, mdySlash } from './dateFmt.mjs';
 
 function addDays(base, n) { const d = new Date(base); d.setUTCDate(d.getUTCDate() + n); return d; }
 
@@ -26,9 +26,10 @@ export function nextAutomatedRunAt() {
 export function taskReminderEmailHtml(task, when) {
   let dueBit = '';
   if (task.dueDate) {
-    if (when === 'today') dueBit = ` due <strong>TODAY ${escapeHtml(task.dueDate)}</strong>`;
-    else if (when === 'tomorrow') dueBit = ` due <strong>TOMORROW ${escapeHtml(task.dueDate)}</strong>`;
-    else dueBit = ` (due ${escapeHtml(task.dueDate)})`;
+    const dueStr = mdySlash(task.dueDate);
+    if (when === 'today') dueBit = ` due <strong>TODAY ${escapeHtml(dueStr)}</strong>`;
+    else if (when === 'tomorrow') dueBit = ` due <strong>TOMORROW ${escapeHtml(dueStr)}</strong>`;
+    else dueBit = ` (due ${escapeHtml(dueStr)})`;
   }
   return emailLayout(`
     <p>Reminder: <strong>"${escapeHtml(task.title)}"</strong>${dueBit}. ${priorityBadge(task.priority)}</p>
@@ -40,7 +41,7 @@ export function taskReminderEmailHtml(task, when) {
 export function weeklyDigestEmailHtml(tasks) {
   const rows = tasks.map(t => `
     <li style="margin-bottom:.5rem">
-      <strong>${escapeHtml(t.title)}</strong> — ${escapeHtml(t.assignedToName)} · due ${escapeHtml(t.dueDate)} ${priorityBadge(t.priority)}
+      <strong>${escapeHtml(t.title)}</strong> — ${escapeHtml(t.assignedToName)} · due ${escapeHtml(mdySlash(t.dueDate))} ${priorityBadge(t.priority)}
     </li>`).join('');
   return emailLayout(`
     <p>Here's what's due this week:</p>

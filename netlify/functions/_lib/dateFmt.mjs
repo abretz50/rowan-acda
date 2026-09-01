@@ -22,3 +22,11 @@ export function academicYearStart(d = new Date()) {
 export function easternDateOnly(d) {
   return new Date(d).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 }
+
+// "2026-09-19" -> "09/19/2026" — email content reads MM/DD/YYYY per
+// explicit request (the rest of the site uses fmtDashDate's non-padded
+// M-D-YYYY, but that convention wasn't meant to extend to emails).
+export function mdySlash(isoDateOnly) {
+  const [y, m, d] = String(isoDateOnly).split('-');
+  return `${m}/${d}/${y}`;
+}
