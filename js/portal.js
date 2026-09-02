@@ -861,7 +861,7 @@ function renderTaskStats() {
     statCardHTML(total, 'Total Tasks'),
     statCardHTML(outstanding, 'Outstanding Tasks'),
     statCardHTML(completed, 'Completed Tasks'),
-    headlineStatCardHTML('Upcoming Tasks<br>(This Week)', String(upcoming)),
+    statCardHTML(upcoming, 'Upcoming Tasks (This Week)'),
     headlineStatCardHTML('Most Tasks Completed<br>This Month', topName ? `${topName} (${topCount})` : '—'),
   ].join('');
 }
