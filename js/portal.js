@@ -184,13 +184,31 @@ async function api(url, opts = {}) {
   return { ok: res.ok && data.ok !== false, status: res.status, data };
 }
 
+// Mirrors the server's own limit (netlify/functions/portal-upload.mjs) so a
+// too-big file gets a clear, specific message instantly instead of a
+// generic failure after a slow upload attempt against Netlify's hard cap.
+const MAX_UPLOAD_BYTES = 6 * 1024 * 1024;
+
 async function uploadFile(file, category) {
+  if (file.size > MAX_UPLOAD_BYTES) {
+    const mb = (n) => (n / (1024 * 1024)).toFixed(1);
+    return { ok: false, data: { error: `That file is ${mb(file.size)}MB — uploads are limited to ${mb(MAX_UPLOAD_BYTES)}MB. Try compressing the PDF (e.g. lowering scan resolution) or splitting it into smaller files.` } };
+  }
   const fd = new FormData();
   fd.append('file', file);
   fd.append('category', category);
-  const res = await fetch(UPLOAD_URL, { method: 'POST', credentials: 'include', body: fd });
+  let res;
+  try {
+    res = await fetch(UPLOAD_URL, { method: 'POST', credentials: 'include', body: fd });
+  } catch {
+    return { ok: false, data: { error: 'Could not reach the server — check your internet connection and try again.' } };
+  }
   let data = {};
-  try { data = await res.json(); } catch {}
+  try { data = await res.json(); } catch {
+    if (res.status === 413) data = { error: 'That file is too large for the upload limit. Try compressing it or splitting it into smaller files.' };
+    else if (res.status >= 500) data = { error: `The upload server had a problem (HTTP ${res.status}). This can happen with very large or slow uploads — try again or use a smaller file.` };
+    else data = { error: `Upload failed (HTTP ${res.status}).` };
+  }
   return { ok: res.ok && data.ok !== false, data };
 }
 
