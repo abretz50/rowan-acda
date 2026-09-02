@@ -1820,6 +1820,7 @@ function wireLibraryPanel() {
     let url = document.getElementById('sc-url').value.trim();
 
     if (!title) { statusEl.textContent = 'Title is required.'; statusEl.className = 'admin-status err'; return; }
+    if (/\d/.test(title)) { statusEl.textContent = 'Numbers aren\'t allowed in song titles — please spell them out (e.g. "Nine to Five" instead of "9 to 5"), so search can always find it.'; statusEl.className = 'admin-status err'; return; }
     if (!file && !url) { statusEl.textContent = 'Choose a PDF to upload.'; statusEl.className = 'admin-status err'; return; }
 
     const queueItem = { id: uploadQueueNextId++, title, status: 'pending' };

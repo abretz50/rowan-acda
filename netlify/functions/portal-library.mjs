@@ -45,6 +45,7 @@ function applyLibraryOp(lib, op, body) {
   if (op === 'addScore') {
     const s = body.score || {};
     if (!s.title || !s.url) return { message: 'Title and PDF URL are required.', status: 400 };
+    if (/\d/.test(s.title)) return { message: 'Numbers aren\'t allowed in song titles — please spell them out (e.g. "Nine to Five" instead of "9 to 5"), so search can always find it.', status: 400 };
     if (lib.scores.some(x => x.url === s.url)) return { message: 'A score with that URL already exists.', status: 409 };
     lib.scores.push({
       title: s.title, url: s.url,
@@ -61,6 +62,7 @@ function applyLibraryOp(lib, op, body) {
     if (!target) return { message: 'Score not found.', status: 404 };
     const s = body.score || {};
     if (!s.title || !s.url) return { message: 'Title and PDF URL are required.', status: 400 };
+    if (/\d/.test(s.title)) return { message: 'Numbers aren\'t allowed in song titles — please spell them out (e.g. "Nine to Five" instead of "9 to 5"), so search can always find it.', status: 400 };
     Object.assign(target, {
       title: s.title, url: s.url,
       composer_first: s.composer_first || '', composer_last: s.composer_last || '',
