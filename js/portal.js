@@ -842,10 +842,14 @@ function renderTaskStats() {
   const completionCounts = new Map();
   for (const t of allTasks) {
     for (const h of (t.history || [])) {
-      if (h.event !== 'completed' || !h.byName) continue;
+      if (h.event !== 'completed') continue;
       const at = new Date(h.at);
       if (at.getFullYear() !== now.getFullYear() || at.getMonth() !== now.getMonth()) continue;
-      completionCounts.set(h.byName, (completionCounts.get(h.byName) || 0) + 1);
+      // Credit goes to whoever the task was actually for — the assignee and
+      // anyone tagged — not whoever happened to click "mark done" (which
+      // may be an admin or a different E-Board member closing it out).
+      const credited = new Set([t.assignedToName, ...(t.tags || []).map(x => x.name)].filter(Boolean));
+      for (const name of credited) completionCounts.set(name, (completionCounts.get(name) || 0) + 1);
     }
   }
   let topName = null, topCount = 0;
