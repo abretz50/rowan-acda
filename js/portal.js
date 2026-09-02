@@ -189,10 +189,36 @@ async function api(url, opts = {}) {
 // generic failure after a slow upload attempt against Netlify's hard cap.
 const MAX_UPLOAD_BYTES = 6 * 1024 * 1024;
 
+function oversizeErrorMessage(file) {
+  const mb = (n) => (n / (1024 * 1024)).toFixed(1);
+  const tip = /\.pdf$/i.test(file.name)
+    ? 'Compress it first: try smallpdf.com/compress-pdf or ilovepdf.com/compress_pdf (drag the file in, pick "high compression"), or in Acrobat use File > Save As Other > Reduced Size PDF. Scanned scores usually shrink from 20-30MB to well under 5MB this way with no visible quality loss.'
+    : 'Compress it first: try tinypng.com or squoosh.app, or re-export/resize the image at a lower resolution.';
+  return `That file is ${mb(file.size)}MB — uploads are limited to ${mb(MAX_UPLOAD_BYTES)}MB. ${tip}`;
+}
+
+// Validates on file-choose, not just on submit — so the error (or its
+// absence) always reflects whichever file is currently selected, and
+// re-checks itself the moment that selection changes.
+function wireFileSizeCheck(inputId, statusId) {
+  const input = document.getElementById(inputId);
+  const statusEl = document.getElementById(statusId);
+  if (!input || !statusEl) return;
+  input.addEventListener('change', () => {
+    const oversized = Array.from(input.files).find(f => f.size > MAX_UPLOAD_BYTES);
+    if (oversized) {
+      statusEl.textContent = oversizeErrorMessage(oversized);
+      statusEl.className = 'admin-status err';
+    } else {
+      statusEl.textContent = '';
+      statusEl.className = 'admin-status';
+    }
+  });
+}
+
 async function uploadFile(file, category) {
   if (file.size > MAX_UPLOAD_BYTES) {
-    const mb = (n) => (n / (1024 * 1024)).toFixed(1);
-    return { ok: false, data: { error: `That file is ${mb(file.size)}MB — uploads are limited to ${mb(MAX_UPLOAD_BYTES)}MB. Compress it first: try smallpdf.com/compress-pdf or ilovepdf.com/compress_pdf (drag the file in, pick "high compression"), or in Acrobat use File > Save As Other > Reduced Size PDF. Scanned scores usually shrink from 20-30MB to well under 5MB this way with no visible quality loss.` } };
+    return { ok: false, data: { error: oversizeErrorMessage(file) } };
   }
   const fd = new FormData();
   fd.append('file', file);
@@ -205,7 +231,7 @@ async function uploadFile(file, category) {
   }
   let data = {};
   try { data = await res.json(); } catch {
-    if (res.status === 413) data = { error: 'That file is too large for the upload limit (6MB). Compress it first: try smallpdf.com/compress-pdf or ilovepdf.com/compress_pdf, or in Acrobat use File > Save As Other > Reduced Size PDF.' };
+    if (res.status === 413) data = { error: oversizeErrorMessage(file) };
     else if (res.status >= 500) data = { error: `The upload server had a problem (HTTP ${res.status}). This can happen with very large or slow uploads — try again or use a smaller file.` };
     else data = { error: `Upload failed (HTTP ${res.status}).` };
   }
@@ -1075,6 +1101,7 @@ function wireEventsPanel() {
   document.getElementById('ev-tags').addEventListener('change', updateVolunteerFieldsVisibility);
   document.getElementById('ev-volunteer-type').addEventListener('change', updateVolunteerFieldsVisibility);
   document.getElementById('ev-all-day').addEventListener('change', updateAllDayFieldsVisibility);
+  wireFileSizeCheck('ev-image-file', 'event-form-status');
 
   document.getElementById('event-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1773,6 +1800,7 @@ function renderUploadQueue() {
 function wireLibraryPanel() {
   initOtherSelect('sc-voicing', 'sc-voicing-other');
   initOtherSelect('sc-instr', 'sc-instr-other');
+  wireFileSizeCheck('sc-file', 'score-form-status');
 
   document.getElementById('new-archive-folder-btn').addEventListener('click', async () => {
     const name = prompt('Name the new archive folder (e.g. 26-27):');
@@ -2057,6 +2085,8 @@ function wireContentPanel() {
   document.getElementById('eb-role').addEventListener('change', (e) => {
     document.getElementById('eb-role-other').style.display = e.target.value === '__other__' ? '' : 'none';
   });
+  wireFileSizeCheck('eb-photo-file', 'eb-form-status');
+  wireFileSizeCheck('merch-photos', 'merch-form-status');
 
   document.getElementById('eb-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -2564,6 +2594,7 @@ window.addEventListener('resize', syncGalleryNavOffset);
 
 function wireGalleryPanel() {
   syncGalleryNavOffset();
+  wireFileSizeCheck('gal-file', 'gallery-upload-status');
   document.getElementById('gallery-new-folder-btn').addEventListener('click', async () => {
     const name = prompt('Folder name?');
     if (!name || !name.trim()) return;
