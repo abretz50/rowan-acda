@@ -63,7 +63,7 @@ export default async function handler(req) {
 
   if (!file.size) return json({ ok: false, error: 'That file appears to be empty (0 bytes) — try re-exporting or re-scanning it.' }, 400);
   if (file.size > MAX_FILE_BYTES) {
-    return json({ ok: false, error: `That file is ${mb(file.size)}MB — uploads are limited to ${mb(MAX_FILE_BYTES)}MB. Try compressing the PDF (e.g. lowering scan resolution) or splitting it into smaller files.` }, 413);
+    return json({ ok: false, error: `That file is ${mb(file.size)}MB — uploads are limited to ${mb(MAX_FILE_BYTES)}MB. Compress it first: try smallpdf.com/compress-pdf or ilovepdf.com/compress_pdf (drag the file in, pick "high compression"), or in Acrobat use File > Save As Other > Reduced Size PDF. Scanned scores usually shrink from 20-30MB to well under 5MB this way with no visible quality loss.` }, 413);
   }
 
   const ext = extOf(file.name);

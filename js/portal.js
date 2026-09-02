@@ -192,7 +192,7 @@ const MAX_UPLOAD_BYTES = 6 * 1024 * 1024;
 async function uploadFile(file, category) {
   if (file.size > MAX_UPLOAD_BYTES) {
     const mb = (n) => (n / (1024 * 1024)).toFixed(1);
-    return { ok: false, data: { error: `That file is ${mb(file.size)}MB — uploads are limited to ${mb(MAX_UPLOAD_BYTES)}MB. Try compressing the PDF (e.g. lowering scan resolution) or splitting it into smaller files.` } };
+    return { ok: false, data: { error: `That file is ${mb(file.size)}MB — uploads are limited to ${mb(MAX_UPLOAD_BYTES)}MB. Compress it first: try smallpdf.com/compress-pdf or ilovepdf.com/compress_pdf (drag the file in, pick "high compression"), or in Acrobat use File > Save As Other > Reduced Size PDF. Scanned scores usually shrink from 20-30MB to well under 5MB this way with no visible quality loss.` } };
   }
   const fd = new FormData();
   fd.append('file', file);
@@ -205,7 +205,7 @@ async function uploadFile(file, category) {
   }
   let data = {};
   try { data = await res.json(); } catch {
-    if (res.status === 413) data = { error: 'That file is too large for the upload limit. Try compressing it or splitting it into smaller files.' };
+    if (res.status === 413) data = { error: 'That file is too large for the upload limit (6MB). Compress it first: try smallpdf.com/compress-pdf or ilovepdf.com/compress_pdf, or in Acrobat use File > Save As Other > Reduced Size PDF.' };
     else if (res.status >= 500) data = { error: `The upload server had a problem (HTTP ${res.status}). This can happen with very large or slow uploads — try again or use a smaller file.` };
     else data = { error: `Upload failed (HTTP ${res.status}).` };
   }
