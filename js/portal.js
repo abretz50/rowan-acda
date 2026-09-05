@@ -1073,9 +1073,21 @@ async function loadEvents() {
   if (canUse('points')) renderEventPointsList();
 }
 
+// New events default to 3pm rather than an empty field — an empty
+// datetime-local input's native picker defaults its time spinner to
+// whatever moment you happen to open it, which isn't a sensible starting
+// point for scheduling something in the future.
+function todayAtLocalInput(hour) {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(hour)}:00`;
+}
+
 function resetEventForm() {
   editingEventId = null;
   document.getElementById('event-form').reset();
+  document.getElementById('ev-start').value = todayAtLocalInput(15);
+  document.getElementById('ev-end').value = todayAtLocalInput(16);
   document.getElementById('ev-image').value = '';
   document.getElementById('ev-image-current').textContent = '';
   document.getElementById('ev-clear-signin-wrap').style.display = 'none';
@@ -1106,6 +1118,8 @@ function wireEventsPanel() {
   document.getElementById('ev-volunteer-type').addEventListener('change', updateVolunteerFieldsVisibility);
   document.getElementById('ev-all-day').addEventListener('change', updateAllDayFieldsVisibility);
   wireFileSizeCheck('ev-image-file', 'event-form-status');
+  document.getElementById('ev-start').value = todayAtLocalInput(15);
+  document.getElementById('ev-end').value = todayAtLocalInput(16);
 
   document.getElementById('event-form').addEventListener('submit', async (e) => {
     e.preventDefault();
