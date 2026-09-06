@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T01:22:05.387Z",
+  "generatedAt": "2026-09-06T00:00:45.994Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -1020,6 +1020,196 @@
         "checkinClosesAt": "",
         "volunteerType": "",
         "slotCapacity": 3
+      },
+      {
+        "id": "4b7d3035-1794-417d-99b8-c2385527dd8f",
+        "title": "NAFME BBQ x ACDA Collab",
+        "description": "Join us for the annual NAFME BBQ featuring ACDA!! \n\nEnjoy free food, games, and fun for all members and non-members!!",
+        "location": "Wilson Green",
+        "start": "2026-09-11T17:45:00.000Z",
+        "end": "2026-09-11T19:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788448077246-IMG_3063.jpeg",
+        "points": 100,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "title": "Rachel Carlson Professional Development",
+        "description": "Join us for our first Professional Development of the year, Sight Singing within Choral Settings, by Rachel Carlson. \n\n*Auditions for the annual Cabaret are due today!*\n\nDr. Rachel Carlson is the Director of Choral and Vocal Activities at Kean University and currently serves as the Treble/SSA Repertoire & Resources Chair of NJACDA.",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-10-02T19:00:00.000Z",
+        "end": "2026-10-02T19:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Professional Development"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788448924696-images.jpeg",
+        "points": 300,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "f6c4eb4d-8273-46ea-94bc-917d0c31ca40",
+        "title": "Body Percussion Sight Reading",
+        "description": "Join us for our third Sight-Reading meeting —this time with a twist: Body Percussion!!\n\nSight-read classic choral pieces while incorporating movement, body percussion, and expression. Come ready to sing, move, and have some fun!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-09-25T19:00:00.000Z",
+        "end": "2026-09-25T20:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788559752593-maxresdefault.jpg",
+        "points": 200,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "7aac1606-539f-47dd-aefb-bc5956da8144",
+        "title": "ACDA Cabaret",
+        "description": "Join us for our annual ACDA Cabaret!!\n\nWe will be featuring student conductors, solos, duets, and more!! Listen to some amazing talent from Rowan University's finest!!",
+        "location": "Boyd Recital Hall",
+        "start": "2026-10-23T23:00:00.000Z",
+        "end": "2026-10-24T01:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788562272695-IMG_8784.jpg",
+        "points": 0,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "decd9ac9-6642-4e4c-b4c5-604caddd0880",
+        "title": "Cabaret Dress Rehearsal",
+        "description": "Members who plan on singing or conducting at ACDA's annual Cabaret must show up for the Dress Rehearsal at 5 pm!!",
+        "location": "Boyd Recital Hall",
+        "start": "2026-10-23T21:00:00.000Z",
+        "end": "2026-10-23T22:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788562863380-IMG_7014.jpg",
+        "points": 0,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "36abb82f-a041-4a38-b081-a2799450f6cf",
+        "title": "Pumpkin Painting with NAfME & ACDA",
+        "description": "Join us for our fall-themed event, Pumpkin Painting with NAfME and ACDA!! \n\nCome paint pumpkins, eat free food, and enjoy the company of our members!!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-10-30T18:00:00.000Z",
+        "end": "2026-10-30T19:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788568259991-IMG_3454.jpeg",
+        "points": 100,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "60c76ea2-8e0c-4118-ba76-2dcde9f14caa",
+        "title": "Ally Jurgens Elementary Singers Professional Development",
+        "description": "Join us for our second Professional Development of the semester with Ally Jurgens teaching us about Elementary Singers!!\n\nAlly Jurgens is a music educator from New Brunswick, New Jersey, who currently teaches at Bernardsville Middle School and serves as the Membership / Social Media Chair for NJACDA!!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-11-06T20:00:00.000Z",
+        "end": "2026-11-06T21:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Professional Development"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788568995343-Jurgens_HeadShot_edited.jpg",
+        "points": 300,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "16f6df13-e8eb-443e-a4bf-c7d2432383ec",
+        "title": "Musical Games Day",
+        "description": "Join us for some fun Musical Games with the Rowan ACDA!! \n\nSing, dance, and have fun with our members!!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-11-13T20:00:00.000Z",
+        "end": "2026-11-13T21:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788571192318-gameshow.jpg",
+        "points": 200,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "5e3f5580-1325-480d-a8f7-06012de00e63",
+        "title": "Fall Crafts Day",
+        "description": "Join us for our Fall-themed Crafts Day!!\n\nDecorate fun crafts to take home and display!!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-11-20T20:00:00.000Z",
+        "end": "2026-11-20T21:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Event"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788574144356-K1802-Autumn-Log-Faces.webp",
+        "points": 100,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
+      },
+      {
+        "id": "2661ae02-c12e-4e6a-9dce-21062149dedb",
+        "title": "Christmas Sight-Singing",
+        "description": "Join us for our Final Meeting of the semester: Christmas Sight-Singing!!\n\nSight-sing classic Christmas Carols and popular Christmas tunes!!",
+        "location": "Wilson Hall, Room 107",
+        "start": "2026-12-04T20:00:00.000Z",
+        "end": "2026-12-04T21:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Meeting"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788575869960-IMG_7046__1_.jpg",
+        "points": 200,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3
       }
     ],
     "content": {
@@ -1142,6 +1332,15 @@
         "memberName": "Adam Bretz",
         "text": "Love This!!!",
         "createdAt": "2026-08-31T23:45:25.636Z"
+      },
+      {
+        "id": "3bcd240a-d945-46ae-9c3a-da85002edd77",
+        "eventId": "d1b341db-5a5a-423e-ae8e-8852fd998e5c",
+        "parentId": null,
+        "memberId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "memberName": "Admin",
+        "text": "This is Awesome!",
+        "createdAt": "2026-09-02T21:19:16.235Z"
       }
     ],
     "library": {
@@ -1567,13 +1766,138 @@
           "tags": [
             "Jazz & Pop"
           ]
+        },
+        {
+          "title": "Tonight (Quintet)",
+          "url": "/assets/pdfs/uploads/1788264218384-Tonight_Quintet.pdf",
+          "composer_first": "Westside Story",
+          "composer_last": "",
+          "arranger_first": "Leonard",
+          "arranger_last": "Bernstein",
+          "year": "1957",
+          "voicing": "Quintent & Chorus",
+          "instrumentation": "",
+          "tags": [
+            "Musical Theater"
+          ]
+        },
+        {
+          "title": "One Day More",
+          "url": "/assets/pdfs/uploads/1788265273732-One_Day_More.pdf",
+          "composer_first": "Claude-Michel",
+          "composer_last": "Schönberg",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "1980",
+          "voicing": "Soloists & Ensemble",
+          "instrumentation": "",
+          "tags": [
+            "Musical Theater"
+          ]
+        },
+        {
+          "title": "When You Wish Upon A Star",
+          "url": "/assets/pdfs/uploads/1788267072727-When_You_Wish_Upon_A_Star_Lead_sheet_with_verse_and_lyrics_.pdf",
+          "composer_first": "Leigh",
+          "composer_last": "Harline",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "1940",
+          "voicing": "Unison",
+          "instrumentation": "Piano",
+          "tags": [
+            "Contemporary"
+          ]
+        },
+        {
+          "title": "Summer Nights",
+          "url": "/assets/pdfs/uploads/1788321194983-Summer_Nights-_Grease.pdf",
+          "composer_first": "Jim",
+          "composer_last": "Jacobs",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "1951",
+          "voicing": "Solo & Ensemble",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "notes": "composed by Jim Jacobs and Warren Casey"
+        },
+        {
+          "title": "Way Down Hadestown",
+          "url": "/assets/pdfs/uploads/1788351131523-Hadestown___PV-split-2.pdf",
+          "composer_first": "Anaïs",
+          "composer_last": "Mitchell",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "2019",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "notes": ""
+        },
+        {
+          "title": "In the Heights",
+          "url": "/assets/pdfs/uploads/1788351654396-Drawboard-Combined-split-2__1_-compressed.pdf",
+          "composer_first": "Lin-Manuel",
+          "composer_last": "Miranda",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "2005",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "notes": ""
+        },
+        {
+          "title": "There! Right There!",
+          "url": "/assets/pdfs/uploads/1788352100519-Piano_Conductor-split-2.pdf",
+          "composer_first": "Laurence",
+          "composer_last": "O'Keefe",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "2001",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "notes": ""
+        },
+        {
+          "title": "Nine to Five",
+          "url": "/assets/pdfs/uploads/1788352418571-Drawboard-Combined-split-2.pdf",
+          "composer_first": "Dolly",
+          "composer_last": "Parton",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "1951",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Musical Theater"
+          ],
+          "notes": ""
         }
       ],
       "sessions": [
         {
           "num": "SS#01",
           "name": "Musical Theater Sight-Singing",
-          "scoreUrls": [],
+          "scoreUrls": [
+            "/assets/pdfs/uploads/1788264218384-Tonight_Quintet.pdf",
+            "/assets/pdfs/uploads/1788265273732-One_Day_More.pdf",
+            "/assets/pdfs/musical-theater/Hadestown - Nothing Changes.pdf",
+            "/assets/pdfs/uploads/1788321194983-Summer_Nights-_Grease.pdf",
+            "/assets/pdfs/uploads/1788351131523-Hadestown___PV-split-2.pdf",
+            "/assets/pdfs/uploads/1788351654396-Drawboard-Combined-split-2__1_-compressed.pdf",
+            "/assets/pdfs/uploads/1788352418571-Drawboard-Combined-split-2.pdf"
+          ],
           "archived": false,
           "archivedAt": null,
           "archiveFolder": null
@@ -2541,14 +2865,14 @@
       {
         "id": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "name": "Adam Bretz",
-        "email": "bretza67@rowan.edu",
+        "email": "bretza67@students.rowan.edu",
         "year": "",
         "mailingAddress": "",
         "role": "treasurer",
         "hasAccount": true,
         "username": "bretza67",
-        "salt": "69d59c86b90cad1bc905e7833bb61713",
-        "hash": "fe86c2b3690c2df7c25e71bd316ccdf46fb5793d27dd90fd7b90a1f65bf8198a63aa8f41ea9552e0fc77abc9253008495111d31a9bd4b18b77fa85f99c0a5b0c",
+        "salt": "21860fe7eb1ffae57f35ab6c1282dcd3",
+        "hash": "31a789eba0bcda0c30bc21378f70e23b9c8dadb9bb0fd2da7cefaad703b606041ff93bd8c818c0c30b4b4574d1bfbd6a5dc3b4f362e94d6a31149ccf2a9f114e",
         "active": true,
         "joinedAt": "2026-08-28T03:30:28.838Z",
         "photoUrl": "/assets/img/profiles/1788023938612-adam-bretz.JPG"
@@ -2584,7 +2908,8 @@
         "salt": "236d027f0cc497b006792651599b3c00",
         "hash": "3602df7d2635e336eaea0840f63d7d724e6c2295b7a7f8a87d4f8e49c732fb83e93ffdc1ef8b7d0158ba5d1d0be1e7884d86e68f6fa06c33ec75813ec27e5efa",
         "active": true,
-        "joinedAt": "2026-08-29T00:15:38.447Z"
+        "joinedAt": "2026-08-29T00:15:38.447Z",
+        "photoUrl": "/assets/img/profiles/1788229851321-IMG_9730.jpg"
       },
       {
         "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
@@ -2620,6 +2945,257 @@
         "active": true,
         "joinedAt": "2026-08-31T23:33:01.659Z",
         "photoUrl": "/assets/img/profiles/1788219216690-37-_MG_9302.jpeg"
+      },
+      {
+        "id": "c711afec-0d0e-4445-81e9-2b34f262828d",
+        "name": "Rowan ACDA",
+        "email": "rowanacda1@gmail.com",
+        "role": "eboard_access",
+        "hasAccount": true,
+        "salt": "bae747707b5363d4f759258fbfb60b44",
+        "hash": "5f6d69dfca7ea543928a964cf54b547a3c18ddc7ed547a38b28c07850bdf50ae318119f4bf8921e7fea1932ba65b72a3b65dd39609de54d244deb0bc874d67a0",
+        "active": true,
+        "joinedAt": "2026-09-01T01:26:27.428Z"
+      },
+      {
+        "id": "433e0450-50bc-476b-b6d0-dc9688c88dc7",
+        "name": "Gavin Springer",
+        "email": "mr.gspringer4@gmail.com",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "606427883740fb878fb1883b7185d827",
+        "hash": "57684e3cf49c507ee8e98bbbc8a6a33da98925e47eebeb9d58f73f7f4530888443db8242add234ca45e5c6460f341c6dae86c2d244c090907fadebe7fc4d0971",
+        "active": true,
+        "joinedAt": "2026-09-02T22:16:14.090Z",
+        "photoUrl": "/assets/img/profiles/1788387436774-IMG_5608.jpeg"
+      },
+      {
+        "id": "261310a8-14ee-4979-abe9-0111609d3aaa",
+        "name": "Katelyn Lamaina",
+        "email": "katelynlamaina@gmail.com",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "41ed0db7cae12a87f5056fc9db1cc41c",
+        "hash": "eb768c2182e29bd8a4cc052cbc6622efc8e69511007da1d0422164178df9cef253c3ba44e0a4dd049263c063bb71d2a74e7f7a5521b0153401083167d1b21c64",
+        "active": true,
+        "joinedAt": "2026-09-04T18:48:15.306Z",
+        "photoUrl": "/assets/img/profiles/1788548339937-image.jpg"
+      },
+      {
+        "id": "da9bd7ae-b479-4662-b3de-90243a25de3a",
+        "name": "Jacob Alexander Giammona",
+        "email": "Giammo54@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "dee1652b4206f6c0d717af3d653d95e2",
+        "hash": "e42338c93161116a035755f0e548074a528ac738d345cef49c2efb7b3b4b390a30e8bd891ee2f4023f99c63f9d7dbc4096242a5ab8ebd27987f617925437c1e8",
+        "active": true,
+        "joinedAt": "2026-09-04T18:54:24.020Z",
+        "photoUrl": "/assets/img/profiles/1788548111160-12091.jpg"
+      },
+      {
+        "id": "7bf39160-1500-4b7c-8f3f-e4c1a37e5fe0",
+        "name": "Gavin Springer",
+        "email": "spring11@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "28779a9bffb78effb0013c7b3cdbb48a",
+        "hash": "8e415d71bc955774780aa071eefb36748275be70bd78759fa43e6b31e889bdd30754822934bc421c68a674365e17a29b0c77a4df0aaddbacc18f9047506cc791",
+        "active": true,
+        "joinedAt": "2026-09-04T18:54:39.341Z",
+        "photoUrl": "/assets/img/profiles/1788548399880-IMG_5608.jpeg"
+      },
+      {
+        "id": "4fbf1dc9-a085-47ab-9877-aa4a1e369332",
+        "name": "Layla Fearon",
+        "email": "fearon11@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "bc5175ee0293fb5203b3199eb3af6a00",
+        "hash": "12347169b82d7b5ab5f192572bda894743ac33084244b9e4506cff60a9e30d9bd65a16b8f0e9c5039a92ff2cedaff81f209fb92ce06565bdb00f7bffec4ce884",
+        "active": true,
+        "joinedAt": "2026-09-04T18:54:49.325Z"
+      },
+      {
+        "id": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "name": "Gracie Broglin",
+        "email": "brogli10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "8ae981c33059e8bf4e1eff6e1049c294",
+        "hash": "39bc6fab191c772130371a734e7c245f1ebd9ece87518e1f81fdb7e4468c84b7a0fbd9ee28c484ca12690541fb8a52c57f53b8461b16a2827233b1e72f48653c",
+        "active": true,
+        "joinedAt": "2026-09-04T18:55:05.608Z",
+        "photoUrl": "/assets/img/profiles/1788548514915-IMG_5561.jpeg"
+      },
+      {
+        "id": "92d345b9-ca1b-46c9-a750-a58f98d8c268",
+        "name": "Dylan Griffith",
+        "email": "djgriffith2019@gmail.com",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "39510c72799335b82e6340f70ba0f459",
+        "hash": "39893c121f8acac849be7bfa9e4adb037e105ed8eb24b22c917ce34d1d20d7574ff2ab0f03a76d4ecf2c5bf81ff2ba3abade33239b9e3df0cd06703b12c055ce",
+        "active": true,
+        "joinedAt": "2026-09-04T18:55:47.372Z"
+      },
+      {
+        "id": "28c8e0b8-831d-44e3-b76c-ab93096f1ad3",
+        "name": "Yuna Seshimo",
+        "email": "seshim10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "9e3f2a6ca368777d74c3991367e22b0c",
+        "hash": "b678dce55f0e769cd2768c7a9afcfd9524950074906633c0ac25eb6ca611f1f87979be7aad2c568ffaf2e3957f9d70809e68d9f0af333bb521b357c3eeb2fd81",
+        "active": true,
+        "joinedAt": "2026-09-04T18:55:53.279Z",
+        "photoUrl": "/assets/img/profiles/1788548191498-D0C57073-9A96-448E-B968-DBEE3B2D5396.jpeg"
+      },
+      {
+        "id": "ef87923d-6cf5-4381-ae73-226d87a8d484",
+        "name": "Owen Griffith",
+        "email": "griffi164@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "80e164566e0df9cfe0e18f6045154e4c",
+        "hash": "4cadd0a4e8dc014ad373fd8a20a6b0bd10c78aa88107c9e876a34f5155803d079fac21261d4c7a39c9db9e6998244a21d6c4e39ee727aa58eae9d1ea6508207a",
+        "active": true,
+        "joinedAt": "2026-09-04T18:57:58.027Z"
+      },
+      {
+        "id": "6c920d0d-75b3-4da3-b96a-33f1903b08f6",
+        "name": "Cameron Hyson",
+        "email": "ccaammeerroonnhh@gmail.com",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "a94757fd58aa5726dc22d6f1901334ea",
+        "hash": "2911e07ab7b6d08c45392b7579c4b5f2ea8acf356b559f054ba58037444763f1c916af1ee147cc45e0caccdcc2222fe630dcc72b8c28f7544b3c321ff20bce0b",
+        "active": true,
+        "joinedAt": "2026-09-04T18:58:18.053Z",
+        "photoUrl": "/assets/img/profiles/1788548505723-IMG_0127.jpeg"
+      },
+      {
+        "id": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "name": "Bryan Ruban",
+        "email": "rubanb22@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "9f60ff33be2835d413f2d6a6e4fb8798",
+        "hash": "c4e1e3c0f1df440c021cc91f6c4349690458f21c25c337d783d276bb35bfdd14491782bfa2455c74bf39f70a0240a24ef7ae8590a827b5d1e158cadf761112d1",
+        "active": true,
+        "joinedAt": "2026-09-04T18:58:32.026Z"
+      },
+      {
+        "id": "cafec872-23fb-4d6e-b107-d7617e4051ac",
+        "name": "Patrick Spinelli",
+        "email": "spinel13@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "159f837784d07fb8c00d49a4de1076c3",
+        "hash": "be7e7f8f40f5923b80d1c80e6dd02ddb94ee4013962d7d284f3933f6afb36b9e2f4e7b909b16d1f625a298ac0ff682598f8a3f1b515d55ca014e24490e84ca44",
+        "active": true,
+        "joinedAt": "2026-09-04T18:58:35.985Z",
+        "photoUrl": "/assets/img/profiles/1788548388048-A6BB0B52-0ABE-499E-A4BB-C090B6BF9B1C.jpeg"
+      },
+      {
+        "id": "1e9b3e3a-3514-491f-b5fb-9f9aa6efbe69",
+        "name": "Abigail Burger",
+        "email": "burgert10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "6f9c985442333fa8a1dcf6724beb0e42",
+        "hash": "69085f85062e610b5377ddfda58260ddfa5d1e4c3e8465d09ff305d2b4ef07226f63580df02558a6a47bfdd22f8f9cbf8f7477867f50e16fb55c9a9af734e14f",
+        "active": true,
+        "joinedAt": "2026-09-04T18:59:30.110Z",
+        "photoUrl": "/assets/img/profiles/1788548573846-IMG_8346.jpeg"
+      },
+      {
+        "id": "cfdc4d9d-9704-4215-977b-2571db08bd0c",
+        "name": "Gloria Tomas",
+        "email": "tomasg10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "adb3b93553959f16b8c1e00976a633d3",
+        "hash": "e552d2af9bf61c64275590f9e23ee3bd9f6f30dc0606d19d6dead55eedf7b5c343eab22468007138293ba7708a2b2e50fc0f6dfde7e0e1fc79b194b1676015a2",
+        "active": true,
+        "joinedAt": "2026-09-04T19:00:22.891Z"
+      },
+      {
+        "id": "5bf885f4-d7df-43e3-a913-d5c281e218d8",
+        "name": "Bailey Coyne",
+        "email": "coyneb10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "f32625b2b2870a0a997f5a5199037bfc",
+        "hash": "a20f33170913225ddf9caff16568800ffeea738758ece5ed0c29e582aa04367a3199580fc951da730366fa3785e97032faac485c47a9db6732c5af6d88022d51",
+        "active": true,
+        "joinedAt": "2026-09-04T19:02:34.567Z"
+      },
+      {
+        "id": "a1bc77cc-c7c0-4bd3-85b5-796f6c104f56",
+        "name": "Ethan Platt",
+        "email": "platte10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "e73fd04e7b5e8ceff6c157f5e2329779",
+        "hash": "f15105ce1d8d2951cde84aa10c054ad10f4d0ded89f2efd2e27b5320d6f0482bb9a7c09a82b13dc0bf280a487ab10921f72fbfbde668454c87e440b54e4b247a",
+        "active": true,
+        "joinedAt": "2026-09-04T19:03:29.394Z"
+      },
+      {
+        "id": "a445cd5f-6c5f-4e91-9d37-1c60c9fb749d",
+        "name": "Chloe Oechsle",
+        "email": "oechsl11@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "2ee788a28cb1a4c0075d9de73fe8efa5",
+        "hash": "337841ec441e72a363495bebb0947200eb9f1760fd89fe962762999497037ca2f641585a3cfbcd7b796a8a420772f36fa246871339b2dc74a7e9ff4dc0d91ed0",
+        "active": true,
+        "joinedAt": "2026-09-04T19:03:45.171Z"
+      },
+      {
+        "id": "d94bcb45-940b-4d55-8756-b59c12af99ae",
+        "name": "Keira Mei Santiago",
+        "email": "santia137@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "b247e18dc18415761ddded953015eddb",
+        "hash": "305314f749bf8555358b0d39959704ee48a376c326ed4615e95dc0aef919c29f11023dd0e00d17b382ef6040bcccca53eb5fe67fe7e50fd5cd89230d53336811",
+        "active": true,
+        "joinedAt": "2026-09-04T19:04:45.349Z"
+      },
+      {
+        "id": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "name": "Dante DiMaio",
+        "email": "dimaiod@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "0db7946fb74441f5779de7a89c247567",
+        "hash": "a34dd3f350aa7592e6d59a6a0ae4d4751cfaf78b64acdceecbf81ca1107664263d288a558553eeb681cb7def7831dc26d8af8c459d137c95756298b8e50bf2fb",
+        "active": true,
+        "joinedAt": "2026-09-04T19:05:14.890Z"
+      },
+      {
+        "id": "5e5319ad-1b03-42dc-94e5-b7093234ea79",
+        "name": "John Anthony Cipolla",
+        "email": "cipoll92@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "42e96e0bbda77b9c4ffecef17339c70f",
+        "hash": "a4de697f3fde640999a6e4e596a6d78d7cc5c98f2d6ca95fd44b8d096e8047e09c6258519111861b7e43cdbf45d92ad5283c2b5515a8630b9c93b9abd7d85ce2",
+        "active": true,
+        "joinedAt": "2026-09-04T19:07:46.898Z"
+      },
+      {
+        "id": "7ad2d682-94b4-42d0-bf0e-19ce1109e60f",
+        "name": "Olivia Walton",
+        "email": "walton11@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "aa1c3723f41977e9a87387b7050e39f6",
+        "hash": "45ccc777bdde1b00a8c3839760ff8daa097cd604ebbd685f6cc356f137ce4700c15d88eeb6e4a1a0a6fcee55163199578e21c93a3023dd3929b01f8229748938",
+        "active": true,
+        "joinedAt": "2026-09-04T19:48:10.166Z"
       }
     ],
     "users": [
@@ -2813,6 +3389,396 @@
         "requestedAt": "2026-09-01T00:34:10.186Z",
         "decidedAt": "2026-09-01T00:34:10.188Z",
         "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "3fb02050-05f4-41be-979f-934ae02d23f4",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "event",
+        "eventId": "d1b341db-5a5a-423e-ae8e-8852fd998e5c",
+        "eventTitle": "Sample Event",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-02T21:18:46.461Z",
+        "decidedAt": "2026-09-02T21:23:03.767Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "0b8e6bcb-1cf6-4be0-8586-47eef955a56f",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 100,
+        "status": "approved",
+        "reason": "ProfLink verified",
+        "requestedAt": "2026-09-02T21:20:52.286Z",
+        "decidedAt": "2026-09-02T21:20:52.286Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "c0f1884e-04f0-4fda-8bee-59fc5660570e",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": -300,
+        "status": "approved",
+        "reason": "Sample Removal",
+        "requestedAt": "2026-09-02T21:23:35.437Z",
+        "decidedAt": "2026-09-02T21:23:35.437Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "2b3d5cda-2d40-45b3-b36d-e5da190bc82e",
+        "memberId": "261310a8-14ee-4979-abe9-0111609d3aaa",
+        "memberName": "Katelyn Lamaina",
+        "memberEmail": "katelynlamaina@gmail.com",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:48:17.543Z",
+        "decidedAt": "2026-09-04T19:17:46.475Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "a1a46444-8b9f-4fb6-a7a8-7465afa35f5a",
+        "memberId": "da9bd7ae-b479-4662-b3de-90243a25de3a",
+        "memberName": "Jacob Alexander Giammona",
+        "memberEmail": "Giammo54@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:54:28.128Z",
+        "decidedAt": "2026-09-04T19:23:59.373Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "26db2b22-8336-4363-81b5-66138f7e30c3",
+        "memberId": "4fbf1dc9-a085-47ab-9877-aa4a1e369332",
+        "memberName": "Layla Fearon",
+        "memberEmail": "fearon11@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:54:52.656Z",
+        "decidedAt": "2026-09-04T19:24:03.898Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "ebfa6431-8cd4-4b9f-b778-230bc14916a8",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:55:10.709Z",
+        "decidedAt": "2026-09-04T19:24:05.367Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "c9b38574-1126-4e7c-9cec-1c192ea5d6fc",
+        "memberId": "92d345b9-ca1b-46c9-a750-a58f98d8c268",
+        "memberName": "Dylan Griffith",
+        "memberEmail": "djgriffith2019@gmail.com",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:55:58.393Z",
+        "decidedAt": "2026-09-04T19:23:52.465Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "e71b76f3-3bba-4306-ab5d-fd0f4331f4ab",
+        "memberId": "ef87923d-6cf5-4381-ae73-226d87a8d484",
+        "memberName": "Owen Griffith",
+        "memberEmail": "griffi164@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:58:11.043Z",
+        "decidedAt": "2026-09-04T19:23:54.339Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "fe1a5009-53d4-4525-bdf2-d391ad36bd71",
+        "memberId": "cafec872-23fb-4d6e-b107-d7617e4051ac",
+        "memberName": "Patrick Spinelli",
+        "memberEmail": "spinel13@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:58:39.093Z",
+        "decidedAt": "2026-09-04T19:17:54.347Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "5ed7d222-edc1-4741-92bf-b44d46eb6c79",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T18:59:08.184Z",
+        "decidedAt": "2026-09-04T19:17:56.065Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "85500968-0363-4377-85a0-26f4a71f3ba1",
+        "memberId": "6c920d0d-75b3-4da3-b96a-33f1903b08f6",
+        "memberName": "Cameron Hyson",
+        "memberEmail": "ccaammeerroonnhh@gmail.com",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:00:05.197Z",
+        "decidedAt": "2026-09-04T19:17:57.644Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "ba18f8bb-fa51-48fc-9893-c3ffb9dbec65",
+        "memberId": "5bf885f4-d7df-43e3-a913-d5c281e218d8",
+        "memberName": "Bailey Coyne",
+        "memberEmail": "coyneb10@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:03:25.142Z",
+        "decidedAt": "2026-09-04T19:24:22.726Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "743d3904-4f8b-4a84-81be-83242d7a4212",
+        "memberId": "a445cd5f-6c5f-4e91-9d37-1c60c9fb749d",
+        "memberName": "Chloe Oechsle",
+        "memberEmail": "oechsl11@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:03:48.296Z",
+        "decidedAt": "2026-09-04T19:25:21.726Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "92ed9b31-212c-4aa1-ae0e-a9e8e318f624",
+        "memberId": "a1bc77cc-c7c0-4bd3-85b5-796f6c104f56",
+        "memberName": "Ethan Platt",
+        "memberEmail": "platte10@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:03:48.854Z",
+        "decidedAt": "2026-09-04T19:25:23.563Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "9e39fe78-df20-4c1c-8a01-2fb09a516458",
+        "memberId": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "memberName": "Bryan Ruban",
+        "memberEmail": "rubanb22@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:03:49.959Z",
+        "decidedAt": "2026-09-04T19:18:00.103Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "2a068b9e-155e-4807-9fb7-026a34b303f5",
+        "memberId": "cfdc4d9d-9704-4215-977b-2571db08bd0c",
+        "memberName": "Gloria Tomas",
+        "memberEmail": "tomasg10@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:03:53.437Z",
+        "decidedAt": "2026-09-04T19:25:24.961Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "e3a3d122-4f47-4c75-bedd-a8d01769976a",
+        "memberId": "1e9b3e3a-3514-491f-b5fb-9f9aa6efbe69",
+        "memberName": "Abigail Burger",
+        "memberEmail": "burgert10@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:03:54.184Z",
+        "decidedAt": "2026-09-04T19:25:26.224Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "20e6b06e-8b78-4d0f-97aa-27396fdfcae5",
+        "memberId": "d94bcb45-940b-4d55-8756-b59c12af99ae",
+        "memberName": "Keira Mei Santiago",
+        "memberEmail": "santia137@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:04:49.619Z",
+        "decidedAt": "2026-09-04T19:18:02.178Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "5c73f5f2-47c9-4e87-997e-f152716765ee",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:06:08.244Z",
+        "decidedAt": "2026-09-04T19:18:04.267Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "f55fc3e4-0b56-48f8-8abb-fe6d4faca2a9",
+        "memberId": "5e5319ad-1b03-42dc-94e5-b7093234ea79",
+        "memberName": "John Anthony Cipolla",
+        "memberEmail": "cipoll92@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:07:50.235Z",
+        "decidedAt": "2026-09-04T19:18:06.213Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "1cd6eed0-5315-40ae-a1aa-1ca26c5e0322",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:09:13.497Z",
+        "decidedAt": "2026-09-04T19:18:07.831Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "0fb9bf1c-48ec-451d-82c7-e451ee4a252a",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 200,
+        "status": "approved",
+        "reason": "Gave Speech for Foundations",
+        "requestedAt": "2026-09-04T19:41:50.550Z",
+        "decidedAt": "2026-09-04T19:41:50.552Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "d5746201-ff72-4f14-a5e6-b06b9c0ca131",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:47:47.609Z",
+        "decidedAt": "2026-09-05T15:32:15.407Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "fa4b8365-75a9-420b-b6f8-d2d35490c8c8",
+        "memberId": "7ad2d682-94b4-42d0-bf0e-19ce1109e60f",
+        "memberName": "Olivia Walton",
+        "memberEmail": "walton11@rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-04T19:48:41.910Z",
+        "decidedAt": "2026-09-05T15:32:13.534Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "44e41021-4fb8-4f0b-a82d-78e05f439700",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Musical Theatre Sight-Reading Day",
+        "requestedAt": "2026-09-05T01:25:31.016Z",
+        "decidedAt": "2026-09-05T01:25:31.023Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
       }
     ],
     "tasks": [
@@ -2963,6 +3929,30 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-08-29T21:21:30.651Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T02:13:18.676Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T02:18:48.542Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T02:22:57.291Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T02:31:22.610Z"
           }
         ]
       },
@@ -3023,15 +4013,35 @@
         "assignedByName": "Admin",
         "dueDate": "2026-09-02",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-08-31T23:39:10.631Z",
-        "updatedAt": "2026-09-01T00:27:08.770Z",
+        "updatedAt": "2026-09-01T02:37:45.790Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-08-31T23:39:10.631Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "byName": "Vera Caruso",
+            "at": "2026-09-01T02:29:36.287Z",
+            "comment": "we are DONE"
+          },
+          {
+            "event": "reopened",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T02:36:41.773Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-01T02:37:45.600Z",
+            "comment": "Completed, Incredible!"
           }
         ],
         "tags": [
@@ -3053,15 +4063,28 @@
         "assignedByName": "Admin",
         "dueDate": "2026-09-03",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:01:47.523Z",
-        "updatedAt": "2026-09-01T00:01:47.523Z",
+        "updatedAt": "2026-09-03T13:22:40.258Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-01T00:01:47.523Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-02T08:00:44.801Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-03T13:22:39.920Z",
+            "comment": "Zoom meeting 5:15 9/3/26"
           }
         ]
       },
@@ -3085,6 +4108,12 @@
             "byId": "29daf5de-5e35-41c2-920f-1871b0e40212",
             "byName": "Daniel Suliguin",
             "at": "2026-09-01T00:10:23.096Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-04T08:00:31.742Z"
           }
         ]
       },
@@ -3122,18 +4151,43 @@
         "assignedByName": "Admin",
         "dueDate": "2026-09-01",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:17:30.862Z",
-        "updatedAt": "2026-09-01T00:28:53.187Z",
+        "updatedAt": "2026-09-02T12:36:31.502Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-01T00:17:30.862Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-01T08:00:47.462Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T21:32:06.417Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-02T12:35:36.253Z",
+            "comment": "Lizzie was unable to upload some pdfs so I added new fixes to the code for the future and uploaded her PDFs"
           }
         ],
-        "tags": []
+        "tags": [
+          {
+            "id": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "name": "Adam Bretz",
+            "role": "treasurer"
+          }
+        ]
       },
       {
         "id": "1ae12b0f-f06e-4979-aabc-6adc5bf9c37b",
@@ -3168,11 +4222,11 @@
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
         "tags": [],
-        "dueDate": "2026-09-04",
+        "dueDate": "2026-09-09",
         "priority": "low",
         "status": "open",
         "createdAt": "2026-09-01T00:26:33.580Z",
-        "updatedAt": "2026-09-01T00:26:33.580Z",
+        "updatedAt": "2026-09-02T21:17:09.867Z",
         "history": [
           {
             "event": "created",
@@ -3248,39 +4302,94 @@
         ],
         "dueDate": "2026-09-02",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:36:00.501Z",
-        "updatedAt": "2026-09-01T00:36:00.501Z",
+        "updatedAt": "2026-09-01T02:02:56.047Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-01T00:36:00.501Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-01T02:02:56.046Z",
+            "comment": "Completed 8/31"
           }
         ]
       },
       {
-        "id": "ecee8db0-bda1-4bce-a2a6-adaf30c50124",
-        "title": "Sample Task",
+        "id": "e378ff23-329f-402e-acef-b73ec76a57b8",
+        "title": "Approve Proflink Member Requests",
         "description": "",
-        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
-        "assignedToName": "Adam Bretz",
-        "assignedToRole": "treasurer",
+        "assignedToId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "assignedToName": "Makayli Matias",
+        "assignedToRole": "president",
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
         "tags": [],
-        "dueDate": "2026-08-31",
+        "dueDate": "2026-09-03",
         "priority": "medium",
         "status": "open",
-        "createdAt": "2026-09-01T00:37:10.408Z",
-        "updatedAt": "2026-09-01T00:37:10.408Z",
+        "createdAt": "2026-09-01T21:31:56.058Z",
+        "updatedAt": "2026-09-01T21:31:56.058Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
-            "at": "2026-09-01T00:37:10.408Z"
+            "at": "2026-09-01T21:31:56.058Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-02T08:00:44.801Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-02T12:40:51.619Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-03T13:23:01.537Z"
+          }
+        ]
+      },
+      {
+        "id": "23e5d316-5566-4c6b-8ace-663bf1ab65d0",
+        "title": "Reach out to members personally, pizza at next meeting?",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "tags": [
+          {
+            "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "name": "Makayli Matias",
+            "role": "president"
+          }
+        ],
+        "dueDate": "2026-09-08",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-09-05T01:33:53.145Z",
+        "updatedAt": "2026-09-05T01:33:53.145Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-05T01:33:53.145Z"
           }
         ]
       }
