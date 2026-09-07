@@ -164,8 +164,8 @@
           <div id="task-search-bar" style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
             <input class="admin-input" type="search" id="task-search" placeholder="Search tasks…" autocomplete="off" style="flex:1;min-width:160px"/>
             <select class="admin-input" id="task-sort" style="width:auto">
-              <option value="priority" selected>Sort by Priority</option>
-              <option value="dueDate">Sort by Due Date</option>
+              <option value="priority">Sort by Priority</option>
+              <option value="dueDate" selected>Sort by Due Date</option>
               <option value="name">Sort by Name</option>
             </select>
             <button class="btn-sm outline" type="button" id="task-sort-dir" title="Toggle ascending/descending">↑</button>
@@ -932,6 +932,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=73"></script>
+<script defer src="/js/portal.js?v=74"></script>
 </body>
 </html>

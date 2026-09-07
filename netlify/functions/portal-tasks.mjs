@@ -156,9 +156,13 @@ export default async function handler(req) {
           await Promise.allSettled(jobs);
         } catch {}
       } else {
-        target.history.push({ event: 'reopened', byId: auth.user.id, byName: auth.user.name, at: now });
+        const comment = String(body.reopenComment || '').trim();
+        target.history.push({ event: 'reopened', byId: auth.user.id, byName: auth.user.name, at: now, comment });
         target.status = body.status;
       }
+    }
+    if (typeof body.editComment === 'string' && body.editComment.trim()) {
+      target.history.push({ event: 'edited', byId: auth.user.id, byName: auth.user.name, at: new Date().toISOString(), comment: body.editComment.trim() });
     }
     if (body.assignedToId || 'taggedIds' in body) {
       const members = await loadMembers();

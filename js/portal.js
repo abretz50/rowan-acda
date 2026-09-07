@@ -53,7 +53,7 @@ let taskAssignableMembers = [];
 let nextAutomatedRunAt = null;
 let taskViewMode = 'board';
 let taskSearchTerm = '';
-let taskSortBy = 'priority';
+let taskSortBy = 'dueDate';
 let taskSortDir = 'asc';
 let editingTaskId = null;
 let libScores = [];
@@ -717,7 +717,11 @@ function taskRowHTML(t) {
   const color = overdue ? '#ef4444' : taskViewMode === 'mine' ? (PRIORITY_TASK_COLORS[t.priority] || '#9ca3af') : (ROLE_TASK_COLORS[t.assignedToRole] || '#9ca3af');
   const descPreview = t.description && t.description.length > 90 ? t.description.slice(0, 88) + '…' : t.description;
   const tagsBit = t.tags && t.tags.length ? ` · tagged: ${t.tags.map(x => escHtml(x.name)).join(', ')}` : '';
-  const rowClasses = [t.status === 'done' ? 'task-done' : '', overdue ? 'task-overdue' : ''].filter(Boolean).join(' ');
+  // The faded "done" look is only useful to distinguish a completed task
+  // sitting among open ones (Task Board/My Tasks) — in the Completed Tasks
+  // view every row is done by definition, so fading them all out just makes
+  // the Unarchive/Delete buttons look broken/disabled when they aren't.
+  const rowClasses = [t.status === 'done' && taskViewMode !== 'completed' ? 'task-done' : '', overdue ? 'task-overdue' : ''].filter(Boolean).join(' ');
   return `<div>
     <div class="admin-row${rowClasses ? ' ' + rowClasses : ''}" style="cursor:pointer;box-shadow:inset 3px 0 0 ${color}" data-task-toggle="${escHtml(t.id)}">
       <div>
@@ -746,8 +750,8 @@ function taskRowHTML(t) {
   </div>`;
 }
 
-const TASK_HISTORY_EVENT_LABELS = { created: 'Created', completed: 'Completed', reopened: 'Reopened', reminded: 'Reminder Sent' };
-const TASK_HISTORY_EVENT_BADGE = { created: 'inactive', completed: 'badge-success', reopened: 'admin', reminded: 'eboard' };
+const TASK_HISTORY_EVENT_LABELS = { created: 'Created', completed: 'Completed', reopened: 'Reopened', reminded: 'Reminder Sent', edited: 'Edited' };
+const TASK_HISTORY_EVENT_BADGE = { created: 'inactive', completed: 'badge-success', reopened: 'admin', reminded: 'eboard', edited: 'eboard' };
 
 // A "completed" entry is shown in red as overdue if it landed after the
 // task's due date at that time — same red used for overdue tasks on the
@@ -914,6 +918,12 @@ function wireTasksPanel() {
     if (!payload.title || !payload.assignedToId) {
       statusEl.textContent = 'Title and an assignee are required.'; statusEl.className = 'admin-status err'; return;
     }
+    if (editingTaskId) {
+      const comment = prompt('Add a comment about what changed on this task:');
+      if (comment === null) return; // cancelled
+      if (!comment.trim()) { statusEl.textContent = 'A comment is required to save changes to a task.'; statusEl.className = 'admin-status err'; return; }
+      payload.editComment = comment.trim();
+    }
     const { ok, data } = editingTaskId
       ? await api(TASKS_URL, { method: 'PATCH', body: JSON.stringify({ id: editingTaskId, ...payload }) })
       : await api(TASKS_URL, { method: 'POST', body: JSON.stringify(payload) });
@@ -933,6 +943,11 @@ function wireTasksPanel() {
         const comment = prompt('Add a comment about completing this task (optional):');
         if (comment === null) return; // cancelled
         if (comment.trim()) body.completionComment = comment.trim();
+      } else {
+        const comment = prompt('Add a comment about why this task is being reopened/unarchived:');
+        if (comment === null) return; // cancelled
+        if (!comment.trim()) { alert('A comment is required to reopen or unarchive a task.'); return; }
+        body.reopenComment = comment.trim();
       }
       const { ok, data } = await api(TASKS_URL, { method: 'PATCH', body: JSON.stringify(body) });
       if (!ok) { alert(data.error || 'Could not update task.'); return; }
