@@ -1121,6 +1121,21 @@ function wireEventsPanel() {
   document.getElementById('ev-start').value = todayAtLocalInput(15);
   document.getElementById('ev-end').value = todayAtLocalInput(16);
 
+  // Picking a start date moves the end date to match, keeping whatever end
+  // time was already set — most events are same-day, so this saves having
+  // to set the date twice; the end date is still free to be changed from
+  // there for anything that spans multiple days.
+  document.getElementById('ev-start').addEventListener('change', (e) => {
+    const startDate = e.target.value.slice(0, 10);
+    if (!startDate) return;
+    const endInput = document.getElementById('ev-end');
+    const endTime = endInput.value.slice(11) || '16:00';
+    endInput.value = `${startDate}T${endTime}`;
+  });
+  document.getElementById('ev-start-date').addEventListener('change', (e) => {
+    if (e.target.value) document.getElementById('ev-end-date').value = e.target.value;
+  });
+
   document.getElementById('event-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('event-form-status');
