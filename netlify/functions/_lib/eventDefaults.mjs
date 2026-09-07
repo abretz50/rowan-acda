@@ -7,7 +7,7 @@ import { getCollection, setCollection } from './blobs.mjs';
 export const DEFAULT_EVENT_POINTS = {
   Event: 100,
   Meeting: 200,
-  'Professional Development': 400,
+  'Professional Development': 300,
   Workshop: 300,
   Performance: 50,
 };
@@ -17,11 +17,19 @@ export const DEFAULT_EVENT_POINTS = {
 // looked up by defaultPointsForTags. Editable from the same "Edit Event
 // Defaults" UI so the event coordinator never has to think about points
 // when creating a volunteer event.
+//
+// Full-day headcount signups ("Volunteer — Full Event") are the one
+// exception: there is deliberately no default here. The event organizer has
+// to type in a points value by hand when creating that event, and it's
+// flagged for secretary review (event.pointsApprovedBySecretary) rather
+// than pulled from a store-wide default — see portal-events.mjs.
 export const VOLUNTEER_SLOT_KEY = 'VolunteerSlot';
-export const VOLUNTEER_FULL_DAY_KEY = 'VolunteerFullDay';
+export const BAKE_SALE_SLOT_KEY = 'BakeSaleSlot';
+export const BAKE_SALE_ITEM_KEY = 'BakeSaleItem';
 const DEFAULT_VOLUNTEER_POINTS = {
   [VOLUNTEER_SLOT_KEY]: 25,
-  [VOLUNTEER_FULL_DAY_KEY]: 100,
+  [BAKE_SALE_SLOT_KEY]: 50,
+  [BAKE_SALE_ITEM_KEY]: 25,
 };
 
 const ALL_DEFAULTS = { ...DEFAULT_EVENT_POINTS, ...DEFAULT_VOLUNTEER_POINTS };
@@ -57,7 +65,12 @@ export async function volunteerSlotPointsDefault() {
   return defaults[VOLUNTEER_SLOT_KEY];
 }
 
-export async function volunteerFullDayPointsDefault() {
+export async function bakeSaleSlotPointsDefault() {
   const defaults = await loadEventDefaults();
-  return defaults[VOLUNTEER_FULL_DAY_KEY];
+  return defaults[BAKE_SALE_SLOT_KEY];
+}
+
+export async function bakeSaleItemPointsDefault() {
+  const defaults = await loadEventDefaults();
+  return defaults[BAKE_SALE_ITEM_KEY];
 }

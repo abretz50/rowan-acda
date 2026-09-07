@@ -5,10 +5,10 @@ import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
 import {
   loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS,
-  VOLUNTEER_SLOT_KEY, VOLUNTEER_FULL_DAY_KEY,
+  VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY,
 } from './_lib/eventDefaults.mjs';
 
-const EDITABLE_DEFAULT_KEYS = [...Object.keys(DEFAULT_EVENT_POINTS), VOLUNTEER_SLOT_KEY, VOLUNTEER_FULL_DAY_KEY];
+const EDITABLE_DEFAULT_KEYS = [...Object.keys(DEFAULT_EVENT_POINTS), VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY];
 
 function withDeciderNames(rows, members) {
   const nameById = new Map(members.map(m => [m.id, m.name]));
@@ -64,8 +64,62 @@ export default async function handler(req) {
       const event = events.find(e => e.id === eventId);
       if (!event) return json({ ok: false, error: 'Event not found.' }, 404);
       event.points = points;
+      // Setting it from the Points tab (secretary/president only) IS the
+      // sign-off for full-day headcount events — that's the whole point of
+      // the "organizer picks a number, secretary approves it" flow.
+      if (event.volunteerType === 'full_event') event.pointsApprovedBySecretary = true;
       await setCollection('events', events);
       return json({ ok: true, event });
+    }
+
+    // ── Approve a full-day volunteer event's points value without changing
+    // it — for when the secretary agrees with what the organizer entered.
+    if (body.action === 'approveEventPoints') {
+      const auth = await requireAuth(req, { perm: 'points' });
+      if (auth.deny) return auth.deny;
+      const events = await getCollection('events', []);
+      const event = events.find(e => e.id === body.eventId);
+      if (!event) return json({ ok: false, error: 'Event not found.' }, 404);
+      event.pointsApprovedBySecretary = true;
+      await setCollection('events', events);
+      return json({ ok: true, event });
+    }
+
+    // ── Add someone to an event's attendance after the fact (they forgot to
+    // check in, or checked in in person on paper) — scoped to 'events' since
+    // it's attendance record-keeping, not the points-approval workflow
+    // itself. Still lands as a normal pending entry so the secretary
+    // reviews it like any other attendance.
+    if (body.action === 'addAttendance') {
+      const auth = await requireAuth(req, { perm: 'events' });
+      if (auth.deny) return auth.deny;
+      const { user: me } = auth;
+      const { eventId, memberId } = body;
+      if (!eventId || !memberId) return json({ ok: false, error: 'eventId and memberId are required.' }, 400);
+
+      const events = await getCollection('events', []);
+      const event = events.find(e => e.id === eventId);
+      if (!event) return json({ ok: false, error: 'Event not found.' }, 404);
+
+      const members = await loadMembers();
+      const member = members.find(m => m.id === memberId);
+      if (!member) return json({ ok: false, error: 'Member not found.' }, 404);
+
+      const points = await getCollection('points', []);
+      if (points.some(p => p.eventId === eventId && p.memberId === memberId && p.status !== 'denied')) {
+        return json({ ok: false, error: `${member.name} is already on this event's attendance.` }, 409);
+      }
+      const entry = {
+        id: randomUUID(), memberId: member.id, memberName: member.name, memberEmail: member.email,
+        source: 'event', eventId: event.id, eventTitle: event.title,
+        amount: typeof event.points === 'number' ? event.points : 1,
+        status: 'pending', reason: `Added by ${me.name}`,
+        addedBy: me.id, addedByName: me.name,
+        requestedAt: new Date().toISOString(), decidedAt: null, decidedBy: null,
+      };
+      points.push(entry);
+      await setCollection('points', points);
+      return json({ ok: true, entry });
     }
 
     // ── Update one tag's default attendance points — Points tab's "Edit
@@ -83,7 +137,10 @@ export default async function handler(req) {
       return json({ ok: true, defaults });
     }
 
-    // ── Manual award — secretary/president only, pre-approved ──
+    // ── Manual award — secretary/president only, still goes through the
+    // normal pending-approval queue like every other point entry, rather
+    // than being auto-approved just because a secretary/president entered
+    // it directly. Keeps one single review step for all point changes.
     if (body.action === 'manualAward') {
       const auth = await requireAuth(req, { perm: 'points' });
       if (auth.deny) return auth.deny;
@@ -99,8 +156,9 @@ export default async function handler(req) {
       const entry = {
         id: randomUUID(), memberId: member.id, memberName: member.name, memberEmail: member.email,
         source: 'manual', eventId: null, eventTitle: null,
-        amount: Number(amount), status: 'approved', reason,
-        requestedAt: new Date().toISOString(), decidedAt: new Date().toISOString(), decidedBy: me.id,
+        amount: Number(amount), status: 'pending', reason,
+        addedBy: me.id, addedByName: me.name,
+        requestedAt: new Date().toISOString(), decidedAt: null, decidedBy: null,
       };
       points.push(entry);
       await setCollection('points', points);
@@ -130,9 +188,11 @@ export default async function handler(req) {
     if (url.searchParams.get('eventId')) {
       const auth = await requireAuth(req, { perm: 'events' });
       if (auth.deny) return auth.deny;
-      const points = await getCollection('points', []);
+      const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
+      const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
       const eventId = url.searchParams.get('eventId');
-      const rows = points.filter(p => p.eventId === eventId && p.status !== 'denied');
+      const rows = withDeciderNames(points.filter(p => p.eventId === eventId && p.status !== 'denied'), members)
+        .map(p => ({ ...p, memberPhotoUrl: photoById.get(p.memberId) || null }));
       return json({ ok: true, points: rows });
     }
     const auth = await requireAuth(req, { perm: 'points' });

@@ -1033,10 +1033,58 @@ function eventRowHTML(ev) {
     <div class="actions">
       <button class="btn-sm edit" data-edit-event="${escHtml(ev.id)}">Edit</button>
       <button class="btn-sm delete" data-delete-event="${escHtml(ev.id)}">Delete</button>
+      <button class="btn-sm outline" data-view-attendance="${escHtml(ev.id)}">View Attendance</button>
       <button class="btn-sm outline" data-export-attendance="${escHtml(ev.id)}">Export Attendance</button>
       <button class="btn-sm outline" data-remind-event="${escHtml(ev.id)}">Send Reminder</button>
     </div>
+    <div id="attendance-panel-${escHtml(ev.id)}" style="display:none;width:100%;margin-top:.5rem"></div>
   </div>`;
+}
+
+function attendanceRowHTML(p) {
+  const avatar = p.memberPhotoUrl
+    ? `<img src="${escHtml(p.memberPhotoUrl)}" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`
+    : `<div style="width:28px;height:28px;border-radius:50%;background:var(--surface);border:1px solid var(--border)"></div>`;
+  const statusClass = p.status === 'approved' ? 'badge-success' : p.status === 'denied' ? 'badge-priority-high' : 'badge-priority-medium';
+  const detail = [p.slotLabel, p.reason, p.addedByName ? `added by ${p.addedByName}` : null].filter(Boolean).join(' · ');
+  return `<div class="admin-row" style="padding:.4rem .55rem">
+    <div style="display:flex;align-items:center;gap:.5rem">
+      ${avatar}
+      <div><span class="name">${escHtml(p.memberName)}</span>${detail ? `<div class="meta">${escHtml(detail)}</div>` : ''}</div>
+    </div>
+    <div class="actions"><span class="badge-role ${statusClass}">${escHtml(p.status)}</span><span class="meta">${p.amount} pts</span></div>
+  </div>`;
+}
+
+function attendancePanelHTML(eventId, points) {
+  const rows = points.map(attendanceRowHTML).join('') || '<p class="small muted">No attendance recorded yet.</p>';
+  return `<div style="border-top:1px solid var(--border);padding-top:.6rem">
+    <h4 style="margin:0 0 .4rem">Attendance (${points.length})</h4>
+    <div style="max-height:260px;overflow-y:auto">${rows}</div>
+    <div style="margin-top:.6rem">
+      <input class="admin-input" type="text" placeholder="Add someone who attended…" autocomplete="off" data-attendance-search="${escHtml(eventId)}"/>
+      <input type="hidden" data-attendance-member-id="${escHtml(eventId)}"/>
+      <div style="display:none;max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:.5rem;margin-top:.3rem" data-attendance-results="${escHtml(eventId)}"></div>
+      <button class="btn-sm" style="margin-top:.3rem" data-add-attendance="${escHtml(eventId)}">Add to Attendance</button>
+      <div class="admin-status" data-attendance-status="${escHtml(eventId)}"></div>
+    </div>
+  </div>`;
+}
+
+async function renderAttendancePanel(eventId) {
+  const panel = document.getElementById(`attendance-panel-${eventId}`);
+  if (!panel) return;
+  panel.innerHTML = '<p class="small muted">Loading…</p>';
+  const { ok, data } = await api(`${POINTS_URL}?eventId=${encodeURIComponent(eventId)}`, { method: 'GET' });
+  if (!ok) { panel.innerHTML = '<p class="small muted">Could not load attendance.</p>'; return; }
+  panel.innerHTML = attendancePanelHTML(eventId, data.points);
+}
+
+let attendanceMembers = [];
+async function loadAttendanceMembers() {
+  if (attendanceMembers.length) return;
+  const { ok, data } = await api(`${EVENTS_URL}?membersForAttendance=1`, { method: 'GET' });
+  if (ok) attendanceMembers = data.members;
 }
 
 function yearFolderHTML(group, rowFn) {
@@ -1093,6 +1141,12 @@ function resetEventForm() {
   document.getElementById('ev-clear-signin-wrap').style.display = 'none';
   document.getElementById('ev-volunteer-wrap').style.display = 'none';
   document.getElementById('ev-slot-capacity-wrap').style.display = 'none';
+  document.getElementById('ev-full-day-cap-wrap').style.display = 'none';
+  document.getElementById('ev-slot-mode-wrap').style.display = 'none';
+  document.getElementById('ev-slot-mode').value = 'equal';
+  document.getElementById('ev-slot-duration').value = 30;
+  clearCustomSlotRows();
+  updateSlotModeFieldsVisibility();
   document.getElementById('event-form-heading').textContent = 'Create Event';
   document.getElementById('event-form-submit').textContent = 'Create event';
   document.getElementById('event-form-cancel').style.display = 'none';
@@ -1104,6 +1158,48 @@ function updateVolunteerFieldsVisibility() {
   document.getElementById('ev-volunteer-wrap').style.display = isVolunteer ? '' : 'none';
   const type = document.getElementById('ev-volunteer-type').value;
   document.getElementById('ev-slot-capacity-wrap').style.display = (isVolunteer && (type === 'bake_sale' || type === 'time_slot')) ? '' : 'none';
+  document.getElementById('ev-full-day-cap-wrap').style.display = (isVolunteer && type === 'full_event') ? '' : 'none';
+  document.getElementById('ev-slot-mode-wrap').style.display = (isVolunteer && type === 'time_slot') ? '' : 'none';
+  updateSlotModeFieldsVisibility();
+}
+
+function updateSlotModeFieldsVisibility() {
+  const mode = document.getElementById('ev-slot-mode').value;
+  document.getElementById('ev-slot-equal-wrap').style.display = mode === 'custom' ? 'none' : '';
+  document.getElementById('ev-slot-custom-wrap').style.display = mode === 'custom' ? '' : 'none';
+}
+
+function isoToTimeInput(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+let customSlotRowId = 0;
+function customSlotRowHTML(id, slot) {
+  return `<div class="form-row" data-custom-slot-row="${id}" style="align-items:flex-end;margin-bottom:.4rem">
+    <div class="form-group" style="margin:0"><input class="admin-input" type="text" placeholder="Slot name (e.g. Morning Shift)" data-custom-slot-label value="${escHtml(slot?.label || '')}"/></div>
+    <div class="form-group" style="margin:0"><input class="admin-input" type="time" data-custom-slot-start value="${escHtml(isoToTimeInput(slot?.start))}"/></div>
+    <div class="form-group" style="margin:0"><input class="admin-input" type="time" data-custom-slot-end value="${escHtml(isoToTimeInput(slot?.end))}"/></div>
+    <button class="btn-sm delete" type="button" data-remove-custom-slot="${id}">Remove</button>
+  </div>`;
+}
+function addCustomSlotRow(slot) {
+  const id = customSlotRowId++;
+  document.getElementById('ev-custom-slots-list').insertAdjacentHTML('beforeend', customSlotRowHTML(id, slot));
+}
+function clearCustomSlotRows() {
+  document.getElementById('ev-custom-slots-list').innerHTML = '';
+}
+function collectCustomSlots(eventDatePart) {
+  return Array.from(document.querySelectorAll('[data-custom-slot-row]')).map(row => {
+    const label = row.querySelector('[data-custom-slot-label]').value.trim();
+    const startTime = row.querySelector('[data-custom-slot-start]').value;
+    const endTime = row.querySelector('[data-custom-slot-end]').value;
+    if (!label || !startTime || !endTime) return null;
+    return { label, start: toISOFromLocalInput(`${eventDatePart}T${startTime}`), end: toISOFromLocalInput(`${eventDatePart}T${endTime}`) };
+  }).filter(Boolean);
 }
 
 function updateAllDayFieldsVisibility() {
@@ -1116,6 +1212,12 @@ function updateAllDayFieldsVisibility() {
 function wireEventsPanel() {
   document.getElementById('ev-tags').addEventListener('change', updateVolunteerFieldsVisibility);
   document.getElementById('ev-volunteer-type').addEventListener('change', updateVolunteerFieldsVisibility);
+  document.getElementById('ev-slot-mode').addEventListener('change', updateSlotModeFieldsVisibility);
+  document.getElementById('ev-add-custom-slot').addEventListener('click', () => addCustomSlotRow());
+  document.getElementById('ev-custom-slots-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-remove-custom-slot]');
+    if (btn) btn.closest('[data-custom-slot-row]').remove();
+  });
   document.getElementById('ev-all-day').addEventListener('change', updateAllDayFieldsVisibility);
   wireFileSizeCheck('ev-image-file', 'event-form-status');
   document.getElementById('ev-start').value = todayAtLocalInput(15);
@@ -1141,7 +1243,7 @@ function wireEventsPanel() {
     const statusEl = document.getElementById('event-form-status');
     const allDay = document.getElementById('ev-all-day').checked;
 
-    let start, end;
+    let start, end, eventDatePart;
     if (allDay) {
       const startDate = document.getElementById('ev-start-date').value;
       const endDate = document.getElementById('ev-end-date').value || startDate;
@@ -1149,6 +1251,7 @@ function wireEventsPanel() {
       if (endDate < startDate) { statusEl.textContent = 'End date can\'t be before the start date.'; statusEl.className = 'admin-status err'; return; }
       start = toISOFromLocalInput(`${startDate}T00:00`);
       end = toISOFromLocalInput(`${endDate}T23:59`);
+      eventDatePart = startDate;
     } else {
       const startVal = document.getElementById('ev-start').value;
       const endVal = document.getElementById('ev-end').value;
@@ -1159,6 +1262,7 @@ function wireEventsPanel() {
       }
       start = toISOFromLocalInput(startVal);
       end = toISOFromLocalInput(endVal);
+      eventDatePart = startVal.slice(0, 10);
     }
 
     const existingImage = document.getElementById('ev-image').value.trim();
@@ -1188,6 +1292,21 @@ function wireEventsPanel() {
       payload.volunteerType = volunteerType;
       if (volunteerType === 'bake_sale' || volunteerType === 'time_slot') {
         payload.slotCapacity = Number(document.getElementById('ev-slot-capacity').value) || 3;
+      }
+      if (volunteerType === 'full_event') {
+        const fdPoints = document.getElementById('ev-full-day-points').value;
+        if (fdPoints === '') { statusEl.textContent = 'Enter a points value for this full-day event — there is no default.'; statusEl.className = 'admin-status err'; return; }
+        payload.fullDayCapacity = Number(document.getElementById('ev-full-day-capacity').value) || 10;
+        payload.points = Number(fdPoints);
+      }
+      if (volunteerType === 'time_slot') {
+        const slotMode = document.getElementById('ev-slot-mode').value;
+        payload.slotMode = slotMode;
+        if (slotMode === 'custom') {
+          payload.customSlots = collectCustomSlots(eventDatePart);
+        } else {
+          payload.slotDurationMinutes = Number(document.getElementById('ev-slot-duration').value) || 30;
+        }
       }
     }
     if (document.getElementById('ev-clear-signin').checked) payload.signinLink = '';
@@ -1223,6 +1342,14 @@ function wireEventsPanel() {
       document.getElementById('ev-tags').value = (ev.tags && ev.tags[0]) || 'Event';
       document.getElementById('ev-volunteer-type').value = ev.volunteerType || '';
       document.getElementById('ev-slot-capacity').value = ev.slotCapacity || 3;
+      document.getElementById('ev-full-day-capacity').value = ev.fullDayCapacity || 10;
+      document.getElementById('ev-full-day-points').value = ev.volunteerType === 'full_event' ? (ev.points ?? '') : '';
+      document.getElementById('ev-slot-mode').value = ev.slotMode === 'custom' ? 'custom' : 'equal';
+      document.getElementById('ev-slot-duration').value = ev.slotDurationMinutes || 30;
+      clearCustomSlotRows();
+      if (ev.volunteerType === 'time_slot' && ev.slotMode === 'custom' && Array.isArray(ev.customSlots)) {
+        ev.customSlots.forEach(addCustomSlotRow);
+      }
       updateVolunteerFieldsVisibility();
       document.getElementById('ev-image').value = ev.imageUrl || '';
       document.getElementById('ev-image-current').textContent = ev.imageUrl ? `Current image: ${ev.imageUrl} — choose a new one only to replace it.` : '';
@@ -1241,6 +1368,34 @@ function wireEventsPanel() {
       const { ok, data } = await api(`${EVENTS_URL}?id=${encodeURIComponent(delBtn.dataset.deleteEvent)}`, { method: 'DELETE' });
       if (!ok) { alert(data.error || 'Could not delete event.'); return; }
       loadEvents();
+      return;
+    }
+    const viewAttBtn = e.target.closest('[data-view-attendance]');
+    if (viewAttBtn) {
+      const id = viewAttBtn.dataset.viewAttendance;
+      const panel = document.getElementById(`attendance-panel-${id}`);
+      const opening = panel.style.display === 'none';
+      panel.style.display = opening ? '' : 'none';
+      if (opening) { loadAttendanceMembers(); renderAttendancePanel(id); }
+      return;
+    }
+    const addAttBtn = e.target.closest('[data-add-attendance]');
+    if (addAttBtn) {
+      const id = addAttBtn.dataset.addAttendance;
+      const memberId = document.querySelector(`[data-attendance-member-id="${id}"]`).value;
+      const statusEl = document.querySelector(`[data-attendance-status="${id}"]`);
+      if (!memberId) { statusEl.textContent = 'Pick a member from the search results.'; statusEl.className = 'admin-status err'; return; }
+      const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'addAttendance', eventId: id, memberId }) });
+      if (!ok) { statusEl.textContent = data.error || 'Could not add.'; statusEl.className = 'admin-status err'; return; }
+      renderAttendancePanel(id);
+      return;
+    }
+    const pickAttRow = e.target.closest('[data-pick-attendance-member]');
+    if (pickAttRow) {
+      const id = pickAttRow.dataset.pickAttendanceEvent;
+      document.querySelector(`[data-attendance-member-id="${id}"]`).value = pickAttRow.dataset.pickAttendanceMember;
+      document.querySelector(`[data-attendance-search="${id}"]`).value = pickAttRow.dataset.pickAttendanceName;
+      document.querySelector(`[data-attendance-results="${id}"]`).style.display = 'none';
       return;
     }
     const exportBtn = e.target.closest('[data-export-attendance]');
@@ -1269,6 +1424,27 @@ function wireEventsPanel() {
   };
   document.getElementById('events-upcoming-list').addEventListener('click', onEventsListClick);
   document.getElementById('events-past-list').addEventListener('click', onEventsListClick);
+
+  const onAttendanceSearchInput = (e) => {
+    const input = e.target.closest('[data-attendance-search]');
+    if (!input) return;
+    const id = input.dataset.attendanceSearch;
+    document.querySelector(`[data-attendance-member-id="${id}"]`).value = '';
+    const resultsEl = document.querySelector(`[data-attendance-results="${id}"]`);
+    const term = input.value.trim().toLowerCase();
+    const matches = (term
+      ? attendanceMembers.filter(m => m.name.toLowerCase().includes(term) || m.email.toLowerCase().includes(term))
+      : attendanceMembers.slice()
+    ).sort((a, b) => a.name.localeCompare(b.name)).slice(0, 30);
+    resultsEl.innerHTML = matches.map(m => `<div class="admin-row" style="cursor:pointer;padding:.35rem .5rem" data-pick-attendance-member="${escHtml(m.id)}" data-pick-attendance-event="${escHtml(id)}" data-pick-attendance-name="${escHtml(m.name)}">
+      <div><span class="name">${escHtml(m.name)}</span></div>
+    </div>`).join('') || '<p class="small muted" style="padding:.3rem">No matches.</p>';
+    resultsEl.style.display = '';
+  };
+  document.getElementById('events-upcoming-list').addEventListener('input', onAttendanceSearchInput);
+  document.getElementById('events-past-list').addEventListener('input', onAttendanceSearchInput);
+  document.getElementById('events-upcoming-list').addEventListener('focusin', onAttendanceSearchInput);
+  document.getElementById('events-past-list').addEventListener('focusin', onAttendanceSearchInput);
 }
 
 // ── Members tab ───────────────────────────────────────────
@@ -1509,11 +1685,13 @@ function exportPointsAllXls() {
 }
 
 function eventPointsRowHTML(ev) {
+  const needsApproval = ev.volunteerType === 'full_event' && !ev.pointsApprovedBySecretary;
   return `<div class="admin-row" data-event-points-row="${escHtml(ev.id)}">
-    <div><span class="name">${escHtml(ev.title)}</span><div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}</div></div>
+    <div><span class="name">${escHtml(ev.title)}</span><div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}${needsApproval ? ' · <span style="color:var(--brand)">needs secretary approval</span>' : ''}</div></div>
     <div class="actions">
       <input class="admin-input" type="number" min="0" value="${ev.points ?? 1}" style="width:70px" data-event-points-input="${escHtml(ev.id)}"/>
       <button class="btn-sm outline" data-save-event-points="${escHtml(ev.id)}">Save</button>
+      ${needsApproval ? `<button class="btn-sm" data-approve-event-points="${escHtml(ev.id)}">Approve</button>` : ''}
     </div>
   </div>`;
 }
@@ -1552,12 +1730,23 @@ function wirePointsPanel() {
 
   const onEventPointsClick = async (e) => {
     const saveBtn = e.target.closest('[data-save-event-points]');
-    if (!saveBtn) return;
-    const input = document.querySelector(`[data-event-points-input="${saveBtn.dataset.saveEventPoints}"]`);
-    const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'setEventPoints', eventId: saveBtn.dataset.saveEventPoints, points: Number(input.value) }) });
-    if (!ok) { alert(data.error || 'Could not save.'); return; }
-    const ev = allEvents.find(x => x.id === saveBtn.dataset.saveEventPoints);
-    if (ev) ev.points = data.event.points;
+    const approveBtn = e.target.closest('[data-approve-event-points]');
+    if (saveBtn) {
+      const input = document.querySelector(`[data-event-points-input="${saveBtn.dataset.saveEventPoints}"]`);
+      const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'setEventPoints', eventId: saveBtn.dataset.saveEventPoints, points: Number(input.value) }) });
+      if (!ok) { alert(data.error || 'Could not save.'); return; }
+      const ev = allEvents.find(x => x.id === saveBtn.dataset.saveEventPoints);
+      if (ev) { ev.points = data.event.points; ev.pointsApprovedBySecretary = data.event.pointsApprovedBySecretary; }
+      renderEventPointsList();
+      return;
+    }
+    if (approveBtn) {
+      const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'approveEventPoints', eventId: approveBtn.dataset.approveEventPoints }) });
+      if (!ok) { alert(data.error || 'Could not approve.'); return; }
+      const ev = allEvents.find(x => x.id === approveBtn.dataset.approveEventPoints);
+      if (ev) ev.pointsApprovedBySecretary = data.event.pointsApprovedBySecretary;
+      renderEventPointsList();
+    }
   };
   document.getElementById('event-points-upcoming').addEventListener('click', onEventPointsClick);
   document.getElementById('event-points-past').addEventListener('click', onEventPointsClick);
@@ -1601,9 +1790,9 @@ function wirePointsPanel() {
     if (!amount || !reason) { statusEl.textContent = 'Amount and reason are required.'; statusEl.className = 'admin-status err'; return; }
     const { ok, data } = await api(POINTS_URL, { method: 'POST', body: JSON.stringify({ action: 'manualAward', memberId, amount, reason }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not award points.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = 'Awarded.'; statusEl.className = 'admin-status ok';
+    statusEl.textContent = 'Submitted for approval.'; statusEl.className = 'admin-status ok';
     e.target.reset();
-    loadPointsAll();
+    loadPointsAll(); loadPointsPending();
   });
 
   document.getElementById('event-defaults-list').addEventListener('click', async (e) => {
@@ -1620,8 +1809,9 @@ function wirePointsPanel() {
 }
 
 const EVENT_DEFAULT_LABELS = {
-  VolunteerSlot: 'Volunteer: per half-hour slot',
-  VolunteerFullDay: 'Volunteer: full day',
+  VolunteerSlot: 'Volunteer: full-day time slot',
+  BakeSaleSlot: 'Bake Sale: per half-hour slot',
+  BakeSaleItem: 'Bake Sale: per baked item',
 };
 
 async function loadEventDefaults() {

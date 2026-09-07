@@ -50,6 +50,19 @@ async function loadEvents() {
 
 export default async function handler(req) {
   if (req.method === 'GET') {
+    // Minimal roster lookup for the Events tab's "add someone to
+    // attendance" search — scoped to 'events' rather than the stricter
+    // 'members' permission, since an event coordinator without roster
+    // access still needs to record who showed up.
+    if (new URL(req.url).searchParams.get('membersForAttendance')) {
+      if (!(await canManageEvents(req))) return json({ ok: false, error: 'Not authorized.' }, 403);
+      const members = await loadMembers();
+      return json({
+        ok: true,
+        members: members.filter(m => m.role !== 'admin' && m.active !== false)
+          .map(m => ({ id: m.id, name: m.name, email: m.email, photoUrl: m.photoUrl || null })),
+      });
+    }
     const events = await loadEvents();
     // Whether to include full admin-only fields is driven by which VIEW is
     // being requested (?admin=1, sent only by the portal's own Events tab),
@@ -94,6 +107,7 @@ export default async function handler(req) {
     const {
       title, description, location, start, end, tags, signinLink, imageUrl,
       checkinOpensAt, checkinClosesAt, points, volunteerType, slotCapacity, allDay,
+      fullDayCapacity, slotMode, slotDurationMinutes, customSlots,
     } = body;
     if (!title || !start) return json({ ok: false, error: 'Title and start date/time are required.' }, 400);
     if (!imageUrl) return json({ ok: false, error: 'An image is required to create an event.' }, 400);
@@ -101,14 +115,31 @@ export default async function handler(req) {
       return json({ ok: false, error: 'Start and end must be on the same date unless allDay is set.' }, 400);
     }
     const finalTags = Array.isArray(tags) ? tags : [];
+    const finalVolunteerType = finalTags.includes('Volunteer') ? (volunteerType || '') : '';
+    // Full-day headcount volunteer events have no store-wide default points
+    // value — the organizer has to type one in, and it's flagged below for
+    // the secretary to sign off on (pointsApprovedBySecretary).
+    if (finalVolunteerType === 'full_event' && typeof points !== 'number') {
+      return json({ ok: false, error: 'Full-day volunteer events have no default points value — enter one for the secretary to review.' }, 400);
+    }
     const event = {
       id: randomUUID(), title, description: description || '', location: location || '',
       start, end: end || start, allDay: !!allDay, tags: finalTags,
       signinLink: signinLink || '', imageUrl,
-      points: typeof points === 'number' ? points : await defaultPointsForTags(finalTags),
+      points: finalVolunteerType === 'full_event' ? Number(points) : (typeof points === 'number' ? points : await defaultPointsForTags(finalTags)),
       checkinOpensAt: checkinOpensAt || '', checkinClosesAt: checkinClosesAt || '',
-      volunteerType: finalTags.includes('Volunteer') ? (volunteerType || '') : '',
+      volunteerType: finalVolunteerType,
       slotCapacity: typeof slotCapacity === 'number' && slotCapacity > 0 ? slotCapacity : 3,
+      fullDayCapacity: finalVolunteerType === 'full_event' ? (Number(fullDayCapacity) || 10) : null,
+      slotMode: finalVolunteerType === 'time_slot' ? (slotMode === 'custom' ? 'custom' : 'equal') : '',
+      slotDurationMinutes: finalVolunteerType === 'time_slot' ? (Number(slotDurationMinutes) || 30) : null,
+      customSlots: finalVolunteerType === 'time_slot' && slotMode === 'custom' && Array.isArray(customSlots)
+        ? customSlots.filter(s => s && s.label && s.start && s.end).map(s => ({ label: String(s.label), start: s.start, end: s.end }))
+        : [],
+      // Only the full-day headcount type needs review — every other type's
+      // points either come from the tag defaults or a per-slot default, both
+      // already secretary-managed on the Points tab.
+      pointsApprovedBySecretary: finalVolunteerType !== 'full_event',
     };
     events.push(event);
     await setCollection('events', events);
@@ -123,10 +154,27 @@ export default async function handler(req) {
       if (f in body) target[f] = body[f];
     }
     if ('allDay' in body) target.allDay = !!body.allDay;
-    if ('points' in body) target.points = Number(body.points);
+    if ('points' in body) {
+      const newPoints = Number(body.points);
+      // Changing a full-day event's points value through the Events tab
+      // (not the Points tab) re-flags it for secretary review — but only
+      // when the number actually changes, so re-saving the event for an
+      // unrelated edit doesn't silently revoke an existing approval.
+      if (target.volunteerType === 'full_event' && newPoints !== target.points) target.pointsApprovedBySecretary = false;
+      target.points = newPoints;
+    }
     if ('tags' in body) target.tags = Array.isArray(body.tags) ? body.tags : [];
     if ('slotCapacity' in body) target.slotCapacity = Number(body.slotCapacity) || 3;
+    if ('fullDayCapacity' in body) target.fullDayCapacity = Number(body.fullDayCapacity) || 10;
+    if ('slotMode' in body) target.slotMode = body.slotMode === 'custom' ? 'custom' : 'equal';
+    if ('slotDurationMinutes' in body) target.slotDurationMinutes = Number(body.slotDurationMinutes) || 30;
+    if ('customSlots' in body) {
+      target.customSlots = Array.isArray(body.customSlots)
+        ? body.customSlots.filter(s => s && s.label && s.start && s.end).map(s => ({ label: String(s.label), start: s.start, end: s.end }))
+        : [];
+    }
     if (!target.tags.includes('Volunteer')) target.volunteerType = '';
+    if (target.volunteerType !== 'full_event') target.pointsApprovedBySecretary = true;
     await setCollection('events', events);
     return json({ ok: true, event: target });
   }

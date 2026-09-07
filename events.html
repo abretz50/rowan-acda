@@ -541,6 +541,59 @@
     await renderVolunteerModal(eventId);
   }
 
+  function personChipHTML(p){
+    const avatar = p.photoUrl
+      ? '<img src="'+escHtml(p.photoUrl)+'" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>'
+      : '<span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--border)"></span>';
+    return '<span style="display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;margin:.15rem .4rem .15rem 0">'+avatar+escHtml(p.name)+(p.itemCount ? ' ('+p.itemCount+' item'+(p.itemCount!==1?'s':'')+')' : '')+'</span>';
+  }
+
+  function renderFullEventBody(data){
+    const capacityLine = data.capacity
+      ? (data.remaining>0 ? data.remaining+' of '+data.capacity+' spots left' : 'This event is full')
+      : '';
+    const roster = (data.signedUpMembers||[]).map(personChipHTML).join('') || '<p style="margin:.3rem 0">No one has signed up yet.</p>';
+    const canSignUp = !data.signedUp && (!data.capacity || data.remaining>0);
+    return (data.description ? '<p>'+escHtml(data.description)+'</p>' : '')
+      + '<p>This is a full-day volunteer signup — no time slots, just let us know you’re in. Points are awarded by the secretary afterward.</p>'
+      + (capacityLine ? '<p style="font-weight:700">'+capacityLine+'</p>' : '')
+      + '<div style="margin:.5rem 0">'+roster+'</div>'
+      + (data.signedUp
+        ? '<p>You’re signed up — thank you!</p>'
+        : (canSignUp ? '<button class="btn btn-checkin" data-vol-signup="full">Sign Up</button>' : '<button class="btn btn-outline" disabled>Full</button>'));
+  }
+
+  function renderSlotsBody(data){
+    const slotRows = (data.slots||[]).map(s => {
+      const already = (data.mySlotLabels||[]).includes(s.label);
+      const full = s.remaining <= 0;
+      const occupants = (s.occupants||[]).map(personChipHTML).join('');
+      const action = already
+        ? '<button class="btn-sm btn-outline" disabled>Signed Up</button>'
+        : (full ? '' : '<button class="btn-sm" data-vol-signup="slot" data-vol-slot="'+escHtml(s.label)+'">Sign Up ('+s.remaining+' left)</button>');
+      return '<div class="admin-row" style="display:block;padding:.5rem 0;border-bottom:1px solid var(--border)">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem"><span>'+escHtml(s.label)+' — '+data.pointsPerSlot+' pts</span>'+action+'</div>'
+        + (occupants ? '<div style="margin-top:.35rem">'+occupants+'</div>' : '')
+        + '</div>';
+    }).join('') || '<p>No slots available for this event.</p>';
+    const description = data.description ? '<p>'+escHtml(data.description)+'</p>' : '';
+
+    let itemSection = '';
+    if(data.volunteerType === 'bake_sale'){
+      const itemRoster = (data.itemSignups||[]).map(personChipHTML).join('') || '<p style="margin:.3rem 0">No one has signed up yet.</p>';
+      itemSection = '<hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>'
+        + '<h4 style="margin:0 0 .3rem">Bring Baked Items</h4>'
+        + '<p>Bring up to 4 items instead of (or in addition to) a work slot — '+data.pointsPerItem+' pts each. Items need to be there before the bake sale starts.</p>'
+        + '<div style="margin:.4rem 0">'+itemRoster+'</div>'
+        + '<div style="display:flex;gap:.5rem;align-items:center">'
+        + '<input type="number" min="1" max="'+data.maxItems+'" value="'+(data.myItemCount||1)+'" id="vol-item-count" class="admin-input" style="width:80px"/>'
+        + '<button class="btn-sm" data-vol-signup="items">'+(data.myItemCount ? 'Update Item Signup' : 'Sign Up')+'</button>'
+        + '</div>';
+    }
+
+    return '<div style="text-align:left">' + description + '<div style="max-height:260px;overflow-y:auto">'+slotRows+'</div></div>' + itemSection;
+  }
+
   async function renderVolunteerModal(eventId){
     const bodyEl = document.getElementById('volunteer-modal-body');
     let data;
@@ -555,32 +608,7 @@
       return;
     }
 
-    if(data.volunteerType === 'full_event'){
-      bodyEl.innerHTML = data.signedUp
-        ? '<p>You’re signed up for this event — thank you! The secretary will award your points afterward.</p>'
-        : '<p>This is a full-event volunteer signup — no time slots, just let us know you’re in. Points are awarded by the secretary afterward.</p>'
-          + '<button class="btn btn-checkin" data-vol-signup="full">Sign Up</button>';
-      return;
-    }
-
-    const slotRows = (data.slots||[]).map(s => {
-      const already = (data.mySlotLabels||[]).includes(s.label);
-      const full = s.remaining <= 0;
-      const label = already ? 'Signed Up' : (full ? 'Full' : 'Sign Up ('+s.remaining+' left)');
-      const disabled = already || full;
-      return '<div class="admin-row" style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid var(--border)">'
-        + '<span>'+s.label+' — '+data.pointsPerSlot+' pts</span>'
-        + '<button class="btn-sm'+(disabled?' btn-outline':'')+'" '+(disabled?'disabled':'')+' data-vol-signup="slot" data-vol-slot="'+s.label+'">'+label+'</button>'
-        + '</div>';
-    }).join('') || '<p>No slots available for this event.</p>';
-
-    const foodSection = data.volunteerType === 'bake_sale'
-      ? '<hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>'
-        + '<p>Bringing food instead of working a slot? Let us know — the secretary will review and set the final points (starts at 10).</p>'
-        + '<button class="btn'+(data.broughtFood?' btn-outline':'')+'" '+(data.broughtFood?'disabled':'')+' data-vol-signup="food">'+(data.broughtFood?'Already Signed Up to Bring Food':'I’ll Bring Food')+'</button>'
-      : '';
-
-    bodyEl.innerHTML = '<div style="text-align:left">'+slotRows+'</div>' + foodSection;
+    bodyEl.innerHTML = data.volunteerType === 'full_event' ? renderFullEventBody(data) : renderSlotsBody(data);
   }
 
   document.getElementById('volunteer-modal-body').addEventListener('click', async (e) => {
@@ -589,12 +617,13 @@
     const eventId = document.querySelector('#volunteer-modal').dataset.eventId;
     const kind = btn.dataset.volSignup;
     const slotLabel = btn.dataset.volSlot || undefined;
+    const itemCount = kind === 'items' ? Number(document.getElementById('vol-item-count').value) : undefined;
     btn.disabled = true; btn.textContent = 'Signing up…';
     try{
       const res = await fetch(VOLUNTEER_URL, {
         method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ eventId, kind, slotLabel })
+        body: JSON.stringify({ eventId, kind, slotLabel, itemCount })
       });
       const data = await res.json();
       if(!data.ok){ alert(data.error || 'Could not sign up.'); }
