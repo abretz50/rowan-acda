@@ -679,6 +679,19 @@ function wirePermissionsPanel() {
     if (!confirm(`Send this to all ${inviteAttendeeCount} attendee(s)? Send a sample to yourself first if you haven't.`)) return;
     sendInvite('send');
   });
+  document.getElementById('invite-resend-btn').addEventListener('click', async () => {
+    const statusEl = document.getElementById('invite-status');
+    const subject = document.getElementById('invite-subject').value.trim();
+    const message = document.getElementById('invite-message').value.trim();
+    const name = document.getElementById('invite-resend-name').value.trim();
+    const email = document.getElementById('invite-resend-email').value.trim();
+    if (!subject || !message) { statusEl.textContent = 'Subject and message are required.'; statusEl.className = 'admin-status err'; return; }
+    if (!name || !email) { statusEl.textContent = 'Name and corrected email are required to resend.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = 'Resending…'; statusEl.className = 'admin-status';
+    const { ok, data } = await api(SEND_INVITE_URL, { method: 'POST', body: JSON.stringify({ action: 'resend', subject, message, name, email }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not resend.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = `Resent to ${name} (${email}).`; statusEl.className = 'admin-status ok';
+  });
 }
 
 // ── Tasks tab (open to any E-Board account) ───────────────
@@ -1484,6 +1497,7 @@ function memberRowHTML(m) {
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-view-points="${escHtml(m.id)}">Points history</button>
+      <button class="btn-sm edit" data-edit-member-email="${escHtml(m.id)}">Edit Email</button>
       ${m.proflinkPointsId
         ? `<button class="btn-sm delete" data-unverify-proflink="${escHtml(m.proflinkPointsId)}" data-member-id="${escHtml(m.id)}">Unverify ProfLink</button>`
         : `<button class="btn-sm outline" data-verify-proflink="${escHtml(m.id)}">Verify ProfLink</button>`}
@@ -1571,11 +1585,11 @@ async function loadMembers() {
 const DEFAULT_INVITE_SUBJECT = 'Hope to see you at our next meeting!';
 const DEFAULT_INVITE_MESSAGE = `Hey {{name}},
 
-This is Adam — just wanted to say thanks again for joining us at ACDA last week! We'd love to have you at our next meeting today, the 11th, at 2pm. We're teaming up with a few other music clubs for a kickoff on the Wilson Green — volleyball, music, and good company!
+This is Adam, just wanted to say thanks again for joining us at ACDA last week! We'd love to have you at our next meeting today, the 11th, at 2pm on the Wilson Green. We're teaming up with a few other music clubs for a kickoff with volleyball, music, and food!
 
-Would love to see you there. Reach out to me with any questions!
+Would love to see you there if you can stop by! Feel free to reach out with any questions!
 
-— Adam
+-Adam
 bretza67@students.rowan.edu`;
 
 let inviteAttendeeCount = 0;
@@ -1627,6 +1641,18 @@ function wireMembersPanel() {
   document.getElementById('members-list').addEventListener('click', async (e) => {
     const viewBtn = e.target.closest('[data-view-points]');
     if (viewBtn) { selectMemberPoints(viewBtn.dataset.viewPoints); return; }
+    const editEmailBtn = e.target.closest('[data-edit-member-email]');
+    if (editEmailBtn) {
+      const memberId = editEmailBtn.dataset.editMemberEmail;
+      const member = allMembers.find(m => m.id === memberId);
+      const newEmail = prompt(`New email for ${member?.name || 'this member'}:`, member?.email || '');
+      if (newEmail === null) return;
+      if (!newEmail.trim()) { alert('Email cannot be blank.'); return; }
+      const { ok, data } = await api(MEMBERS_URL, { method: 'PATCH', body: JSON.stringify({ id: memberId, email: newEmail.trim() }) });
+      if (!ok) { alert(data.error || 'Could not update email.'); return; }
+      loadMembers();
+      return;
+    }
     const verifyBtn = e.target.closest('[data-verify-proflink]');
     if (verifyBtn) {
       const memberId = verifyBtn.dataset.verifyProflink;

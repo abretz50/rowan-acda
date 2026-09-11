@@ -59,6 +59,17 @@ export default async function handler(req) {
   const { action, subject, message } = body;
   if (!subject || !message) return json({ ok: false, error: 'Subject and message are required.' }, 400);
 
+  // Resend to one specific name/email — for fixing a single bounced address
+  // after the main batch already went out, without re-sending to everyone
+  // else. Doesn't touch the last-meeting attendee lookup at all.
+  if (action === 'resend') {
+    const { name, email } = body;
+    if (!name || !email) return json({ ok: false, error: 'Name and email are required.' }, 400);
+    const { ok, error } = await sendEmail({ to: email, subject, html: bodyHtml(message, name) });
+    if (!ok) return json({ ok: false, error }, 500);
+    return json({ ok: true, sentTo: email });
+  }
+
   const { meeting, attendees } = await lastMeetingAttendees();
   if (!meeting) return json({ ok: false, error: 'No past Meeting-tagged event found to pull attendees from.' }, 404);
 

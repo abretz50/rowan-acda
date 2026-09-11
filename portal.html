@@ -905,6 +905,15 @@
           </div>
           <div class="admin-status" id="invite-status"></div>
         </form>
+        <div style="border-top:1px solid var(--border);margin-top:1rem;padding-top:.8rem">
+          <h4 style="margin:0 0 .4rem">Resend to One Person</h4>
+          <p class="small muted" style="margin:0 0 .5rem">Uses the subject/message above — for fixing a bounced address without re-sending to everyone.</p>
+          <div class="form-row">
+            <input class="admin-input" type="text" id="invite-resend-name" placeholder="Name"/>
+            <input class="admin-input" type="email" id="invite-resend-email" placeholder="Corrected email"/>
+            <button class="btn-sm outline" type="button" id="invite-resend-btn">Resend</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -947,6 +956,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=76"></script>
+<script defer src="/js/portal.js?v=77"></script>
 </body>
 </html>
