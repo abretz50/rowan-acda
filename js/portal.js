@@ -673,24 +673,48 @@ function wirePermissionsPanel() {
     statusEl.className = data.emailsFailed ? 'admin-status err' : 'admin-status ok';
   });
 
+  document.getElementById('invite-target-mode').addEventListener('change', updateInviteTargetVisibility);
+
+  const inviteMemberSearch = document.getElementById('invite-member-search');
+  const inviteMemberResults = document.getElementById('invite-member-results');
+  function renderInviteMemberResults() {
+    const term = inviteMemberSearch.value.trim().toLowerCase();
+    const matches = (term ? inviteMembers.filter(m => m.name.toLowerCase().includes(term) || m.email.toLowerCase().includes(term)) : inviteMembers.slice())
+      .sort((a, b) => a.name.localeCompare(b.name)).slice(0, 30);
+    inviteMemberResults.innerHTML = matches.map(m => `<div class="admin-row" style="cursor:pointer;padding:.35rem .5rem" data-pick-invite-member="${escHtml(m.id)}" data-pick-invite-name="${escHtml(m.name)}">
+      <div><span class="name">${escHtml(m.name)}</span><div class="meta">${escHtml(m.email)}</div></div>
+    </div>`).join('') || '<p class="small muted" style="padding:.3rem">No matches.</p>';
+    inviteMemberResults.style.display = '';
+  }
+  inviteMemberSearch.addEventListener('focus', renderInviteMemberResults);
+  inviteMemberSearch.addEventListener('input', () => {
+    document.getElementById('invite-member-id').value = '';
+    renderInviteMemberResults();
+  });
+  document.addEventListener('click', (e) => {
+    if (e.target !== inviteMemberSearch && !inviteMemberResults.contains(e.target)) inviteMemberResults.style.display = 'none';
+  });
+  inviteMemberResults.addEventListener('click', (e) => {
+    const row = e.target.closest('[data-pick-invite-member]');
+    if (!row) return;
+    document.getElementById('invite-member-id').value = row.dataset.pickInviteMember;
+    inviteMemberSearch.value = row.dataset.pickInviteName;
+    inviteMemberResults.style.display = 'none';
+  });
+
   document.getElementById('invite-send-sample').addEventListener('click', () => sendInvite('sample'));
   document.getElementById('invite-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    if (!confirm(`Send this to all ${inviteAttendeeCount} attendee(s)? Send a sample to yourself first if you haven't.`)) return;
-    sendInvite('send');
-  });
-  document.getElementById('invite-resend-btn').addEventListener('click', async () => {
-    const statusEl = document.getElementById('invite-status');
-    const subject = document.getElementById('invite-subject').value.trim();
-    const message = document.getElementById('invite-message').value.trim();
-    const name = document.getElementById('invite-resend-name').value.trim();
-    const email = document.getElementById('invite-resend-email').value.trim();
-    if (!subject || !message) { statusEl.textContent = 'Subject and message are required.'; statusEl.className = 'admin-status err'; return; }
-    if (!name || !email) { statusEl.textContent = 'Name and corrected email are required to resend.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = 'Resending…'; statusEl.className = 'admin-status';
-    const { ok, data } = await api(SEND_INVITE_URL, { method: 'POST', body: JSON.stringify({ action: 'resend', subject, message, name, email }) });
-    if (!ok) { statusEl.textContent = data.error || 'Could not resend.'; statusEl.className = 'admin-status err'; return; }
-    statusEl.textContent = `Resent to ${name} (${email}).`; statusEl.className = 'admin-status ok';
+    const mode = document.getElementById('invite-target-mode').value;
+    if (mode === 'one') {
+      const memberId = document.getElementById('invite-member-id').value;
+      if (!memberId) { const s = document.getElementById('invite-status'); s.textContent = 'Pick a person from the search results.'; s.className = 'admin-status err'; return; }
+      if (!confirm(`Send this to ${inviteMemberSearch.value}?`)) return;
+      sendInvite('send', memberId);
+    } else {
+      if (!confirm(`Send this to all ${inviteAttendeeCount} attendee(s)? Send a sample to yourself first if you haven't.`)) return;
+      sendInvite('send');
+    }
   });
 }
 
@@ -1582,42 +1606,37 @@ async function loadMembers() {
   if (!selectedMemberId || !allMembers.some(m => m.id === selectedMemberId)) showMembershipGraph();
 }
 
-const DEFAULT_INVITE_SUBJECT = 'Hope to see you at our next meeting!';
-const DEFAULT_INVITE_MESSAGE = `Hey {{name}},
-
-This is Adam, just wanted to say thanks again for joining us at ACDA last week! We'd love to have you at our next meeting today, the 11th, at 2pm on the Wilson Green. We're teaming up with a few other music clubs for a kickoff with volleyball, music, and food!
-
-Would love to see you there if you can stop by! Feel free to reach out with any questions!
-
--Adam
-bretza67@students.rowan.edu`;
-
 let inviteAttendeeCount = 0;
+let inviteMembers = [];
 
-async function loadInviteInfo() {
-  const subjectEl = document.getElementById('invite-subject');
-  const messageEl = document.getElementById('invite-message');
-  if (!subjectEl.value) subjectEl.value = DEFAULT_INVITE_SUBJECT;
-  if (!messageEl.value) messageEl.value = DEFAULT_INVITE_MESSAGE;
-
-  const infoEl = document.getElementById('invite-meeting-info');
-  const { ok, data } = await api(SEND_INVITE_URL, { method: 'GET' });
-  if (!ok || !data.meeting) { infoEl.textContent = 'Could not find a past Meeting-tagged event to pull attendees from.'; inviteAttendeeCount = 0; return; }
-  inviteAttendeeCount = data.attendeeCount;
-  infoEl.textContent = `Pulling attendees from "${data.meeting.title}" (${fmtDashDate(data.meeting.start)}) — ${data.attendeeCount} attendee${data.attendeeCount !== 1 ? 's' : ''} found.`;
+function updateInviteTargetVisibility() {
+  const mode = document.getElementById('invite-target-mode').value;
+  document.getElementById('invite-meeting-info').style.display = mode === 'attendees' ? '' : 'none';
+  document.getElementById('invite-one-wrap').style.display = mode === 'one' ? '' : 'none';
 }
 
-async function sendInvite(action) {
+async function loadInviteInfo() {
+  const infoEl = document.getElementById('invite-meeting-info');
+  const { ok, data } = await api(SEND_INVITE_URL, { method: 'GET' });
+  if (!ok) { infoEl.textContent = 'Could not load.'; return; }
+  inviteMembers = data.members || [];
+  if (!data.meeting) { infoEl.textContent = 'Could not find a past Meeting-tagged event to pull attendees from.'; inviteAttendeeCount = 0; return; }
+  inviteAttendeeCount = data.attendeeCount;
+  infoEl.textContent = `Pulling attendees from "${data.meeting.title}" (${fmtDashDate(data.meeting.start)}) — ${data.attendeeCount} attendee${data.attendeeCount !== 1 ? 's' : ''} found.`;
+  updateInviteTargetVisibility();
+}
+
+async function sendInvite(action, memberId) {
   const statusEl = document.getElementById('invite-status');
   const subject = document.getElementById('invite-subject').value.trim();
   const message = document.getElementById('invite-message').value.trim();
   if (!subject || !message) { statusEl.textContent = 'Subject and message are required.'; statusEl.className = 'admin-status err'; return; }
   statusEl.textContent = action === 'sample' ? 'Sending sample…' : 'Sending…'; statusEl.className = 'admin-status';
-  const { ok, data } = await api(SEND_INVITE_URL, { method: 'POST', body: JSON.stringify({ action, subject, message }) });
+  const { ok, data } = await api(SEND_INVITE_URL, { method: 'POST', body: JSON.stringify({ action, subject, message, memberId }) });
   if (!ok) { statusEl.textContent = data.error || 'Could not send.'; statusEl.className = 'admin-status err'; return; }
   statusEl.textContent = action === 'sample'
-    ? `Sample sent to you (used "${data.sampleName}" for {{name}}).`
-    : `Sent ${data.sent} email(s)${data.failed ? `, ${data.failed} failed` : ''}.`;
+    ? 'Sample sent to you.'
+    : (memberId ? `Sent to ${data.sentTo}.` : `Sent ${data.sent} email(s)${data.failed ? `, ${data.failed} failed` : ''}.`);
   statusEl.className = 'admin-status ok';
 }
 

@@ -1,11 +1,16 @@
-// One-off personal note to everyone who attended the most recent Meeting,
-// e.g. "thanks for coming, hope to see you at the next one" — distinct from
-// the templated task/event reminder system, since this is free-form text
-// with a {{name}} token the sender fills in themselves. Always test with
-// action:'sample' (goes only to the sender) before action:'send' (goes to
-// every attendee), same "preview before blast" shape as everything else in
-// the reminder system.
+// One-off personal note to either everyone who attended the most recent
+// Meeting, or one specific member picked by name — e.g. "thanks for coming,
+// hope to see you at the next one." Distinct from the templated task/event
+// reminder system since this is free-form text with a {{name}} token the
+// sender fills in themselves. Always test with action:'sample' (goes only
+// to the sender) before action:'send' (goes to the real target), same
+// "preview before blast" shape as everything else in the reminder system.
+//
+// A specific member's email always comes from their live roster record
+// (loadMembers()), never a value typed into this form — correcting a
+// bounced address happens on the Members tab, not here.
 import { getCollection } from './_lib/blobs.mjs';
+import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { sendEmail, memberEmails, emailLayout, escapeHtml } from './_lib/email.mjs';
 
@@ -40,15 +45,24 @@ async function lastMeetingAttendees() {
 
 export default async function handler(req) {
   // Gated on 'permissions' (the same locked-full-access check as the
-  // Account Management tab's Backups/Reminders sections it now lives next
-  // to) rather than a manageable tab permission — mass-emailing members
+  // Account Management tab's Backups/Reminders sections it lives next to)
+  // rather than a manageable tab permission — mass-emailing members
   // directly stays a president/admin-level action.
   const auth = await requireAuth(req, { perm: 'permissions' });
   if (auth.deny) return auth.deny;
 
   if (req.method === 'GET') {
-    const { meeting, attendees } = await lastMeetingAttendees();
-    return json({ ok: true, meeting: meeting ? { id: meeting.id, title: meeting.title, start: meeting.start } : null, attendeeCount: attendees.length });
+    const [{ meeting, attendees }, members] = await Promise.all([lastMeetingAttendees(), loadMembers()]);
+    return json({
+      ok: true,
+      meeting: meeting ? { id: meeting.id, title: meeting.title, start: meeting.start } : null,
+      attendeeCount: attendees.length,
+      // For the "specific person" search — always the live roster, so
+      // whatever email is on file (including a just-corrected one) is what
+      // gets used.
+      members: members.filter(m => m.role !== 'admin' && m.active !== false && m.email)
+        .map(m => ({ id: m.id, name: m.name, email: m.email })),
+    });
   }
 
   if (req.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405);
@@ -56,31 +70,30 @@ export default async function handler(req) {
 
   let body;
   try { body = await req.json(); } catch { return json({ ok: false, error: 'Bad JSON' }, 400); }
-  const { action, subject, message } = body;
+  const { action, subject, message, memberId } = body;
   if (!subject || !message) return json({ ok: false, error: 'Subject and message are required.' }, 400);
 
-  // Resend to one specific name/email — for fixing a single bounced address
-  // after the main batch already went out, without re-sending to everyone
-  // else. Doesn't touch the last-meeting attendee lookup at all.
-  if (action === 'resend') {
-    const { name, email } = body;
-    if (!name || !email) return json({ ok: false, error: 'Name and email are required.' }, 400);
-    const { ok, error } = await sendEmail({ to: email, subject, html: bodyHtml(message, name) });
+  if (action === 'sample') {
+    const { ok, error } = await sendEmail({ to: memberEmails(auth.user), subject: `[SAMPLE] ${subject}`, html: bodyHtml(message, auth.user.name) });
     if (!ok) return json({ ok: false, error }, 500);
-    return json({ ok: true, sentTo: email });
+    return json({ ok: true, sentTo: 'sample' });
   }
 
-  const { meeting, attendees } = await lastMeetingAttendees();
-  if (!meeting) return json({ ok: false, error: 'No past Meeting-tagged event found to pull attendees from.' }, 404);
-
-  if (action === 'sample') {
-    const sampleName = attendees[0]?.name || 'Member';
-    const { ok, error } = await sendEmail({ to: memberEmails(auth.user), subject: `[SAMPLE] ${subject}`, html: bodyHtml(message, sampleName) });
+  // Send to one specific member, using their current roster email.
+  if (action === 'send' && memberId) {
+    const members = await loadMembers();
+    const member = members.find(m => m.id === memberId);
+    if (!member) return json({ ok: false, error: 'Member not found.' }, 404);
+    const emails = memberEmails(member);
+    if (!emails.length) return json({ ok: false, error: `${member.name} has no email on file.` }, 400);
+    const { ok, error } = await sendEmail({ to: emails, subject, html: bodyHtml(message, member.name) });
     if (!ok) return json({ ok: false, error }, 500);
-    return json({ ok: true, sentTo: 'sample', sampleName, attendeeCount: attendees.length, meetingTitle: meeting.title });
+    return json({ ok: true, sentTo: member.name });
   }
 
   if (action === 'send') {
+    const { meeting, attendees } = await lastMeetingAttendees();
+    if (!meeting) return json({ ok: false, error: 'No past Meeting-tagged event found to pull attendees from.' }, 404);
     if (!attendees.length) return json({ ok: false, error: `No attendees found for "${meeting.title}".` }, 400);
     const jobs = attendees.map(a => sendEmail({ to: a.email, subject, html: bodyHtml(message, a.name) }));
     const results = await Promise.allSettled(jobs);

@@ -893,27 +893,29 @@
       </div>
 
       <div class="admin-card" id="invite-section" style="margin-top:1rem;display:none">
-        <h3>Send a Note to Last Meeting's Attendees</h3>
-        <p class="small muted" id="invite-meeting-info">Loading…</p>
+        <h3>Send a Personal Note</h3>
         <form class="admin-form" id="invite-form" novalidate>
           <input class="admin-input" type="text" id="invite-subject" placeholder="Subject"/>
           <textarea class="admin-input" id="invite-message" rows="6" placeholder="Message — use {{name}} anywhere you want their first name inserted"></textarea>
-          <p class="form-hint">{{name}} is replaced with each person's first name. Always send a sample to yourself first.</p>
+          <p class="form-hint">{{name}} is replaced with each person's first name. Always send a sample to yourself first. To fix a bounced address, correct it on the Members tab first — this always uses the email on file.</p>
+
+          <select class="admin-input" id="invite-target-mode">
+            <option value="attendees">Last Meeting's Attendees</option>
+            <option value="one">A Specific Person…</option>
+          </select>
+          <p class="small muted" id="invite-meeting-info"></p>
+          <div id="invite-one-wrap" style="display:none;position:relative">
+            <input class="admin-input" type="text" id="invite-member-search" placeholder="Type a name…" autocomplete="off"/>
+            <input type="hidden" id="invite-member-id"/>
+            <div id="invite-member-results" style="display:none;max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:.5rem;background:#fff"></div>
+          </div>
+
           <div style="display:flex;gap:.5rem;flex-wrap:wrap">
             <button class="btn-sm outline" type="button" id="invite-send-sample">Send Sample to Me</button>
-            <button class="btn-sm" type="submit" id="invite-send-all">Send to Attendees</button>
+            <button class="btn-sm" type="submit" id="invite-send-btn">Send</button>
           </div>
           <div class="admin-status" id="invite-status"></div>
         </form>
-        <div style="border-top:1px solid var(--border);margin-top:1rem;padding-top:.8rem">
-          <h4 style="margin:0 0 .4rem">Resend to One Person</h4>
-          <p class="small muted" style="margin:0 0 .5rem">Uses the subject/message above — for fixing a bounced address without re-sending to everyone.</p>
-          <div class="form-row">
-            <input class="admin-input" type="text" id="invite-resend-name" placeholder="Name"/>
-            <input class="admin-input" type="email" id="invite-resend-email" placeholder="Corrected email"/>
-            <button class="btn-sm outline" type="button" id="invite-resend-btn">Resend</button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -956,6 +958,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=77"></script>
+<script defer src="/js/portal.js?v=78"></script>
 </body>
 </html>
