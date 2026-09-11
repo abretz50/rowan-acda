@@ -22,6 +22,7 @@ const PERMISSIONS_URL = '/.netlify/functions/portal-permissions';
 const TASKS_URL = '/.netlify/functions/portal-tasks';
 const TASK_REMIND_URL = '/.netlify/functions/portal-task-remind';
 const EVENT_REMIND_URL = '/.netlify/functions/portal-event-remind';
+const SEND_INVITE_URL = '/.netlify/functions/portal-send-invite';
 // The chapter's permanent site-owner account — mirrors _lib/permissions.mjs's
 // isPermanentAdmin(); the server is the source of truth, this is only for
 // hiding the buttons it would reject anyway.
@@ -332,7 +333,7 @@ function showDashboard() {
     clearInterval(eventsRefreshTimer);
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
-  if (canUse('members')) loadMembers();
+  if (canUse('members')) { loadMembers(); loadInviteInfo(); }
   if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); loadPointsLeaderboard(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) { loadEboardRoster(); loadSiteContentExtras(); }
@@ -1559,9 +1560,55 @@ async function loadMembers() {
   if (!selectedMemberId || !allMembers.some(m => m.id === selectedMemberId)) showMembershipGraph();
 }
 
+const DEFAULT_INVITE_SUBJECT = 'Hope to see you at our next meeting!';
+const DEFAULT_INVITE_MESSAGE = `Hey {{name}},
+
+This is Adam — just wanted to say thanks again for joining us at ACDA last week! We'd love to have you at our next meeting today, the 11th, at 2pm. We're teaming up with a few other music clubs for a kickoff on the Wilson Green — volleyball, music, and good company!
+
+Would love to see you there. Reach out to me with any questions!
+
+— Adam
+bretza67@students.rowan.edu`;
+
+let inviteAttendeeCount = 0;
+
+async function loadInviteInfo() {
+  const subjectEl = document.getElementById('invite-subject');
+  const messageEl = document.getElementById('invite-message');
+  if (!subjectEl.value) subjectEl.value = DEFAULT_INVITE_SUBJECT;
+  if (!messageEl.value) messageEl.value = DEFAULT_INVITE_MESSAGE;
+
+  const infoEl = document.getElementById('invite-meeting-info');
+  const { ok, data } = await api(SEND_INVITE_URL, { method: 'GET' });
+  if (!ok || !data.meeting) { infoEl.textContent = 'Could not find a past Meeting-tagged event to pull attendees from.'; inviteAttendeeCount = 0; return; }
+  inviteAttendeeCount = data.attendeeCount;
+  infoEl.textContent = `Pulling attendees from "${data.meeting.title}" (${fmtDashDate(data.meeting.start)}) — ${data.attendeeCount} attendee${data.attendeeCount !== 1 ? 's' : ''} found.`;
+}
+
+async function sendInvite(action) {
+  const statusEl = document.getElementById('invite-status');
+  const subject = document.getElementById('invite-subject').value.trim();
+  const message = document.getElementById('invite-message').value.trim();
+  if (!subject || !message) { statusEl.textContent = 'Subject and message are required.'; statusEl.className = 'admin-status err'; return; }
+  statusEl.textContent = action === 'sample' ? 'Sending sample…' : 'Sending…'; statusEl.className = 'admin-status';
+  const { ok, data } = await api(SEND_INVITE_URL, { method: 'POST', body: JSON.stringify({ action, subject, message }) });
+  if (!ok) { statusEl.textContent = data.error || 'Could not send.'; statusEl.className = 'admin-status err'; return; }
+  statusEl.textContent = action === 'sample'
+    ? `Sample sent to you (used "${data.sampleName}" for {{name}}).`
+    : `Sent ${data.sent} email(s)${data.failed ? `, ${data.failed} failed` : ''}.`;
+  statusEl.className = 'admin-status ok';
+}
+
 function wireMembersPanel() {
   document.getElementById('members-graph-reset').addEventListener('click', showMembershipGraph);
   document.getElementById('roster-search').addEventListener('input', renderRosterList);
+
+  document.getElementById('invite-send-sample').addEventListener('click', () => sendInvite('sample'));
+  document.getElementById('invite-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!confirm(`Send this to all ${inviteAttendeeCount} attendee(s)? Send a sample to yourself first if you haven't.`)) return;
+    sendInvite('send');
+  });
 
   document.getElementById('copy-email-list-btn').addEventListener('click', async () => {
     const statusEl = document.getElementById('copy-email-list-status');
