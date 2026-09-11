@@ -39,9 +39,11 @@ async function lastMeetingAttendees() {
 }
 
 export default async function handler(req) {
-  // Gated on 'members' (not 'events') since this lives on the Members tab
-  // and is about contacting people directly, not managing event records.
-  const auth = await requireAuth(req, { perm: 'members' });
+  // Gated on 'permissions' (the same locked-full-access check as the
+  // Account Management tab's Backups/Reminders sections it now lives next
+  // to) rather than a manageable tab permission — mass-emailing members
+  // directly stays a president/admin-level action.
+  const auth = await requireAuth(req, { perm: 'permissions' });
   if (auth.deny) return auth.deny;
 
   if (req.method === 'GET') {

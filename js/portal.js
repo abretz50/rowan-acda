@@ -325,7 +325,8 @@ function showDashboard() {
   document.getElementById('permissions-section').style.display = canUse('permissions') ? '' : 'none';
   document.getElementById('backup-section').style.display = canUse('permissions') ? '' : 'none';
   document.getElementById('reminders-section').style.display = canUse('permissions') ? '' : 'none';
-  if (canUse('permissions')) { loadPermissions(); loadLastBackup(); }
+  document.getElementById('invite-section').style.display = canUse('permissions') ? '' : 'none';
+  if (canUse('permissions')) { loadPermissions(); loadLastBackup(); loadInviteInfo(); }
   // loadEvents() populates the shared `allEvents` list, which the Points tab's
   // "Event Point Values" section also needs — so load it for either permission.
   if (canUse('events') || canUse('points')) {
@@ -333,7 +334,7 @@ function showDashboard() {
     clearInterval(eventsRefreshTimer);
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
-  if (canUse('members')) { loadMembers(); loadInviteInfo(); }
+  if (canUse('members')) loadMembers();
   if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); loadPointsLeaderboard(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) { loadEboardRoster(); loadSiteContentExtras(); }
@@ -670,6 +671,13 @@ function wirePermissionsPanel() {
     const digestBit = data.weeklyDigestSent ? `, ${data.weeklyDigestSent} weekly digest(s)` : '';
     statusEl.textContent = `Sent ${data.emailsSent} email(s) — ${data.taskReminders} task reminder(s), ${data.eventReminders} event(s)${digestBit}${data.emailsFailed ? `, ${data.emailsFailed} failed.` : '.'}${errorBit}`;
     statusEl.className = data.emailsFailed ? 'admin-status err' : 'admin-status ok';
+  });
+
+  document.getElementById('invite-send-sample').addEventListener('click', () => sendInvite('sample'));
+  document.getElementById('invite-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!confirm(`Send this to all ${inviteAttendeeCount} attendee(s)? Send a sample to yourself first if you haven't.`)) return;
+    sendInvite('send');
   });
 }
 
@@ -1602,13 +1610,6 @@ async function sendInvite(action) {
 function wireMembersPanel() {
   document.getElementById('members-graph-reset').addEventListener('click', showMembershipGraph);
   document.getElementById('roster-search').addEventListener('input', renderRosterList);
-
-  document.getElementById('invite-send-sample').addEventListener('click', () => sendInvite('sample'));
-  document.getElementById('invite-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (!confirm(`Send this to all ${inviteAttendeeCount} attendee(s)? Send a sample to yourself first if you haven't.`)) return;
-    sendInvite('send');
-  });
 
   document.getElementById('copy-email-list-btn').addEventListener('click', async () => {
     const statusEl = document.getElementById('copy-email-list-status');

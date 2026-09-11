@@ -460,21 +460,6 @@
       </div>
 
       <div class="admin-card" style="margin-top:1rem">
-        <h3>Send a Note to Last Meeting's Attendees</h3>
-        <p class="small muted" id="invite-meeting-info">Loading…</p>
-        <form class="admin-form" id="invite-form" novalidate>
-          <input class="admin-input" type="text" id="invite-subject" placeholder="Subject"/>
-          <textarea class="admin-input" id="invite-message" rows="6" placeholder="Message — use {{name}} anywhere you want their first name inserted"></textarea>
-          <p class="form-hint">{{name}} is replaced with each person's first name. Always send a sample to yourself first.</p>
-          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-            <button class="btn-sm outline" type="button" id="invite-send-sample">Send Sample to Me</button>
-            <button class="btn-sm" type="submit" id="invite-send-all">Send to Attendees</button>
-          </div>
-          <div class="admin-status" id="invite-status"></div>
-        </form>
-      </div>
-
-      <div class="admin-card" style="margin-top:1rem">
         <h3>Latest Comments</h3>
         <div id="recent-comments-list" style="max-height:450px;overflow-y:auto"><p class="small muted">Loading…</p></div>
       </div>
@@ -906,6 +891,21 @@
         <button class="btn-sm" type="button" id="reminders-now-btn">Send Reminders Now</button>
         <div class="admin-status" id="reminders-status"></div>
       </div>
+
+      <div class="admin-card" id="invite-section" style="margin-top:1rem;display:none">
+        <h3>Send a Note to Last Meeting's Attendees</h3>
+        <p class="small muted" id="invite-meeting-info">Loading…</p>
+        <form class="admin-form" id="invite-form" novalidate>
+          <input class="admin-input" type="text" id="invite-subject" placeholder="Subject"/>
+          <textarea class="admin-input" id="invite-message" rows="6" placeholder="Message — use {{name}} anywhere you want their first name inserted"></textarea>
+          <p class="form-hint">{{name}} is replaced with each person's first name. Always send a sample to yourself first.</p>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn-sm outline" type="button" id="invite-send-sample">Send Sample to Me</button>
+            <button class="btn-sm" type="submit" id="invite-send-all">Send to Attendees</button>
+          </div>
+          <div class="admin-status" id="invite-status"></div>
+        </form>
+      </div>
     </div>
   </div>
 </main>
@@ -947,6 +947,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=75"></script>
+<script defer src="/js/portal.js?v=76"></script>
 </body>
 </html>
