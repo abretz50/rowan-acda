@@ -3,6 +3,7 @@ import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
+import { easternDateOnly } from './_lib/dateFmt.mjs';
 import {
   loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS,
   VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY,
@@ -203,6 +204,22 @@ export default async function handler(req) {
     let rows = points;
     if (status) rows = rows.filter(p => p.status === status);
     if (memberId) rows = rows.filter(p => p.memberId === memberId);
+    // A volunteer signup (bake sale slot/items, full-day) can happen weeks
+    // ahead of the event — the secretary shouldn't see it in the approval
+    // queue (and can't meaningfully approve it) until the event has
+    // actually happened, so hold those out of the *pending* list until then.
+    // The signup itself, and its capacity/occupant effects, exist from the
+    // moment someone signs up; only this queue's visibility is delayed.
+    if (status === 'pending') {
+      const events = await getCollection('events', []);
+      const eventStartById = new Map(events.map(e => [e.id, e.start]));
+      const today = easternDateOnly(new Date());
+      rows = rows.filter(p => {
+        if (!p.source?.startsWith('volunteer-')) return true;
+        const start = eventStartById.get(p.eventId);
+        return !start || easternDateOnly(start) <= today;
+      });
+    }
     return json({ ok: true, points: withDeciderNames(rows, members) });
   }
 

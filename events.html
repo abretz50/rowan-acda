@@ -541,18 +541,38 @@
     await renderVolunteerModal(eventId);
   }
 
-  function personChipHTML(p){
-    const avatar = p.photoUrl
-      ? '<img src="'+escHtml(p.photoUrl)+'" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>'
+  function avatarHTML(photoUrl){
+    return photoUrl
+      ? '<img src="'+escHtml(photoUrl)+'" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>'
       : '<span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--border)"></span>';
-    return '<span style="display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;margin:.15rem .4rem .15rem 0">'+avatar+escHtml(p.name)+(p.itemCount ? ' ('+p.itemCount+' item'+(p.itemCount!==1?'s':'')+')' : '')+'</span>';
+  }
+
+  // For a roster of people who already signed up (item donations, full-day
+  // headcount) — pass `unsignKind` to let the current viewer cancel their
+  // own entry from right here.
+  function personChipHTML(p, unsignKind){
+    const detail = p.items ? ' — '+escHtml(p.items) : (p.itemCount ? ' ('+p.itemCount+' item'+(p.itemCount!==1?'s':'')+')' : '');
+    const unsignBtn = (p.isMe && unsignKind) ? '<button class="btn-sm btn-outline" data-vol-signup="'+unsignKind+'" style="margin-left:.5rem">Unsign Up</button>' : '';
+    return '<div style="display:flex;align-items:center;gap:.35rem;font-size:.85rem;margin:.3rem 0">'+avatarHTML(p.photoUrl)+'<span>'+escHtml(p.name)+detail+'</span>'+unsignBtn+'</div>';
+  }
+
+  // One box per available seat in a time slot — an empty seat is a "Sign
+  // Up" button, a filled one shows who's there, and (if it's you) an
+  // "Unsign Up" button takes the sign-up button's place.
+  function seatBoxHTML(occupant, slotLabel){
+    if(!occupant){
+      return '<button class="btn-sm" data-vol-signup="slot" data-vol-slot="'+escHtml(slotLabel)+'">Sign Up</button>';
+    }
+    const unsignBtn = occupant.isMe ? '<button class="btn-sm btn-outline" data-vol-signup="unsign-slot" data-vol-slot="'+escHtml(slotLabel)+'" style="margin-left:.3rem">Unsign Up</button>' : '';
+    return '<span style="display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;padding:.3rem .5rem;border:1px solid var(--border);border-radius:.4rem;background:var(--surface)">'
+      + avatarHTML(occupant.photoUrl) + escHtml(occupant.name) + unsignBtn + '</span>';
   }
 
   function renderFullEventBody(data){
     const capacityLine = data.capacity
       ? (data.remaining>0 ? data.remaining+' of '+data.capacity+' spots left' : 'This event is full')
       : '';
-    const roster = (data.signedUpMembers||[]).map(personChipHTML).join('') || '<p style="margin:.3rem 0">No one has signed up yet.</p>';
+    const roster = (data.signedUpMembers||[]).map(p => personChipHTML(p)).join('') || '<p style="margin:.3rem 0">No one has signed up yet.</p>';
     const canSignUp = !data.signedUp && (!data.capacity || data.remaining>0);
     return (data.description ? '<p>'+escHtml(data.description)+'</p>' : '')
       + '<p>This is a full-day volunteer signup — no time slots, just let us know you’re in. Points are awarded by the secretary afterward.</p>'
@@ -565,30 +585,30 @@
 
   function renderSlotsBody(data){
     const slotRows = (data.slots||[]).map(s => {
-      const already = (data.mySlotLabels||[]).includes(s.label);
-      const full = s.remaining <= 0;
-      const occupants = (s.occupants||[]).map(personChipHTML).join('');
-      const action = already
-        ? '<button class="btn-sm btn-outline" disabled>Signed Up</button>'
-        : (full ? '' : '<button class="btn-sm" data-vol-signup="slot" data-vol-slot="'+escHtml(s.label)+'">Sign Up ('+s.remaining+' left)</button>');
-      return '<div class="admin-row" style="display:block;padding:.5rem 0;border-bottom:1px solid var(--border)">'
-        + '<div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem"><span>'+escHtml(s.label)+' — '+data.pointsPerSlot+' pts</span>'+action+'</div>'
-        + (occupants ? '<div style="margin-top:.35rem">'+occupants+'</div>' : '')
+      const seats = [];
+      for(let i=0;i<s.capacity;i++){ seats.push(seatBoxHTML((s.occupants||[])[i], s.label)); }
+      return '<div style="padding:.5rem 0;border-bottom:1px solid var(--border)">'
+        + '<div style="font-weight:700;margin-bottom:.35rem">'+escHtml(s.label)+' — '+data.pointsPerSlot+' pts</div>'
+        + '<div style="display:flex;flex-wrap:wrap;gap:.4rem">'+seats.join('')+'</div>'
         + '</div>';
     }).join('') || '<p>No slots available for this event.</p>';
     const description = data.description ? '<p>'+escHtml(data.description)+'</p>' : '';
 
     let itemSection = '';
     if(data.volunteerType === 'bake_sale'){
-      const itemRoster = (data.itemSignups||[]).map(personChipHTML).join('') || '<p style="margin:.3rem 0">No one has signed up yet.</p>';
+      const itemRoster = (data.itemSignups||[]).map(p => personChipHTML(p, 'unsign-items')).join('') || '<p style="margin:.3rem 0">No one has signed up yet.</p>';
+      const alreadyItems = !!data.myItemCount;
       itemSection = '<hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)"/>'
         + '<h4 style="margin:0 0 .3rem">Bring Baked Items</h4>'
-        + '<p>Bring up to 4 items instead of (or in addition to) a work slot — '+data.pointsPerItem+' pts each. Items need to be there before the bake sale starts.</p>'
+        + '<p>Bring up to 4 items instead of (or in addition to) a work slot for '+data.pointsPerItem+' pts each. Items need to be there before the bake sale starts.</p>'
         + '<div style="margin:.4rem 0">'+itemRoster+'</div>'
-        + '<div style="display:flex;gap:.5rem;align-items:center">'
+        + '<div style="display:flex;flex-direction:column;gap:.4rem">'
+        + '<input type="text" id="vol-item-desc" class="admin-input" placeholder="What are you bringing? (e.g. 2 dozen cookies)" value="'+escHtml(data.myItems||'')+'"/>'
+        + '<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">'
         + '<input type="number" min="1" max="'+data.maxItems+'" value="'+(data.myItemCount||1)+'" id="vol-item-count" class="admin-input" style="width:80px"/>'
-        + '<button class="btn-sm" data-vol-signup="items">'+(data.myItemCount ? 'Update Item Signup' : 'Sign Up')+'</button>'
-        + '</div>';
+        + '<button class="btn-sm" data-vol-signup="items">'+(alreadyItems ? 'Update Item Signup' : 'Sign Up')+'</button>'
+        + (alreadyItems ? '<button class="btn-sm btn-outline" data-vol-signup="unsign-items">Unsign Up</button>' : '')
+        + '</div></div>';
     }
 
     return '<div style="text-align:left">' + description + '<div style="max-height:260px;overflow-y:auto">'+slotRows+'</div></div>' + itemSection;
@@ -618,12 +638,14 @@
     const kind = btn.dataset.volSignup;
     const slotLabel = btn.dataset.volSlot || undefined;
     const itemCount = kind === 'items' ? Number(document.getElementById('vol-item-count').value) : undefined;
-    btn.disabled = true; btn.textContent = 'Signing up…';
+    const items = kind === 'items' ? document.getElementById('vol-item-desc').value.trim() : undefined;
+    if(kind === 'items' && !items){ alert('Say what you\'re bringing (e.g. "2 dozen cookies").'); return; }
+    btn.disabled = true; btn.textContent = kind.startsWith('unsign') ? 'Unsigning…' : 'Signing up…';
     try{
       const res = await fetch(VOLUNTEER_URL, {
         method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ eventId, kind, slotLabel, itemCount })
+        body: JSON.stringify({ eventId, kind, slotLabel, itemCount, items })
       });
       const data = await res.json();
       if(!data.ok){ alert(data.error || 'Could not sign up.'); }

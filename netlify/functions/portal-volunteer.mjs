@@ -49,7 +49,10 @@ export default async function handler(req) {
       const capacity = event.slotCapacity || 3;
       return {
         label: s.label, capacity, remaining: Math.max(0, capacity - occupantEntries.length),
-        occupants: occupantEntries.map(p => ({ name: p.memberName, photoUrl: photoById.get(p.memberId) || null })),
+        // One entry per filled seat, in order — the client renders exactly
+        // `capacity` boxes per slot, filling them with these occupants
+        // first and an empty "Sign Up" button for the rest.
+        occupants: occupantEntries.map(p => ({ name: p.memberName, photoUrl: photoById.get(p.memberId) || null, isMe: p.memberId === (token?.id) })),
       };
     });
 
@@ -61,10 +64,12 @@ export default async function handler(req) {
 
     if (event.volunteerType === 'bake_sale') {
       const itemEntries = activeForEvent.filter(p => p.source === 'volunteer-items');
+      const myItemEntry = itemEntries.find(p => p.memberId === token?.id);
       result.pointsPerItem = await bakeSaleItemPointsDefault();
       result.maxItems = MAX_BAKE_SALE_ITEMS;
-      result.itemSignups = itemEntries.map(p => ({ name: p.memberName, photoUrl: photoById.get(p.memberId) || null, itemCount: p.itemCount || 0 }));
-      result.myItemCount = itemEntries.find(p => p.memberId === token?.id)?.itemCount || 0;
+      result.itemSignups = itemEntries.map(p => ({ name: p.memberName, photoUrl: photoById.get(p.memberId) || null, itemCount: p.itemCount || 0, items: p.items || '', isMe: p.memberId === (token?.id) }));
+      result.myItemCount = myItemEntry?.itemCount || 0;
+      result.myItems = myItemEntry?.items || '';
     }
 
     return json(result);
@@ -77,13 +82,16 @@ export default async function handler(req) {
 
   let body;
   try { body = await req.json(); } catch { return json({ ok: false, error: 'Bad JSON' }, 400); }
-  const { eventId, kind, slotLabel, itemCount } = body;
+  const { eventId, kind, slotLabel, itemCount, items } = body;
   if (!eventId || !kind) return json({ ok: false, error: 'eventId and kind are required.' }, 400);
 
   const events = await getCollection('events', []);
   const event = events.find(e => e.id === eventId);
   if (!event || !(event.tags || []).includes('Volunteer')) return json({ ok: false, error: 'Not a volunteer event.' }, 400);
-  if (new Date(event.end || event.start) < new Date()) return json({ ok: false, error: 'This event has already ended.' }, 403);
+  const unsigning = kind === 'unsign-slot' || kind === 'unsign-items';
+  if (!unsigning && new Date(event.end || event.start) < new Date()) {
+    return json({ ok: false, error: 'This event has already ended.' }, 403);
+  }
 
   const points = await getCollection('points', []);
   const alreadyHas = (source, extra = {}) => points.some(p =>
@@ -116,26 +124,48 @@ export default async function handler(req) {
     return json({ ok: true, alreadySignedUp: false });
   }
 
+  if (kind === 'unsign-slot') {
+    if (!slotLabel) return json({ ok: false, error: 'slotLabel is required.' }, 400);
+    const idx = points.findIndex(p => p.eventId === eventId && p.memberId === me.id && p.source === 'volunteer-slot' && p.slotLabel === slotLabel && p.status !== 'denied');
+    if (idx === -1) return json({ ok: false, error: 'You are not signed up for that slot.' }, 404);
+    if (points[idx].status === 'approved') return json({ ok: false, error: 'This was already approved — ask the secretary to remove it.' }, 409);
+    points.splice(idx, 1);
+    await setCollection('points', points);
+    return json({ ok: true });
+  }
+
   // Bake-sale item donation — up to MAX_BAKE_SALE_ITEMS items, worth a flat
   // amount each, one entry per member (re-signing up replaces the count
-  // rather than stacking a second entry, since it's still pending review
-  // either way).
+  // and description rather than stacking a second entry, since it's still
+  // pending review either way).
   if (kind === 'items') {
     if (event.volunteerType !== 'bake_sale') return json({ ok: false, error: 'This event does not take baked item signups.' }, 400);
     const count = Math.round(Number(itemCount));
     if (!count || count < 1 || count > MAX_BAKE_SALE_ITEMS) {
       return json({ ok: false, error: `Enter between 1 and ${MAX_BAKE_SALE_ITEMS} items.` }, 400);
     }
+    const description = String(items || '').trim();
+    if (!description) return json({ ok: false, error: 'Say what you\'re bringing (e.g. "2 dozen cookies, 1 tray of brownies").' }, 400);
     const existing = points.find(p => p.eventId === eventId && p.memberId === me.id && p.source === 'volunteer-items' && p.status !== 'denied');
     const perItem = await bakeSaleItemPointsDefault();
     if (existing) {
-      if (existing.status === 'approved') return json({ ok: false, error: 'Your item signup was already approved — ask the secretary to adjust it if the count changed.' }, 409);
+      if (existing.status === 'approved') return json({ ok: false, error: 'Your item signup was already approved — ask the secretary to adjust it if it changed.' }, 409);
       existing.itemCount = count;
+      existing.items = description;
       existing.amount = count * perItem;
-      existing.reason = `Brought ${count} baked item${count !== 1 ? 's' : ''}`;
+      existing.reason = `Bringing ${count} item${count !== 1 ? 's' : ''}: ${description}`;
     } else {
-      pushEntry({ source: 'volunteer-items', itemCount: count, amount: count * perItem, reason: `Brought ${count} baked item${count !== 1 ? 's' : ''}` });
+      pushEntry({ source: 'volunteer-items', itemCount: count, items: description, amount: count * perItem, reason: `Bringing ${count} item${count !== 1 ? 's' : ''}: ${description}` });
     }
+    await setCollection('points', points);
+    return json({ ok: true });
+  }
+
+  if (kind === 'unsign-items') {
+    const idx = points.findIndex(p => p.eventId === eventId && p.memberId === me.id && p.source === 'volunteer-items' && p.status !== 'denied');
+    if (idx === -1) return json({ ok: false, error: 'You do not have an item signup for this event.' }, 404);
+    if (points[idx].status === 'approved') return json({ ok: false, error: 'This was already approved — ask the secretary to remove it.' }, 409);
+    points.splice(idx, 1);
     await setCollection('points', points);
     return json({ ok: true });
   }
