@@ -196,6 +196,18 @@ export default async function handler(req) {
         .map(p => ({ ...p, memberPhotoUrl: photoById.get(p.memberId) || null }));
       return json({ ok: true, points: rows });
     }
+    // A member's points history (Members tab's "Points history" button) —
+    // open to any signed-in E-Board account, same as Tasks, rather than
+    // gated by the 'members' or 'points' tab permission. Viewing a ledger
+    // isn't a management action, so every role should be able to do it
+    // regardless of which tabs they've been granted.
+    if (url.searchParams.get('memberId') && !url.searchParams.get('status')) {
+      const auth = await requireAuth(req);
+      if (auth.deny) return auth.deny;
+      const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
+      const memberId = url.searchParams.get('memberId');
+      return json({ ok: true, points: withDeciderNames(points.filter(p => p.memberId === memberId), members) });
+    }
     const auth = await requireAuth(req, { perm: 'points' });
     if (auth.deny) return auth.deny;
     const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);

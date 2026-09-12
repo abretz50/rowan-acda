@@ -80,11 +80,14 @@ async function computeMemberStats(members) {
 }
 
 export default async function handler(req) {
-  const auth = await requireAuth(req, { perm: 'members' });
-  if (auth.deny) return auth.deny;
-  const { members } = auth;
-
+  // GET (the roster + points history lookups) is open to any signed-in
+  // E-Board account, same as Tasks — looking someone up isn't a management
+  // action. Creating/editing/removing a member below still requires the
+  // 'members' permission.
   if (req.method === 'GET') {
+    const auth = await requireAuth(req);
+    if (auth.deny) return auth.deny;
+    const { members } = auth;
     // Admin is a technical/site-owner account, not a club member — kept out
     // of the roster and its stats (it still functions fully for tasks).
     const rosterMembers = members.filter(m => m.role !== 'admin');
@@ -100,6 +103,10 @@ export default async function handler(req) {
     const membersOut = rosterMembers.map(m => ({ ...publicMember(m), proflinkPointsId: proflinkPointsIdByMember.get(m.id) || null }));
     return json({ ok: true, members: membersOut, stats });
   }
+
+  const auth = await requireAuth(req, { perm: 'members' });
+  if (auth.deny) return auth.deny;
+  const { members } = auth;
 
   let body;
   try { body = req.method === 'DELETE' ? Object.fromEntries(new URL(req.url).searchParams) : await req.json(); }

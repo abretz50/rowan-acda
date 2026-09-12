@@ -36,7 +36,11 @@ const BUDGET_URL = '/.netlify/functions/portal-budget';
 // every auth response — the client just reads that list instead of keeping
 // its own copy of the permission rules, so a change made on the Permissions
 // tab takes effect without needing a matching client-side edit.
-const PORTAL_TABS = ['events', 'members', 'points', 'library', 'content', 'gallery', 'budget', 'accounts'];
+// 'members' is deliberately left out — like Tasks, the Members tab is open
+// to any E-Board account so everyone can look up a member's points
+// history; management actions inside it (edit email, deactivate, etc.)
+// stay restricted to whoever actually has the 'members' permission.
+const PORTAL_TABS = ['events', 'points', 'library', 'content', 'gallery', 'budget', 'accounts'];
 function canUse(tab) {
   if (!me) return false;
   return (me.canUse || []).includes(tab);
@@ -334,7 +338,8 @@ function showDashboard() {
     clearInterval(eventsRefreshTimer);
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
-  if (canUse('members')) loadMembers();
+  loadMembers(); // open to any E-Board account, like Tasks — see PORTAL_TABS note
+  document.getElementById('copy-email-list-btn').style.display = canUse('members') ? '' : 'none';
   if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); loadPointsLeaderboard(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) { loadEboardRoster(); loadSiteContentExtras(); }
@@ -1521,12 +1526,13 @@ function memberRowHTML(m) {
     </div>
     <div class="actions">
       <button class="btn-sm outline" data-view-points="${escHtml(m.id)}">Points history</button>
+      ${canUse('members') ? `
       <button class="btn-sm edit" data-edit-member-email="${escHtml(m.id)}">Edit Email</button>
       ${m.proflinkPointsId
         ? `<button class="btn-sm delete" data-unverify-proflink="${escHtml(m.proflinkPointsId)}" data-member-id="${escHtml(m.id)}">Unverify ProfLink</button>`
         : `<button class="btn-sm outline" data-verify-proflink="${escHtml(m.id)}">Verify ProfLink</button>`}
       ${!isPermanentAdmin ? `<button class="btn-sm outline" data-toggle-member="${escHtml(m.id)}" data-next="${m.active === false ? 'true' : 'false'}">${m.active === false ? 'Reactivate' : 'Deactivate'}</button>` : ''}
-      ${!isPermanentAdmin ? `<button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>` : ''}
+      ${!isPermanentAdmin ? `<button class="btn-sm delete" data-delete-member="${escHtml(m.id)}">Remove</button>` : ''}` : ''}
     </div>
   </div>`;
 }
