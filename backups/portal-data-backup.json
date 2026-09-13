@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T00:00:45.994Z",
+  "generatedAt": "2026-09-13T00:00:57.512Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -1083,7 +1083,7 @@
         "title": "ACDA Cabaret",
         "description": "Join us for our annual ACDA Cabaret!!\n\nWe will be featuring student conductors, solos, duets, and more!! Listen to some amazing talent from Rowan University's finest!!",
         "location": "Boyd Recital Hall",
-        "start": "2026-10-23T23:00:00.000Z",
+        "start": "2026-10-23T23:30:00.000Z",
         "end": "2026-10-24T01:00:00.000Z",
         "allDay": false,
         "tags": [
@@ -1095,7 +1095,8 @@
         "checkinOpensAt": "",
         "checkinClosesAt": "",
         "volunteerType": "",
-        "slotCapacity": 3
+        "slotCapacity": 3,
+        "pointsApprovedBySecretary": true
       },
       {
         "id": "decd9ac9-6642-4e4c-b4c5-604caddd0880",
@@ -1210,6 +1211,102 @@
         "checkinClosesAt": "",
         "volunteerType": "",
         "slotCapacity": 3
+      },
+      {
+        "id": "a4fcfe14-8ca1-46ad-aad0-5fd048adc596",
+        "title": "Voces & University Chorus Concert",
+        "description": "",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-11-25T00:30:00.000Z",
+        "end": "2026-11-25T02:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788915335091-52854312589_d89aa02f51_o-scaled.jpg",
+        "points": 100,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3,
+        "fullDayCapacity": null,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": true
+      },
+      {
+        "id": "a1063fa9-ff70-4de1-8411-0b81d5439d5e",
+        "title": "Concert Choir Concert",
+        "description": "",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-10-17T23:30:00.000Z",
+        "end": "2026-10-18T01:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788915547233-Choir_Pic.png",
+        "points": 100,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3,
+        "fullDayCapacity": null,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": true
+      },
+      {
+        "id": "7da2a2f3-e2b8-45bd-a201-a09e70f3ef59",
+        "title": "Concert Choir Concert",
+        "description": "",
+        "location": "Pfleeger Concert Hall",
+        "start": "2026-12-06T00:30:00.000Z",
+        "end": "2026-12-06T02:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1788915690274-pfleeger_hall.jpeg",
+        "points": 100,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3,
+        "fullDayCapacity": null,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": true
+      },
+      {
+        "id": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "title": "Hispanic Heritage Month Fundraiser",
+        "description": "Celebrate Hispanic Heritage Month with Rowan ACDA!\n\nJoin us for a Hispanic heritage-themed Bake Sale, featuring treats inspired by Hispanic and Latin American cultures!",
+        "location": "Boyd Recital Hall Lobby",
+        "start": "2026-09-15T13:30:00.000Z",
+        "end": "2026-09-15T19:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1789048466351-lg_hispanic_heritage_as505837718.jpg",
+        "points": 1,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "bake_sale",
+        "slotCapacity": 3,
+        "fullDayCapacity": null,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": true
       }
     ],
     "content": {
@@ -2191,168 +2288,168 @@
           "url": "/assets/img/Screenshot 2026-02-06 222534.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 1
+          "order": 4
         },
         {
           "id": "64f697df-aff2-46fa-a307-8dd77baeff3b",
           "url": "/assets/img/Screenshot 2026-02-06 222526.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 2
+          "order": 6
         },
         {
           "id": "436b4a7c-624f-4851-82e3-81aedb6b0145",
           "url": "/assets/img/Screenshot 2026-02-06 222515.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 0
+          "order": 2
         },
         {
           "id": "cb5ed6c8-84b6-4199-a0bf-0ec531eddb77",
           "url": "/assets/img/Screenshot 2026-02-06 222506.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 3
+          "order": 7
         },
         {
           "id": "55cc6fee-144b-442a-b013-fad4f5510505",
           "url": "/assets/img/Screenshot 2026-02-06 222458.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 4
+          "order": 8
         },
         {
           "id": "4a1363e9-cb0c-4cc1-bdc0-e78e0db0d10b",
           "url": "/assets/img/Screenshot 2026-02-06 222447.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 5
+          "order": 9
         },
         {
           "id": "1409d99d-613f-4aaf-8423-ea4b47e1fda8",
           "url": "/assets/img/Screenshot 2026-02-06 222423.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 6
+          "order": 10
         },
         {
           "id": "b973c1cd-979c-4932-9eb4-051c3fe6e2ab",
           "url": "/assets/img/Screenshot 2026-02-06 222431.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 7
+          "order": 11
         },
         {
           "id": "3cec5776-e0df-4d04-aeeb-eed3a0a2c700",
           "url": "/assets/img/Screenshot 2026-02-06 222403.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 8
+          "order": 5
         },
         {
           "id": "4a64316c-42aa-47ad-ba45-7d33deaff54e",
           "url": "/assets/img/Screenshot 2026-02-06 222355.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 9
+          "order": 12
         },
         {
           "id": "e673e332-5570-424d-bc7e-0f78fff4e970",
           "url": "/assets/img/Screenshot 2026-02-06 222337.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 10
+          "order": 13
         },
         {
           "id": "2c440968-2227-4967-92b7-eac8e94ab75d",
           "url": "/assets/img/Screenshot 2026-02-06 222328.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 11
+          "order": 14
         },
         {
           "id": "cd384cef-cc15-4c10-87c9-57d6ee4090e9",
           "url": "/assets/img/Screenshot 2026-02-06 222311.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 12
+          "order": 15
         },
         {
           "id": "6f9a0e86-2d4f-4e3e-aa5e-d2e9326ad7e3",
           "url": "/assets/img/Screenshot 2026-02-06 222301.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 13
+          "order": 16
         },
         {
           "id": "9acb01fc-09cb-4eac-9af1-69fb1b50b962",
           "url": "/assets/img/Screenshot 2026-02-06 222244.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 14
+          "order": 1
         },
         {
           "id": "877f685d-958d-4187-9217-9951d750e64c",
           "url": "/assets/img/Screenshot 2026-02-06 222224.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 15
+          "order": 17
         },
         {
           "id": "073e9d6e-e6bf-46c9-b2ad-2c7c350cbe8a",
           "url": "/assets/img/Screenshot 2026-02-06 222156.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 16
+          "order": 18
         },
         {
           "id": "55b51edc-4ade-42bc-aa27-9efc21f7d027",
           "url": "/assets/img/Screenshot 2026-02-06 222215.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 17
+          "order": 19
         },
         {
           "id": "c92f67d0-0cad-4d96-85d5-69b162edfb7e",
           "url": "/assets/img/52854312589_d89aa02f51_o-scaled.jpg",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 18
+          "order": 20
         },
         {
           "id": "5f946423-211f-4269-8297-cca91af2d264",
           "url": "/assets/img/Screenshot 2025-09-24 094012.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 19
+          "order": 21
         },
         {
           "id": "3ef5dc5e-a5a5-4cfa-b803-5288a23748ff",
           "url": "/assets/img/Screenshot 2025-09-24 093949.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 20
+          "order": 24
         },
         {
           "id": "045a5e34-521a-4471-b797-61778bd24c61",
           "url": "/assets/img/Screenshot 2025-09-24 094001.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 21
+          "order": 25
         },
         {
           "id": "7c157508-1e53-47fa-bc72-9e4807e1cd32",
           "url": "/assets/img/Screenshot 2025-09-24 094018.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 22
+          "order": 26
         },
         {
           "id": "58803d5b-82af-4d1b-91ca-3190160612bc",
           "url": "/assets/img/Screenshot 2025-09-24 094022.png",
           "caption": "",
           "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
-          "order": 23
+          "order": 27
         },
         {
           "id": "5778e7ee-7c37-4a9f-95d8-6e95fe340504",
@@ -2843,6 +2940,41 @@
           "caption": "",
           "folderId": "d74680d9-b04f-4293-8ac5-ecc32ac950d6",
           "order": 26
+        },
+        {
+          "id": "2dc59304-7c4a-43b9-93a5-5a6e6132fb6f",
+          "url": "/assets/img/gallery/1788822440429-IMG_7098.jpg",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 22
+        },
+        {
+          "id": "6f416693-e960-4780-b00b-b8e52fd0f308",
+          "url": "/assets/img/gallery/1788822460341-IMG_7096.jpg",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 23
+        },
+        {
+          "id": "19536ad3-b062-402c-ab0d-d6a97dee3a44",
+          "url": "/assets/img/gallery/1788822624894-IMG_7097.jpg",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 0
+        },
+        {
+          "id": "abd03003-13e8-4342-a2ed-a1fe158bfb18",
+          "url": "/assets/img/gallery/1788822857846-IMG_6955.jpg",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 28
+        },
+        {
+          "id": "8aead9a5-84e2-4ccd-afea-076bf5dd2b39",
+          "url": "/assets/img/gallery/1788823002888-IMG_6952.jpg",
+          "caption": "",
+          "folderId": "39a75ce7-3d71-4db0-b823-7d0e32edf94f",
+          "order": 3
         }
       ]
     },
@@ -3100,7 +3232,7 @@
       {
         "id": "1e9b3e3a-3514-491f-b5fb-9f9aa6efbe69",
         "name": "Abigail Burger",
-        "email": "burgert10@rowan.edu",
+        "email": "burger10@rowan.edu",
         "role": "member",
         "hasAccount": true,
         "salt": "6f9c985442333fa8a1dcf6724beb0e42",
@@ -3196,6 +3328,17 @@
         "hash": "45ccc777bdde1b00a8c3839760ff8daa097cd604ebbd685f6cc356f137ce4700c15d88eeb6e4a1a0a6fcee55163199578e21c93a3023dd3929b01f8229748938",
         "active": true,
         "joinedAt": "2026-09-04T19:48:10.166Z"
+      },
+      {
+        "id": "cac338f4-b3bf-436d-b7d1-60f6de9edd99",
+        "name": "Hanna Shein",
+        "email": "sheinh29@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "85bd7871501c6fe7322fe0c00665474f",
+        "hash": "cfa1f67d3994ff2e0a973a6f809851d3a05f60e065cbbc62a628282671bfb37620c3eeb1bad98e4f3b2cf25be54f065e409185eebb6f82cff9de710f5da10038",
+        "active": true,
+        "joinedAt": "2026-09-09T20:13:17.715Z"
       }
     ],
     "users": [
@@ -3779,6 +3922,276 @@
         "requestedAt": "2026-09-05T01:25:31.016Z",
         "decidedAt": "2026-09-05T01:25:31.023Z",
         "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "6fc74ece-1637-4a2d-840b-95ea23e7d6c5",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "eventId": "f192ce14-c701-479a-b6d5-58552ba4b50e",
+        "eventTitle": "Sample Fundraiser",
+        "slotLabel": "3:00 PM–3:30 PM",
+        "status": "denied",
+        "requestedAt": "2026-09-07T17:00:30.566Z",
+        "decidedAt": "2026-09-07T17:01:27.072Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "source": "volunteer-slot",
+        "amount": 25,
+        "reason": "Volunteer slot: 3:00 PM–3:30 PM"
+      },
+      {
+        "id": "c000a7fc-a931-4857-8ca6-2f5c4d5551db",
+        "memberId": "cac338f4-b3bf-436d-b7d1-60f6de9edd99",
+        "memberName": "Hanna Shein",
+        "memberEmail": "sheinh29@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 200,
+        "status": "approved",
+        "reason": "Gave Speech for Foundations",
+        "addedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "addedByName": "Admin",
+        "requestedAt": "2026-09-09T20:17:02.836Z",
+        "decidedAt": "2026-09-12T17:39:48.667Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "65c7f428-7236-4955-91eb-bcb45b81391d",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "event",
+        "eventId": "a24d387a-6b4a-44d1-a15e-ccf98918e673",
+        "eventTitle": "Musical Theatre Sight-Reading Day",
+        "amount": 300,
+        "status": "approved",
+        "reason": "Added by Admin",
+        "addedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "addedByName": "Admin",
+        "requestedAt": "2026-09-11T03:56:10.282Z",
+        "decidedAt": "2026-09-12T17:42:48.081Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "f7f8b762-64da-4706-adab-d4806687addd",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": "9:00 AM–9:30 AM",
+        "status": "pending",
+        "requestedAt": "2026-09-11T13:24:13.452Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-slot",
+        "amount": 50,
+        "reason": "Volunteer slot: 9:00 AM–9:30 AM"
+      },
+      {
+        "id": "1998f013-0c53-4a28-aedc-b72501c8f7c1",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": "9:30 AM–10:00 AM",
+        "status": "pending",
+        "requestedAt": "2026-09-11T13:24:15.409Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-slot",
+        "amount": 50,
+        "reason": "Volunteer slot: 9:30 AM–10:00 AM"
+      },
+      {
+        "id": "0c3eec09-ebd7-4536-8294-c9f4025677b4",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": "10:00 AM–10:30 AM",
+        "status": "pending",
+        "requestedAt": "2026-09-11T13:24:37.302Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-slot",
+        "amount": 50,
+        "reason": "Volunteer slot: 10:00 AM–10:30 AM"
+      },
+      {
+        "id": "0fe40c34-782d-4e32-a39f-e065e15c304a",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": null,
+        "status": "pending",
+        "requestedAt": "2026-09-11T13:27:29.544Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-items",
+        "itemCount": 1,
+        "items": "1 dozen of peanut butter chocolate chip cookies, and 1 dozen apple cinnamon oatmeal cookies",
+        "amount": 25,
+        "reason": "Bringing 1 item: 1 dozen of peanut butter chocolate chip cookies, and 1 dozen apple cinnamon oatmeal cookies"
+      },
+      {
+        "id": "199d40d9-da0f-4aac-bb09-cb664caae536",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "source": "event",
+        "eventId": "4b7d3035-1794-417d-99b8-c2385527dd8f",
+        "eventTitle": "NAFME BBQ x ACDA Collab",
+        "amount": 100,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-11T17:57:11.360Z",
+        "decidedAt": "2026-09-12T17:40:12.489Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "d7e7c6e6-59f4-408a-8478-9580c83846c6",
+        "memberId": "cac338f4-b3bf-436d-b7d1-60f6de9edd99",
+        "memberName": "Hanna Shein",
+        "memberEmail": "sheinh29@rowan.edu",
+        "source": "event",
+        "eventId": "4b7d3035-1794-417d-99b8-c2385527dd8f",
+        "eventTitle": "NAFME BBQ x ACDA Collab",
+        "amount": 100,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-11T19:05:40.930Z",
+        "decidedAt": "2026-09-12T17:40:07.793Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "74cff0bb-1c08-4bbf-b2dc-ecf48b004dc4",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "source": "event",
+        "eventId": "4b7d3035-1794-417d-99b8-c2385527dd8f",
+        "eventTitle": "NAFME BBQ x ACDA Collab",
+        "amount": 100,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-11T19:06:34.997Z",
+        "decidedAt": "2026-09-12T17:40:05.462Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "1536b2b6-e53d-4231-8703-2c017d657a39",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "event",
+        "eventId": "4b7d3035-1794-417d-99b8-c2385527dd8f",
+        "eventTitle": "NAFME BBQ x ACDA Collab",
+        "amount": 100,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-11T19:06:42.035Z",
+        "decidedAt": "2026-09-12T17:40:02.628Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "4c8808b9-a73e-4b13-954e-9eaa8e52fbed",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "event",
+        "eventId": "4b7d3035-1794-417d-99b8-c2385527dd8f",
+        "eventTitle": "NAFME BBQ x ACDA Collab",
+        "amount": 100,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-11T19:08:05.540Z",
+        "decidedAt": "2026-09-12T17:40:01.038Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "9e591d01-0179-40b5-b30f-f833801efbfd",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "event",
+        "eventId": "4b7d3035-1794-417d-99b8-c2385527dd8f",
+        "eventTitle": "NAFME BBQ x ACDA Collab",
+        "amount": 100,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-11T19:20:39.898Z",
+        "decidedAt": "2026-09-12T17:39:57.064Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "9e6c6759-b506-43ac-9344-82339b736e30",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": "11:30 AM–12:00 PM",
+        "status": "pending",
+        "requestedAt": "2026-09-12T17:52:28.709Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-slot",
+        "amount": 50,
+        "reason": "Volunteer slot: 11:30 AM–12:00 PM"
+      },
+      {
+        "id": "751e0c97-def4-4239-814b-3ae6e707fd0c",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": "10:00 AM–10:30 AM",
+        "status": "pending",
+        "requestedAt": "2026-09-12T18:52:38.760Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-slot",
+        "amount": 50,
+        "reason": "Volunteer slot: 10:00 AM–10:30 AM"
+      },
+      {
+        "id": "3401b4cf-f319-4523-92fb-4df812bdd2e0",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": "11:00 AM–11:30 AM",
+        "status": "pending",
+        "requestedAt": "2026-09-12T18:53:18.856Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-slot",
+        "amount": 50,
+        "reason": "Volunteer slot: 11:00 AM–11:30 AM"
+      },
+      {
+        "id": "944393e5-39c2-4bdd-9b95-d4d1a569302f",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabel": "10:30 AM–11:00 AM",
+        "status": "pending",
+        "requestedAt": "2026-09-12T18:53:52.123Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "source": "volunteer-slot",
+        "amount": 50,
+        "reason": "Volunteer slot: 10:30 AM–11:00 AM"
       }
     ],
     "tasks": [
@@ -3807,7 +4220,7 @@
       },
       {
         "id": "88b1a37a-f611-4daf-ad76-8a8783bbdacd",
-        "title": "Upload All Events to Website",
+        "title": "Upload All Fall Events to Website",
         "description": "",
         "assignedToId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
         "assignedToName": "Jessenia Zavala",
@@ -3816,17 +4229,25 @@
         "assignedByName": "Adam Bretz",
         "dueDate": "2026-09-25",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-08-29T03:04:41.781Z",
-        "updatedAt": "2026-08-29T03:04:41.781Z",
+        "updatedAt": "2026-09-06T00:25:46.849Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-08-29T03:04:41.781Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-06T00:25:46.681Z",
+            "comment": "Well Done! Add March 5th Collab!"
           }
-        ]
+        ],
+        "tags": []
       },
       {
         "id": "9c586f91-e304-4b7b-92d7-1a4892ddc6a6",
@@ -3839,15 +4260,22 @@
         "assignedByName": "Adam Bretz",
         "dueDate": "2026-09-19",
         "priority": "low",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-08-29T18:52:02.910Z",
-        "updatedAt": "2026-08-29T18:52:02.910Z",
+        "updatedAt": "2026-09-07T23:19:04.744Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-08-29T18:52:02.910Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "byName": "Vera Caruso",
+            "at": "2026-09-07T23:18:59.897Z",
+            "comment": ""
           }
         ]
       },
@@ -3862,15 +4290,22 @@
         "assignedByName": "Adam Bretz",
         "dueDate": "2026-09-19",
         "priority": "low",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-08-29T18:52:39.453Z",
-        "updatedAt": "2026-08-29T18:53:14.265Z",
+        "updatedAt": "2026-09-07T23:11:44.580Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-08-29T18:52:39.453Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "byName": "Vera Caruso",
+            "at": "2026-09-07T23:11:38.231Z",
+            "comment": ""
           }
         ]
       },
@@ -3884,10 +4319,10 @@
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
         "dueDate": "2026-09-19",
-        "priority": "high",
+        "priority": "medium",
         "status": "open",
         "createdAt": "2026-08-29T18:53:04.821Z",
-        "updatedAt": "2026-09-01T00:36:37.883Z",
+        "updatedAt": "2026-09-06T00:39:56.966Z",
         "history": [
           {
             "event": "created",
@@ -4097,11 +4532,11 @@
         "assignedToRole": "senator",
         "assignedById": "29daf5de-5e35-41c2-920f-1871b0e40212",
         "assignedByName": "Daniel Suliguin",
-        "dueDate": "2026-09-04",
+        "dueDate": "2026-09-18",
         "priority": "high",
         "status": "open",
         "createdAt": "2026-09-01T00:10:23.096Z",
-        "updatedAt": "2026-09-01T00:10:23.096Z",
+        "updatedAt": "2026-09-07T17:26:35.550Z",
         "history": [
           {
             "event": "created",
@@ -4114,8 +4549,22 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-04T08:00:31.742Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-06T00:26:42.211Z",
+            "comment": "Paid for 9/4/2026, waiting on key!"
+          },
+          {
+            "event": "reopened",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:25:13.779Z"
           }
-        ]
+        ],
+        "tags": []
       },
       {
         "id": "181c796e-44bc-4d31-ab43-a468847b929a",
@@ -4128,15 +4577,34 @@
         "assignedByName": "Admin",
         "dueDate": "2026-09-07",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:17:00.842Z",
-        "updatedAt": "2026-09-01T00:17:00.842Z",
+        "updatedAt": "2026-09-07T17:24:41.998Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-01T00:17:00.842Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-06T08:00:35.412Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-07T08:00:32.966Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:24:41.761Z",
+            "comment": "Initial fixes made, need feedback from Jessenia and Sadie"
           }
         ]
       },
@@ -4198,19 +4666,32 @@
         "assignedToRole": "president",
         "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
         "assignedByName": "Admin",
-        "dueDate": "2026-09-07",
+        "dueDate": "2026-09-14",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-09-01T00:22:56.536Z",
-        "updatedAt": "2026-09-01T00:22:56.536Z",
+        "updatedAt": "2026-09-07T17:26:57.489Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-01T00:22:56.536Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-06T08:00:35.412Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-07T08:00:32.966Z"
           }
-        ]
+        ],
+        "tags": []
       },
       {
         "id": "c2ea0c79-723b-4657-aed4-d8cbb01b2034",
@@ -4224,15 +4705,28 @@
         "tags": [],
         "dueDate": "2026-09-09",
         "priority": "low",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:26:33.580Z",
-        "updatedAt": "2026-09-02T21:17:09.867Z",
+        "updatedAt": "2026-09-09T01:05:07.043Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-01T00:26:33.580Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-08T08:00:37.250Z"
+          },
+          {
+            "event": "completed",
+            "byId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+            "byName": "Sadie Frame",
+            "at": "2026-09-09T01:05:06.690Z",
+            "comment": ""
           }
         ]
       },
@@ -4330,12 +4824,18 @@
         "assignedToRole": "president",
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
-        "tags": [],
+        "tags": [
+          {
+            "id": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+            "name": "Sadie Frame",
+            "role": "secretary"
+          }
+        ],
         "dueDate": "2026-09-03",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T21:31:56.058Z",
-        "updatedAt": "2026-09-01T21:31:56.058Z",
+        "updatedAt": "2026-09-07T16:20:15.181Z",
         "history": [
           {
             "event": "created",
@@ -4360,6 +4860,13 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-03T13:23:01.537Z"
+          },
+          {
+            "event": "completed",
+            "byId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "byName": "Makayli Matias",
+            "at": "2026-09-07T16:20:14.803Z",
+            "comment": "done"
           }
         ]
       },
@@ -4379,17 +4886,582 @@
             "role": "president"
           }
         ],
-        "dueDate": "2026-09-08",
+        "dueDate": "2026-09-10",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-05T01:33:53.145Z",
-        "updatedAt": "2026-09-05T01:33:53.145Z",
+        "updatedAt": "2026-09-11T03:57:50.186Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-05T01:33:53.145Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-07T08:00:32.966Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-08T08:00:37.250Z"
+          },
+          {
+            "event": "edited",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-09T00:35:16.825Z",
+            "comment": "extension"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-09T08:00:39.984Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-09T20:08:53.961Z",
+            "comment": "Extension"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-10T08:00:31.409Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-11T03:57:49.990Z",
+            "comment": "done!"
+          }
+        ]
+      },
+      {
+        "id": "971cd3ad-8ffd-43f8-a76a-6428f3bd1915",
+        "title": "Conference Trip Packet",
+        "description": "",
+        "assignedToId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "assignedToName": "Lizzie Hitchner",
+        "assignedToRole": "vice_president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-19",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-09-06T00:11:14.042Z",
+        "updatedAt": "2026-09-06T00:11:14.042Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-06T00:11:14.042Z"
+          }
+        ]
+      },
+      {
+        "id": "0eb7b7ba-f897-4673-b70d-0990c9ffa133",
+        "title": "Fundraising Application Submissions",
+        "description": "Hispanic Heritage Month Fundraiser\nACDA Cabaret\nValentine’s Day Bake Sale\nCarnival Foods Fundraiser \nSpooky Season Bake Sale \nMarch Bake Sale",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [
+          {
+            "id": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+            "name": "Jessenia Zavala",
+            "role": "event_coordinator"
+          }
+        ],
+        "dueDate": "2026-09-05",
+        "priority": "medium",
+        "status": "done",
+        "createdAt": "2026-09-06T00:25:07.810Z",
+        "updatedAt": "2026-09-06T00:38:51.382Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-06T00:25:07.810Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-06T00:38:51.021Z",
+            "comment": "Completed, need to verify Dr. Thomas Approval by Tuesday!"
+          }
+        ]
+      },
+      {
+        "id": "187839ec-de88-454f-ba81-488411580a97",
+        "title": "Dr Thomas Fundraiser Approval",
+        "description": "Check if Dr. Thomas Approved 1st fundraiser/kindly remind him to.",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [
+          {
+            "id": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+            "name": "Jessenia Zavala",
+            "role": "event_coordinator"
+          },
+          {
+            "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "name": "Makayli Matias",
+            "role": "president"
+          }
+        ],
+        "dueDate": "2026-09-08",
+        "priority": "high",
+        "status": "done",
+        "createdAt": "2026-09-06T00:39:45.862Z",
+        "updatedAt": "2026-09-07T16:21:12.808Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-06T00:39:45.862Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-07T08:00:32.966Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T16:21:08.294Z",
+            "comment": "Approved!"
+          }
+        ]
+      },
+      {
+        "id": "24ed446f-e11d-4ebf-8dc3-09ea534eec86",
+        "title": "Book Appointment with Dr. Thomas",
+        "description": "For Dr. Thomas High School chat",
+        "assignedToId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "assignedToName": "Lizzie Hitchner",
+        "assignedToRole": "vice_president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-08",
+        "priority": "medium",
+        "status": "done",
+        "createdAt": "2026-09-07T16:55:18.965Z",
+        "updatedAt": "2026-09-07T17:25:47.359Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T16:55:18.965Z"
+          },
+          {
+            "event": "completed",
+            "byId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+            "byName": "Lizzie Hitchner",
+            "at": "2026-09-07T17:25:47.045Z",
+            "comment": "I booked a meeting with CT on Monday the 14th at 11:15-11:45 :)"
+          }
+        ]
+      },
+      {
+        "id": "2785cae8-ec67-4c43-9474-35d21434f9d8",
+        "title": "Previous meeting post",
+        "description": "",
+        "assignedToId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "assignedToName": "Vera Caruso",
+        "assignedToRole": "media",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "tags": [],
+        "dueDate": "2026-09-08",
+        "priority": "high",
+        "status": "done",
+        "createdAt": "2026-09-07T17:09:08.660Z",
+        "updatedAt": "2026-09-08T14:55:16.064Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-07T17:09:08.660Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-08T08:00:37.250Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "byName": "Vera Caruso",
+            "at": "2026-09-08T14:55:15.018Z",
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "id": "823d8f64-6d92-4fcc-95f5-1afc0e6d0287",
+        "title": "BBQ Purchase",
+        "description": "Sams Club Tray of cookies + other Item?",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [
+          {
+            "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "name": "Makayli Matias",
+            "role": "president"
+          }
+        ],
+        "dueDate": "2026-09-10",
+        "priority": "high",
+        "status": "done",
+        "createdAt": "2026-09-07T17:15:23.303Z",
+        "updatedAt": "2026-09-12T15:38:34.877Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:15:23.303Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-09T08:00:39.984Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-10T08:00:31.409Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-12T15:38:34.538Z",
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "id": "24ad5acb-54a0-4d98-aa2e-6ba22cd8f7c9",
+        "title": "Hispanic Fundraiser Post",
+        "description": "Featuring Walking Tacos",
+        "assignedToId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "assignedToName": "Vera Caruso",
+        "assignedToRole": "media",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [
+          {
+            "id": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+            "name": "Jessenia Zavala",
+            "role": "event_coordinator"
+          }
+        ],
+        "dueDate": "2026-09-14",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-07T17:19:52.998Z",
+        "updatedAt": "2026-09-07T17:19:52.998Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:19:52.998Z"
+          }
+        ]
+      },
+      {
+        "id": "f571499d-a11f-4b71-b9b4-ea365b0e865b",
+        "title": "Merch Order",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-18",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-07T17:22:17.818Z",
+        "updatedAt": "2026-09-09T20:12:48.745Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:22:17.818Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-08T08:00:37.250Z"
+          },
+          {
+            "event": "edited",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-09T00:37:23.486Z",
+            "comment": "extension"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-09T08:00:39.984Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-09T20:12:48.737Z",
+            "comment": "Correction"
+          }
+        ]
+      },
+      {
+        "id": "fddb65f3-b5c9-4e0d-8a51-4b6629a294eb",
+        "title": "PD #1 Payment How To",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-14",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-07T17:22:56.603Z",
+        "updatedAt": "2026-09-07T17:43:31.523Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:22:56.603Z"
+          }
+        ]
+      },
+      {
+        "id": "ea84c725-bb5a-4496-ae6c-65c0d5a67e9f",
+        "title": "Lizzie Bring Dat Cooler",
+        "description": "",
+        "assignedToId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "assignedToName": "Lizzie Hitchner",
+        "assignedToRole": "vice_president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-15",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2026-09-07T17:23:44.830Z",
+        "updatedAt": "2026-09-07T17:23:44.830Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:23:44.830Z"
+          }
+        ]
+      },
+      {
+        "id": "e4ab28b5-e20a-4d32-a707-4619421de080",
+        "title": "Lizzie Check on Cooler Situation",
+        "description": "",
+        "assignedToId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "assignedToName": "Lizzie Hitchner",
+        "assignedToRole": "vice_president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-07",
+        "priority": "high",
+        "status": "done",
+        "createdAt": "2026-09-07T17:24:09.587Z",
+        "updatedAt": "2026-09-08T13:24:34.901Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:24:09.587Z"
+          },
+          {
+            "event": "completed",
+            "byId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+            "byName": "Lizzie Hitchner",
+            "at": "2026-09-08T13:24:34.585Z",
+            "comment": "I have a cooler I will bring for Tuesday!"
+          }
+        ]
+      },
+      {
+        "id": "e7e13614-6e36-4a63-89b7-7ee793489e70",
+        "title": "Table + Volleyball Net Setup",
+        "description": "",
+        "assignedToId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "assignedToName": "Makayli Matias",
+        "assignedToRole": "president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [
+          {
+            "id": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "name": "Adam Bretz",
+            "role": "treasurer"
+          },
+          {
+            "id": "29daf5de-5e35-41c2-920f-1871b0e40212",
+            "name": "Daniel Suliguin",
+            "role": "senator"
+          },
+          {
+            "id": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+            "name": "Jessenia Zavala",
+            "role": "event_coordinator"
+          },
+          {
+            "id": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+            "name": "Lizzie Hitchner",
+            "role": "vice_president"
+          },
+          {
+            "id": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+            "name": "Sadie Frame",
+            "role": "secretary"
+          },
+          {
+            "id": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "name": "Vera Caruso",
+            "role": "media"
+          }
+        ],
+        "dueDate": "2026-09-11",
+        "priority": "high",
+        "status": "done",
+        "createdAt": "2026-09-07T17:29:06.823Z",
+        "updatedAt": "2026-09-12T15:38:36.742Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:29:06.823Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-10T08:00:31.409Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-11T08:00:43.292Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-12T15:38:36.623Z",
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "id": "e24aac5f-8c7d-4d59-90fa-06f6373a6761",
+        "title": "Reminder Email for Conductors, Pieces due on the 14th",
+        "description": "",
+        "assignedToId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "assignedToName": "Sadie Frame",
+        "assignedToRole": "secretary",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-07",
+        "priority": "low",
+        "status": "done",
+        "createdAt": "2026-09-07T17:33:00.225Z",
+        "updatedAt": "2026-09-07T19:32:56.166Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-07T17:33:00.225Z"
+          },
+          {
+            "event": "completed",
+            "byId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+            "byName": "Sadie Frame",
+            "at": "2026-09-07T19:32:55.822Z",
+            "comment": "done!"
+          }
+        ]
+      },
+      {
+        "id": "c55d4b93-eb4f-4aa7-bc4d-b1f7b97083ca",
+        "title": "Pizza for next Meeting!",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "assignedByName": "Admin",
+        "tags": [
+          {
+            "id": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "name": "Makayli Matias",
+            "role": "president"
+          }
+        ],
+        "dueDate": "2026-09-17",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-11T03:58:10.392Z",
+        "updatedAt": "2026-09-11T03:58:10.392Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-11T03:58:10.392Z"
           }
         ]
       }
@@ -4442,7 +5514,9 @@
       "Workshop": 300,
       "Performance": 0,
       "VolunteerSlot": 25,
-      "VolunteerFullDay": 300
+      "VolunteerFullDay": 300,
+      "BakeSaleSlot": 50,
+      "BakeSaleItem": 25
     }
   }
 }
