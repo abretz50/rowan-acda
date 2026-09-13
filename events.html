@@ -571,10 +571,10 @@
       return '<button class="btn-sm btn-outline" data-vol-signup="slot" data-vol-slot="'+escHtml(slotLabel)+'" style="width:100%">+ Sign Up</button>';
     }
     const mine = occupant.isMe;
-    const unsignBtn = mine ? '<button data-vol-signup="unsign-slot" data-vol-slot="'+escHtml(slotLabel)+'" style="border:none;background:none;color:var(--brand,#7A0A0A);font-size:.72rem;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;margin-top:.15rem">Unsign Up</button>' : '';
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.5rem .4rem;border:1px solid '+(mine?'var(--brand,#7A0A0A)':'var(--border)')+';border-radius:.6rem;background:#fff;text-align:center">'
+    const unsignBtn = mine ? '<button data-vol-signup="unsign-slot" data-vol-slot="'+escHtml(slotLabel)+'" style="border:none;background:none;color:#fff;font-size:.72rem;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;margin-top:.15rem">Unsign Up</button>' : '';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.5rem .4rem;border:2px solid '+(mine?'#fff':'var(--brand,#7A0A0A)')+';border-radius:.6rem;background:var(--brand,#7A0A0A);text-align:center">'
       + avatarHTML(occupant.photoUrl, 30)
-      + '<span style="font-size:.8rem;font-weight:600;line-height:1.2">'+escHtml(occupant.name)+'</span>'
+      + '<span style="font-size:.8rem;font-weight:600;line-height:1.2;color:#fff">'+escHtml(occupant.name)+'</span>'
       + unsignBtn + '</div>';
   }
 
