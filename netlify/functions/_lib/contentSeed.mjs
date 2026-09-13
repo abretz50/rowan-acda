@@ -64,10 +64,10 @@ export const CONTENT_SEED = {
       bio: 'Vera Caruso is a senior vocal BA and English BA double major. She also holds a CUGs in jazz performance. She is involved with several ensembles at Rowan, such as the Rowan Opera Company, Concert Choir, and Voces chamber ensemble. As social media coordinator, she manages the organization\'s social media accounts and photo archives.',
     },
     {
-      id: 'dan-suiliguin', name: 'Dan Suiliguin', role: 'Senator',
+      id: 'dan-suiliguin', name: 'Dan Suliguin', role: 'Senator',
       email: 'suligu56@rowan.edu', photo: '/assets/img/dan-suiliguin.jpg',
       desc: "Represents the club's interests to the school.",
-      bio: "Dan Suiliguin is a junior Vocal Music Education student at Rowan University. He is thrilled to be serving as ACDA's Senator, representing the club's interests as NAfME's Student Government representative. In this role, he attends Student Government meetings on behalf of the chapter. He looks forward to assisting many students through his major and as an E-Board member.",
+      bio: "Dan Suliguin is a junior Vocal Music Education student at Rowan University. He is thrilled to be serving as ACDA's Senator, representing the club's interests as NAfME's Student Government representative. In this role, he attends Student Government meetings on behalf of the chapter. He looks forward to assisting many students through his major and as an E-Board member.",
     },
   ],
 };

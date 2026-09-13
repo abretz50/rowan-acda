@@ -8,6 +8,17 @@ function migrateContent(content) {
   if (!content.siteText) { content.siteText = { ...CONTENT_SEED.siteText }; changed = true; }
   if (!content.resources) { content.resources = { pd: [], showAndTell: [] }; changed = true; }
   if (!content.merch) { content.merch = CONTENT_SEED.merch.map(m => ({ ...m })); changed = true; }
+  // One-time spelling fix: "Suiliguin" -> "Suliguin", in whichever eboard
+  // fields it appears (name, bio, etc.) — the typo was baked into the
+  // stored data before anyone noticed.
+  for (const m of content.eboard || []) {
+    for (const field of ['name', 'bio', 'desc']) {
+      if (typeof m[field] === 'string' && m[field].includes('Suiliguin')) {
+        m[field] = m[field].replaceAll('Suiliguin', 'Suliguin');
+        changed = true;
+      }
+    }
+  }
   return changed;
 }
 
