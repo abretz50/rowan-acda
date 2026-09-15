@@ -8,7 +8,7 @@ import {
   loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS,
   VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY,
 } from './_lib/eventDefaults.mjs';
-import { migrateOldVolunteerEntries } from './_lib/volunteerMigration.mjs';
+import { migrateOldVolunteerEntries, needsVolunteerFix } from './_lib/volunteerMigration.mjs';
 
 const EDITABLE_DEFAULT_KEYS = [...Object.keys(DEFAULT_EVENT_POINTS), VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY];
 
@@ -24,7 +24,7 @@ function withDeciderNames(rows, members) {
 // member-facing signup page first to trigger the migration.
 async function loadMigratedPoints() {
   let points = await getCollection('points', []);
-  if (points.some(p => p.source === 'volunteer-slot' || p.source === 'volunteer-items')) {
+  if (needsVolunteerFix(points)) {
     points = await updateCollection('points', [], async (stored) => { migrateOldVolunteerEntries(stored); return stored; });
   }
   return points;

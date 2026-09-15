@@ -7,7 +7,7 @@ import { volunteerSlotPointsDefault, bakeSaleSlotPointsDefault, bakeSaleItemPoin
 import { sendEmail, memberEmails } from './_lib/email.mjs';
 import { volunteerConfirmationEmailHtml } from './_lib/reminders.mjs';
 import { gcalLink } from './_lib/gcal.mjs';
-import { migrateOldVolunteerEntries, slotStartMinutes, buildVolunteerReason } from './_lib/volunteerMigration.mjs';
+import { migrateOldVolunteerEntries, needsVolunteerFix, slotStartMinutes, buildVolunteerReason } from './_lib/volunteerMigration.mjs';
 
 const MAX_BAKE_SALE_ITEMS = 4;
 // Signups (and unsigning) stay open until an hour after the event's own
@@ -153,7 +153,7 @@ export default async function handler(req) {
     if (!event) return json({ ok: false, error: 'Event not found.' }, 404);
 
     let [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
-    if (points.some(p => p.source === 'volunteer-slot' || p.source === 'volunteer-items')) {
+    if (needsVolunteerFix(points)) {
       points = await updateCollection('points', [], async (stored) => { migrateOldVolunteerEntries(stored); return stored; });
     }
     const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
