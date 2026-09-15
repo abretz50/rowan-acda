@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { getCollection, setCollection } from './_lib/blobs.mjs';
+import { getCollection, setCollection, updateCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
@@ -8,12 +8,26 @@ import {
   loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS,
   VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY,
 } from './_lib/eventDefaults.mjs';
+import { migrateOldVolunteerEntries } from './_lib/volunteerMigration.mjs';
 
 const EDITABLE_DEFAULT_KEYS = [...Object.keys(DEFAULT_EVENT_POINTS), VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY];
 
 function withDeciderNames(rows, members) {
   const nameById = new Map(members.map(m => [m.id, m.name]));
   return rows.map(p => p.decidedBy ? { ...p, decidedByName: nameById.get(p.decidedBy) || null } : p);
+}
+
+// Every read of the points collection here self-heals any leftover
+// pre-consolidation volunteer entries first (see _lib/volunteerMigration.mjs)
+// — the secretary's Pending Approval list is often the first place anyone
+// looks after a signup, so it can't wait on someone else loading the
+// member-facing signup page first to trigger the migration.
+async function loadMigratedPoints() {
+  let points = await getCollection('points', []);
+  if (points.some(p => p.source === 'volunteer-slot' || p.source === 'volunteer-items')) {
+    points = await updateCollection('points', [], async (stored) => { migrateOldVolunteerEntries(stored); return stored; });
+  }
+  return points;
 }
 
 export default async function handler(req) {
@@ -179,7 +193,7 @@ export default async function handler(req) {
     if (url.searchParams.get('mine')) {
       const auth = await requireAuth(req);
       if (auth.deny) return auth.deny;
-      const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
+      const [points, members] = await Promise.all([loadMigratedPoints(), loadMembers()]);
       return json({ ok: true, points: withDeciderNames(points.filter(p => p.memberId === auth.user.id), members) });
     }
     // Export Attendance (Events tab) — gated by 'events' rather than
@@ -189,7 +203,7 @@ export default async function handler(req) {
     if (url.searchParams.get('eventId')) {
       const auth = await requireAuth(req, { perm: 'events' });
       if (auth.deny) return auth.deny;
-      const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
+      const [points, members] = await Promise.all([loadMigratedPoints(), loadMembers()]);
       const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
       const eventId = url.searchParams.get('eventId');
       const rows = withDeciderNames(points.filter(p => p.eventId === eventId && p.status !== 'denied'), members)
@@ -204,13 +218,13 @@ export default async function handler(req) {
     if (url.searchParams.get('memberId') && !url.searchParams.get('status')) {
       const auth = await requireAuth(req);
       if (auth.deny) return auth.deny;
-      const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
+      const [points, members] = await Promise.all([loadMigratedPoints(), loadMembers()]);
       const memberId = url.searchParams.get('memberId');
       return json({ ok: true, points: withDeciderNames(points.filter(p => p.memberId === memberId), members) });
     }
     const auth = await requireAuth(req, { perm: 'points' });
     if (auth.deny) return auth.deny;
-    const [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
+    const [points, members] = await Promise.all([loadMigratedPoints(), loadMembers()]);
     const status = url.searchParams.get('status');
     const memberId = url.searchParams.get('memberId');
     let rows = points;

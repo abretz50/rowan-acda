@@ -7,55 +7,13 @@ import { volunteerSlotPointsDefault, bakeSaleSlotPointsDefault, bakeSaleItemPoin
 import { sendEmail, memberEmails } from './_lib/email.mjs';
 import { volunteerConfirmationEmailHtml } from './_lib/reminders.mjs';
 import { gcalLink } from './_lib/gcal.mjs';
+import { migrateOldVolunteerEntries } from './_lib/volunteerMigration.mjs';
 
 const MAX_BAKE_SALE_ITEMS = 4;
 // Signups (and unsigning) stay open until an hour after the event's own
 // end time — not just up to the exact end — so someone can still log a
 // slot they just worked instead of being locked out the instant it ends.
 const SIGNUP_GRACE_MS = 60 * 60 * 1000;
-
-// One-time self-healing migration: consolidates any leftover pre-
-// consolidation entries (source: 'volunteer-slot' / 'volunteer-items',
-// one row per action) into the single-entry-per-person shape used
-// everywhere else in this file. Existing amounts are summed and reasons
-// concatenated rather than recomputed from current point defaults, so an
-// already-approved entry's awarded amount never silently changes.
-// Returns true if it changed anything (caller persists only then).
-function migrateOldVolunteerEntries(points) {
-  const oldEntries = points.filter(p => p.source === 'volunteer-slot' || p.source === 'volunteer-items');
-  if (!oldEntries.length) return false;
-
-  const groups = new Map();
-  for (const p of oldEntries) {
-    const key = `${p.eventId}|${p.memberId}`;
-    let g = groups.get(key);
-    if (!g) {
-      g = {
-        id: randomUUID(), memberId: p.memberId, memberName: p.memberName, memberEmail: p.memberEmail,
-        source: 'volunteer', eventId: p.eventId, eventTitle: p.eventTitle,
-        slotLabels: [], itemCount: 0, items: '', amount: 0, reasonParts: [],
-        status: p.status, requestedAt: p.requestedAt, decidedAt: p.decidedAt, decidedBy: p.decidedBy,
-      };
-      groups.set(key, g);
-    }
-    if (p.source === 'volunteer-slot' && p.slotLabel && !g.slotLabels.includes(p.slotLabel)) g.slotLabels.push(p.slotLabel);
-    if (p.source === 'volunteer-items') { g.itemCount = p.itemCount || 0; g.items = p.items || ''; }
-    g.amount += p.amount || 0;
-    if (p.reason) g.reasonParts.push(p.reason);
-    if (p.status === 'approved' || p.status === 'denied') { g.status = p.status; g.decidedAt = p.decidedAt; g.decidedBy = p.decidedBy; }
-    if (p.requestedAt && p.requestedAt < g.requestedAt) g.requestedAt = p.requestedAt;
-  }
-
-  for (let i = points.length - 1; i >= 0; i--) {
-    if (points[i].source === 'volunteer-slot' || points[i].source === 'volunteer-items') points.splice(i, 1);
-  }
-  for (const g of groups.values()) {
-    g.reason = g.reasonParts.join('. ');
-    delete g.reasonParts;
-    points.push(g);
-  }
-  return true;
-}
 
 // Volunteer events don't use the check-in code/window system at all — they
 // use their own signup flow (slots for bake_sale/time_slot, a bake-sale
