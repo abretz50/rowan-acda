@@ -339,8 +339,9 @@ function showDashboard() {
     eventsRefreshTimer = setInterval(loadEvents, 30 * 1000);
   }
   loadMembers(); // open to any E-Board account, like Tasks — see PORTAL_TABS note
+  loadPointsLeaderboard(); // also open to everyone — lives on the Members tab now
   document.getElementById('copy-email-list-btn').style.display = canUse('members') ? '' : 'none';
-  if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); loadPointsLeaderboard(); }
+  if (canUse('points')) { loadPointsPending(); loadPointsAll(); loadAllMembersForSearch(); loadEventDefaults(); }
   if (canUse('library')) loadLibrary();
   if (canUse('content')) { loadEboardRoster(); loadSiteContentExtras(); }
   if (canUse('gallery')) loadGallery();
@@ -467,19 +468,25 @@ async function loadOverviewStats() {
   document.getElementById('overview-attendance-chart').innerHTML = lineChartSVG(s.attendanceOverTime, 'No attendance yet.');
 }
 
-function pointsLeaderboardRowHTML(e, rank) {
+function pointsLeaderboardRowHTML(e, rank, opts = {}) {
+  const historyBtn = opts.showHistoryButton && e.id ? `<button class="btn-sm outline" data-view-points="${escHtml(e.id)}">Points history</button>` : '';
   return `<div class="admin-row">
       <div><span class="name">${rank}.</span> ${avatarHTML(e.photoUrl)}<span class="name">${escHtml(e.name)}</span></div>
-      <div class="actions"><span class="badge-role eboard">${e.total} pt${e.total !== 1 ? 's' : ''}</span></div>
+      <div class="actions"><span class="badge-role eboard">${e.total} pt${e.total !== 1 ? 's' : ''}</span>${historyBtn}</div>
     </div>`;
 }
 
+// Full ranked list (not just a top-N slice) — lives on the Members tab
+// (open to any E-Board account) rather than the secretary-only Points
+// tab, since seeing where everyone stands isn't a points-management
+// action, and its own "Points history" button reuses the same lookup
+// as the Roster list's.
 async function loadPointsLeaderboard() {
-  const el = document.getElementById('points-leaderboard-list');
+  const el = document.getElementById('members-leaderboard-list');
+  if (!el) return;
   const { ok, data } = await api(STATS_URL, { method: 'GET' });
   if (!ok) { el.innerHTML = '<p class="small muted">Could not load leaderboard.</p>'; return; }
-  const top10 = data.stats.leaderboard.slice(0, 10);
-  el.innerHTML = top10.map((e, i) => pointsLeaderboardRowHTML(e, i + 1)).join('') || '<p class="small muted">No points awarded yet.</p>';
+  el.innerHTML = data.stats.leaderboard.map((e, i) => pointsLeaderboardRowHTML(e, i + 1, { showHistoryButton: true })).join('') || '<p class="small muted">No points awarded yet.</p>';
 }
 
 function initTabs() {
@@ -1559,6 +1566,7 @@ async function selectMemberPoints(memberId) {
   });
   const member = allMembers.find(m => m.id === memberId);
   document.getElementById('members-graph-heading').textContent = member ? `${member.name}'s Points History` : 'Points History';
+  document.getElementById('members-graph-heading').scrollIntoView({ behavior: 'smooth', block: 'center' });
   document.getElementById('members-graph-reset').style.display = '';
   const chartEl = document.getElementById('members-graph-chart');
   const detailEl = document.getElementById('members-graph-detail');
@@ -1646,6 +1654,11 @@ async function sendInvite(action, memberId) {
 function wireMembersPanel() {
   document.getElementById('members-graph-reset').addEventListener('click', showMembershipGraph);
   document.getElementById('roster-search').addEventListener('input', renderRosterList);
+
+  document.getElementById('members-leaderboard-list').addEventListener('click', (e) => {
+    const viewBtn = e.target.closest('[data-view-points]');
+    if (viewBtn) selectMemberPoints(viewBtn.dataset.viewPoints);
+  });
 
   document.getElementById('copy-email-list-btn').addEventListener('click', async () => {
     const statusEl = document.getElementById('copy-email-list-status');

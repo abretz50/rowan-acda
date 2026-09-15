@@ -49,7 +49,7 @@ export default async function handler(req) {
   // scrollable top-of-list preview, and the Points tab shows the top 10;
   // both size it themselves client-side from this same full ranking.
   const leaderboard = [...totalsByMember.entries()]
-    .map(([id, total]) => ({ name: nameById.get(id) || 'Unknown', photoUrl: photoById.get(id) || null, total }))
+    .map(([id, total]) => ({ id, name: nameById.get(id) || 'Unknown', photoUrl: photoById.get(id) || null, total }))
     .sort((a, b) => b.total - a.total);
 
   // Attendance = one distinct member per event with any non-denied points
