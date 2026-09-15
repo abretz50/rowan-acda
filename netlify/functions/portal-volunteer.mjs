@@ -20,20 +20,20 @@ const SIGNUP_GRACE_MS = 60 * 60 * 1000;
 // item donation signup, and a single full-day headcount signup for
 // full_event), open any time up until the event ends.
 //
-// Slot + item signups for the same person/event are kept as ONE
-// consolidated pending points entry (source: 'volunteer', with a
-// slotLabels array and an itemCount/items pair) rather than a separate
-// entry per action — so the secretary reviews a single request per
-// volunteer describing everything they signed up for, not a pile of
-// one-line entries. Full-day headcount signups stay their own single
-// entry (source: 'volunteer-full') since there's only ever one per person.
-function recomputeVolunteerEntry(entry, perSlot, perItem) {
+// Multiple slot signups for the same person/event consolidate into ONE
+// pending entry (source: 'volunteer', slotLabels[]) rather than one row
+// per slot. A food/item signup is kept as its OWN separate entry (source:
+// 'volunteer-food') instead of being merged into the slots entry — food
+// point values are inherently negotiable (the secretary may want to
+// award more or less depending on what actually shows up), so it always
+// needs its own look rather than riding along with a flat per-slot
+// total. Full-day headcount signups are their own single entry (source:
+// 'volunteer-full') since there's only ever one per person.
+function recomputeSlotsEntry(entry, perSlot) {
   const slotLabels = [...(entry.slotLabels || [])].sort((a, b) => slotStartMinutes(a) - slotStartMinutes(b));
-  let amount = slotLabels.length * perSlot;
-  if (entry.itemCount > 0) amount += entry.itemCount * perItem;
   entry.slotLabels = slotLabels;
-  entry.amount = amount;
-  entry.reason = buildVolunteerReason(slotLabels, entry.itemCount || 0, entry.items || '');
+  entry.amount = slotLabels.length * perSlot;
+  entry.reason = buildVolunteerReason(slotLabels, 0, '');
 }
 
 // Pure mutation of `points` for one op — called from inside
@@ -46,9 +46,9 @@ function recomputeVolunteerEntry(entry, perSlot, perItem) {
 // calendar-link email should go out.
 function applyVolunteerOp(points, event, me, kind, body, perSlot, perItem) {
   const { eventId, slotLabel, itemCount, items } = body;
-  const findMine = () => points.find(p => p.eventId === eventId && p.memberId === me.id && p.source === 'volunteer' && p.status !== 'denied');
+  const findMineSlots = () => points.find(p => p.eventId === eventId && p.memberId === me.id && p.source === 'volunteer' && p.status !== 'denied');
+  const findMineFood = () => points.find(p => p.eventId === eventId && p.memberId === me.id && p.source === 'volunteer-food' && p.status !== 'denied');
   const fail = (message, status) => ({ error: { message, status }, addedSlot: false });
-  let addedSlot = false;
 
   if (kind === 'slot' || kind === 'unsign-slot') {
     if (event.volunteerType !== 'bake_sale' && event.volunteerType !== 'time_slot') {
@@ -57,11 +57,11 @@ function applyVolunteerOp(points, event, me, kind, body, perSlot, perItem) {
     if (!slotLabel) return fail('slotLabel is required.', 400);
     if (!generateSlots(event).some(s => s.label === slotLabel)) return fail('Invalid slot.', 400);
 
-    let mine = findMine();
+    let mine = findMineSlots();
     if (kind === 'slot') {
       if (mine && (mine.slotLabels || []).includes(slotLabel)) return { error: null, addedSlot: false }; // already signed up
       const capacity = event.slotCapacity || 3;
-      const taken = points.filter(p => p.eventId === eventId && p.status !== 'denied' && (p.slotLabels || []).includes(slotLabel)).length;
+      const taken = points.filter(p => p.eventId === eventId && p.status !== 'denied' && p.source === 'volunteer' && (p.slotLabels || []).includes(slotLabel)).length;
       if (taken >= capacity) return fail('That slot is full.', 409);
       if (mine) {
         if (mine.status === 'approved') return fail('Your signup was already approved — ask the secretary to add more.', 409);
@@ -69,20 +69,28 @@ function applyVolunteerOp(points, event, me, kind, body, perSlot, perItem) {
       } else {
         mine = {
           id: randomUUID(), memberId: me.id, memberName: me.name, memberEmail: me.email,
-          source: 'volunteer', eventId, eventTitle: event.title, slotLabels: [slotLabel], itemCount: 0, items: '',
+          source: 'volunteer', eventId, eventTitle: event.title, slotLabels: [slotLabel],
           status: 'pending', requestedAt: new Date().toISOString(), decidedAt: null, decidedBy: null,
         };
         points.push(mine);
       }
-      addedSlot = true;
-    } else {
-      if (!mine || !(mine.slotLabels || []).includes(slotLabel)) return fail('You are not signed up for that slot.', 404);
-      if (mine.status === 'approved') return fail('This was already approved — ask the secretary to remove it.', 409);
-      mine.slotLabels = mine.slotLabels.filter(l => l !== slotLabel);
+      recomputeSlotsEntry(mine, perSlot);
+      return { error: null, addedSlot: true };
     }
-  } else if (kind === 'items' || kind === 'unsign-items') {
+    if (!mine || !(mine.slotLabels || []).includes(slotLabel)) return fail('You are not signed up for that slot.', 404);
+    if (mine.status === 'approved') return fail('This was already approved — ask the secretary to remove it.', 409);
+    mine.slotLabels = mine.slotLabels.filter(l => l !== slotLabel);
+    if (!mine.slotLabels.length) {
+      points.splice(points.indexOf(mine), 1);
+    } else {
+      recomputeSlotsEntry(mine, perSlot);
+    }
+    return { error: null, addedSlot: false };
+  }
+
+  if (kind === 'items' || kind === 'unsign-items') {
     if (event.volunteerType !== 'bake_sale') return fail('This event does not take baked item signups.', 400);
-    let mine = findMine();
+    const mine = findMineFood();
     if (kind === 'items') {
       const count = Math.round(Number(itemCount));
       if (!count || count < 1 || count > MAX_BAKE_SALE_ITEMS) {
@@ -94,21 +102,25 @@ function applyVolunteerOp(points, event, me, kind, body, perSlot, perItem) {
         if (mine.status === 'approved') return fail('Your item signup was already approved — ask the secretary to adjust it if it changed.', 409);
         mine.itemCount = count;
         mine.items = description;
+        mine.amount = count * perItem;
+        mine.reason = buildVolunteerReason([], count, description);
       } else {
-        mine = {
+        points.push({
           id: randomUUID(), memberId: me.id, memberName: me.name, memberEmail: me.email,
-          source: 'volunteer', eventId, eventTitle: event.title, slotLabels: [], itemCount: count, items: description,
+          source: 'volunteer-food', eventId, eventTitle: event.title, itemCount: count, items: description,
+          amount: count * perItem, reason: buildVolunteerReason([], count, description),
           status: 'pending', requestedAt: new Date().toISOString(), decidedAt: null, decidedBy: null,
-        };
-        points.push(mine);
+        });
       }
-    } else {
-      if (!mine || !mine.itemCount) return fail('You do not have an item signup for this event.', 404);
-      if (mine.status === 'approved') return fail('This was already approved — ask the secretary to remove it.', 409);
-      mine.itemCount = 0;
-      mine.items = '';
+      return { error: null, addedSlot: false };
     }
-  } else if (kind === 'full') {
+    if (!mine) return fail('You do not have an item signup for this event.', 404);
+    if (mine.status === 'approved') return fail('This was already approved — ask the secretary to remove it.', 409);
+    points.splice(points.indexOf(mine), 1);
+    return { error: null, addedSlot: false };
+  }
+
+  if (kind === 'full') {
     if (event.volunteerType !== 'full_event') return fail('This event does not use full-day signup.', 400);
     if (points.some(p => p.eventId === eventId && p.memberId === me.id && p.source === 'volunteer-full' && p.status !== 'denied')) {
       return { error: null, addedSlot: false };
@@ -124,22 +136,9 @@ function applyVolunteerOp(points, event, me, kind, body, perSlot, perItem) {
       status: 'pending', requestedAt: new Date().toISOString(), decidedAt: null, decidedBy: null,
     });
     return { error: null, addedSlot: false };
-  } else {
-    return fail('Unknown kind.', 400);
   }
 
-  // Slot/item ops share one consolidated entry — drop it if it ends up
-  // empty (last slot and any items removed), otherwise recompute its
-  // total amount and description.
-  const mine = findMine();
-  if (mine) {
-    if (!(mine.slotLabels || []).length && !mine.itemCount) {
-      points.splice(points.indexOf(mine), 1);
-    } else {
-      recomputeVolunteerEntry(mine, perSlot, perItem);
-    }
-  }
-  return { error: null, addedSlot };
+  return fail('Unknown kind.', 400);
 }
 
 export default async function handler(req) {
@@ -154,7 +153,8 @@ export default async function handler(req) {
 
     let [points, members] = await Promise.all([getCollection('points', []), loadMembers()]);
     if (needsVolunteerFix(points)) {
-      points = await updateCollection('points', [], async (stored) => { migrateOldVolunteerEntries(stored); return stored; });
+      const perItem = await bakeSaleItemPointsDefault();
+      points = await updateCollection('points', [], async (stored) => { migrateOldVolunteerEntries(stored, perItem); return stored; });
     }
     const photoById = new Map(members.map(m => [m.id, m.photoUrl || null]));
     const activeForEvent = points.filter(p => p.eventId === eventId && p.status !== 'denied');
@@ -175,7 +175,8 @@ export default async function handler(req) {
       });
     }
 
-    const myEntry = activeForEvent.find(p => p.source === 'volunteer' && p.memberId === token?.id);
+    const mySlotsEntry = activeForEvent.find(p => p.source === 'volunteer' && p.memberId === token?.id);
+    const myFoodEntry = activeForEvent.find(p => p.source === 'volunteer-food' && p.memberId === token?.id);
     const slots = generateSlots(event).map(s => {
       const occupantEntries = activeForEvent.filter(p => p.source === 'volunteer' && (p.slotLabels || []).includes(s.label));
       const capacity = event.slotCapacity || 3;
@@ -191,16 +192,16 @@ export default async function handler(req) {
     const result = {
       ok: true, volunteerType: event.volunteerType, description: event.description || '', slots,
       pointsPerSlot: event.volunteerType === 'bake_sale' ? await bakeSaleSlotPointsDefault() : await volunteerSlotPointsDefault(),
-      mySlotLabels: myEntry?.slotLabels || [],
+      mySlotLabels: mySlotsEntry?.slotLabels || [],
     };
 
     if (event.volunteerType === 'bake_sale') {
-      const itemEntries = activeForEvent.filter(p => p.source === 'volunteer' && p.itemCount > 0);
+      const itemEntries = activeForEvent.filter(p => p.source === 'volunteer-food');
       result.pointsPerItem = await bakeSaleItemPointsDefault();
       result.maxItems = MAX_BAKE_SALE_ITEMS;
       result.itemSignups = itemEntries.map(p => ({ name: p.memberName, photoUrl: photoById.get(p.memberId) || null, itemCount: p.itemCount || 0, items: p.items || '', isMe: p.memberId === (token?.id) }));
-      result.myItemCount = myEntry?.itemCount || 0;
-      result.myItems = myEntry?.items || '';
+      result.myItemCount = myFoodEntry?.itemCount || 0;
+      result.myItems = myFoodEntry?.items || '';
     }
 
     return json(result);
@@ -232,7 +233,7 @@ export default async function handler(req) {
 
   let opResult = null;
   await updateCollection('points', [], async (stored) => {
-    migrateOldVolunteerEntries(stored);
+    migrateOldVolunteerEntries(stored, perItem);
     opResult = applyVolunteerOp(stored, event, me, kind, body, perSlot, perItem);
     return stored;
   });

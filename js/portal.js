@@ -1585,16 +1585,19 @@ async function selectMemberPoints(memberId) {
   chartEl.innerHTML = lineChartSVG(chartRows, 'No approved points yet.');
 
   const total = running;
-  detailEl.innerHTML = `<div class="admin-card" style="padding:.7rem;margin-top:.6rem"><strong>${total} approved point${total !== 1 ? 's' : ''}</strong>` +
-    sorted.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt)).map(p => {
-      const decided = p.status !== 'pending' && p.decidedAt
-        ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
-        : '';
-      return `<div class="admin-row">
-        <div><span class="name">${escHtml(pointsLabel(p) || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
-        <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
-      </div>`;
-    }).join('') + `${!sorted.length ? '<p class="small muted">No points yet.</p>' : ''}</div>`;
+  const rowsHtml = sorted.slice().sort((a, b) => new Date(b.requestedAt) - new Date(a.requestedAt)).map(p => {
+    const decided = p.status !== 'pending' && p.decidedAt
+      ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
+      : '';
+    return `<div class="admin-row">
+      <div><span class="name">${escHtml(pointsLabel(p) || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
+      <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
+    </div>`;
+  }).join('');
+  detailEl.innerHTML = `<div class="admin-card" style="padding:.7rem;margin-top:.6rem">
+    <strong>${total} approved point${total !== 1 ? 's' : ''}</strong>
+    <div style="max-height:300px;overflow-y:auto;margin-top:.5rem">${rowsHtml || '<p class="small muted">No points yet.</p>'}</div>
+  </div>`;
 }
 
 function renderRosterList() {
@@ -1749,15 +1752,21 @@ function pointsLabel(p) {
 // up for a lot of slots/items at once) to be worth a second look before
 // approving, rather than a routine one-click — flagged, not blocked.
 const VOLUNTEER_REVIEW_THRESHOLD = 300;
-function needsVolunteerReview(p) {
-  return (p.source === 'volunteer' || p.source === 'volunteer-full') && p.amount > VOLUNTEER_REVIEW_THRESHOLD;
+function volunteerReviewReason(p) {
+  // Food/item contributions are always flagged — their point value is
+  // inherently negotiable (award more or less depending on what actually
+  // shows up), unlike a flat per-slot rate, so every one deserves a look
+  // regardless of amount.
+  if (p.source === 'volunteer-food') return 'food contribution';
+  if ((p.source === 'volunteer' || p.source === 'volunteer-full') && p.amount > VOLUNTEER_REVIEW_THRESHOLD) return 'high amount';
+  return null;
 }
 
 function pendingRowHTML(p) {
-  const flagged = needsVolunteerReview(p);
-  return `<div class="admin-row" style="flex-wrap:nowrap;align-items:flex-start${flagged ? ';background:#fef2f2' : ''}" data-points-id="${escHtml(p.id)}">
+  const reviewReason = volunteerReviewReason(p);
+  return `<div class="admin-row" style="flex-wrap:nowrap;align-items:flex-start${reviewReason ? ';background:#fef2f2' : ''}" data-points-id="${escHtml(p.id)}">
     <div style="flex:1;min-width:0">
-      <span class="name">${escHtml(p.memberName)}</span>${flagged ? ' <span class="badge-role badge-priority-high">⚠ Review: high amount</span>' : ''}
+      <span class="name">${escHtml(p.memberName)}</span>${reviewReason ? ` <span class="badge-role badge-priority-high">⚠ Review: ${escHtml(reviewReason)}</span>` : ''}
       <div class="meta">${escHtml(pointsLabel(p))} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
     </div>
     <div class="actions" style="flex-shrink:0">

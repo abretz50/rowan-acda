@@ -85,22 +85,34 @@ export function eventReminderEmailHtml(event, when) {
   `);
 }
 
-function describeVolunteerSignupHtml(entry) {
-  if (entry.source === 'volunteer-full') return '<li>Signed up for the full day</li>';
+// `entries` is every active points entry a person has for this one event —
+// a slots entry (source: 'volunteer') and a food entry (source:
+// 'volunteer-food') are kept as separate points requests, but still
+// described together in a single reminder email since it's the same
+// person's one signup for the same event.
+function describeVolunteerSignupHtml(entries) {
   const parts = [];
-  if ((entry.slotLabels || []).length) {
-    parts.push(`<li>Time slot${entry.slotLabels.length !== 1 ? 's' : ''}: ${entry.slotLabels.map(escapeHtml).join(', ')}</li>`);
-  }
-  if (entry.itemCount > 0) {
-    parts.push(`<li>Bringing ${entry.itemCount} item${entry.itemCount !== 1 ? 's' : ''}: ${escapeHtml(entry.items || '')}</li>`);
+  for (const entry of entries) {
+    if (entry.source === 'volunteer-full') { parts.push('<li>Signed up for the full day</li>'); continue; }
+    if (entry.source === 'volunteer' && (entry.slotLabels || []).length) {
+      parts.push(`<li>Time slot${entry.slotLabels.length !== 1 ? 's' : ''}: ${entry.slotLabels.map(escapeHtml).join(', ')}</li>`);
+    }
+    if (entry.source === 'volunteer-food' && entry.itemCount > 0) {
+      parts.push(`<li>Bringing ${entry.itemCount} item${entry.itemCount !== 1 ? 's' : ''}: ${escapeHtml(entry.items || '')}</li>`);
+    }
   }
   return parts.join('') || '<li>Signed up</li>';
 }
 
-export function volunteerReminderEmailHtml(event, entry, when) {
+// `entries` is every active points entry this person has for this event
+// (a slots entry and/or a food entry and/or a full-day entry) — described
+// together in one email since it's all one signup from the recipient's
+// point of view, even though they're separate points requests internally.
+export function volunteerReminderEmailHtml(event, entries, when) {
   const introLine = when === 'today' ? "You're volunteering today:" : "You're volunteering tomorrow:";
   const whenStr = new Date(event.start).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/New_York' });
-  const itemNote = event.volunteerType === 'bake_sale' && entry.itemCount > 0
+  const hasFood = entries.some(e => e.source === 'volunteer-food' && e.itemCount > 0);
+  const itemNote = event.volunteerType === 'bake_sale' && hasFood
     ? '<p style="color:#444">Remember: items need to be there before the sale starts.</p>' : '';
   return emailLayout(`
     <p>${introLine}</p>
@@ -108,7 +120,7 @@ export function volunteerReminderEmailHtml(event, entry, when) {
     ${emailPhoto(event.imageUrl, event.title)}
     <p style="margin-top:.5rem"><strong>${escapeHtml(whenStr)} ET</strong>${event.location ? '<br>' + escapeHtml(event.location) : ''}</p>
     <p style="margin-top:1rem">Here's what you signed up for:</p>
-    <ul style="padding-left:1.1rem;margin:.3rem 0 0">${describeVolunteerSignupHtml(entry)}</ul>
+    <ul style="padding-left:1.1rem;margin:.3rem 0 0">${describeVolunteerSignupHtml(entries)}</ul>
     ${itemNote}
     ${ctaButton('https://rowanacda.org/events.html', 'See Event Details')}
   `);
@@ -146,13 +158,19 @@ export async function runVolunteerReminders(when) {
   const jobs = [];
   let volunteerReminders = 0;
   for (const event of volunteerEvents) {
-    const entries = points.filter(p => p.eventId === event.id && p.status !== 'denied' && (p.source === 'volunteer' || p.source === 'volunteer-full'));
+    const entries = points.filter(p => p.eventId === event.id && p.status !== 'denied' &&
+      (p.source === 'volunteer' || p.source === 'volunteer-food' || p.source === 'volunteer-full'));
+    const byMember = new Map();
     for (const entry of entries) {
-      const emails = memberEmails(membersById.get(entry.memberId));
-      const to = emails.length ? emails : (entry.memberEmail ? [entry.memberEmail] : []);
+      if (!byMember.has(entry.memberId)) byMember.set(entry.memberId, []);
+      byMember.get(entry.memberId).push(entry);
+    }
+    for (const [memberId, memberEntries] of byMember) {
+      const emails = memberEmails(membersById.get(memberId));
+      const to = emails.length ? emails : (memberEntries[0].memberEmail ? [memberEntries[0].memberEmail] : []);
       if (!to.length) continue;
       volunteerReminders++;
-      const html = volunteerReminderEmailHtml(event, entry, when);
+      const html = volunteerReminderEmailHtml(event, memberEntries, when);
       jobs.push(sendEmail({ to, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: volunteering at ${event.title}`, html }));
     }
   }

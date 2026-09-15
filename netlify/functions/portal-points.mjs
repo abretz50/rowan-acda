@@ -6,7 +6,7 @@ import { isCheckinOpen } from './_lib/checkinWindow.mjs';
 import { easternDateOnly } from './_lib/dateFmt.mjs';
 import {
   loadEventDefaults, saveEventDefaults, DEFAULT_EVENT_POINTS,
-  VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY,
+  VOLUNTEER_SLOT_KEY, BAKE_SALE_SLOT_KEY, BAKE_SALE_ITEM_KEY, bakeSaleItemPointsDefault,
 } from './_lib/eventDefaults.mjs';
 import { migrateOldVolunteerEntries, needsVolunteerFix } from './_lib/volunteerMigration.mjs';
 
@@ -25,7 +25,8 @@ function withDeciderNames(rows, members) {
 async function loadMigratedPoints() {
   let points = await getCollection('points', []);
   if (needsVolunteerFix(points)) {
-    points = await updateCollection('points', [], async (stored) => { migrateOldVolunteerEntries(stored); return stored; });
+    const perItem = await bakeSaleItemPointsDefault();
+    points = await updateCollection('points', [], async (stored) => { migrateOldVolunteerEntries(stored, perItem); return stored; });
   }
   return points;
 }
