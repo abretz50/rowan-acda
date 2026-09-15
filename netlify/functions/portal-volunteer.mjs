@@ -7,7 +7,7 @@ import { volunteerSlotPointsDefault, bakeSaleSlotPointsDefault, bakeSaleItemPoin
 import { sendEmail, memberEmails } from './_lib/email.mjs';
 import { volunteerConfirmationEmailHtml } from './_lib/reminders.mjs';
 import { gcalLink } from './_lib/gcal.mjs';
-import { migrateOldVolunteerEntries } from './_lib/volunteerMigration.mjs';
+import { migrateOldVolunteerEntries, slotStartMinutes, buildVolunteerReason } from './_lib/volunteerMigration.mjs';
 
 const MAX_BAKE_SALE_ITEMS = 4;
 // Signups (and unsigning) stay open until an hour after the event's own
@@ -28,19 +28,12 @@ const SIGNUP_GRACE_MS = 60 * 60 * 1000;
 // one-line entries. Full-day headcount signups stay their own single
 // entry (source: 'volunteer-full') since there's only ever one per person.
 function recomputeVolunteerEntry(entry, perSlot, perItem) {
-  const slotLabels = entry.slotLabels || [];
-  const parts = [];
-  let amount = 0;
-  if (slotLabels.length) {
-    amount += slotLabels.length * perSlot;
-    parts.push(`Worked ${slotLabels.length} time slot${slotLabels.length !== 1 ? 's' : ''}: ${slotLabels.join(', ')}`);
-  }
-  if (entry.itemCount > 0) {
-    amount += entry.itemCount * perItem;
-    parts.push(`Brought ${entry.itemCount} item${entry.itemCount !== 1 ? 's' : ''}: ${entry.items}`);
-  }
+  const slotLabels = [...(entry.slotLabels || [])].sort((a, b) => slotStartMinutes(a) - slotStartMinutes(b));
+  let amount = slotLabels.length * perSlot;
+  if (entry.itemCount > 0) amount += entry.itemCount * perItem;
+  entry.slotLabels = slotLabels;
   entry.amount = amount;
-  entry.reason = parts.join('. ');
+  entry.reason = buildVolunteerReason(slotLabels, entry.itemCount || 0, entry.items || '');
 }
 
 // Pure mutation of `points` for one op — called from inside

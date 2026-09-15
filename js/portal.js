@@ -1745,10 +1745,19 @@ function pointsLabel(p) {
 // how tall a long, multi-slot description makes the row — the default
 // .admin-row would otherwise drop the whole actions block onto its own
 // line below the text once it doesn't fit alongside it.
+// A volunteer request over 300 points is unusual enough (someone signed
+// up for a lot of slots/items at once) to be worth a second look before
+// approving, rather than a routine one-click — flagged, not blocked.
+const VOLUNTEER_REVIEW_THRESHOLD = 300;
+function needsVolunteerReview(p) {
+  return (p.source === 'volunteer' || p.source === 'volunteer-full') && p.amount > VOLUNTEER_REVIEW_THRESHOLD;
+}
+
 function pendingRowHTML(p) {
-  return `<div class="admin-row" style="flex-wrap:nowrap;align-items:flex-start" data-points-id="${escHtml(p.id)}">
+  const flagged = needsVolunteerReview(p);
+  return `<div class="admin-row" style="flex-wrap:nowrap;align-items:flex-start${flagged ? ';background:#fef2f2' : ''}" data-points-id="${escHtml(p.id)}">
     <div style="flex:1;min-width:0">
-      <span class="name">${escHtml(p.memberName)}</span>
+      <span class="name">${escHtml(p.memberName)}</span>${flagged ? ' <span class="badge-role badge-priority-high">⚠ Review: high amount</span>' : ''}
       <div class="meta">${escHtml(pointsLabel(p))} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
     </div>
     <div class="actions" style="flex-shrink:0">
