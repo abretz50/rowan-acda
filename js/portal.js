@@ -1757,7 +1757,7 @@ function volunteerReviewReason(p) {
   // inherently negotiable (award more or less depending on what actually
   // shows up), unlike a flat per-slot rate, so every one deserves a look
   // regardless of amount.
-  if (p.source === 'volunteer-food') return 'food contribution';
+  if (p.source === 'volunteer-food') return 'confirm point award is appropriate for food contribution';
   if ((p.source === 'volunteer' || p.source === 'volunteer-full') && p.amount > VOLUNTEER_REVIEW_THRESHOLD) return 'high amount';
   return null;
 }
