@@ -227,7 +227,7 @@ export default async function handler(req) {
       const eventStartById = new Map(events.map(e => [e.id, e.start]));
       const today = easternDateOnly(new Date());
       rows = rows.filter(p => {
-        if (!p.source?.startsWith('volunteer-')) return true;
+        if (p.source !== 'volunteer' && !p.source?.startsWith('volunteer-')) return true;
         const start = eventStartById.get(p.eventId);
         return !start || easternDateOnly(start) <= today;
       });

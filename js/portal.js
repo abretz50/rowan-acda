@@ -1109,7 +1109,7 @@ function eventRowHTML(ev) {
 function attendanceRowHTML(p) {
   const avatar = `<img src="${escHtml(p.memberPhotoUrl || '/assets/icons/default-avatar.svg')}" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`;
   const statusClass = p.status === 'approved' ? 'badge-success' : p.status === 'denied' ? 'badge-priority-high' : 'badge-priority-medium';
-  const detail = [p.slotLabel, p.reason, p.addedByName ? `added by ${p.addedByName}` : null].filter(Boolean).join(' · ');
+  const detail = [p.reason, p.addedByName ? `added by ${p.addedByName}` : null].filter(Boolean).join(' · ');
   return `<div class="admin-row" style="padding:.4rem .55rem">
     <div style="display:flex;align-items:center;gap:.5rem">
       ${avatar}
