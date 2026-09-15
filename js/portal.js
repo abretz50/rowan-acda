@@ -3288,7 +3288,7 @@ function budgetStatCardsHTML() {
     statCardHTML(fmtMoney(remainingToGoal), 'Dollars Left to Fundraising Goal'),
     statCardHTML(budgetSignedMoney(balance), balance < 0 ? 'Current Balance (Deficit)' : 'Current Balance', balance < 0 ? 'Raise more to cover spending' : 'Raising at least as much as spent'),
     statCardHTML(fmtMoney(s.totalIncome), 'Raised'),
-    statCardHTML(fmtMoney(s.plannedRevenueTotal), 'Planned Revenue (Categories)'),
+    statCardHTML(budgetSignedMoney((s.totalIncome || 0) - (s.totalSpent || 0)), 'Revenue', 'Raised minus spent'),
     statCardHTML(fmtMoney(s.totalSpent), 'Spent'),
   ].join('');
 }
