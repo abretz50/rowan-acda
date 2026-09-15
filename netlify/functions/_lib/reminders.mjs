@@ -1,16 +1,38 @@
 // Daily reminder sweep: task deadlines (due today/tomorrow), upcoming
-// events (today = morning-of, tomorrow = heads-up), and — Sundays only — a
-// weekly task overview to every E-Board account. Runs once a day via the
-// scheduled function, or on demand via the manual "Send Reminders Now"
-// trigger. The per-task/per-event manual "Send Reminder" buttons reuse the
-// same email templates (taskReminderEmailHtml/eventReminderEmailHtml) with
-// generic wording since they can fire on any day, not just today/tomorrow.
+// events (today = morning-of, tomorrow = heads-up), volunteer signups
+// (morning-of only — the night-before pass lives in
+// reminders-scheduled-evening.mjs, run separately in the evening), and —
+// Sundays only — a weekly task overview to every E-Board account. Runs
+// once a day via the scheduled function, or on demand via the manual
+// "Send Reminders Now" trigger. The per-task/per-event manual "Send
+// Reminder" buttons reuse the same email templates
+// (taskReminderEmailHtml/eventReminderEmailHtml) with generic wording
+// since they can fire on any day, not just today/tomorrow.
+//
+// Resend's plan caps this account at 100 emails/day, so sends are split
+// into two priority tiers and the first is fully awaited before the
+// second starts: "today" reminders (task/event/volunteer — someone needs
+// this information right now) go out first, then "tomorrow" heads-ups and
+// the weekly digest (both easy to live without if the day's quota runs
+// out). Non-volunteer events already blast every active member, which is
+// by far the biggest quota cost — Volunteer-tagged events are excluded
+// from that blast entirely and instead only email the people who actually
+// signed up (see runVolunteerReminders), since "you have an event today"
+// isn't useful to someone with no stake in a bake sale.
 import { getCollection, setCollection } from './blobs.mjs';
 import { loadMembers } from './loadMembers.mjs';
 import { sendEmail, emailLayout, escapeHtml, ctaButton, emailPhoto, priorityBadge, memberEmails } from './email.mjs';
 import { easternDateOnly, mdySlash } from './dateFmt.mjs';
 
 function addDays(base, n) { const d = new Date(base); d.setUTCDate(d.getUTCDate() + n); return d; }
+
+async function settleAndSummarize(jobs) {
+  const results = await Promise.allSettled(jobs);
+  const errors = results
+    .map(r => r.status === 'rejected' ? (r.reason?.message || String(r.reason)) : (r.value?.ok === false ? r.value.error : null))
+    .filter(Boolean);
+  return { sent: jobs.length, failed: errors.length, errors };
+}
 
 // Must match reminders-scheduled.mjs's `schedule` cron hour exactly, so the
 // portal's "next automated send" label always reflects the real run time.
@@ -63,6 +85,81 @@ export function eventReminderEmailHtml(event, when) {
   `);
 }
 
+function describeVolunteerSignupHtml(entry) {
+  if (entry.source === 'volunteer-full') return '<li>Signed up for the full day</li>';
+  const parts = [];
+  if ((entry.slotLabels || []).length) {
+    parts.push(`<li>Time slot${entry.slotLabels.length !== 1 ? 's' : ''}: ${entry.slotLabels.map(escapeHtml).join(', ')}</li>`);
+  }
+  if (entry.itemCount > 0) {
+    parts.push(`<li>Bringing ${entry.itemCount} item${entry.itemCount !== 1 ? 's' : ''}: ${escapeHtml(entry.items || '')}</li>`);
+  }
+  return parts.join('') || '<li>Signed up</li>';
+}
+
+export function volunteerReminderEmailHtml(event, entry, when) {
+  const introLine = when === 'today' ? "You're volunteering today:" : "You're volunteering tomorrow:";
+  const whenStr = new Date(event.start).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/New_York' });
+  const itemNote = event.volunteerType === 'bake_sale' && entry.itemCount > 0
+    ? '<p style="color:#444">Remember: items need to be there before the sale starts.</p>' : '';
+  return emailLayout(`
+    <p>${introLine}</p>
+    <h2 style="margin:.5rem 0;color:#7A0A0A">${escapeHtml(event.title)}</h2>
+    ${emailPhoto(event.imageUrl, event.title)}
+    <p style="margin-top:.5rem"><strong>${escapeHtml(whenStr)} ET</strong>${event.location ? '<br>' + escapeHtml(event.location) : ''}</p>
+    <p style="margin-top:1rem">Here's what you signed up for:</p>
+    <ul style="padding-left:1.1rem;margin:.3rem 0 0">${describeVolunteerSignupHtml(entry)}</ul>
+    ${itemNote}
+    ${ctaButton('https://rowanacda.org/events.html', 'See Event Details')}
+  `);
+}
+
+// Immediate confirmation on signing up for a time slot (not sent for a
+// food/item-only signup — there's no specific time to confirm or add to a
+// calendar in that case).
+export function volunteerConfirmationEmailHtml(event, slotLabel, calendarUrl) {
+  return emailLayout(`
+    <p>You're signed up to volunteer!</p>
+    <h2 style="margin:.5rem 0;color:#7A0A0A">${escapeHtml(event.title)}</h2>
+    ${emailPhoto(event.imageUrl, event.title)}
+    <p style="margin-top:.5rem"><strong>Your slot: ${escapeHtml(slotLabel)}</strong>${event.location ? '<br>' + escapeHtml(event.location) : ''}</p>
+    ${ctaButton(calendarUrl, 'Add to Calendar')}
+    <p style="margin-top:1rem;color:#444">You'll get a reminder the night before and the morning of.</p>
+  `);
+}
+
+// Emails everyone with an active (non-denied) volunteer signup — slot(s),
+// items, or full-day — for a Volunteer-tagged event happening "today" or
+// "tomorrow" (Eastern calendar date), one consolidated email per person
+// describing everything on that signup. Used for the morning-of pass
+// (folded into runDailyReminders) and the night-before pass (its own
+// scheduled function, reminders-scheduled-evening.mjs).
+export async function runVolunteerReminders(when) {
+  const now = new Date();
+  const targetDate = when === 'today' ? easternDateOnly(now) : easternDateOnly(addDays(now, 1));
+  const [events, points, members] = await Promise.all([
+    getCollection('events', []), getCollection('points', []), loadMembers(),
+  ]);
+  const membersById = new Map(members.map(m => [m.id, m]));
+  const volunteerEvents = events.filter(e => (e.tags || []).includes('Volunteer') && easternDateOnly(e.start) === targetDate);
+
+  const jobs = [];
+  let volunteerReminders = 0;
+  for (const event of volunteerEvents) {
+    const entries = points.filter(p => p.eventId === event.id && p.status !== 'denied' && (p.source === 'volunteer' || p.source === 'volunteer-full'));
+    for (const entry of entries) {
+      const emails = memberEmails(membersById.get(entry.memberId));
+      const to = emails.length ? emails : (entry.memberEmail ? [entry.memberEmail] : []);
+      if (!to.length) continue;
+      volunteerReminders++;
+      const html = volunteerReminderEmailHtml(event, entry, when);
+      jobs.push(sendEmail({ to, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: volunteering at ${event.title}`, html }));
+    }
+  }
+  const { failed } = await settleAndSummarize(jobs);
+  return { volunteerReminders, emailsSent: jobs.length, emailsFailed: failed };
+}
+
 export async function runDailyReminders() {
   const now = new Date();
   // Eastern calendar date — a task's dueDate is already a plain YYYY-MM-DD
@@ -77,7 +174,11 @@ export async function runDailyReminders() {
   const membersById = new Map(members.map(m => [m.id, m]));
   const activeEmails = [...new Set(members.filter(m => m.active !== false).flatMap(memberEmails))];
 
-  const jobs = [];
+  // Split into two priority tiers so a quota cutoff hits the least
+  // time-sensitive emails first: "today" reminders are fully sent before
+  // any "tomorrow" heads-up or the weekly digest is even attempted.
+  const todayJobs = [];
+  const laterJobs = [];
   let taskReminders = 0, eventReminders = 0;
   let tasksChanged = false;
 
@@ -94,7 +195,7 @@ export async function runDailyReminders() {
       if (!emails.length) continue;
       taskReminders++;
       sentAny = true;
-      jobs.push(sendEmail({ to: emails, subject: `Task due ${when}: ${t.title}`, html }));
+      (when === 'today' ? todayJobs : laterJobs).push(sendEmail({ to: emails, subject: `Task due ${when}: ${t.title}`, html }));
     }
     if (sentAny) {
       if (!t.history) t.history = [];
@@ -106,19 +207,25 @@ export async function runDailyReminders() {
 
   // Upcoming events — every active member, sent one-at-a-time so no
   // recipient sees anyone else's email address in the To: header.
+  // Volunteer-tagged events are skipped here entirely: they get their own
+  // targeted reminder (runVolunteerReminders) to just the people who
+  // signed up, not a blast to everyone regardless of relevance.
   for (const e of events) {
+    if ((e.tags || []).includes('Volunteer')) continue;
     const evDate = easternDateOnly(e.start);
     if (evDate !== today && evDate !== tomorrow) continue;
     const when = evDate === today ? 'today' : 'tomorrow';
     eventReminders++;
     const html = eventReminderEmailHtml(e, when);
     for (const email of activeEmails) {
-      jobs.push(sendEmail({ to: email, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: ${e.title}`, html }));
+      (when === 'today' ? todayJobs : laterJobs).push(sendEmail({ to: email, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: ${e.title}`, html }));
     }
   }
 
   // Weekly task overview — every Sunday, one email per E-Board account
   // listing everything due Sun-Sat that week (not just today/tomorrow).
+  // Lowest priority of everything sent here — a week's notice tolerates
+  // being a day late far better than a same-day reminder does.
   let weeklyDigestSent = 0;
   const isSunday = now.toLocaleDateString('en-US', { timeZone: 'America/New_York', weekday: 'short' }) === 'Sun';
   if (isSunday) {
@@ -132,16 +239,23 @@ export async function runDailyReminders() {
       const emails = memberEmails(m);
       if (!emails.length) continue;
       weeklyDigestSent++;
-      jobs.push(sendEmail({ to: emails, subject: `Weekly Task Overview — week of ${today}`, html: digestHtml }));
+      laterJobs.push(sendEmail({ to: emails, subject: `Weekly Task Overview — week of ${today}`, html: digestHtml }));
     }
   }
 
-  const results = await Promise.allSettled(jobs);
-  const errors = results
-    .map(r => r.status === 'rejected' ? (r.reason?.message || String(r.reason)) : (r.value?.ok === false ? r.value.error : null))
-    .filter(Boolean);
+  // Today's volunteer signups (morning-of) are the single highest
+  // priority — sent before touching todayJobs even, since "you're
+  // volunteering today" is more time-critical than a task due today.
+  const volunteerResult = await runVolunteerReminders('today');
+  const todaySummary = await settleAndSummarize(todayJobs);
+  const laterSummary = await settleAndSummarize(laterJobs);
+
+  const errors = [...todaySummary.errors, ...laterSummary.errors];
   return {
-    taskReminders, eventReminders, weeklyDigestSent, emailsSent: jobs.length, emailsFailed: errors.length,
+    taskReminders, eventReminders, volunteerReminders: volunteerResult.volunteerReminders,
+    weeklyDigestSent,
+    emailsSent: volunteerResult.emailsSent + todaySummary.sent + laterSummary.sent,
+    emailsFailed: volunteerResult.emailsFailed + todaySummary.failed + laterSummary.failed,
     sampleErrors: [...new Set(errors)].slice(0, 3),
   };
 }
