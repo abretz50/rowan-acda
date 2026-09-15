@@ -1740,13 +1740,18 @@ function pointsLabel(p) {
   return p.eventTitle || p.reason || '';
 }
 
+// flex-wrap:nowrap (with the text side allowed to shrink/wrap its own
+// text) keeps the amount box/Approve/Deny pinned to the right no matter
+// how tall a long, multi-slot description makes the row — the default
+// .admin-row would otherwise drop the whole actions block onto its own
+// line below the text once it doesn't fit alongside it.
 function pendingRowHTML(p) {
-  return `<div class="admin-row" data-points-id="${escHtml(p.id)}">
-    <div>
+  return `<div class="admin-row" style="flex-wrap:nowrap;align-items:flex-start" data-points-id="${escHtml(p.id)}">
+    <div style="flex:1;min-width:0">
       <span class="name">${escHtml(p.memberName)}</span>
       <div class="meta">${escHtml(pointsLabel(p))} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
     </div>
-    <div class="actions">
+    <div class="actions" style="flex-shrink:0">
       <input class="admin-input" type="number" min="0" value="${p.amount}" style="width:70px" data-amount-for="${escHtml(p.id)}"/>
       <button class="btn-sm" data-approve="${escHtml(p.id)}">Approve</button>
       <button class="btn-sm delete" data-deny="${escHtml(p.id)}">Deny</button>
@@ -1757,12 +1762,12 @@ function allEntryRowHTML(p) {
   const decidedClause = p.status === 'pending'
     ? ' Pending approval.'
     : ` ${p.status === 'approved' ? 'Approved' : 'Denied'} by ${escHtml(p.decidedByName || 'Unknown')} on ${fmtDashDate(p.decidedAt)}.`;
-  return `<div class="admin-row">
-    <div>
+  return `<div class="admin-row" style="flex-wrap:nowrap;align-items:flex-start">
+    <div style="flex:1;min-width:0">
       <span class="name">${escHtml(pointsLabel(p) || 'Points')}</span>
       <div class="meta">${p.amount} pt${Math.abs(p.amount) !== 1 ? 's' : ''} requested by ${escHtml(p.memberName)}.${decidedClause}</div>
     </div>
-    <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
+    <div class="actions" style="flex-shrink:0"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
   </div>`;
 }
 
