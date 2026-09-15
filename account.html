@@ -85,8 +85,7 @@
           <button class="btn-sm outline" id="profile-edit-btn" type="button">Edit</button>
         </div>
         <div style="display:flex;align-items:center;gap:.8rem;margin-top:.6rem">
-          <img id="profile-photo-preview" src="" alt="" style="display:none;width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>
-          <div id="profile-photo-placeholder" style="width:64px;height:64px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--muted)">👤</div>
+          <img id="profile-photo-preview" src="/assets/icons/default-avatar.svg" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>
           <div>
             <input type="file" id="pf-photo" accept="image/*" style="display:none"/>
             <button class="btn-sm outline" type="button" id="pf-photo-btn">Upload photo</button>
@@ -178,6 +177,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/account.js?v=11"></script>
+<script defer src="/js/account.js?v=12"></script>
 </body>
 </html>

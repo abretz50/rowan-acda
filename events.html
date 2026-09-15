@@ -379,9 +379,7 @@
 
   /* ---------- Comments ---------- */
   function commentAvatarHTML(photoUrl){
-    return photoUrl
-      ? '<img src="'+escHtml(photoUrl)+'" alt="" style="display:inline-block;width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem">'
-      : '<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#f3f4f6;border:1px solid var(--border);vertical-align:middle;margin-right:.4rem;font-size:14px">👤</span>';
+    return '<img src="'+escHtml(photoUrl || '/assets/icons/default-avatar.svg')+'" alt="" style="display:inline-block;width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem">';
   }
   function commentRowHTML(c, eventId, isReply){
     const replyUI = isReply ? '' :
@@ -544,9 +542,8 @@
 
   function avatarHTML(photoUrl, size){
     const s = size || 24;
-    return photoUrl
-      ? '<img src="'+escHtml(photoUrl)+'" alt="" style="width:'+s+'px;height:'+s+'px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0"/>'
-      : '<span style="display:inline-block;width:'+s+'px;height:'+s+'px;border-radius:50%;background:#fff;border:1px solid var(--border);flex-shrink:0"></span>';
+    const src = photoUrl || '/assets/icons/default-avatar.svg';
+    return '<img src="'+escHtml(src)+'" alt="" style="width:'+s+'px;height:'+s+'px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0"/>';
   }
 
   function pointsBadgeHTML(points){

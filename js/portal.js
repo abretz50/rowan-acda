@@ -355,9 +355,8 @@ function avatarHTML(photoUrl, size) {
   // display:inline-block is required here — base.css resets every <img> to
   // display:block, which would otherwise force the photo onto its own line
   // above the name instead of sitting beside it.
-  return photoUrl
-    ? `<img src="${escHtml(photoUrl)}" alt="" style="display:inline-block;width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem"/>`
-    : `<span style="display:inline-flex;align-items:center;justify-content:center;width:${s}px;height:${s}px;border-radius:50%;background:var(--surface);border:1px solid var(--border);vertical-align:middle;margin-right:.4rem;font-size:${Math.round(s * 0.55)}px">👤</span>`;
+  const src = photoUrl || '/assets/icons/default-avatar.svg';
+  return `<img src="${escHtml(src)}" alt="" style="display:inline-block;width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem"/>`;
 }
 
 function statCardHTML(number, label, detail) {
@@ -1108,9 +1107,7 @@ function eventRowHTML(ev) {
 }
 
 function attendanceRowHTML(p) {
-  const avatar = p.memberPhotoUrl
-    ? `<img src="${escHtml(p.memberPhotoUrl)}" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`
-    : `<div style="width:28px;height:28px;border-radius:50%;background:var(--surface);border:1px solid var(--border)"></div>`;
+  const avatar = `<img src="${escHtml(p.memberPhotoUrl || '/assets/icons/default-avatar.svg')}" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`;
   const statusClass = p.status === 'approved' ? 'badge-success' : p.status === 'denied' ? 'badge-priority-high' : 'badge-priority-medium';
   const detail = [p.slotLabel, p.reason, p.addedByName ? `added by ${p.addedByName}` : null].filter(Boolean).join(' · ');
   return `<div class="admin-row" style="padding:.4rem .55rem">
@@ -3286,10 +3283,12 @@ function budgetStatCardsHTML() {
     ].join('');
   }
   const balance = s.currentBalance || 0;
+  const remainingToGoal = Math.max(0, (s.targetAmount || 0) - (s.totalIncome || 0));
   return [
-    statCardHTML(fmtMoney(s.targetAmount), 'Fundraising Goal'),
+    statCardHTML(fmtMoney(remainingToGoal), 'Dollars Left to Fundraising Goal'),
     statCardHTML(budgetSignedMoney(balance), balance < 0 ? 'Current Balance (Deficit)' : 'Current Balance', balance < 0 ? 'Raise more to cover spending' : 'Raising at least as much as spent'),
     statCardHTML(fmtMoney(s.totalIncome), 'Raised'),
+    statCardHTML(fmtMoney(s.plannedRevenueTotal), 'Planned Revenue (Categories)'),
     statCardHTML(fmtMoney(s.totalSpent), 'Spent'),
   ].join('');
 }

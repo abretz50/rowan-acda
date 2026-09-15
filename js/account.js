@@ -51,15 +51,7 @@ function fillProfileView() {
   document.getElementById('view-name').textContent = me.name || '—';
   document.getElementById('view-email').textContent = me.email || '—';
   document.getElementById('view-secondary-email').textContent = me.secondaryEmail || '—';
-  const img = document.getElementById('profile-photo-preview');
-  const placeholder = document.getElementById('profile-photo-placeholder');
-  if (me.photoUrl) {
-    img.src = me.photoUrl; img.style.display = '';
-    placeholder.style.display = 'none';
-  } else {
-    img.style.display = 'none';
-    placeholder.style.display = '';
-  }
+  document.getElementById('profile-photo-preview').src = me.photoUrl || '/assets/icons/default-avatar.svg';
 }
 
 async function uploadFile(file, category) {
@@ -126,9 +118,7 @@ async function loadEventsHistory() {
 
 // ── Points leaderboard: rank + name/photo only, never point totals ──────
 function leaderboardRowHTML(entry) {
-  const avatar = entry.photoUrl
-    ? `<img src="${escHtml(entry.photoUrl)}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`
-    : `<div style="width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--muted)">👤</div>`;
+  const avatar = `<img src="${escHtml(entry.photoUrl || '/assets/icons/default-avatar.svg')}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`;
   return `<div class="admin-row"${entry.isMe ? ' style="background:var(--surface)"' : ''}>
     <div style="display:flex;align-items:center;gap:.6rem">
       <span class="name" style="min-width:2rem">#${entry.rank}</span>
