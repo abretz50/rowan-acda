@@ -609,14 +609,18 @@
     if(data.volunteerType === 'bake_sale'){
       const itemRoster = (data.itemSignups||[]).map(p => personChipHTML(p, 'unsign-items')).join('') || '<p class="small" style="margin:.3rem 0;color:var(--muted,#6B7280)">No one has signed up yet.</p>';
       const alreadyItems = !!data.myItemCount;
+      // Blank by default (a real value, not a preselected 1) so submitting
+      // without picking a count is actually blocked, not silently sent as 1.
+      let countOptions = '<option value="" disabled'+(!data.myItemCount?' selected':'')+'>Count</option>';
+      for(let n=1;n<=data.maxItems;n++){ countOptions += '<option value="'+n+'"'+(data.myItemCount===n?' selected':'')+'>'+n+'</option>'; }
       itemSection = '<div style="background:var(--surface,#FAFAFB);border:1px solid var(--border);border-radius:.75rem;padding:.9rem;margin-top:1rem">'
         + '<div style="font-weight:700;margin-bottom:.3rem">Bring Baked Items</div>'
-        + '<p class="small" style="color:var(--muted,#6B7280);margin:0 0 .6rem">Bring up to 4 items instead of (or in addition to) a work slot for '+data.pointsPerItem+' pts each. Items need to be there before the bake sale starts.</p>'
+        + '<p class="small" style="color:var(--muted,#6B7280);margin:0 0 .6rem">Bring up to '+data.maxItems+' items instead of (or in addition to) a work slot for '+data.pointsPerItem+' pts each. Items need to be there before the bake sale starts.</p>'
         + itemRoster
         + '<div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.4rem">'
         + '<input type="text" id="vol-item-desc" class="admin-input" placeholder="What are you bringing? (e.g. 2 dozen cookies)" value="'+escHtml(data.myItems||'')+'"/>'
         + '<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">'
-        + '<label class="small" style="display:flex;align-items:center;gap:.4rem;color:var(--muted,#6B7280)">Count <input type="number" min="1" max="'+data.maxItems+'" value="'+(data.myItemCount||1)+'" id="vol-item-count" class="admin-input" style="width:70px"/></label>'
+        + '<label class="small" style="display:flex;align-items:center;gap:.4rem;color:var(--muted,#6B7280)">Count <select id="vol-item-count" class="admin-input" style="width:90px">'+countOptions+'</select></label>'
         + '<button class="btn-sm" data-vol-signup="items">'+(alreadyItems ? 'Update Item Signup' : 'Sign Up')+'</button>'
         + (alreadyItems ? '<button class="btn-sm btn-outline" data-vol-signup="unsign-items">Unsign Up</button>' : '')
         + '</div></div></div>';
@@ -650,6 +654,7 @@
     const slotLabel = btn.dataset.volSlot || undefined;
     const itemCount = kind === 'items' ? Number(document.getElementById('vol-item-count').value) : undefined;
     const items = kind === 'items' ? document.getElementById('vol-item-desc').value.trim() : undefined;
+    if(kind === 'items' && !itemCount){ alert('Choose how many items you\'re bringing.'); return; }
     if(kind === 'items' && !items){ alert('Say what you\'re bringing (e.g. "2 dozen cookies").'); return; }
     // Show your name in the seat immediately instead of waiting on the
     // round-trip — renderVolunteerModal() below still reconciles with the
