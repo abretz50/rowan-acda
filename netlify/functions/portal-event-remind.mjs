@@ -4,7 +4,7 @@
 import { getCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
-import { sendEmail, memberEmails } from './_lib/email.mjs';
+import { sendEmailBatch, memberEmails } from './_lib/email.mjs';
 import { eventReminderEmailHtml } from './_lib/reminders.mjs';
 
 export default async function handler(req) {
@@ -24,8 +24,8 @@ export default async function handler(req) {
   const activeEmails = [...new Set(members.filter(m => m.active !== false).flatMap(memberEmails))];
   const html = eventReminderEmailHtml(event, null);
 
-  const jobs = activeEmails.map(email => sendEmail({ to: email, subject: `Reminder: ${event.title}`, html }));
-  const results = await Promise.allSettled(jobs);
+  const specs = activeEmails.map(email => ({ to: email, subject: `Reminder: ${event.title}`, html }));
+  const results = await sendEmailBatch(specs);
   const failed = results.filter(r => r.status === 'rejected' || r.value?.ok === false).length;
-  return json({ ok: true, sent: jobs.length, failed });
+  return json({ ok: true, sent: specs.length, failed });
 }

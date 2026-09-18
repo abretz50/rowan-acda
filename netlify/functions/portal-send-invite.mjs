@@ -12,7 +12,7 @@
 import { getCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
-import { sendEmail, memberEmails, emailLayout, escapeHtml } from './_lib/email.mjs';
+import { sendEmail, sendEmailBatch, memberEmails, emailLayout, escapeHtml } from './_lib/email.mjs';
 
 function firstNameOf(fullName) {
   return String(fullName || '').trim().split(/\s+/)[0] || 'there';
@@ -95,10 +95,10 @@ export default async function handler(req) {
     const { meeting, attendees } = await lastMeetingAttendees();
     if (!meeting) return json({ ok: false, error: 'No past Meeting-tagged event found to pull attendees from.' }, 404);
     if (!attendees.length) return json({ ok: false, error: `No attendees found for "${meeting.title}".` }, 400);
-    const jobs = attendees.map(a => sendEmail({ to: a.email, subject, html: bodyHtml(message, a.name) }));
-    const results = await Promise.allSettled(jobs);
+    const specs = attendees.map(a => ({ to: a.email, subject, html: bodyHtml(message, a.name) }));
+    const results = await sendEmailBatch(specs);
     const failed = results.filter(r => r.status === 'rejected' || r.value?.ok === false).length;
-    return json({ ok: true, sent: jobs.length, failed, meetingTitle: meeting.title });
+    return json({ ok: true, sent: specs.length, failed, meetingTitle: meeting.title });
   }
 
   return json({ ok: false, error: 'Unknown action.' }, 400);

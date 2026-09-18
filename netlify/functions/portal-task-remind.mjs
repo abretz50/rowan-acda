@@ -4,7 +4,7 @@
 import { getCollection, setCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
-import { sendEmail, memberEmails } from './_lib/email.mjs';
+import { sendEmailBatch, memberEmails } from './_lib/email.mjs';
 import { taskReminderEmailHtml } from './_lib/reminders.mjs';
 
 export default async function handler(req) {
@@ -26,17 +26,17 @@ export default async function handler(req) {
   const recipientIds = new Set([task.assignedToId, ...(task.tags || []).map(x => x.id)]);
   const html = taskReminderEmailHtml(task, null);
 
-  const jobs = [];
+  const specs = [];
   for (const id of recipientIds) {
     const emails = memberEmails(membersById.get(id));
-    if (emails.length) jobs.push(sendEmail({ to: emails, subject: `Reminder: ${task.title}`, html }));
+    if (emails.length) specs.push({ to: emails, subject: `Reminder: ${task.title}`, html });
   }
-  const results = await Promise.allSettled(jobs);
+  const results = await sendEmailBatch(specs);
   const failed = results.filter(r => r.status === 'rejected' || r.value?.ok === false).length;
 
   if (!task.history) task.history = [];
   task.history.push({ event: 'reminded', byId: auth.user.id, byName: auth.user.name, at: new Date().toISOString() });
   await setCollection('tasks', tasks);
 
-  return json({ ok: true, sent: jobs.length, failed });
+  return json({ ok: true, sent: specs.length, failed });
 }

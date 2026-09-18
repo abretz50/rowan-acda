@@ -21,17 +21,20 @@
 // isn't useful to someone with no stake in a bake sale.
 import { getCollection, setCollection } from './blobs.mjs';
 import { loadMembers } from './loadMembers.mjs';
-import { sendEmail, emailLayout, escapeHtml, ctaButton, emailPhoto, priorityBadge, memberEmails } from './email.mjs';
+import { sendEmailBatch, emailLayout, escapeHtml, ctaButton, emailPhoto, priorityBadge, memberEmails } from './email.mjs';
 import { easternDateOnly, mdySlash } from './dateFmt.mjs';
 
 function addDays(base, n) { const d = new Date(base); d.setUTCDate(d.getUTCDate() + n); return d; }
 
-async function settleAndSummarize(jobs) {
-  const results = await Promise.allSettled(jobs);
+// `specs` is an array of { to, subject, html } — not yet-invoked sendEmail
+// calls — so sendEmailBatch can throttle them to stay under Resend's
+// 10-requests/second cap instead of firing them all at once.
+async function settleAndSummarize(specs) {
+  const results = await sendEmailBatch(specs);
   const errors = results
     .map(r => r.status === 'rejected' ? (r.reason?.message || String(r.reason)) : (r.value?.ok === false ? r.value.error : null))
     .filter(Boolean);
-  return { sent: jobs.length, failed: errors.length, errors };
+  return { sent: specs.length, failed: errors.length, errors };
 }
 
 // Must match reminders-scheduled.mjs's `schedule` cron hour exactly, so the
@@ -171,7 +174,7 @@ export async function runVolunteerReminders(when) {
       if (!to.length) continue;
       volunteerReminders++;
       const html = volunteerReminderEmailHtml(event, memberEntries, when);
-      jobs.push(sendEmail({ to, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: volunteering at ${event.title}`, html }));
+      jobs.push({ to, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: volunteering at ${event.title}`, html });
     }
   }
   const { failed } = await settleAndSummarize(jobs);
@@ -213,7 +216,7 @@ export async function runDailyReminders() {
       if (!emails.length) continue;
       taskReminders++;
       sentAny = true;
-      (when === 'today' ? todayJobs : laterJobs).push(sendEmail({ to: emails, subject: `Task due ${when}: ${t.title}`, html }));
+      (when === 'today' ? todayJobs : laterJobs).push({ to: emails, subject: `Task due ${when}: ${t.title}`, html });
     }
     if (sentAny) {
       if (!t.history) t.history = [];
@@ -236,7 +239,7 @@ export async function runDailyReminders() {
     eventReminders++;
     const html = eventReminderEmailHtml(e, when);
     for (const email of activeEmails) {
-      (when === 'today' ? todayJobs : laterJobs).push(sendEmail({ to: email, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: ${e.title}`, html }));
+      (when === 'today' ? todayJobs : laterJobs).push({ to: email, subject: `${when === 'today' ? 'Today' : 'Tomorrow'}: ${e.title}`, html });
     }
   }
 
@@ -257,7 +260,7 @@ export async function runDailyReminders() {
       const emails = memberEmails(m);
       if (!emails.length) continue;
       weeklyDigestSent++;
-      laterJobs.push(sendEmail({ to: emails, subject: `Weekly Task Overview — week of ${today}`, html: digestHtml }));
+      laterJobs.push({ to: emails, subject: `Weekly Task Overview — week of ${today}`, html: digestHtml });
     }
   }
 

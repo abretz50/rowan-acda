@@ -45,6 +45,24 @@ export async function sendEmail({ to, subject, html }) {
   return { ok: true };
 }
 
+// Resend caps this account at 10 requests/second — firing a big batch of
+// reminders via Promise.all(jobs.map(sendEmail)) blows straight through
+// that the moment there are more than ~10 recipients, and every email past
+// the limit comes back "Too many requests" (this is exactly what silently
+// broke the daily reminder sweep once there were enough active members).
+// Sends in small batches with a pause in between so no single second ever
+// has more than `batchSize` requests in flight.
+export async function sendEmailBatch(specs, { batchSize = 8, delayMs = 1100 } = {}) {
+  const results = [];
+  for (let i = 0; i < specs.length; i += batchSize) {
+    const batch = specs.slice(i, i + batchSize);
+    const batchResults = await Promise.allSettled(batch.map(spec => sendEmail(spec)));
+    results.push(...batchResults);
+    if (i + batchSize < specs.length) await new Promise(r => setTimeout(r, delayMs));
+  }
+  return results;
+}
+
 export function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
