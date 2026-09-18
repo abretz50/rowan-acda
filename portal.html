@@ -361,6 +361,7 @@
                   <option value="Workshop">Workshop</option>
                   <option value="Volunteer">Volunteer</option>
                   <option value="Performance">Performance</option>
+                  <option value="Reminder">Reminder (no points, no signup — just an email nudge)</option>
                 </select>
               </div>
               <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:.55rem">
@@ -888,7 +889,15 @@
       <div class="admin-card" id="reminders-section" style="margin-top:1rem;display:none">
         <h3>Email Reminders</h3>
         <p class="small muted">Task and event reminders go out automatically each morning, plus a separate evening pass for volunteers signed up for the next day. You can resend the morning sweep here or on the tasks tab.</p>
-        <button class="btn-sm" type="button" id="reminders-now-btn">Send Reminders Now</button>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <select class="admin-input" id="reminders-type" style="width:auto">
+            <option value="">All Reminders</option>
+            <option value="tasks">Task Reminders Only</option>
+            <option value="events">Event Reminders Only</option>
+            <option value="volunteer">Volunteer Reminders Only</option>
+          </select>
+          <button class="btn-sm" type="button" id="reminders-now-btn">Send Reminders Now</button>
+        </div>
         <div class="admin-status" id="reminders-status"></div>
       </div>
 
@@ -958,6 +967,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=87"></script>
+<script defer src="/js/portal.js?v=88"></script>
 </body>
 </html>

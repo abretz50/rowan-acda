@@ -20,8 +20,11 @@ export default async function handler(req) {
   if (auth.deny) return auth.deny;
   if (!process.env.RESEND_API_KEY) return json({ ok: false, error: 'Email is not configured (missing RESEND_API_KEY).' }, 500);
 
+  let body = {};
+  try { body = await req.json(); } catch {}
+
   try {
-    const result = await runDailyReminders();
+    const result = await runDailyReminders({ types: Array.isArray(body.types) ? body.types : null });
     return json({ ok: true, ...result });
   } catch (e) {
     return json({ ok: false, error: e.message || 'Reminder sweep failed.' }, 500);

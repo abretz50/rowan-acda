@@ -166,12 +166,13 @@ function groupUpcomingPast(events){
   return { upcoming, pastByYear };
 }
 
-function fmtDateRange(startStr, endStr){
+function fmtDateRange(startStr, endStr, allDay){
   const start = new Date(startStr); const end = endStr ? new Date(endStr) : start;
   if (isNaN(start)) return '';
   const dFmt = new Intl.DateTimeFormat('en-US', { month:'short', day:'numeric', year:'numeric' });
   const tFmt = new Intl.DateTimeFormat('en-US', { hour:'numeric', minute:'2-digit' });
   const sameDay = start.toDateString() === end.toDateString();
+  if (allDay) return sameDay ? `${dFmt.format(start)} • All Day` : `${dFmt.format(start)} → ${dFmt.format(end)} • All Day`;
   return sameDay ? `${dFmt.format(start)} • ${tFmt.format(start)}–${tFmt.format(end)}`
                  : `${dFmt.format(start)} ${tFmt.format(start)} → ${dFmt.format(end)} ${tFmt.format(end)}`;
 }
@@ -673,9 +674,10 @@ function wirePermissionsPanel() {
   document.getElementById('reminders-now-btn').addEventListener('click', async () => {
     const btn = document.getElementById('reminders-now-btn');
     const statusEl = document.getElementById('reminders-status');
+    const type = document.getElementById('reminders-type')?.value || '';
     btn.disabled = true;
     statusEl.textContent = 'Sending…'; statusEl.className = 'admin-status';
-    const { ok, data } = await api(REMINDERS_URL, { method: 'POST' });
+    const { ok, data } = await api(REMINDERS_URL, { method: 'POST', body: JSON.stringify(type ? { types: [type] } : {}) });
     btn.disabled = false;
     if (!ok) { statusEl.textContent = data.error || 'Could not send reminders.'; statusEl.className = 'admin-status err'; return; }
     const errorBit = data.emailsFailed && data.sampleErrors?.length ? ` Error: ${data.sampleErrors.join(' | ')}` : '';
@@ -1099,7 +1101,7 @@ function eventRowHTML(ev) {
       ${thumb}
       <div>
         <span class="name">${escHtml(ev.title)}</span>
-        <div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}${ev.location ? ' · ' + escHtml(ev.location) : ''}</div>
+        <div class="meta">${escHtml(fmtDateRange(ev.start, ev.end, ev.allDay))}${ev.location ? ' · ' + escHtml(ev.location) : ''}</div>
       </div>
     </div>
     <div class="actions">
@@ -1834,7 +1836,7 @@ function exportPointsAllXls() {
 function eventPointsRowHTML(ev) {
   const needsApproval = ev.volunteerType === 'full_event' && !ev.pointsApprovedBySecretary;
   return `<div class="admin-row" data-event-points-row="${escHtml(ev.id)}">
-    <div><span class="name">${escHtml(ev.title)}</span><div class="meta">${escHtml(fmtDateRange(ev.start, ev.end))}${needsApproval ? ' · <span style="color:var(--brand)">needs secretary approval</span>' : ''}</div></div>
+    <div><span class="name">${escHtml(ev.title)}</span><div class="meta">${escHtml(fmtDateRange(ev.start, ev.end, ev.allDay))}${needsApproval ? ' · <span style="color:var(--brand)">needs secretary approval</span>' : ''}</div></div>
     <div class="actions">
       <input class="admin-input" type="number" min="0" value="${ev.points ?? 1}" style="width:70px" data-event-points-input="${escHtml(ev.id)}"/>
       <button class="btn-sm outline" data-save-event-points="${escHtml(ev.id)}">Save</button>
@@ -1846,7 +1848,9 @@ function renderEventPointsList() {
   const upEl = document.getElementById('event-points-upcoming');
   const pastEl = document.getElementById('event-points-past');
   if (!upEl || !pastEl) return;
-  const { upcoming, pastByYear } = groupUpcomingPast(allEvents);
+  // Reminder events have no check-in, so there's no points value to set.
+  const pointsEligible = allEvents.filter(ev => !(ev.tags || []).includes('Reminder'));
+  const { upcoming, pastByYear } = groupUpcomingPast(pointsEligible);
   upEl.innerHTML = upcoming.map(eventPointsRowHTML).join('') || '<p class="small muted">No upcoming events.</p>';
   pastEl.innerHTML = pastByYear.map(g => yearFolderHTML(g, eventPointsRowHTML)).join('') || '<p class="small muted">No past events.</p>';
   wireYearFolders(pastEl);

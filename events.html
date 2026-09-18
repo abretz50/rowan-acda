@@ -161,6 +161,7 @@
         <span class="chip-break" aria-hidden="true"></span>
         <button class="chip" data-filter="volunteer" aria-pressed="false">Volunteer</button>
         <button class="chip" data-filter="performance" aria-pressed="false">Performances</button>
+        <button class="chip" data-filter="reminder" aria-pressed="false">Reminders</button>
       </div>
       <div class="filters-right">
         <button id="togglePast" class="button switch" aria-pressed="false" title="Show past events">
@@ -262,12 +263,13 @@
   const pastToggle = document.getElementById('togglePast');
   const activeFilters = new Set(); // empty = ALL
 
-  function formatDateRange(start, end){
+  function formatDateRange(start, end, allDay){
     const dOpt={month:'long',day:'numeric',year:'numeric'};
     const tOpt={hour:'numeric',minute:'2-digit'};
     const dFmt=new Intl.DateTimeFormat('en-US',dOpt);
     const tFmt=new Intl.DateTimeFormat('en-US',tOpt);
     const same=start.toDateString()===end.toDateString();
+    if(allDay) return same ? dFmt.format(start)+' • All Day' : dFmt.format(start)+' → '+dFmt.format(end)+' • All Day';
     return same ? dFmt.format(start)+' • '+tFmt.format(start)+'–'+tFmt.format(end)
                 : dFmt.format(start)+' '+tFmt.format(start)+' → '+dFmt.format(end)+' '+tFmt.format(end);
   }
@@ -295,6 +297,7 @@
 
   function checkinButtonHTML(ev){
     if(ev.when === 'past') return '';
+    if(ev.isReminder) return '';
     if(ev.isVolunteer){
       const label = !signedIn ? 'Sign In to Sign Up' : 'Sign Up';
       return '<button class="btn btn-checkin" data-volunteer="'+ev.id+'">'+label+'</button>';
@@ -740,7 +743,7 @@
       title: ev.title || '',
       startDateTime: start,
       endDateTime: end,
-      datePretty: formatDateRange(start, end),
+      datePretty: formatDateRange(start, end, !!ev.allDay),
       location: ev.location || '',
       tags,
       tagSlugs: tags.map(tagSlug),
@@ -750,6 +753,7 @@
       image_url: ev.imageUrl || '',
       checkinOpen: !!ev.checkinOpen,
       isVolunteer: tags.includes('Volunteer'),
+      isReminder: tags.includes('Reminder'),
       volunteerType: ev.volunteerType || '',
       when
     };

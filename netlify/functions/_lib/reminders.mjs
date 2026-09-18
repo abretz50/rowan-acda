@@ -77,13 +77,15 @@ export function weeklyDigestEmailHtml(tasks) {
 
 export function eventReminderEmailHtml(event, when) {
   const introLine = when === 'today' ? 'You have an event today:' : when === 'tomorrow' ? 'You have an event coming up tomorrow:' : 'Reminder about an upcoming event:';
-  const whenStr = new Date(event.start).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/New_York' });
+  const whenStr = event.allDay
+    ? new Date(event.start).toLocaleDateString('en-US', { dateStyle: 'medium', timeZone: 'America/New_York' }) + ' • All Day'
+    : new Date(event.start).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/New_York' }) + ' ET';
   return emailLayout(`
     <p>${introLine}</p>
     <h2 style="margin:.5rem 0;color:#7A0A0A">${escapeHtml(event.title)}</h2>
     ${emailPhoto(event.imageUrl, event.title)}
     ${event.description ? `<p>${escapeHtml(event.description)}</p>` : ''}
-    <p style="margin-top:1rem"><strong>${escapeHtml(whenStr)} ET</strong>${event.location ? '<br>' + escapeHtml(event.location) : ''}</p>
+    <p style="margin-top:1rem"><strong>${escapeHtml(whenStr)}</strong>${event.location ? '<br>' + escapeHtml(event.location) : ''}</p>
     ${ctaButton('https://rowanacda.org/events.html', 'See Event Details')}
   `);
 }
@@ -181,7 +183,17 @@ export async function runVolunteerReminders(when) {
   return { volunteerReminders, emailsSent: jobs.length, emailsFailed: failed };
 }
 
-export async function runDailyReminders() {
+// `types`, if given, scopes a manual resend to just one category (e.g. only
+// re-firing "events" after task reminders already went out fine) instead of
+// re-running the whole sweep and duplicating emails that already succeeded.
+// Omitted (or empty) runs everything, same as the automated scheduled run.
+export async function runDailyReminders({ types } = {}) {
+  const only = types && types.length ? new Set(types) : null;
+  const includeTasks = !only || only.has('tasks');
+  const includeEvents = !only || only.has('events');
+  const includeVolunteer = !only || only.has('volunteer');
+  const includeDigest = !only || only.has('digest');
+
   const now = new Date();
   // Eastern calendar date — a task's dueDate is already a plain YYYY-MM-DD
   // (no timezone ambiguity), but an event's start is a UTC instant that can
@@ -204,7 +216,7 @@ export async function runDailyReminders() {
   let tasksChanged = false;
 
   // Task deadlines — the assignee and anyone tagged on it, due today or tomorrow.
-  for (const t of tasks) {
+  for (const t of includeTasks ? tasks : []) {
     if (t.status !== 'open' || !t.dueDate) continue;
     if (t.dueDate !== today && t.dueDate !== tomorrow) continue;
     const when = t.dueDate === today ? 'today' : 'tomorrow';
@@ -231,7 +243,7 @@ export async function runDailyReminders() {
   // Volunteer-tagged events are skipped here entirely: they get their own
   // targeted reminder (runVolunteerReminders) to just the people who
   // signed up, not a blast to everyone regardless of relevance.
-  for (const e of events) {
+  for (const e of includeEvents ? events : []) {
     if ((e.tags || []).includes('Volunteer')) continue;
     const evDate = easternDateOnly(e.start);
     if (evDate !== today && evDate !== tomorrow) continue;
@@ -249,7 +261,7 @@ export async function runDailyReminders() {
   // being a day late far better than a same-day reminder does.
   let weeklyDigestSent = 0;
   const isSunday = now.toLocaleDateString('en-US', { timeZone: 'America/New_York', weekday: 'short' }) === 'Sun';
-  if (isSunday) {
+  if (isSunday && includeDigest) {
     const weekEnd = easternDateOnly(addDays(now, 6));
     const dueThisWeek = tasks
       .filter(t => t.status === 'open' && t.dueDate && t.dueDate >= today && t.dueDate <= weekEnd)
@@ -267,7 +279,9 @@ export async function runDailyReminders() {
   // Today's volunteer signups (morning-of) are the single highest
   // priority — sent before touching todayJobs even, since "you're
   // volunteering today" is more time-critical than a task due today.
-  const volunteerResult = await runVolunteerReminders('today');
+  const volunteerResult = includeVolunteer
+    ? await runVolunteerReminders('today')
+    : { volunteerReminders: 0, emailsSent: 0, emailsFailed: 0 };
   const todaySummary = await settleAndSummarize(todayJobs);
   const laterSummary = await settleAndSummarize(laterJobs);
 

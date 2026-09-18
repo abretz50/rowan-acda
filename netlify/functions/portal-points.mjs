@@ -51,6 +51,9 @@ export default async function handler(req) {
       if ((event.tags || []).includes('Volunteer')) {
         return json({ ok: false, error: 'This is a volunteer event — sign up for it on the Events page instead of checking in.' }, 400);
       }
+      if ((event.tags || []).includes('Reminder')) {
+        return json({ ok: false, error: 'This is a reminder-only event — there\'s nothing to check in for.' }, 400);
+      }
       if (!isCheckinOpen(event)) return json({ ok: false, error: 'Check-in is not open for this event right now.' }, 403);
 
       const points = await getCollection('points', []);
