@@ -3384,7 +3384,7 @@ const BUDGET_ACCOUNT_DESCRIPTIONS = {
 
 function budgetCategoryRowHTML(cat) {
   const revenueBit = cat.account === 'fundraising' ? ` · planned revenue ${fmtMoney(cat.plannedRevenue || 0)} · ${fmtMoney(cat.raised)} raised` : '';
-  const plannedBit = cat.perPerson ? `${fmtMoney(cat.unitCost || 0)}/person → ${fmtMoney(cat.plannedAmount)} planned` : `${fmtMoney(cat.plannedAmount)} planned`;
+  const plannedBit = cat.perPerson ? `${fmtMoney(cat.unitCost || 0)}/person, ${fmtMoney(cat.plannedAmount)} planned` : `${fmtMoney(cat.plannedAmount)} planned`;
   return `<div class="admin-row" data-budget-cat-row="${escHtml(cat.id)}">
     <div>
       <span class="name">${escHtml(cat.name)}</span>
@@ -3456,7 +3456,7 @@ function renderBudgetTxnForm() {
       + `<option value="regular">${BUDGET_ACCOUNT_LABELS.regular}</option>`
       + `<option value="fundraising">${BUDGET_ACCOUNT_LABELS.fundraising}</option>`
       + `<option value="convention">${BUDGET_ACCOUNT_LABELS.convention}</option>`
-      + `<option value="${BUDGET_CASH_OPTION}">Cash — reimburse someone who paid out of pocket</option>`;
+      + `<option value="${BUDGET_CASH_OPTION}">Cash: reimburse someone who paid out of pocket</option>`;
     accSel.value = [...accSel.options].some(o => o.value === prevAccount) ? prevAccount : '';
   } else {
     accSel.innerHTML = `<option value="fundraising">${BUDGET_ACCOUNT_LABELS.fundraising}</option>`;
@@ -3466,7 +3466,7 @@ function renderBudgetTxnForm() {
   document.getElementById('budget-txn-account-label').textContent = isExpense ? 'Purchase for which account?' : 'Money coming into';
   const { account, isCash } = budgetFormTarget();
   document.getElementById('budget-txn-account-hint').textContent = isExpense
-    ? (isCash ? 'For a purchase that can’t go on the books — it’s owed to whoever paid, and gets paid back from Cash on Hand.' : '')
+    ? (isCash ? 'For a purchase that can’t go on the books. It’s owed to whoever paid, and gets paid back from Cash on Hand.' : '')
     : 'Money only ever comes into the Extra Account.';
 
   document.getElementById('budget-reimburse-group').style.display = isExpense && isCash ? '' : 'none';
@@ -3504,6 +3504,11 @@ function resetBudgetTxnForm() {
 // ── Cash tracker ──────────────────────────────────────────
 function renderBudgetCashCard() {
   document.getElementById('budget-cash-stats').innerHTML = budgetCashCardsHTML();
+  const cashCatSel = document.getElementById('budget-cashin-category');
+  const prevCashCat = cashCatSel.value;
+  const extraCats = (budgetStats.fundraising || { categories: [] }).categories;
+  cashCatSel.innerHTML = '<option value="">No category</option>' + extraCats.map(c => `<option value="${escHtml(c.id)}">${escHtml(c.name)}</option>`).join('');
+  if (extraCats.some(c => c.id === prevCashCat)) cashCatSel.value = prevCashCat;
   const owed = budgetCash.owed || [];
   const onHand = budgetCash.onHand || 0;
   const byPerson = new Map();
@@ -3542,7 +3547,7 @@ function budgetVisibleTransactions() {
 function budgetTransactionRowHTML(t) {
   const cat = (budgetStats[t.account]?.categories || []).find(c => c.id === t.categoryId);
   const isDeposit = t.type === 'deposit';
-  const catLabel = isDeposit ? 'Cash → Extra Account' : (cat ? cat.name : (t.categoryId ? 'Uncategorized' : (t.type === 'income' ? 'Fundraiser income' : 'Uncategorized')));
+  const catLabel = isDeposit ? 'Cash deposited into Extra Account' : (cat ? cat.name : (t.categoryId ? 'Uncategorized' : (t.type === 'income' ? 'Fundraiser income' : 'Uncategorized')));
   const sign = isDeposit ? '' : (t.type === 'income' ? '+' : '-');
   const amountColor = isDeposit ? 'inherit' : (t.type === 'income' ? '#16a34a' : 'var(--brand)');
   const badges = [
@@ -3783,7 +3788,7 @@ function wireBudgetPanel() {
     const { account, isCash } = budgetFormTarget();
     const reimburseTo = document.getElementById('budget-txn-reimburse').value.trim();
     if (!editingBudgetTxnId && !account) return fail('Choose which account this is for.');
-    if (budgetTxnType === 'expense' && isCash && !reimburseTo) return fail('Enter who paid out of pocket — that’s who we owe.');
+    if (budgetTxnType === 'expense' && isCash && !reimburseTo) return fail('Enter who paid out of pocket. That’s who we owe.');
     let body;
     if (!editingBudgetTxnId && budgetTxnType === 'fundraiser') {
       body = {
@@ -3829,7 +3834,7 @@ function wireBudgetPanel() {
       budgetTxnType = t.type;
       document.querySelectorAll('#budget-txn-type-chips [data-txn-type]').forEach(b => b.classList.toggle('active', b.dataset.txnType === t.type));
       const accSel = document.getElementById('budget-txn-account');
-      accSel.innerHTML = `<option value="${escHtml(t.reimburse ? BUDGET_CASH_OPTION : t.account)}">${t.reimburse ? 'Cash — reimbursement' : escHtml(BUDGET_ACCOUNT_LABELS[t.account] || t.account)}</option>`;
+      accSel.innerHTML = `<option value="${escHtml(t.reimburse ? BUDGET_CASH_OPTION : t.account)}">${t.reimburse ? 'Cash reimbursement' : escHtml(BUDGET_ACCOUNT_LABELS[t.account] || t.account)}</option>`;
       accSel.disabled = true;
       renderBudgetTxnFormFieldsForEdit(t);
       return;
@@ -3864,6 +3869,26 @@ function wireBudgetPanel() {
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'payReimbursement', id: o.id }) });
     if (!ok) { statusEl.textContent = data.error || 'Could not reimburse.'; statusEl.className = 'admin-status err'; btn.disabled = false; return; }
     statusEl.textContent = `Reimbursed ${o.to} ${fmtMoney(o.amount)} from cash.`; statusEl.className = 'admin-status ok';
+    applyBudgetData(data);
+    renderBudgetView();
+  });
+
+  document.getElementById('budget-cashin-btn').addEventListener('click', async () => {
+    const statusEl = document.getElementById('budget-cash-status');
+    const descEl = document.getElementById('budget-cashin-desc');
+    const amountEl = document.getElementById('budget-cashin-amount');
+    const amount = Number(amountEl.value);
+    const description = descEl.value.trim();
+    if (!description) { statusEl.textContent = 'Add a short description of where the cash came from.'; statusEl.className = 'admin-status err'; return; }
+    if (!amount || amount <= 0) { statusEl.textContent = 'Enter the amount of cash collected.'; statusEl.className = 'admin-status err'; return; }
+    const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({
+      op: 'addTransaction', account: 'fundraising', type: 'income', cash: true, amount, description,
+      categoryId: document.getElementById('budget-cashin-category').value || null,
+      date: new Date().toISOString().slice(0, 10),
+    }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not add the cash.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = `Added ${fmtMoney(amount)} to Cash on Hand.`; statusEl.className = 'admin-status ok';
+    descEl.value = ''; amountEl.value = '';
     applyBudgetData(data);
     renderBudgetView();
   });

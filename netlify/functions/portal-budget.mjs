@@ -224,7 +224,7 @@ function cashOnHand(budget) { return computeStats(budget).cash.onHand; }
 // deposit was drawn from) is rejected instead of silently corrupting it.
 async function saveTxns(budget) {
   if (cashOnHand(budget) < -0.005) {
-    return json({ ok: false, error: 'That would put Cash on Hand below zero — log the cash collected first, or undo the later deposit/reimbursement.' }, 400);
+    return json({ ok: false, error: 'That would put Cash on Hand below zero. Log the cash collected first, or undo the later deposit or reimbursement.' }, 400);
   }
   await setCollection('budget', budget);
   return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
@@ -386,7 +386,7 @@ export default async function handler(req) {
       if (!numAmount || numAmount <= 0) return json({ ok: false, error: 'A positive amount is required.' }, 400);
       const onHand = cashOnHand(budget);
       if (numAmount - onHand > 0.005) {
-        return json({ ok: false, error: `Only $${onHand.toFixed(2)} in cash on hand — can't deposit more than that.` }, 400);
+        return json({ ok: false, error: `Only $${onHand.toFixed(2)} in cash on hand, so you can't deposit more than that.` }, 400);
       }
       budget.transactions.push({
         id: randomUUID(), account: 'fundraising', type: 'deposit', categoryId: null,
@@ -405,7 +405,7 @@ export default async function handler(req) {
         if (target.reimburse.paidAt) return json({ ok: false, error: 'Already reimbursed.' }, 400);
         const onHand = cashOnHand(budget);
         if (target.amount - onHand > 0.005) {
-          return json({ ok: false, error: `Only $${onHand.toFixed(2)} in cash on hand — not enough to reimburse $${target.amount.toFixed(2)}. Log the cash you collected first.` }, 400);
+          return json({ ok: false, error: `Only $${onHand.toFixed(2)} in cash on hand, which is not enough to reimburse $${target.amount.toFixed(2)}. Log the cash you collected first.` }, 400);
         }
         target.reimburse.paidAt = new Date().toISOString();
         target.reimburse.paidByName = me.name;
@@ -419,7 +419,7 @@ export default async function handler(req) {
     if (op === 'updateTransaction') {
       const target = budget.transactions.find(t => t.id === body.id);
       if (!target) return json({ ok: false, error: 'Transaction not found.' }, 404);
-      if (target.type === 'deposit') return json({ ok: false, error: "A cash deposit can't be edited — delete it and log it again." }, 400);
+      if (target.type === 'deposit') return json({ ok: false, error: "A cash deposit can't be edited. Delete it and log it again." }, 400);
       if (body.description) target.description = String(body.description).trim();
       if ('amount' in body) {
         const numAmount = Number(body.amount);

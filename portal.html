@@ -189,7 +189,7 @@
               <button class="cat-chip" type="button" data-txn-type="income">Money In</button>
               <button class="cat-chip" type="button" data-txn-type="fundraiser">Fundraiser (Cost + Revenue)</button>
             </div>
-            <p class="small muted" id="budget-fundraiser-hint" style="display:none">For when a fundraiser costs money to run and brings money in — logs both sides at once, linked together.</p>
+            <p class="small muted" id="budget-fundraiser-hint" style="display:none">For when a fundraiser costs money to run and brings money in. Logs both sides at once, linked together.</p>
             <div class="form-group">
               <label for="budget-txn-account" id="budget-txn-account-label">Account</label>
               <select class="admin-input" id="budget-txn-account"></select>
@@ -213,7 +213,7 @@
               <input class="admin-input" type="number" step="0.01" min="0" id="budget-txn-revenue" placeholder="Revenue ($, optional)"/>
             </div>
             <label id="budget-cash-wrap" style="display:none;align-items:center;gap:.4rem;font-size:.9rem">
-              <input type="checkbox" id="budget-txn-cash" style="width:auto"/> Collected as cash — not deposited yet (adds to Cash on Hand)
+              <input type="checkbox" id="budget-txn-cash" style="width:auto"/> Collected as cash, not deposited yet (adds to Cash on Hand)
             </label>
             <input class="admin-input" type="date" id="budget-txn-date"/>
             <button class="btn-sm" type="submit" id="budget-txn-submit">Add purchase</button>
@@ -224,8 +224,15 @@
 
         <div class="admin-card" id="budget-cash-card">
           <h3>Cash Tracker</h3>
-          <p class="small muted">Cash collected at fundraisers stays here until it's deposited — reimbursements are paid out of it, not out of the bank accounts.</p>
+          <p class="small muted">Cash collected at fundraisers stays here until it's deposited. Reimbursements are paid out of it, not out of the bank accounts.</p>
           <div class="stat-grid" id="budget-cash-stats"></div>
+          <h4 style="margin:1rem 0 .3rem">Cash Money In</h4>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+            <input class="admin-input" type="text" id="budget-cashin-desc" placeholder="Description (e.g. Bake sale cash)" style="flex:1;min-width:160px"/>
+            <input class="admin-input" type="number" step="0.01" min="0.01" id="budget-cashin-amount" placeholder="Amount ($)" style="width:120px"/>
+            <select class="admin-input" id="budget-cashin-category" style="width:auto"></select>
+            <button class="btn-sm" type="button" id="budget-cashin-btn">Add Cash</button>
+          </div>
           <h4 style="margin:1rem 0 .3rem">Owed to Members</h4>
           <div id="budget-owed-list"><p class="small muted">Loading…</p></div>
           <h4 style="margin:1rem 0 .3rem">Deposit Cash</h4>
@@ -980,6 +987,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/portal.js?v=89"></script>
+<script defer src="/js/portal.js?v=90"></script>
 </body>
 </html>
