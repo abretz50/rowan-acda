@@ -153,37 +153,81 @@ function effectivePlannedAmount(cat, attendeeCount) {
   return Number(cat.plannedAmount) || 0;
 }
 
+// Cash model (all on the Extra Account, since that's the only account money
+// ever comes into):
+//   - income with `cash: true` was collected in hand (e.g. a bake sale) and
+//     hasn't been deposited yet — it counts as money raised, but isn't in the
+//     bank until a 'deposit' transaction moves it there.
+//   - an expense with a `reimburse` object was paid out-of-pocket by a person
+//     (`reimburse.to`) and is owed back to them; it counts as spent right
+//     away, but never touches the bank — it's paid from cash on hand, which
+//     stamps `reimburse.paidAt`.
 function computeStats(budget) {
   const stats = {};
+  let cashIn = 0, deposits = 0, paidFromCash = 0;
+  const owed = [];
   for (const account of ACCOUNTS) {
     const attendeeCount = budget.accounts[account].attendeeCount;
     const cats = budget.categories.filter(c => c.account === account);
     const txns = budget.transactions.filter(t => t.account === account);
     const spentByCat = new Map();
-    let totalSpent = 0, totalIncome = 0;
+    const raisedByCat = new Map();
+    let totalSpent = 0, totalIncome = 0, bankIncome = 0, bankExpenses = 0, accountDeposits = 0;
     for (const t of txns) {
+      if (t.type === 'deposit') { accountDeposits += t.amount; continue; }
       if (t.type === 'expense') {
         totalSpent += t.amount;
         if (t.categoryId) spentByCat.set(t.categoryId, (spentByCat.get(t.categoryId) || 0) + t.amount);
+        if (t.reimburse) {
+          if (t.reimburse.paidAt) paidFromCash += t.amount;
+          else owed.push({ id: t.id, to: t.reimburse.to, description: t.description, amount: t.amount, date: t.date, categoryId: t.categoryId || null });
+        } else {
+          bankExpenses += t.amount;
+        }
       } else {
         totalIncome += t.amount;
+        if (t.categoryId) raisedByCat.set(t.categoryId, (raisedByCat.get(t.categoryId) || 0) + t.amount);
+        if (t.cash) cashIn += t.amount; else bankIncome += t.amount;
       }
     }
+    deposits += accountDeposits;
     const startingBalance = budget.accounts[account].startingBalance || 0;
     const plannedTotal = cats.reduce((s, c) => s + effectivePlannedAmount(c, attendeeCount), 0);
     stats[account] = {
       targetAmount: budget.accounts[account].targetAmount,
       startingBalance,
-      currentBalance: startingBalance + totalIncome - totalSpent,
+      currentBalance: startingBalance + bankIncome + accountDeposits - bankExpenses,
       plannedTotal,
       plannedRevenueTotal: cats.reduce((s, c) => s + (c.plannedRevenue || 0), 0),
       totalSpent,
       totalIncome,
-      categories: cats.map(c => ({ ...c, plannedAmount: effectivePlannedAmount(c, attendeeCount), spent: spentByCat.get(c.id) || 0 })),
+      categories: cats.map(c => ({ ...c, plannedAmount: effectivePlannedAmount(c, attendeeCount), spent: spentByCat.get(c.id) || 0, raised: raisedByCat.get(c.id) || 0 })),
       ...(typeof attendeeCount === 'number' ? { attendeeCount, costPerPerson: attendeeCount > 0 ? plannedTotal / attendeeCount : 0 } : {}),
     };
   }
-  return { accounts: stats };
+  owed.sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const round = (n) => Math.round(n * 100) / 100;
+  return {
+    accounts: stats,
+    cash: {
+      onHand: round(cashIn - deposits - paidFromCash),
+      owedTotal: round(owed.reduce((s, o) => s + o.amount, 0)),
+      owed,
+    },
+  };
+}
+
+function cashOnHand(budget) { return computeStats(budget).cash.onHand; }
+
+// Called before saving any transaction change — an edit or delete that would
+// leave the cash tracker below zero (e.g. deleting cash income that a later
+// deposit was drawn from) is rejected instead of silently corrupting it.
+async function saveTxns(budget) {
+  if (cashOnHand(budget) < -0.005) {
+    return json({ ok: false, error: 'That would put Cash on Hand below zero — log the cash collected first, or undo the later deposit/reimbursement.' }, 400);
+  }
+  await setCollection('budget', budget);
+  return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
 }
 
 export default async function handler(req) {
@@ -286,7 +330,7 @@ export default async function handler(req) {
       // logged as a single linked cost+revenue pair instead of two
       // unrelated transactions, matching how the real Fundraising Plan
       // tracks cost/revenue/net per fundraiser.
-      const { categoryId, description, cost, revenue, date } = body;
+      const { categoryId, description, cost, revenue, date, cash } = body;
       const costNum = Number(cost) || 0;
       const revenueNum = Number(revenue) || 0;
       if (costNum < 0 || revenueNum < 0) return json({ ok: false, error: 'Amounts cannot be negative.' }, 400);
@@ -301,13 +345,12 @@ export default async function handler(req) {
       const txnDate = date || now.slice(0, 10);
       const base = { account: 'fundraising', categoryId: categoryId || null, description: desc, date: txnDate, addedById: me.id, addedByName: me.name, createdAt: now, linkId };
       if (costNum > 0) budget.transactions.push({ id: randomUUID(), type: 'expense', amount: costNum, ...base });
-      if (revenueNum > 0) budget.transactions.push({ id: randomUUID(), type: 'income', amount: revenueNum, ...base });
-      await setCollection('budget', budget);
-      return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
+      if (revenueNum > 0) budget.transactions.push({ id: randomUUID(), type: 'income', amount: revenueNum, ...(cash ? { cash: true } : {}), ...base });
+      return await saveTxns(budget);
     }
 
     if (op === 'addTransaction') {
-      const { account, type, categoryId, description, amount, date } = body;
+      const { account, type, categoryId, description, amount, date, cash, reimburseTo } = body;
       if (!ACCOUNTS.includes(account)) return json({ ok: false, error: 'Unknown account.' }, 400);
       if (!['expense', 'income'].includes(type)) return json({ ok: false, error: 'Unknown transaction type.' }, 400);
       if (type === 'income' && account !== 'fundraising') {
@@ -319,6 +362,10 @@ export default async function handler(req) {
       if (categoryId && !budget.categories.some(c => c.id === categoryId && c.account === account)) {
         return json({ ok: false, error: 'Category not found for this account.' }, 404);
       }
+      const reimburseName = String(reimburseTo || '').trim();
+      if (reimburseName && (type !== 'expense' || account !== 'fundraising')) {
+        return json({ ok: false, error: 'Cash reimbursements are logged against the Extra Account.' }, 400);
+      }
       const txn = {
         id: randomUUID(), account, type,
         categoryId: categoryId || null,
@@ -327,15 +374,52 @@ export default async function handler(req) {
         date: date || new Date().toISOString().slice(0, 10),
         addedById: me.id, addedByName: me.name,
         createdAt: new Date().toISOString(),
+        ...(type === 'income' && cash ? { cash: true } : {}),
+        ...(reimburseName ? { reimburse: { to: reimburseName, paidAt: null } } : {}),
       };
       budget.transactions.push(txn);
-      await setCollection('budget', budget);
-      return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
+      return await saveTxns(budget);
+    }
+
+    if (op === 'depositCash') {
+      const numAmount = Number(body.amount);
+      if (!numAmount || numAmount <= 0) return json({ ok: false, error: 'A positive amount is required.' }, 400);
+      const onHand = cashOnHand(budget);
+      if (numAmount - onHand > 0.005) {
+        return json({ ok: false, error: `Only $${onHand.toFixed(2)} in cash on hand — can't deposit more than that.` }, 400);
+      }
+      budget.transactions.push({
+        id: randomUUID(), account: 'fundraising', type: 'deposit', categoryId: null,
+        description: String(body.description || '').trim() || 'Cash deposited into the Extra Account',
+        amount: numAmount,
+        date: body.date || new Date().toISOString().slice(0, 10),
+        addedById: me.id, addedByName: me.name, createdAt: new Date().toISOString(),
+      });
+      return await saveTxns(budget);
+    }
+
+    if (op === 'payReimbursement' || op === 'undoReimbursement') {
+      const target = budget.transactions.find(t => t.id === body.id && t.reimburse);
+      if (!target) return json({ ok: false, error: 'Reimbursement not found.' }, 404);
+      if (op === 'payReimbursement') {
+        if (target.reimburse.paidAt) return json({ ok: false, error: 'Already reimbursed.' }, 400);
+        const onHand = cashOnHand(budget);
+        if (target.amount - onHand > 0.005) {
+          return json({ ok: false, error: `Only $${onHand.toFixed(2)} in cash on hand — not enough to reimburse $${target.amount.toFixed(2)}. Log the cash you collected first.` }, 400);
+        }
+        target.reimburse.paidAt = new Date().toISOString();
+        target.reimburse.paidByName = me.name;
+      } else {
+        target.reimburse.paidAt = null;
+        delete target.reimburse.paidByName;
+      }
+      return await saveTxns(budget);
     }
 
     if (op === 'updateTransaction') {
       const target = budget.transactions.find(t => t.id === body.id);
       if (!target) return json({ ok: false, error: 'Transaction not found.' }, 404);
+      if (target.type === 'deposit') return json({ ok: false, error: "A cash deposit can't be edited — delete it and log it again." }, 400);
       if (body.description) target.description = String(body.description).trim();
       if ('amount' in body) {
         const numAmount = Number(body.amount);
@@ -349,8 +433,15 @@ export default async function handler(req) {
         }
         target.categoryId = body.categoryId || null;
       }
-      await setCollection('budget', budget);
-      return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
+      if (target.type === 'income' && 'cash' in body) {
+        if (body.cash) target.cash = true; else delete target.cash;
+      }
+      if (target.reimburse && 'reimburseTo' in body) {
+        const name = String(body.reimburseTo || '').trim();
+        if (!name) return json({ ok: false, error: 'Who this is owed to is required.' }, 400);
+        target.reimburse.to = name;
+      }
+      return await saveTxns(budget);
     }
 
     return json({ ok: false, error: 'Unknown operation.' }, 400);
@@ -359,8 +450,7 @@ export default async function handler(req) {
   if (req.method === 'DELETE') {
     if (!budget.transactions.some(t => t.id === body.id)) return json({ ok: false, error: 'Transaction not found.' }, 404);
     budget.transactions = budget.transactions.filter(t => t.id !== body.id);
-    await setCollection('budget', budget);
-    return json({ ok: true, transactions: budget.transactions, stats: computeStats(budget) });
+    return await saveTxns(budget);
   }
 
   return json({ ok: false, error: 'Method not allowed' }, 405);

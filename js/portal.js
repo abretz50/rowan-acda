@@ -84,6 +84,7 @@ let galleryDraggingIds = null;
 let galleryDraggingFolderId = null;
 let budgetAccounts = {};
 let budgetStats = {};
+let budgetCash = {};
 let budgetCatCostType = 'perPerson';
 let budgetTransactions = [];
 let budgetCurrentAccount = 'regular';
@@ -3295,11 +3296,25 @@ function budgetSignedMoney(n) {
   return `<span style="color:${v < 0 ? '#ef4444' : '#16a34a'}">${fmtMoney(v)}</span>`;
 }
 
+const BUDGET_ACCOUNT_LABELS = { regular: 'Regular Account', fundraising: 'Extra Account', convention: 'Convention Trip' };
+// Pseudo-account in the purchase form: an out-of-pocket purchase we owe
+// someone for and will pay back from Cash on Hand. Stored against the Extra
+// Account (that's where the cash was raised) with a `reimburse` record.
+const BUDGET_CASH_OPTION = 'cash';
+
+function applyBudgetData(data) {
+  if (data.accounts) budgetAccounts = data.accounts;
+  if (data.transactions) budgetTransactions = data.transactions;
+  if (data.stats) {
+    budgetStats = data.stats.accounts;
+    if (data.stats.cash) budgetCash = data.stats.cash;
+  }
+}
+
 // Regular and Convention Trip are both "we were given/asked for a capped
 // amount, now we're spending it down" accounts — same card layout. Only
 // Fundraising is fundamentally different (a balance fed by income, not a
 // fixed allocation), so it gets its own layout.
-const BUDGET_CAP_STYLE_ACCOUNTS = ['regular', 'convention'];
 const BUDGET_CAP_LABELS = {
   regular: 'Budget Cap (SGA Allocation)',
   convention: 'SFCB Request',
@@ -3309,27 +3324,55 @@ const BUDGET_PLANNED_LABELS = {
   convention: 'Current Cost',
 };
 
-function budgetStatCardsHTML() {
-  const s = budgetStats[budgetCurrentAccount] || {};
-  if (BUDGET_CAP_STYLE_ACCOUNTS.includes(budgetCurrentAccount)) {
-    const remaining = (s.targetAmount || 0) + (s.startingBalance || 0) - (s.totalSpent || 0);
-    const overPlan = (s.plannedTotal || 0) > (s.targetAmount || 0);
-    const plannedDetail = budgetCurrentAccount === 'convention' ? '' : (overPlan ? 'Plan exceeds the cap' : 'Within the cap');
-    return [
-      statCardHTML(fmtMoney(s.targetAmount), BUDGET_CAP_LABELS[budgetCurrentAccount] || 'Budget Cap'),
-      statCardHTML(fmtMoney(s.totalSpent), 'Total Spent'),
-      statCardHTML(budgetSignedMoney(remaining), remaining < 0 ? 'Over Budget' : 'Remaining', s.startingBalance ? `Includes ${fmtMoney(s.startingBalance)} carried over` : ''),
-      statCardHTML(fmtMoney(s.plannedTotal), BUDGET_PLANNED_LABELS[budgetCurrentAccount] || 'Total Planned (Categories)', plannedDetail),
-    ].join('');
-  }
+function budgetCapCardsHTML(account) {
+  const s = budgetStats[account] || {};
+  const remaining = (s.targetAmount || 0) + (s.startingBalance || 0) - (s.totalSpent || 0);
+  const overPlan = (s.plannedTotal || 0) > (s.targetAmount || 0);
+  const plannedDetail = account === 'convention' ? '' : (overPlan ? 'Plan exceeds the cap' : 'Within the cap');
+  return [
+    statCardHTML(fmtMoney(s.targetAmount), BUDGET_CAP_LABELS[account] || 'Budget Cap'),
+    statCardHTML(fmtMoney(s.totalSpent), 'Total Spent'),
+    statCardHTML(budgetSignedMoney(remaining), remaining < 0 ? 'Over Budget' : 'Remaining', s.startingBalance ? `Includes ${fmtMoney(s.startingBalance)} carried over` : ''),
+    statCardHTML(fmtMoney(s.plannedTotal), BUDGET_PLANNED_LABELS[account] || 'Total Planned (Categories)', plannedDetail),
+  ].join('');
+}
+
+function budgetExtraCardsHTML() {
+  const s = budgetStats.fundraising || {};
   const balance = s.currentBalance || 0;
   const remainingToGoal = Math.max(0, (s.targetAmount || 0) - (s.totalIncome || 0));
   return [
-    statCardHTML(fmtMoney(remainingToGoal), 'Dollars Left to Fundraising Goal'),
-    statCardHTML(budgetSignedMoney(balance), balance < 0 ? 'Current Balance (Deficit)' : 'Current Balance', balance < 0 ? 'Raise more to cover spending' : 'Raising at least as much as spent'),
-    statCardHTML(fmtMoney(s.totalIncome), 'Raised'),
+    statCardHTML(budgetSignedMoney(balance), balance < 0 ? 'Account Balance (Deficit)' : 'Account Balance', 'What is actually in the bank'),
+    statCardHTML(fmtMoney(s.totalIncome), 'Money Raised'),
+    statCardHTML(fmtMoney(s.totalSpent), 'Money Spent'),
     statCardHTML(budgetSignedMoney((s.totalIncome || 0) - (s.totalSpent || 0)), 'Revenue', 'Raised minus spent'),
-    statCardHTML(fmtMoney(s.totalSpent), 'Spent'),
+    statCardHTML(fmtMoney(remainingToGoal), 'Dollars Left to Fundraising Goal'),
+  ].join('');
+}
+
+function budgetCashCardsHTML() {
+  const onHand = budgetCash.onHand || 0;
+  const owed = budgetCash.owedTotal || 0;
+  return [
+    statCardHTML(budgetSignedMoney(onHand), 'Cash on Hand', 'Collected, not yet deposited'),
+    statCardHTML(fmtMoney(owed), 'Owed to Members', `${(budgetCash.owed || []).length} unpaid purchase${(budgetCash.owed || []).length === 1 ? '' : 's'}`),
+    statCardHTML(budgetSignedMoney(onHand - owed), 'Cash After Reimbursing', onHand - owed < 0 ? 'Short of what we owe' : 'Left once everyone is paid back'),
+  ].join('');
+}
+
+function budgetGroupHTML(title, cardsHTML, first) {
+  return `<div class="admin-card" style="${first ? '' : 'margin-top:.75rem'}">
+    <h3 style="border:none;padding:0;margin:0 0 .5rem">${escHtml(title)}</h3>
+    <div class="stat-grid">${cardsHTML}</div>
+  </div>`;
+}
+
+function renderBudgetOverview() {
+  document.getElementById('budget-overview').innerHTML = [
+    budgetGroupHTML('Regular Account', budgetCapCardsHTML('regular'), true),
+    budgetGroupHTML('Extra Account', budgetExtraCardsHTML()),
+    budgetGroupHTML('Convention Trip', budgetCapCardsHTML('convention')),
+    budgetGroupHTML('Cash', budgetCashCardsHTML()),
   ].join('');
 }
 
@@ -3340,7 +3383,7 @@ const BUDGET_ACCOUNT_DESCRIPTIONS = {
 };
 
 function budgetCategoryRowHTML(cat) {
-  const revenueBit = cat.account === 'fundraising' ? ` · planned revenue ${fmtMoney(cat.plannedRevenue || 0)}` : '';
+  const revenueBit = cat.account === 'fundraising' ? ` · planned revenue ${fmtMoney(cat.plannedRevenue || 0)} · ${fmtMoney(cat.raised)} raised` : '';
   const plannedBit = cat.perPerson ? `${fmtMoney(cat.unitCost || 0)}/person → ${fmtMoney(cat.plannedAmount)} planned` : `${fmtMoney(cat.plannedAmount)} planned`;
   return `<div class="admin-row" data-budget-cat-row="${escHtml(cat.id)}">
     <div>
@@ -3359,23 +3402,29 @@ function renderBudgetCategoriesList() {
     s.categories.map(budgetCategoryRowHTML).join('') || '<p class="small muted">No categories yet.</p>';
 }
 
+// The Extra Account only needs two pies — where the money went and where it
+// came from. Regular/Convention keep planned-vs-actual since those are
+// spend-down budgets. Anything logged without a category still gets its own
+// "Uncategorized" slice so the pie always adds up to the real total.
 function renderBudgetPies() {
   const s = budgetStats[budgetCurrentAccount] || { categories: [] };
-  const planned = s.categories.map(c => ({ label: c.name, value: c.plannedAmount }));
-  const actual = s.categories.map(c => ({ label: c.name, value: c.spent }));
-  document.getElementById('budget-pie-planned').innerHTML = pieChartSVG(planned, 'No planned amounts yet.');
-  document.getElementById('budget-pie-actual').innerHTML = pieChartSVG(actual, 'Nothing spent yet.');
-}
-
-function renderBudgetRevenuePies() {
-  const card = document.getElementById('budget-revenue-pies-card');
-  if (budgetCurrentAccount !== 'fundraising') { card.style.display = 'none'; return; }
-  card.style.display = '';
-  const s = budgetStats.fundraising || { categories: [] };
-  const revenue = s.categories.map(c => ({ label: c.name, value: c.plannedRevenue || 0 }));
-  const profit = s.categories.map(c => ({ label: c.name, value: (c.plannedRevenue || 0) - (c.plannedAmount || 0) }));
-  document.getElementById('budget-pie-revenue').innerHTML = pieChartSVG(revenue, 'No planned revenue yet.');
-  document.getElementById('budget-pie-profit').innerHTML = pieChartSVG(profit, 'No projected profit yet.');
+  const withUncategorized = (slices, total) => {
+    const rest = (total || 0) - slices.reduce((sum, x) => sum + x.value, 0);
+    return rest > 0.005 ? [...slices, { label: 'Uncategorized', value: rest }] : slices;
+  };
+  const spent = withUncategorized(s.categories.map(c => ({ label: c.name, value: c.spent })), s.totalSpent);
+  if (budgetCurrentAccount === 'fundraising') {
+    const raised = withUncategorized(s.categories.map(c => ({ label: c.name, value: c.raised })), s.totalIncome);
+    document.getElementById('budget-pie-a-label').textContent = 'Money Spent';
+    document.getElementById('budget-pie-b-label').textContent = 'Money Raised';
+    document.getElementById('budget-pie-planned').innerHTML = pieChartSVG(spent, 'Nothing spent yet.');
+    document.getElementById('budget-pie-actual').innerHTML = pieChartSVG(raised, 'Nothing raised yet.');
+    return;
+  }
+  document.getElementById('budget-pie-a-label').textContent = 'Planned';
+  document.getElementById('budget-pie-b-label').textContent = 'Actual so far';
+  document.getElementById('budget-pie-planned').innerHTML = pieChartSVG(s.categories.map(c => ({ label: c.name, value: c.plannedAmount })), 'No planned amounts yet.');
+  document.getElementById('budget-pie-actual').innerHTML = pieChartSVG(spent, 'Nothing spent yet.');
 }
 
 function renderBudgetTripPlanning() {
@@ -3388,114 +3437,193 @@ function renderBudgetTripPlanning() {
     `Projected cost per person: ${fmtMoney(s.costPerPerson)} · Total projected cost: ${fmtMoney(s.plannedTotal)} for ${s.attendeeCount ?? 0} attendee${s.attendeeCount === 1 ? '' : 's'}.`;
 }
 
-function populateBudgetTxnCategorySelect() {
-  const sel = document.getElementById('budget-txn-category');
-  const s = budgetStats[budgetCurrentAccount] || { categories: [] };
-  const current = sel.value;
-  sel.innerHTML = '<option value="">No category</option>' + s.categories.map(c => `<option value="${escHtml(c.id)}">${escHtml(c.name)}</option>`).join('');
-  if (s.categories.some(c => c.id === current)) sel.value = current;
+// ── Log form (purchases, money in, fundraisers) ───────────
+// Which real account the form is currently pointed at, plus whether it's the
+// "reimburse with cash" pseudo-account.
+function budgetFormTarget() {
+  const v = document.getElementById('budget-txn-account').value;
+  if (v === BUDGET_CASH_OPTION) return { account: 'fundraising', isCash: true, chosen: v };
+  return { account: v, isCash: false, chosen: v };
 }
 
-function renderBudgetChart() {
-  const txns = budgetTransactions.filter(t => t.account === budgetCurrentAccount && t.type === 'expense')
-    .slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-  let running = 0;
-  const rows = txns.map(t => { running += t.amount; return { label: fmtDashDate(t.date), count: Math.round(running * 100) / 100 }; });
-  document.getElementById('budget-chart').innerHTML = lineChartSVG(rows, 'No expenses logged yet.');
-}
-
-function budgetTransactionRowHTML(t) {
-  const cat = (budgetStats[t.account]?.categories || []).find(c => c.id === t.categoryId);
-  const catLabel = cat ? cat.name : (t.categoryId ? 'Uncategorized' : (t.type === 'income' ? 'Fundraiser income' : 'Uncategorized'));
-  const sign = t.type === 'income' ? '+' : '-';
-  const amountColor = t.type === 'income' ? '#16a34a' : 'var(--brand)';
-  return `<div class="admin-row">
-    <div>
-      <span class="name">${escHtml(t.description)}</span>${t.type === 'income' ? ' <span class="badge-role eboard">income</span>' : ''}${t.linkId ? ' <span class="badge-role inactive" title="Logged together as one fundraiser">🔗 linked</span>' : ''}
-      <div class="meta">${escHtml(catLabel)} · ${fmtDashDate(t.date)} · logged by ${escHtml(t.addedByName)}</div>
-    </div>
-    <div class="actions">
-      <span class="name" style="color:${amountColor}">${sign}${fmtMoney(t.amount)}</span>
-      <button class="btn-sm edit" data-budget-edit-txn="${escHtml(t.id)}">Edit</button>
-      <button class="btn-sm delete" data-budget-delete-txn="${escHtml(t.id)}">Delete</button>
-    </div>
-  </div>`;
-}
-
-function renderBudgetTransactionsList() {
-  const rows = budgetTransactions.filter(t => t.account === budgetCurrentAccount).slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-  document.getElementById('budget-transactions-list').innerHTML =
-    rows.map(budgetTransactionRowHTML).join('') || '<p class="small muted">No transactions yet.</p>';
-}
-
-function exportBudgetTxnsXls() {
-  const rows = budgetTransactions.filter(t => t.account === budgetCurrentAccount).slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-  const headers = ['Date', 'Type', 'Category', 'Description', 'Amount', 'Logged By'];
-  const cell = (v) => `<td>${escHtml(String(v ?? ''))}</td>`;
-  const rowsHtml = rows.map(t => {
-    const cat = (budgetStats[t.account]?.categories || []).find(c => c.id === t.categoryId);
-    return `<tr>${[
-      cell(fmtDashDate(t.date)), cell(t.type), cell(cat ? cat.name : (t.categoryId ? 'Uncategorized' : '')),
-      cell(t.description), cell(t.amount), cell(t.addedByName),
-    ].join('')}</tr>`;
-  }).join('');
-  const html = `<html><head><meta charset="utf-8"></head><body><table border="1"><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr>${rowsHtml}</table></body></html>`;
-  const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `budget-${budgetCurrentAccount}-${new Date().toISOString().slice(0, 10)}.xls`;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function renderBudgetView() {
-  document.getElementById('budget-stats').innerHTML = budgetStatCardsHTML();
-  document.getElementById('budget-account-description').textContent = BUDGET_ACCOUNT_DESCRIPTIONS[budgetCurrentAccount] || '';
-  renderBudgetTripPlanning();
-  renderBudgetPies();
-  renderBudgetRevenuePies();
-  renderBudgetCategoriesList();
-  populateBudgetTxnCategorySelect();
-  renderBudgetChart();
-  renderBudgetTransactionsList();
-  // Logging income (or a combined fundraiser cost+revenue entry) only makes
-  // sense for the fundraising account.
-  const isFundraising = budgetCurrentAccount === 'fundraising';
-  document.getElementById('budget-income-chip').style.display = isFundraising ? '' : 'none';
-  document.getElementById('budget-fundraiser-chip').style.display = isFundraising ? '' : 'none';
-  if (!isFundraising && budgetTxnType !== 'expense') {
-    budgetTxnType = 'expense';
-    document.querySelectorAll('#budget-txn-type-chips [data-txn-type]').forEach(b => b.classList.toggle('active', b.dataset.txnType === 'expense'));
+function renderBudgetTxnForm() {
+  if (editingBudgetTxnId) return; // an edit in progress owns the form's fields
+  const isExpense = budgetTxnType === 'expense';
+  const accSel = document.getElementById('budget-txn-account');
+  const prevAccount = accSel.value;
+  if (isExpense) {
+    accSel.innerHTML = '<option value="">Choose an account…</option>'
+      + `<option value="regular">${BUDGET_ACCOUNT_LABELS.regular}</option>`
+      + `<option value="fundraising">${BUDGET_ACCOUNT_LABELS.fundraising}</option>`
+      + `<option value="convention">${BUDGET_ACCOUNT_LABELS.convention}</option>`
+      + `<option value="${BUDGET_CASH_OPTION}">Cash — reimburse someone who paid out of pocket</option>`;
+    accSel.value = [...accSel.options].some(o => o.value === prevAccount) ? prevAccount : '';
+  } else {
+    accSel.innerHTML = `<option value="fundraising">${BUDGET_ACCOUNT_LABELS.fundraising}</option>`;
+    accSel.value = 'fundraising';
   }
+  accSel.disabled = !!editingBudgetTxnId;
+  document.getElementById('budget-txn-account-label').textContent = isExpense ? 'Purchase for which account?' : 'Money coming into';
+  const { account, isCash } = budgetFormTarget();
+  document.getElementById('budget-txn-account-hint').textContent = isExpense
+    ? (isCash ? 'For a purchase that can’t go on the books — it’s owed to whoever paid, and gets paid back from Cash on Hand.' : '')
+    : 'Money only ever comes into the Extra Account.';
+
+  document.getElementById('budget-reimburse-group').style.display = isExpense && isCash ? '' : 'none';
   const isFundraiserEntry = budgetTxnType === 'fundraiser';
   document.getElementById('budget-fundraiser-hint').style.display = isFundraiserEntry ? '' : 'none';
   document.getElementById('budget-fundraiser-amounts-row').style.display = isFundraiserEntry ? '' : 'none';
   document.getElementById('budget-txn-amount').style.display = isFundraiserEntry ? 'none' : '';
   document.getElementById('budget-txn-amount').required = !isFundraiserEntry;
-  if (!editingBudgetTxnId) {
-    document.getElementById('budget-txn-submit').textContent =
-      budgetTxnType === 'income' ? 'Add income' : budgetTxnType === 'fundraiser' ? 'Log fundraiser' : 'Add expense';
-  }
-}
+  document.getElementById('budget-cash-wrap').style.display = isExpense ? 'none' : 'flex';
 
-async function loadBudget() {
-  const { ok, data } = await api(BUDGET_URL, { method: 'GET' });
-  if (!ok) { document.getElementById('budget-stats').innerHTML = '<div class="admin-card"><p class="small muted">Could not load budget.</p></div>'; return; }
-  budgetAccounts = data.accounts;
-  budgetStats = data.stats.accounts;
-  budgetTransactions = data.transactions;
-  renderBudgetView();
+  const catSel = document.getElementById('budget-txn-category');
+  const prevCat = catSel.value;
+  const cats = (budgetStats[account] || { categories: [] }).categories;
+  catSel.innerHTML = '<option value="">No category</option>' + cats.map(c => `<option value="${escHtml(c.id)}">${escHtml(c.name)}</option>`).join('');
+  if (cats.some(c => c.id === prevCat)) catSel.value = prevCat;
+
+  if (!editingBudgetTxnId) {
+    document.getElementById('budget-txn-form-heading').textContent = isExpense ? 'Log a Purchase' : 'Log Money In';
+    document.getElementById('budget-txn-submit').textContent =
+      budgetTxnType === 'income' ? 'Add money in' : isFundraiserEntry ? 'Log fundraiser' : 'Add purchase';
+  }
 }
 
 function resetBudgetTxnForm() {
   editingBudgetTxnId = null;
   document.getElementById('budget-txn-form').reset();
   document.getElementById('budget-txn-date').value = new Date().toISOString().slice(0, 10);
-  document.getElementById('budget-txn-form-heading').textContent = 'Log a Purchase';
   document.getElementById('budget-txn-cancel').style.display = 'none';
   budgetTxnType = 'expense';
   document.querySelectorAll('#budget-txn-type-chips [data-txn-type]').forEach(b => b.classList.toggle('active', b.dataset.txnType === 'expense'));
-  document.getElementById('budget-txn-submit').textContent = 'Add expense';
+  document.getElementById('budget-txn-account').value = '';
+  renderBudgetTxnForm();
+}
+
+// ── Cash tracker ──────────────────────────────────────────
+function renderBudgetCashCard() {
+  document.getElementById('budget-cash-stats').innerHTML = budgetCashCardsHTML();
+  const owed = budgetCash.owed || [];
+  const onHand = budgetCash.onHand || 0;
+  const byPerson = new Map();
+  for (const o of owed) {
+    const key = String(o.to || '').trim().toLowerCase();
+    if (!byPerson.has(key)) byPerson.set(key, { name: o.to, items: [], total: 0 });
+    const g = byPerson.get(key);
+    g.items.push(o);
+    g.total += o.amount;
+  }
+  document.getElementById('budget-owed-list').innerHTML = [...byPerson.values()].map(g => `
+    <div class="admin-row" style="flex-wrap:wrap">
+      <div><span class="name">${escHtml(g.name)}</span><div class="meta">${g.items.length} purchase${g.items.length === 1 ? '' : 's'}</div></div>
+      <div class="actions"><span class="name">${fmtMoney(g.total)}</span></div>
+      <div style="flex-basis:100%;padding-left:1rem">
+        ${g.items.map(o => {
+          const short = o.amount - onHand > 0.005;
+          return `<div class="admin-row" style="padding:.3rem 0">
+            <div><span>${escHtml(o.description)}</span><div class="meta">${fmtDashDate(o.date)}</div></div>
+            <div class="actions"><span class="name">${fmtMoney(o.amount)}</span>
+              <button class="btn-sm" data-pay-reimbursement="${escHtml(o.id)}" ${short ? 'disabled title="Not enough cash on hand"' : ''}>${short ? 'Not enough cash' : 'Reimburse from cash'}</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('') || '<p class="small muted">Nobody is owed anything right now.</p>';
+}
+
+// ── History ───────────────────────────────────────────────
+function budgetVisibleTransactions() {
+  const filter = document.getElementById('budget-history-filter').value;
+  return budgetTransactions.filter(t => filter === 'all' || t.account === filter)
+    .slice().sort((a, b) => new Date(b.date) - new Date(a.date) || String(b.createdAt).localeCompare(String(a.createdAt)));
+}
+
+function budgetTransactionRowHTML(t) {
+  const cat = (budgetStats[t.account]?.categories || []).find(c => c.id === t.categoryId);
+  const isDeposit = t.type === 'deposit';
+  const catLabel = isDeposit ? 'Cash → Extra Account' : (cat ? cat.name : (t.categoryId ? 'Uncategorized' : (t.type === 'income' ? 'Fundraiser income' : 'Uncategorized')));
+  const sign = isDeposit ? '' : (t.type === 'income' ? '+' : '-');
+  const amountColor = isDeposit ? 'inherit' : (t.type === 'income' ? '#16a34a' : 'var(--brand)');
+  const badges = [
+    `<span class="badge-role inactive">${escHtml(BUDGET_ACCOUNT_LABELS[t.account] || t.account)}</span>`,
+    t.type === 'income' ? '<span class="badge-role eboard">income</span>' : '',
+    isDeposit ? '<span class="badge-role eboard">deposit</span>' : '',
+    t.type === 'income' && t.cash ? '<span class="badge-role inactive">cash</span>' : '',
+    t.linkId ? '<span class="badge-role inactive" title="Logged together as one fundraiser">🔗 linked</span>' : '',
+    t.reimburse ? (t.reimburse.paidAt
+      ? `<span class="badge-role eboard">reimbursed ${escHtml(t.reimburse.to)} · ${fmtDashDate(t.reimburse.paidAt)}</span>`
+      : `<span class="badge-role inactive" style="color:#ef4444">owed to ${escHtml(t.reimburse.to)}</span>`) : '',
+  ].filter(Boolean).join(' ');
+  return `<div class="admin-row">
+    <div>
+      <span class="name">${escHtml(t.description)}</span> ${badges}
+      <div class="meta">${escHtml(catLabel)} · ${fmtDashDate(t.date)} · logged by ${escHtml(t.addedByName)}</div>
+    </div>
+    <div class="actions">
+      <span class="name" style="color:${amountColor}">${sign}${fmtMoney(t.amount)}</span>
+      ${t.reimburse?.paidAt ? `<button class="btn-sm outline" data-undo-reimbursement="${escHtml(t.id)}">Undo reimbursement</button>` : ''}
+      ${isDeposit ? '' : `<button class="btn-sm edit" data-budget-edit-txn="${escHtml(t.id)}">Edit</button>`}
+      <button class="btn-sm delete" data-budget-delete-txn="${escHtml(t.id)}">Delete</button>
+    </div>
+  </div>`;
+}
+
+function renderBudgetTransactionsList() {
+  document.getElementById('budget-transactions-list').innerHTML =
+    budgetVisibleTransactions().map(budgetTransactionRowHTML).join('') || '<p class="small muted">No transactions yet.</p>';
+}
+
+function exportBudgetTxnsXls() {
+  const rows = budgetVisibleTransactions();
+  const headers = ['Date', 'Account', 'Type', 'Category', 'Description', 'Amount', 'Cash', 'Owed To', 'Reimbursed', 'Logged By'];
+  const cell = (v) => `<td>${escHtml(String(v ?? ''))}</td>`;
+  const rowsHtml = rows.map(t => {
+    const cat = (budgetStats[t.account]?.categories || []).find(c => c.id === t.categoryId);
+    return `<tr>${[
+      cell(fmtDashDate(t.date)), cell(BUDGET_ACCOUNT_LABELS[t.account] || t.account), cell(t.type),
+      cell(cat ? cat.name : (t.categoryId ? 'Uncategorized' : '')),
+      cell(t.description), cell(t.amount), cell(t.cash ? 'yes' : ''),
+      cell(t.reimburse?.to || ''), cell(t.reimburse ? (t.reimburse.paidAt ? fmtDashDate(t.reimburse.paidAt) : 'not yet') : ''),
+      cell(t.addedByName),
+    ].join('')}</tr>`;
+  }).join('');
+  const html = `<html><head><meta charset="utf-8"></head><body><table border="1"><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr>${rowsHtml}</table></body></html>`;
+  const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `budget-${document.getElementById('budget-history-filter').value}-${new Date().toISOString().slice(0, 10)}.xls`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function renderBudgetView() {
+  renderBudgetOverview();
+  document.getElementById('budget-account-description').textContent = BUDGET_ACCOUNT_DESCRIPTIONS[budgetCurrentAccount] || '';
+  renderBudgetTripPlanning();
+  renderBudgetPies();
+  renderBudgetCategoriesList();
+  renderBudgetTxnForm();
+  renderBudgetCashCard();
+  renderBudgetTransactionsList();
+}
+
+async function loadBudget() {
+  const { ok, data } = await api(BUDGET_URL, { method: 'GET' });
+  if (!ok) { document.getElementById('budget-overview').innerHTML = '<div class="admin-card"><p class="small muted">Could not load budget.</p></div>'; return; }
+  applyBudgetData(data);
+  renderBudgetView();
+  loadBudgetMemberNames();
+}
+
+// Suggestions for the "who paid out of pocket" field — free text still works
+// for people who aren't on the roster (a parent, a professor).
+async function loadBudgetMemberNames() {
+  try {
+    await loadAllMembersForSearch();
+    document.getElementById('budget-member-names').innerHTML =
+      allMembers.map(m => `<option value="${escHtml(m.name)}"></option>`).join('');
+  } catch {}
 }
 
 // Toggles the "$X planned" field vs. the "$X/person" field, and required-ness
@@ -3523,12 +3651,13 @@ function resetBudgetCategoryForm() {
 }
 
 function wireBudgetPanel() {
+  // The chips only choose which account's categories, charts and settings are
+  // shown below — the summary cards and log forms above always cover everything.
   document.getElementById('budget-account-chips').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-budget-account]');
     if (!btn) return;
     budgetCurrentAccount = btn.dataset.budgetAccount;
     document.querySelectorAll('#budget-account-chips [data-budget-account]').forEach(b => b.classList.toggle('active', b === btn));
-    resetBudgetTxnForm();
     resetBudgetCategoryForm();
     renderBudgetView();
   });
@@ -3542,7 +3671,7 @@ function wireBudgetPanel() {
     if (!targetAmount && targetAmount !== 0) { alert('Enter a valid amount.'); return; }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'setAccountTarget', account: budgetCurrentAccount, targetAmount }) });
     if (!ok) { alert(data.error || 'Could not update.'); return; }
-    budgetAccounts = data.accounts; budgetStats = data.stats.accounts;
+    applyBudgetData(data);
     renderBudgetView();
   });
 
@@ -3555,7 +3684,7 @@ function wireBudgetPanel() {
     if (!startingBalance && startingBalance !== 0) { alert('Enter a valid amount.'); return; }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'setStartingBalance', account: budgetCurrentAccount, startingBalance }) });
     if (!ok) { alert(data.error || 'Could not update.'); return; }
-    budgetAccounts = data.accounts; budgetStats = data.stats.accounts;
+    applyBudgetData(data);
     renderBudgetView();
   });
 
@@ -3564,7 +3693,7 @@ function wireBudgetPanel() {
     if (!Number.isFinite(attendeeCount) || attendeeCount < 0) { alert('Enter a valid number of attendees.'); return; }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'setAttendeeCount', account: 'convention', attendeeCount }) });
     if (!ok) { alert(data.error || 'Could not update.'); return; }
-    budgetAccounts = data.accounts; budgetStats = data.stats.accounts;
+    applyBudgetData(data);
     renderBudgetView();
   });
 
@@ -3619,7 +3748,7 @@ function wireBudgetPanel() {
       : { op: 'createCategory', account: budgetCurrentAccount, name, plannedRevenue, ...amounts };
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify(body) });
     if (!ok) { statusEl.textContent = data.error || 'Could not save category.'; statusEl.className = 'admin-status err'; return; }
-    budgetStats = data.stats.accounts;
+    applyBudgetData(data);
     resetBudgetCategoryForm();
     renderBudgetView();
   });
@@ -3629,50 +3758,67 @@ function wireBudgetPanel() {
     if (!confirm('Delete this category? Existing transactions in it will show as Uncategorized.')) return;
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'deleteCategory', id: editingBudgetCategoryId }) });
     if (!ok) { alert(data.error || 'Could not delete category.'); return; }
-    budgetTransactions = data.transactions; budgetStats = data.stats.accounts;
+    applyBudgetData(data);
     resetBudgetCategoryForm();
     renderBudgetView();
   });
 
   document.getElementById('budget-txn-type-chips').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-txn-type]');
-    if (!btn) return;
+    if (!btn || editingBudgetTxnId) return;
     budgetTxnType = btn.dataset.txnType;
     document.querySelectorAll('#budget-txn-type-chips [data-txn-type]').forEach(b => b.classList.toggle('active', b === btn));
-    renderBudgetView();
+    renderBudgetTxnForm();
   });
+  document.getElementById('budget-txn-account').addEventListener('change', renderBudgetTxnForm);
 
   document.getElementById('budget-txn-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const statusEl = document.getElementById('budget-txn-status');
+    const fail = (msg) => { statusEl.textContent = msg; statusEl.className = 'admin-status err'; };
     const categoryId = document.getElementById('budget-txn-category').value || null;
     const description = document.getElementById('budget-txn-desc').value.trim();
     const date = document.getElementById('budget-txn-date').value;
+    const cash = document.getElementById('budget-txn-cash').checked;
+    const { account, isCash } = budgetFormTarget();
+    const reimburseTo = document.getElementById('budget-txn-reimburse').value.trim();
+    if (!editingBudgetTxnId && !account) return fail('Choose which account this is for.');
+    if (budgetTxnType === 'expense' && isCash && !reimburseTo) return fail('Enter who paid out of pocket — that’s who we owe.');
     let body;
     if (!editingBudgetTxnId && budgetTxnType === 'fundraiser') {
       body = {
-        op: 'addFundraiserEvent', categoryId, description, date,
+        op: 'addFundraiserEvent', categoryId, description, date, cash,
         cost: document.getElementById('budget-txn-cost').value,
         revenue: document.getElementById('budget-txn-revenue').value,
       };
-    } else {
+    } else if (editingBudgetTxnId) {
+      const t = budgetTransactions.find(x => x.id === editingBudgetTxnId);
       body = {
-        op: editingBudgetTxnId ? 'updateTransaction' : 'addTransaction',
-        account: budgetCurrentAccount,
-        type: budgetTxnType,
+        op: 'updateTransaction', id: editingBudgetTxnId,
         categoryId, description, date,
         amount: Number(document.getElementById('budget-txn-amount').value),
       };
-      if (editingBudgetTxnId) body.id = editingBudgetTxnId;
+      if (t?.type === 'income') body.cash = cash;
+      if (t?.reimburse) body.reimburseTo = reimburseTo;
+    } else {
+      body = {
+        op: 'addTransaction', account, type: budgetTxnType,
+        categoryId, description, date,
+        amount: Number(document.getElementById('budget-txn-amount').value),
+      };
+      if (budgetTxnType === 'income') body.cash = cash;
+      if (budgetTxnType === 'expense' && isCash) body.reimburseTo = reimburseTo;
     }
     const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify(body) });
-    if (!ok) { statusEl.textContent = data.error || 'Could not save.'; statusEl.className = 'admin-status err'; return; }
+    if (!ok) return fail(data.error || 'Could not save.');
     statusEl.textContent = 'Saved.'; statusEl.className = 'admin-status ok';
-    budgetTransactions = data.transactions; budgetStats = data.stats.accounts;
+    applyBudgetData(data);
     resetBudgetTxnForm();
     renderBudgetView();
   });
-  document.getElementById('budget-txn-cancel').addEventListener('click', resetBudgetTxnForm);
+  document.getElementById('budget-txn-cancel').addEventListener('click', () => { resetBudgetTxnForm(); renderBudgetView(); });
+
+  document.getElementById('budget-history-filter').addEventListener('change', renderBudgetTransactionsList);
 
   document.getElementById('budget-transactions-list').addEventListener('click', async (e) => {
     const editBtn = e.target.closest('[data-budget-edit-txn]');
@@ -3682,18 +3828,19 @@ function wireBudgetPanel() {
       editingBudgetTxnId = t.id;
       budgetTxnType = t.type;
       document.querySelectorAll('#budget-txn-type-chips [data-txn-type]').forEach(b => b.classList.toggle('active', b.dataset.txnType === t.type));
-      document.getElementById('budget-txn-category').value = t.categoryId || '';
-      document.getElementById('budget-txn-desc').value = t.description;
-      document.getElementById('budget-txn-amount').value = t.amount;
-      document.getElementById('budget-txn-date').value = t.date;
-      document.getElementById('budget-txn-form-heading').textContent = 'Edit Transaction';
-      document.getElementById('budget-txn-submit').textContent = 'Save changes';
-      document.getElementById('budget-txn-cancel').style.display = '';
-      document.getElementById('budget-fundraiser-hint').style.display = 'none';
-      document.getElementById('budget-fundraiser-amounts-row').style.display = 'none';
-      document.getElementById('budget-txn-amount').style.display = '';
-      document.getElementById('budget-txn-amount').required = true;
-      document.getElementById('budget-txn-desc').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const accSel = document.getElementById('budget-txn-account');
+      accSel.innerHTML = `<option value="${escHtml(t.reimburse ? BUDGET_CASH_OPTION : t.account)}">${t.reimburse ? 'Cash — reimbursement' : escHtml(BUDGET_ACCOUNT_LABELS[t.account] || t.account)}</option>`;
+      accSel.disabled = true;
+      renderBudgetTxnFormFieldsForEdit(t);
+      return;
+    }
+    const undoBtn = e.target.closest('[data-undo-reimbursement]');
+    if (undoBtn) {
+      if (!confirm('Mark this as not reimbursed yet? The cash goes back into Cash on Hand.')) return;
+      const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'undoReimbursement', id: undoBtn.dataset.undoReimbursement }) });
+      if (!ok) { alert(data.error || 'Could not undo.'); return; }
+      applyBudgetData(data);
+      renderBudgetView();
       return;
     }
     const delBtn = e.target.closest('[data-budget-delete-txn]');
@@ -3701,12 +3848,66 @@ function wireBudgetPanel() {
       if (!confirm('Delete this transaction?')) return;
       const { ok, data } = await api(`${BUDGET_URL}?id=${encodeURIComponent(delBtn.dataset.budgetDeleteTxn)}`, { method: 'DELETE' });
       if (!ok) { alert(data.error || 'Could not delete.'); return; }
-      budgetTransactions = data.transactions; budgetStats = data.stats.accounts;
+      applyBudgetData(data);
       renderBudgetView();
     }
   });
 
+  document.getElementById('budget-owed-list').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-pay-reimbursement]');
+    if (!btn || btn.disabled) return;
+    const o = (budgetCash.owed || []).find(x => x.id === btn.dataset.payReimbursement);
+    if (!o) return;
+    if (!confirm(`Pay ${o.to} ${fmtMoney(o.amount)} out of Cash on Hand for "${o.description}"?`)) return;
+    const statusEl = document.getElementById('budget-cash-status');
+    btn.disabled = true;
+    const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'payReimbursement', id: o.id }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not reimburse.'; statusEl.className = 'admin-status err'; btn.disabled = false; return; }
+    statusEl.textContent = `Reimbursed ${o.to} ${fmtMoney(o.amount)} from cash.`; statusEl.className = 'admin-status ok';
+    applyBudgetData(data);
+    renderBudgetView();
+  });
+
+  document.getElementById('budget-deposit-btn').addEventListener('click', async () => {
+    const statusEl = document.getElementById('budget-cash-status');
+    const input = document.getElementById('budget-deposit-amount');
+    const amount = Number(input.value);
+    if (!amount || amount <= 0) { statusEl.textContent = 'Enter the amount of cash being deposited.'; statusEl.className = 'admin-status err'; return; }
+    const { ok, data } = await api(BUDGET_URL, { method: 'POST', body: JSON.stringify({ op: 'depositCash', amount }) });
+    if (!ok) { statusEl.textContent = data.error || 'Could not record the deposit.'; statusEl.className = 'admin-status err'; return; }
+    statusEl.textContent = `Deposited ${fmtMoney(amount)} into the Extra Account.`; statusEl.className = 'admin-status ok';
+    input.value = '';
+    applyBudgetData(data);
+    renderBudgetView();
+  });
+
   document.getElementById('budget-export-btn').addEventListener('click', exportBudgetTxnsXls);
+}
+
+// Fills the shared log form with an existing transaction's values for editing.
+function renderBudgetTxnFormFieldsForEdit(t) {
+  const isExpense = t.type === 'expense';
+  document.getElementById('budget-reimburse-group').style.display = t.reimburse ? '' : 'none';
+  document.getElementById('budget-txn-reimburse').value = t.reimburse?.to || '';
+  document.getElementById('budget-cash-wrap').style.display = t.type === 'income' ? 'flex' : 'none';
+  document.getElementById('budget-txn-cash').checked = !!t.cash;
+  document.getElementById('budget-fundraiser-hint').style.display = 'none';
+  document.getElementById('budget-fundraiser-amounts-row').style.display = 'none';
+  document.getElementById('budget-txn-amount').style.display = '';
+  document.getElementById('budget-txn-amount').required = true;
+  const cats = (budgetStats[t.account] || { categories: [] }).categories;
+  const catSel = document.getElementById('budget-txn-category');
+  catSel.innerHTML = '<option value="">No category</option>' + cats.map(c => `<option value="${escHtml(c.id)}">${escHtml(c.name)}</option>`).join('');
+  catSel.value = t.categoryId || '';
+  document.getElementById('budget-txn-desc').value = t.description;
+  document.getElementById('budget-txn-amount').value = t.amount;
+  document.getElementById('budget-txn-date').value = t.date;
+  document.getElementById('budget-txn-account-label').textContent = isExpense ? 'Purchase account' : 'Money coming into';
+  document.getElementById('budget-txn-account-hint').textContent = '';
+  document.getElementById('budget-txn-form-heading').textContent = 'Edit Transaction';
+  document.getElementById('budget-txn-submit').textContent = 'Save changes';
+  document.getElementById('budget-txn-cancel').style.display = '';
+  document.getElementById('budget-txn-desc').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // ── Boot ──────────────────────────────────────────────────
