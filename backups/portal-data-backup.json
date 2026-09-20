@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-13T00:00:57.512Z",
+  "generatedAt": "2026-09-20T00:00:49.682Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -17,7 +17,7 @@
           "targetAmount": 12000,
           "label": "Convention Trip (2027 ACDA National Conference)",
           "startingBalance": 0,
-          "attendeeCount": 10
+          "attendeeCount": 12
         }
       },
       "categories": [
@@ -156,7 +156,32 @@
           "unitCost": 240
         }
       ],
-      "transactions": [],
+      "transactions": [
+        {
+          "id": "9f52ba5c-3dab-4541-900c-9c469aa0241c",
+          "account": "fundraising",
+          "type": "expense",
+          "categoryId": "12490833-8371-4595-8a7f-fc745094fa87",
+          "description": "Food",
+          "amount": 93.68,
+          "date": "2026-09-15",
+          "addedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+          "addedByName": "Adam Bretz",
+          "createdAt": "2026-09-15T11:58:31.316Z"
+        },
+        {
+          "id": "411171f7-9c28-4a61-8fed-b966e72d8252",
+          "account": "fundraising",
+          "type": "income",
+          "categoryId": "12490833-8371-4595-8a7f-fc745094fa87",
+          "description": "Fundraiser!",
+          "amount": 407,
+          "date": "2026-09-15",
+          "addedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+          "addedByName": "Adam Bretz",
+          "createdAt": "2026-09-15T20:01:49.407Z"
+        }
+      ],
       "_fundraisingBalanceSeeded": true,
       "_conventionPerPersonMigrated": true,
       "_onCampusHyphenFixed": true,
@@ -1301,6 +1326,126 @@
         "checkinOpensAt": "",
         "checkinClosesAt": "",
         "volunteerType": "bake_sale",
+        "slotCapacity": 6,
+        "fullDayCapacity": null,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": true
+      },
+      {
+        "id": "bd200cdc-fb3b-4da2-a226-a89ab414be34",
+        "title": "SJCDA 26-27 Audition Day Volunteers",
+        "description": "Volunteer at the South Jersey Choral Directors Association's (SJCDA) Junior and Senior High Honor Choir auditions! This event takes place on Saturday, November 14th, from 8 a.m.- 5 p.m., at Clearview Regional High School.",
+        "location": "Clearview Regional High School",
+        "start": "2026-11-14T13:00:00.000Z",
+        "end": "2026-11-14T22:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1789653787301-all-state-choir-2026-1.jpg",
+        "points": 300,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "full_event",
+        "slotCapacity": 3,
+        "fullDayCapacity": 10,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": false
+      },
+      {
+        "id": "f99317c9-2ab5-4c85-ab4b-d54ada313b0c",
+        "title": "SJCDA 26-27 Rehearsal Volunteers",
+        "description": "Volunteer at the South Jersey Choral Directors Association's (SJCDA) All South Jersey Chorus! This event takes place on Saturday, December 5th, from 1:30 pm to 5:30 pm, at Lenape High School.",
+        "location": "Lenape High School",
+        "start": "2026-12-05T18:30:00.000Z",
+        "end": "2026-12-05T22:30:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1789654825006-images__2_.jpeg",
+        "points": 300,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "full_event",
+        "slotCapacity": 3,
+        "fullDayCapacity": 10,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": false
+      },
+      {
+        "id": "3c7d391b-c502-4c21-b41f-b8bc1635c254",
+        "title": "SJCDA 26-27 Rehearsal Volunteers",
+        "description": "Volunteer at the South Jersey Choral Directors Association's (SJCDA) All South Jersey Chorus! This event takes place on Thursday, January 7th, 2027, from 9:00 am to 1:30 pm, at Rowan University.",
+        "location": "Rowan University",
+        "start": "2027-01-07T14:00:00.000Z",
+        "end": "2027-01-07T18:30:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Volunteer"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1789655614659-images__2_.jpeg",
+        "points": 300,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "full_event",
+        "slotCapacity": 3,
+        "fullDayCapacity": 10,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": false
+      },
+      {
+        "id": "7976b264-a64e-475a-b5e6-9526918a884e",
+        "title": "Choral Workshop with Rollo Dilworth",
+        "description": "Rollo Dilworth will be presenting a free choral workshop on warmups and repertoire on Saturday, September 26 from 9:00 AM–12:00 PM in Haddonfield, NJ.\n\nYou can register here:\nhttps://forms.gle/thopuP3EkuErVAvQ6",
+        "location": "Haddonfield United Methodist Church",
+        "start": "2026-09-26T12:00:00.000Z",
+        "end": "2026-09-26T16:00:00.000Z",
+        "allDay": false,
+        "tags": [
+          "Professional Development"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1789730948701-cc1dad10-0a4f-4ead-b8f5-f5bc2ca6e44e.png",
+        "points": 300,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
+        "slotCapacity": 3,
+        "fullDayCapacity": null,
+        "slotMode": "",
+        "slotDurationMinutes": null,
+        "customSlots": [],
+        "pointsApprovedBySecretary": true
+      },
+      {
+        "id": "e44ec59a-c9e5-4b42-a835-f816e610876a",
+        "title": "Registration DUE!!!",
+        "description": "Registration for Rollo Dilworth's Workshop is due TODAY!\n\nYou can register here:\nhttps://forms.gle/thopuP3EkuErVAvQ6",
+        "location": "Haddonfield United Methodist Church",
+        "start": "2026-09-20T04:00:00.000Z",
+        "end": "2026-09-21T03:59:00.000Z",
+        "allDay": true,
+        "tags": [
+          "Performance"
+        ],
+        "signinLink": "",
+        "imageUrl": "/assets/img/events/1789731059526-cc1dad10-0a4f-4ead-b8f5-f5bc2ca6e44e.png",
+        "points": 0,
+        "checkinOpensAt": "",
+        "checkinClosesAt": "",
+        "volunteerType": "",
         "slotCapacity": 3,
         "fullDayCapacity": null,
         "slotMode": "",
@@ -1367,12 +1512,12 @@
         },
         {
           "id": "dan-suiliguin",
-          "name": "Dan Suiliguin",
+          "name": "Dan Suliguin",
           "role": "Senator",
           "email": "suligu56@rowan.edu",
           "photo": "/assets/img/dan-suiliguin.jpg",
           "desc": "Represents the club's interests to the school.",
-          "bio": "Dan Suiliguin is a junior Vocal Music Education student at Rowan University. He is thrilled to be serving as ACDA's Senator, representing the club's interests as NAfME's Student Government representative. In this role, he attends Student Government meetings on behalf of the chapter. He looks forward to assisting many students through his major and as an E-Board member."
+          "bio": "Dan Suliguin is a junior Vocal Music Education student at Rowan University. He is thrilled to be serving as ACDA's Senator, representing the club's interests as NAfME's Student Government representative. In this role, he attends Student Government meetings on behalf of the chapter. He looks forward to assisting many students through his major and as an E-Board member."
         }
       ],
       "siteText": {
@@ -1438,6 +1583,15 @@
         "memberName": "Admin",
         "text": "This is Awesome!",
         "createdAt": "2026-09-02T21:19:16.235Z"
+      },
+      {
+        "id": "2ed4ff11-bbd4-4bd9-828d-05c713535038",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "parentId": null,
+        "memberId": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "memberName": "Bryan Ruban",
+        "text": "Hi",
+        "createdAt": "2026-09-18T19:00:44.516Z"
       }
     ],
     "library": {
@@ -1980,9 +2134,53 @@
             "Musical Theater"
           ],
           "notes": ""
+        },
+        {
+          "title": "The Lord Bless You and Keep You",
+          "url": "/assets/pdfs/uploads/1789684682578-pdfcoffee.com-thelordblessyouandkeepyou-text.pdf",
+          "composer_first": "PETER",
+          "composer_last": "LUTKIN",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "1900",
+          "voicing": "SATB",
+          "instrumentation": "Organ",
+          "tags": [
+            "Classical",
+            "Church Music",
+            "Sacred"
+          ],
+          "notes": ""
+        },
+        {
+          "title": "My Very Own",
+          "url": "/assets/pdfs/uploads/1789687122978-My_Very_Own.pdf",
+          "composer_first": "Susan",
+          "composer_last": "LaBarr",
+          "arranger_first": "",
+          "arranger_last": "",
+          "year": "2017",
+          "voicing": "SATB",
+          "instrumentation": "Piano",
+          "tags": [
+            "Contemporary"
+          ],
+          "notes": ""
         }
       ],
       "sessions": [
+        {
+          "num": "SS#02",
+          "name": "Conductor's Showcase",
+          "scoreUrls": [
+            "/assets/pdfs/choral-rep/Earth Song.pdf",
+            "/assets/pdfs/uploads/1789684682578-pdfcoffee.com-thelordblessyouandkeepyou-text.pdf",
+            "/assets/pdfs/uploads/1789687122978-My_Very_Own.pdf"
+          ],
+          "archived": false,
+          "archivedAt": null,
+          "archiveFolder": null
+        },
         {
           "num": "SS#01",
           "name": "Musical Theater Sight-Singing",
@@ -2106,7 +2304,8 @@
       ],
       "_archiveFolderMigrated": true,
       "archiveFolders": [
-        "25-26"
+        "25-26",
+        "SS#02: Conductor's Showcase"
       ]
     },
     "gallery": {
@@ -3018,7 +3217,8 @@
         "salt": "4ecfd55c631135297017c4c0acfd1f72",
         "hash": "6fa403950426679beaf041455bc16b718fae8f3fc507427fda0edc4b6195e4c090f5b3dc5c611c6350e7e83bf40b3f48e39e50acbf807b5434e9ed8e4aba6932",
         "active": true,
-        "joinedAt": "2026-08-28T03:48:02.694Z"
+        "joinedAt": "2026-08-28T03:48:02.694Z",
+        "photoUrl": "/assets/img/profiles/1789403313338-IMG_5823.jpeg"
       },
       {
         "id": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
@@ -3088,18 +3288,6 @@
         "hash": "5f6d69dfca7ea543928a964cf54b547a3c18ddc7ed547a38b28c07850bdf50ae318119f4bf8921e7fea1932ba65b72a3b65dd39609de54d244deb0bc874d67a0",
         "active": true,
         "joinedAt": "2026-09-01T01:26:27.428Z"
-      },
-      {
-        "id": "433e0450-50bc-476b-b6d0-dc9688c88dc7",
-        "name": "Gavin Springer",
-        "email": "mr.gspringer4@gmail.com",
-        "role": "member",
-        "hasAccount": true,
-        "salt": "606427883740fb878fb1883b7185d827",
-        "hash": "57684e3cf49c507ee8e98bbbc8a6a33da98925e47eebeb9d58f73f7f4530888443db8242add234ca45e5c6460f341c6dae86c2d244c090907fadebe7fc4d0971",
-        "active": true,
-        "joinedAt": "2026-09-02T22:16:14.090Z",
-        "photoUrl": "/assets/img/profiles/1788387436774-IMG_5608.jpeg"
       },
       {
         "id": "261310a8-14ee-4979-abe9-0111609d3aaa",
@@ -3200,8 +3388,8 @@
         "email": "ccaammeerroonnhh@gmail.com",
         "role": "member",
         "hasAccount": true,
-        "salt": "a94757fd58aa5726dc22d6f1901334ea",
-        "hash": "2911e07ab7b6d08c45392b7579c4b5f2ea8acf356b559f054ba58037444763f1c916af1ee147cc45e0caccdcc2222fe630dcc72b8c28f7544b3c321ff20bce0b",
+        "salt": "0e4d1b2d5260118b13e56686e0a9c713",
+        "hash": "eec90d086a0e740d7f426fc7325168b51d94c63756f8bbb6cc406ba6fdbc986a1504a8f62d4f86002caae54f480a77376c7fe30fb7e9dc1e18ad2d243acbbc84",
         "active": true,
         "joinedAt": "2026-09-04T18:58:18.053Z",
         "photoUrl": "/assets/img/profiles/1788548505723-IMG_0127.jpeg"
@@ -3339,6 +3527,61 @@
         "hash": "cfa1f67d3994ff2e0a973a6f809851d3a05f60e065cbbc62a628282671bfb37620c3eeb1bad98e4f3b2cf25be54f065e409185eebb6f82cff9de710f5da10038",
         "active": true,
         "joinedAt": "2026-09-09T20:13:17.715Z"
+      },
+      {
+        "id": "4cb63bb4-dcdc-458c-9660-43e239ca1a56",
+        "name": "Jade Gelin- Pierre",
+        "email": "gelinp10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "1447c16653da98dc4e3d18ad8edd9413",
+        "hash": "2dfb998e7191586fbf16e65be5a491c5d56213db3d16f853dc1e517df1e2e279fd76a6843331b9623b9d1e901142776c4d190bf7d45e44ab09f39f421adc84d7",
+        "active": true,
+        "joinedAt": "2026-09-15T02:02:06.907Z"
+      },
+      {
+        "id": "5d9436b9-d759-444f-b234-ca6dff1a4c9f",
+        "name": "Alaina",
+        "email": "alainaccote@gmail.com",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "e325b473c57bdd77461022deded5cc15",
+        "hash": "794684b5fd2d75c3c2c43cf2da097b9eeb43e8080396c8c00029738742baf7e1cef293e7c958e932da3c47c35024e90686a06d56ebe1fd47b34a1bbbb6513946",
+        "active": true,
+        "joinedAt": "2026-09-18T19:00:32.906Z"
+      },
+      {
+        "id": "1f47a6f4-1f45-43e3-85de-ba835246fbf5",
+        "name": "Mikaela",
+        "email": "flanag10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "d1372f4844d43b6385e2f55a6afd1709",
+        "hash": "77e42f3db44c2fb233d0bfce8ed48207e5aaf7cb58f0855ca3c918387d3f62aabc6f027c37132f107934c3f503f99cf0a3edd1463a92910ed0431b022f57cdbb",
+        "active": true,
+        "joinedAt": "2026-09-18T19:01:04.047Z"
+      },
+      {
+        "id": "c8a77ab3-1259-480f-a9e7-c15bb51bf1b6",
+        "name": "Sara DeVoe",
+        "email": "devoes59@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "c5d99463d6cfb7dc917572a9bca96af9",
+        "hash": "ab51477e5af024db4cccf9095af39385bd83b964de6c5520c229a84725b862b387513a6d63ce7748bff6c024dd29b0c3eb099cdb07c4e20ed5cc5922e1e5a6d9",
+        "active": true,
+        "joinedAt": "2026-09-18T19:01:37.387Z"
+      },
+      {
+        "id": "a9641359-77ae-47b0-a6ea-66549732724c",
+        "name": "Zoey Zabelski",
+        "email": "zabels10@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "e0c328b2d2c70bcf424dc405ed6a3723",
+        "hash": "fc9c2d8feba9a5d7ad0428b0244f6c2130030a2e275bceca7f1513690a35fa7451a37f8d7f52d53f26d217d92cc50ffcaff419fe8c4cc2e5aaa2a700204f7da6",
+        "active": true,
+        "joinedAt": "2026-09-18T19:02:36.287Z"
       }
     ],
     "users": [
@@ -3924,22 +4167,6 @@
         "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
       },
       {
-        "id": "6fc74ece-1637-4a2d-840b-95ea23e7d6c5",
-        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
-        "memberName": "Adam Bretz",
-        "memberEmail": "bretza67@students.rowan.edu",
-        "eventId": "f192ce14-c701-479a-b6d5-58552ba4b50e",
-        "eventTitle": "Sample Fundraiser",
-        "slotLabel": "3:00 PM–3:30 PM",
-        "status": "denied",
-        "requestedAt": "2026-09-07T17:00:30.566Z",
-        "decidedAt": "2026-09-07T17:01:27.072Z",
-        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
-        "source": "volunteer-slot",
-        "amount": 25,
-        "reason": "Volunteer slot: 3:00 PM–3:30 PM"
-      },
-      {
         "id": "c000a7fc-a931-4857-8ca6-2f5c4d5551db",
         "memberId": "cac338f4-b3bf-436d-b7d1-60f6de9edd99",
         "memberName": "Hanna Shein",
@@ -3972,72 +4199,6 @@
         "requestedAt": "2026-09-11T03:56:10.282Z",
         "decidedAt": "2026-09-12T17:42:48.081Z",
         "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
-      },
-      {
-        "id": "f7f8b762-64da-4706-adab-d4806687addd",
-        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
-        "memberName": "Gracie Broglin",
-        "memberEmail": "brogli10@rowan.edu",
-        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
-        "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": "9:00 AM–9:30 AM",
-        "status": "pending",
-        "requestedAt": "2026-09-11T13:24:13.452Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-slot",
-        "amount": 50,
-        "reason": "Volunteer slot: 9:00 AM–9:30 AM"
-      },
-      {
-        "id": "1998f013-0c53-4a28-aedc-b72501c8f7c1",
-        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
-        "memberName": "Gracie Broglin",
-        "memberEmail": "brogli10@rowan.edu",
-        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
-        "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": "9:30 AM–10:00 AM",
-        "status": "pending",
-        "requestedAt": "2026-09-11T13:24:15.409Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-slot",
-        "amount": 50,
-        "reason": "Volunteer slot: 9:30 AM–10:00 AM"
-      },
-      {
-        "id": "0c3eec09-ebd7-4536-8294-c9f4025677b4",
-        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
-        "memberName": "Gracie Broglin",
-        "memberEmail": "brogli10@rowan.edu",
-        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
-        "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": "10:00 AM–10:30 AM",
-        "status": "pending",
-        "requestedAt": "2026-09-11T13:24:37.302Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-slot",
-        "amount": 50,
-        "reason": "Volunteer slot: 10:00 AM–10:30 AM"
-      },
-      {
-        "id": "0fe40c34-782d-4e32-a39f-e065e15c304a",
-        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
-        "memberName": "Gracie Broglin",
-        "memberEmail": "brogli10@rowan.edu",
-        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
-        "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": null,
-        "status": "pending",
-        "requestedAt": "2026-09-11T13:27:29.544Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-items",
-        "itemCount": 1,
-        "items": "1 dozen of peanut butter chocolate chip cookies, and 1 dozen apple cinnamon oatmeal cookies",
-        "amount": 25,
-        "reason": "Bringing 1 item: 1 dozen of peanut butter chocolate chip cookies, and 1 dozen apple cinnamon oatmeal cookies"
       },
       {
         "id": "199d40d9-da0f-4aac-bb09-cb664caae536",
@@ -4130,68 +4291,630 @@
         "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
       },
       {
-        "id": "9e6c6759-b506-43ac-9344-82339b736e30",
+        "id": "be63c14b-875e-439c-9003-8710eecbd220",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": -300,
+        "status": "approved",
+        "reason": "Musical Theatre Sight-Reading Day Counted Twice",
+        "addedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "addedByName": "Admin",
+        "requestedAt": "2026-09-13T22:38:58.499Z",
+        "decidedAt": "2026-09-15T21:36:46.804Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f"
+      },
+      {
+        "id": "6c03f6d7-0d79-4af4-8f08-8be4ec425d16",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "volunteer",
+        "eventId": "f192ce14-c701-479a-b6d5-58552ba4b50e",
+        "eventTitle": "Sample Fundraiser",
+        "slotLabels": [
+          "3:00 PM–3:30 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 25,
+        "status": "denied",
+        "requestedAt": "2026-09-07T17:00:30.566Z",
+        "decidedAt": "2026-09-07T17:01:27.072Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "reason": "Volunteer slots (1): 3:00 PM–3:30 PM"
+      },
+      {
+        "id": "e9bb09ed-3c1b-4123-b364-a1bb933ed02b",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "9:00 AM–9:30 AM",
+          "9:30 AM–10:00 AM",
+          "10:00 AM–10:30 AM",
+          "10:30 AM–11:00 AM",
+          "11:00 AM–11:30 AM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 250,
+        "status": "approved",
+        "requestedAt": "2026-09-11T13:24:13.452Z",
+        "decidedAt": "2026-09-18T19:05:52.239Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (5): 9:00 AM–11:30 AM"
+      },
+      {
+        "id": "519a9099-9b56-439c-bcd7-08cbdbf0c371",
         "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
         "memberName": "Sadie Frame",
         "memberEmail": "frames27@rowan.edu",
+        "source": "volunteer",
         "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
         "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": "11:30 AM–12:00 PM",
-        "status": "pending",
+        "slotLabels": [
+          "11:30 AM–12:00 PM",
+          "12:00 PM–12:30 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 100,
+        "status": "approved",
         "requestedAt": "2026-09-12T17:52:28.709Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-slot",
-        "amount": 50,
-        "reason": "Volunteer slot: 11:30 AM–12:00 PM"
+        "decidedAt": "2026-09-18T19:05:54.180Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (2): 11:30 AM–12:30 PM"
       },
       {
-        "id": "751e0c97-def4-4239-814b-3ae6e707fd0c",
+        "id": "b8f72589-a813-4b20-9a88-aad8d7a019c2",
         "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
         "memberName": "Makayli Matias",
         "memberEmail": "matias85@rowan.edu",
+        "source": "volunteer",
         "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
         "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": "10:00 AM–10:30 AM",
-        "status": "pending",
+        "slotLabels": [
+          "10:00 AM–10:30 AM",
+          "10:30 AM–11:00 AM",
+          "11:00 AM–11:30 AM",
+          "11:30 AM–12:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 200,
+        "status": "approved",
         "requestedAt": "2026-09-12T18:52:38.760Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-slot",
-        "amount": 50,
-        "reason": "Volunteer slot: 10:00 AM–10:30 AM"
+        "decidedAt": "2026-09-18T19:05:55.966Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (4): 10:00 AM–12:00 PM"
       },
       {
-        "id": "3401b4cf-f319-4523-92fb-4df812bdd2e0",
+        "id": "61e68adc-eee3-4ff9-b83d-52e1b3f3ba84",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "9:30 AM–10:00 AM",
+          "10:30 AM–11:00 AM",
+          "2:00 PM–2:30 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 150,
+        "status": "approved",
+        "requestedAt": "2026-09-13T22:34:10.455Z",
+        "decidedAt": "2026-09-18T19:05:57.457Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (3): 9:30 AM–10:00 AM, 10:30 AM–11:00 AM, 2:00 PM–2:30 PM"
+      },
+      {
+        "id": "b7a7d507-19fd-4e9a-a47e-9dcfe2f66494",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "10:00 AM–10:30 AM",
+          "1:00 PM–1:30 PM",
+          "1:30 PM–2:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 150,
+        "status": "approved",
+        "requestedAt": "2026-09-13T22:34:12.541Z",
+        "decidedAt": "2026-09-18T19:05:59.270Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (3): 10:00 AM–10:30 AM, 1:00 PM–2:00 PM"
+      },
+      {
+        "id": "d5fbbd1a-c210-456a-9b30-5c7f08cfeff4",
+        "memberId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "memberName": "Daniel Suliguin",
+        "memberEmail": "dsuliguin30@gmail.com",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "2:00 PM–2:30 PM",
+          "2:30 PM–3:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 100,
+        "status": "approved",
+        "requestedAt": "2026-09-13T22:36:01.696Z",
+        "decidedAt": "2026-09-18T19:06:02.503Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (2): 2:00 PM–3:00 PM"
+      },
+      {
+        "id": "ee22513f-dcce-4589-9906-7f1cdb691656",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "11:00 AM–11:30 AM",
+          "11:30 AM–12:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 100,
+        "status": "approved",
+        "requestedAt": "2026-09-13T22:42:59.483Z",
+        "decidedAt": "2026-09-18T19:06:04.688Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (2): 11:00 AM–12:00 PM"
+      },
+      {
+        "id": "141251e3-d6f0-4ae2-9e30-99d0c7184955",
+        "memberId": "cac338f4-b3bf-436d-b7d1-60f6de9edd99",
+        "memberName": "Hanna Shein",
+        "memberEmail": "sheinh29@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "12:00 PM–12:30 PM",
+          "12:30 PM–1:00 PM",
+          "1:00 PM–1:30 PM",
+          "1:30 PM–2:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 200,
+        "status": "approved",
+        "requestedAt": "2026-09-14T11:21:47.119Z",
+        "decidedAt": "2026-09-18T19:11:15.262Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (4): 12:00 PM–2:00 PM"
+      },
+      {
+        "id": "d9c62a36-f8d5-4bf9-9094-c3587bc7f487",
+        "memberId": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "memberName": "Bryan Ruban",
+        "memberEmail": "rubanb22@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "10:30 AM–11:00 AM",
+          "11:00 AM–11:30 AM",
+          "11:30 AM–12:00 PM",
+          "12:00 PM–12:30 PM",
+          "12:30 PM–1:00 PM",
+          "1:00 PM–1:30 PM",
+          "1:30 PM–2:00 PM",
+          "2:00 PM–2:30 PM",
+          "2:30 PM–3:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 450,
+        "status": "approved",
+        "requestedAt": "2026-09-14T12:08:51.015Z",
+        "decidedAt": "2026-09-18T19:10:28.625Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (9): 10:30 AM–3:00 PM"
+      },
+      {
+        "id": "837029bf-1165-464f-85af-251cef5416ec",
+        "memberId": "7ad2d682-94b4-42d0-bf0e-19ce1109e60f",
+        "memberName": "Olivia Walton",
+        "memberEmail": "walton11@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "11:30 AM–12:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 50,
+        "status": "approved",
+        "requestedAt": "2026-09-14T12:52:18.379Z",
+        "decidedAt": "2026-09-18T19:11:19.966Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (1): 11:30 AM–12:00 PM"
+      },
+      {
+        "id": "4b48d106-d405-461d-bb6e-dfef6b8588c6",
+        "memberId": "4cb63bb4-dcdc-458c-9660-43e239ca1a56",
+        "memberName": "Jade Gelin- Pierre",
+        "memberEmail": "gelinp10@rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [
+          "12:00 PM–12:30 PM",
+          "12:30 PM–1:00 PM"
+        ],
+        "itemCount": 0,
+        "items": "",
+        "amount": 100,
+        "status": "approved",
+        "requestedAt": "2026-09-15T02:03:00.589Z",
+        "decidedAt": "2026-09-18T19:10:44.998Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "reason": "Volunteer slots (2): 12:00 PM–1:00 PM"
+      },
+      {
+        "id": "73ad0bf2-8749-4c8f-9475-472bed345974",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "volunteer",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "slotLabels": [],
+        "itemCount": 0,
+        "items": "",
+        "amount": 0,
+        "status": "denied",
+        "requestedAt": "2026-09-15T11:32:49.730Z",
+        "decidedAt": "2026-09-15T21:37:45.749Z",
+        "decidedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "reason": ""
+      },
+      {
+        "id": "f2be956d-5c22-47e9-8253-f90b1e27ada4",
+        "memberId": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "memberName": "Bryan Ruban",
+        "memberEmail": "rubanb22@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 50,
+        "status": "pending",
+        "reason": "Bake Sale King",
+        "addedBy": "6e7b557f-495d-4f45-afdd-1046438b684f",
+        "addedByName": "Admin",
+        "requestedAt": "2026-09-15T21:16:20.585Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "ef0256f4-8ebd-4b44-8dfd-12ef7e859496",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "source": "volunteer-food",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "status": "approved",
+        "requestedAt": "2026-09-11T13:24:13.452Z",
+        "decidedAt": "2026-09-18T19:34:33.595Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "itemCount": 1,
+        "items": "1 dozen of peanut butter chocolate chip cookies, and 1 dozen apple cinnamon oatmeal cookies",
+        "amount": 50,
+        "reason": "Bringing 1 item: 1 dozen of peanut butter chocolate chip cookies, and 1 dozen apple cinnamon oatmeal cookies"
+      },
+      {
+        "id": "7274e0b9-5307-45cc-a7fd-b283c9241bbd",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "source": "volunteer-food",
+        "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
+        "eventTitle": "Hispanic Heritage Month Fundraiser",
+        "status": "approved",
+        "requestedAt": "2026-09-12T17:52:28.709Z",
+        "decidedAt": "2026-09-18T19:09:09.711Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "itemCount": 1,
+        "items": "Brownies!",
+        "amount": 25,
+        "reason": "Bringing 1 item: Brownies!"
+      },
+      {
+        "id": "08523581-c407-4c0d-a006-b8e3e08cb393",
         "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
         "memberName": "Makayli Matias",
         "memberEmail": "matias85@rowan.edu",
+        "source": "volunteer-food",
         "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
         "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": "11:00 AM–11:30 AM",
-        "status": "pending",
-        "requestedAt": "2026-09-12T18:53:18.856Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-slot",
-        "amount": 50,
-        "reason": "Volunteer slot: 11:00 AM–11:30 AM"
+        "status": "approved",
+        "requestedAt": "2026-09-12T18:52:38.760Z",
+        "decidedAt": "2026-09-18T19:09:08.071Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "itemCount": 1,
+        "items": "3x Boxes of Doritos",
+        "amount": 25,
+        "reason": "Bringing 1 item: 3x Boxes of Doritos"
       },
       {
-        "id": "944393e5-39c2-4bdd-9b95-d4d1a569302f",
-        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
-        "memberName": "Makayli Matias",
-        "memberEmail": "matias85@rowan.edu",
+        "id": "485843e3-ef92-49ad-8aa1-001284eb07d6",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "volunteer-food",
         "eventId": "b788b818-b176-4da7-82ac-dce89aa474c7",
         "eventTitle": "Hispanic Heritage Month Fundraiser",
-        "slotLabel": "10:30 AM–11:00 AM",
-        "status": "pending",
-        "requestedAt": "2026-09-12T18:53:52.123Z",
-        "decidedAt": null,
-        "decidedBy": null,
-        "source": "volunteer-slot",
-        "amount": 50,
-        "reason": "Volunteer slot: 10:30 AM–11:00 AM"
+        "status": "approved",
+        "requestedAt": "2026-09-15T11:32:49.730Z",
+        "decidedAt": "2026-09-18T19:09:16.464Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "itemCount": 1,
+        "items": "1x 40 pack of Tostitos",
+        "amount": 25,
+        "reason": "Bringing 1 item: 1x 40 pack of Tostitos"
+      },
+      {
+        "id": "a3ee9349-09fb-4db4-8608-c2a3be1ee5b6",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T18:58:38.712Z",
+        "decidedAt": "2026-09-18T19:06:46.099Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "40204b71-5b10-4248-9372-6a00b1d63295",
+        "memberId": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "memberName": "Bryan Ruban",
+        "memberEmail": "rubanb22@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:00:16.397Z",
+        "decidedAt": "2026-09-18T19:06:55.275Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "f0e3d6f6-c552-4cd6-90aa-9670f47042cc",
+        "memberId": "a1bc77cc-c7c0-4bd3-85b5-796f6c104f56",
+        "memberName": "Ethan Platt",
+        "memberEmail": "platte10@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:00:24.167Z",
+        "decidedAt": "2026-09-18T19:06:56.846Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "62098f5c-5e75-4113-ba84-605336b68939",
+        "memberId": "d94bcb45-940b-4d55-8756-b59c12af99ae",
+        "memberName": "Keira Mei Santiago",
+        "memberEmail": "santia137@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:00:28.173Z",
+        "decidedAt": "2026-09-18T19:07:09.936Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "c556ba12-4625-4288-913d-08a8bae77b03",
+        "memberId": "5d9436b9-d759-444f-b234-ca6dff1a4c9f",
+        "memberName": "Alaina",
+        "memberEmail": "alainaccote@gmail.com",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:00:35.653Z",
+        "decidedAt": "2026-09-18T19:07:08.368Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "fc7c924e-1368-4070-ad7a-d017ab0be11f",
+        "memberId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "memberName": "Lizzie Hitchner",
+        "memberEmail": "hitchn55@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:00:44.739Z",
+        "decidedAt": "2026-09-18T19:07:05.959Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "8b6a6b7f-3187-42ce-97dd-a0eea3da4ee9",
+        "memberId": "1f47a6f4-1f45-43e3-85de-ba835246fbf5",
+        "memberName": "Mikaela",
+        "memberEmail": "flanag10@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:01:06.330Z",
+        "decidedAt": "2026-09-18T19:07:27.841Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "3348e948-7e20-4689-8635-8ea7d080ba50",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:01:10.385Z",
+        "decidedAt": "2026-09-18T19:07:00.182Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "1bba7c10-a111-4173-bb7a-5e0ea080b89d",
+        "memberId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "memberName": "Daniel Suliguin",
+        "memberEmail": "dsuliguin30@gmail.com",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:01:11.304Z",
+        "decidedAt": "2026-09-18T19:07:03.410Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "69b06191-deb5-483c-9977-b9f340dd07bb",
+        "memberId": "cfdc4d9d-9704-4215-977b-2571db08bd0c",
+        "memberName": "Gloria Tomas",
+        "memberEmail": "tomasg10@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:01:20.309Z",
+        "decidedAt": "2026-09-18T19:08:48.388Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "4ca96d40-b057-422f-aba8-7e5877a40de6",
+        "memberId": "7bf39160-1500-4b7c-8f3f-e4c1a37e5fe0",
+        "memberName": "Gavin Springer",
+        "memberEmail": "spring11@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:01:27.321Z",
+        "decidedAt": "2026-09-18T19:08:58.082Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "71292c51-6abb-4ccf-a609-3ba0436d3cf6",
+        "memberId": "c8a77ab3-1259-480f-a9e7-c15bb51bf1b6",
+        "memberName": "Sara DeVoe",
+        "memberEmail": "devoes59@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:01:40.700Z",
+        "decidedAt": "2026-09-18T19:07:13.729Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "3434d792-53c5-4464-8bf8-4c1864fdae45",
+        "memberId": "a9641359-77ae-47b0-a6ea-66549732724c",
+        "memberName": "Zoey Zabelski",
+        "memberEmail": "zabels10@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:02:38.212Z",
+        "decidedAt": "2026-09-18T19:08:59.054Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "b7c6dd89-4df4-426a-88e5-a2944b5c6435",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:03:02.663Z",
+        "decidedAt": "2026-09-18T19:07:17.479Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "7ac5ca5f-6b8a-4a0a-8fbc-cd8d8c484244",
+        "memberId": "6c920d0d-75b3-4da3-b96a-33f1903b08f6",
+        "memberName": "Cameron Hyson",
+        "memberEmail": "ccaammeerroonnhh@gmail.com",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:05:42.577Z",
+        "decidedAt": "2026-09-18T19:07:22.259Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "2ec3cb42-ebcc-40ae-b922-d3230a012424",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "source": "event",
+        "eventId": "67bdb5c9-3ecf-4ddc-8fe2-af743272e5b4",
+        "eventTitle": "Sight Singing & Student Conductors Song Vote",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-09-18T19:30:44.753Z",
+        "decidedAt": "2026-09-18T19:34:40.976Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
       }
     ],
     "tasks": [
@@ -4215,6 +4938,24 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-08-28T16:11:06.877Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-17T08:00:37.999Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T11:22:41.090Z"
           }
         ]
       },
@@ -4329,6 +5070,24 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-08-29T18:53:04.821Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T11:22:41.090Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-19T08:00:37.865Z"
           }
         ],
         "tags": [
@@ -4388,6 +5147,24 @@
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-01T02:31:22.610Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T11:22:41.090Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-19T08:00:37.865Z"
           }
         ]
       },
@@ -4411,6 +5188,24 @@
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-08-29T21:44:23.906Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T11:22:41.090Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-19T08:00:37.865Z"
           }
         ]
       },
@@ -4423,19 +5218,39 @@
         "assignedToRole": "treasurer",
         "assignedById": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
         "assignedByName": "Vera Caruso",
-        "dueDate": "2026-09-18",
+        "dueDate": "2026-09-21",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-08-31T23:34:40.085Z",
-        "updatedAt": "2026-08-31T23:34:40.085Z",
+        "updatedAt": "2026-09-18T11:20:52.763Z",
         "history": [
           {
             "event": "created",
             "byId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
             "byName": "Vera Caruso",
             "at": "2026-08-31T23:34:40.085Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-17T08:00:37.999Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "edited",
+            "byId": "c711afec-0d0e-4445-81e9-2b34f262828d",
+            "byName": "Rowan ACDA",
+            "at": "2026-09-18T11:20:52.757Z",
+            "comment": "Purchasing Subscription this weekend"
           }
-        ]
+        ],
+        "tags": []
       },
       {
         "id": "3cd1c5b4-6a8d-48bb-8f54-a5a8f9d5fbfc",
@@ -4562,6 +5377,30 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-07T17:25:13.779Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-16T01:27:10.501Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-17T08:00:37.999Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T11:22:41.090Z"
           }
         ],
         "tags": []
@@ -4666,11 +5505,11 @@
         "assignedToRole": "president",
         "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
         "assignedByName": "Admin",
-        "dueDate": "2026-09-14",
+        "dueDate": "2026-09-21",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-09-01T00:22:56.536Z",
-        "updatedAt": "2026-09-07T17:26:57.489Z",
+        "updatedAt": "2026-09-13T23:36:35.276Z",
         "history": [
           {
             "event": "created",
@@ -4689,6 +5528,19 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-07T08:00:32.966Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-13T08:00:43.998Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-13T23:36:35.270Z",
+            "comment": "Waiting on Grinch Schedule"
           }
         ],
         "tags": []
@@ -4966,6 +5818,24 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-06T00:11:14.042Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T11:22:41.090Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-19T08:00:37.865Z"
           }
         ]
       },
@@ -5189,15 +6059,28 @@
         ],
         "dueDate": "2026-09-14",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-07T17:19:52.998Z",
-        "updatedAt": "2026-09-07T17:19:52.998Z",
+        "updatedAt": "2026-09-13T20:10:17.427Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-07T17:19:52.998Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-13T08:00:43.998Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+            "byName": "Vera Caruso",
+            "at": "2026-09-13T20:10:17.133Z",
+            "comment": ""
           }
         ]
       },
@@ -5211,11 +6094,11 @@
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
         "tags": [],
-        "dueDate": "2026-09-18",
+        "dueDate": "2026-09-25",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-09-07T17:22:17.818Z",
-        "updatedAt": "2026-09-09T20:12:48.745Z",
+        "updatedAt": "2026-09-18T11:20:29.937Z",
         "history": [
           {
             "event": "created",
@@ -5248,30 +6131,107 @@
             "byName": "Adam Bretz",
             "at": "2026-09-09T20:12:48.737Z",
             "comment": "Correction"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-17T08:00:37.999Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "edited",
+            "byId": "c711afec-0d0e-4445-81e9-2b34f262828d",
+            "byName": "Rowan ACDA",
+            "at": "2026-09-18T11:20:29.931Z",
+            "comment": "Extension for Clarification"
           }
         ]
       },
       {
         "id": "fddb65f3-b5c9-4e0d-8a51-4b6629a294eb",
         "title": "PD #1 Payment How To",
-        "description": "",
+        "description": "Asking in person",
         "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedToName": "Adam Bretz",
         "assignedToRole": "treasurer",
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
         "tags": [],
-        "dueDate": "2026-09-14",
+        "dueDate": "2026-09-25",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-09-07T17:22:56.603Z",
-        "updatedAt": "2026-09-07T17:43:31.523Z",
+        "updatedAt": "2026-09-18T11:20:09.788Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-07T17:22:56.603Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-13T08:00:43.998Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-13T23:18:49.960Z",
+            "comment": "Extensions"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-15T08:00:38.262Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-16T08:00:41.543Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-16T23:11:57.317Z",
+            "comment": "asking in person tommorow"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-17T08:00:37.999Z"
+          },
+          {
+            "event": "edited",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-17T23:26:02.620Z",
+            "comment": "yup"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "edited",
+            "byId": "c711afec-0d0e-4445-81e9-2b34f262828d",
+            "byName": "Rowan ACDA",
+            "at": "2026-09-18T11:20:09.782Z",
+            "comment": "Extension"
           }
         ]
       },
@@ -5287,15 +6247,28 @@
         "tags": [],
         "dueDate": "2026-09-15",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-07T17:23:44.830Z",
-        "updatedAt": "2026-09-07T17:23:44.830Z",
+        "updatedAt": "2026-09-14T13:28:34.870Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-07T17:23:44.830Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-14T08:00:43.136Z"
+          },
+          {
+            "event": "completed",
+            "byId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+            "byName": "Lizzie Hitchner",
+            "at": "2026-09-14T13:28:34.554Z",
+            "comment": "Cooler is behind the risers in 153 😋"
           }
         ]
       },
@@ -5438,7 +6411,7 @@
       {
         "id": "c55d4b93-eb4f-4aa7-bc4d-b1f7b97083ca",
         "title": "Pizza for next Meeting!",
-        "description": "",
+        "description": "Makayli is handling this today 9/18/26",
         "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedToName": "Adam Bretz",
         "assignedToRole": "treasurer",
@@ -5451,17 +6424,289 @@
             "role": "president"
           }
         ],
-        "dueDate": "2026-09-17",
+        "dueDate": "2026-09-18",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-09-11T03:58:10.392Z",
-        "updatedAt": "2026-09-11T03:58:10.392Z",
+        "updatedAt": "2026-09-18T11:19:54.432Z",
         "history": [
           {
             "event": "created",
             "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
             "byName": "Admin",
             "at": "2026-09-11T03:58:10.392Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-16T08:00:41.543Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-17T08:00:37.999Z"
+          },
+          {
+            "event": "edited",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-17T23:26:12.608Z",
+            "comment": "yup"
+          },
+          {
+            "event": "edited",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-17T23:26:26.605Z",
+            "comment": "yup"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T08:00:41.606Z"
+          },
+          {
+            "event": "edited",
+            "byId": "c711afec-0d0e-4445-81e9-2b34f262828d",
+            "byName": "Rowan ACDA",
+            "at": "2026-09-18T11:19:54.413Z",
+            "comment": "Description Change"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-18T11:22:41.090Z"
+          }
+        ]
+      },
+      {
+        "id": "d438fa17-ff52-474c-9219-9ba78546045f",
+        "title": "Shoprite Purchase",
+        "description": "2x Big Pack of Ground Beef 85-90% Lean or 4 packs \n2x Iceberg head Lettuce \n2x Shredded Cheese -> Mexican Blend\n1x Variety Pack of Red Doritos \n1x Tostitos Salsa Green Mild",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-14",
+        "priority": "high",
+        "status": "done",
+        "createdAt": "2026-09-13T23:07:36.066Z",
+        "updatedAt": "2026-09-15T11:57:12.211Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-13T23:07:36.066Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-14T08:00:43.136Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-15T11:57:11.811Z",
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "id": "8d569afe-14e8-46ea-92dd-097ecb5241ff",
+        "title": "Print ACDA ways to pay",
+        "description": "",
+        "assignedToId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "assignedToName": "Makayli Matias",
+        "assignedToRole": "president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-14",
+        "priority": "medium",
+        "status": "done",
+        "createdAt": "2026-09-13T23:26:57.734Z",
+        "updatedAt": "2026-09-15T13:59:53.993Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-13T23:26:57.734Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-14T08:00:43.136Z"
+          },
+          {
+            "event": "completed",
+            "byId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "byName": "Makayli Matias",
+            "at": "2026-09-15T13:59:53.278Z",
+            "comment": "done"
+          }
+        ]
+      },
+      {
+        "id": "7b8223e7-f540-48e2-acaf-251f25ba5d1a",
+        "title": "Conductors Reminder Email",
+        "description": "",
+        "assignedToId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "assignedToName": "Vera Caruso",
+        "assignedToRole": "media",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-14",
+        "priority": "medium",
+        "status": "done",
+        "createdAt": "2026-09-13T23:33:05.882Z",
+        "updatedAt": "2026-09-15T14:00:14.966Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-13T23:33:05.882Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-14T08:00:43.136Z"
+          },
+          {
+            "event": "completed",
+            "byId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "byName": "Makayli Matias",
+            "at": "2026-09-15T14:00:13.190Z",
+            "comment": "done by Sadie"
+          }
+        ]
+      },
+      {
+        "id": "e5ec0709-1c60-4571-8277-4ce7fd2a1f3c",
+        "title": "Upload Conductor's Showcase sheet music",
+        "description": "",
+        "assignedToId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "assignedToName": "Lizzie Hitchner",
+        "assignedToRole": "vice_president",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-15",
+        "priority": "medium",
+        "status": "done",
+        "createdAt": "2026-09-13T23:33:45.454Z",
+        "updatedAt": "2026-09-17T23:21:45.195Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-13T23:33:45.454Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-14T08:00:43.136Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-15T08:00:38.262Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-15T20:38:45.496Z"
+          },
+          {
+            "event": "reminded",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-16T23:12:26.604Z"
+          },
+          {
+            "event": "completed",
+            "byId": "6e7b557f-495d-4f45-afdd-1046438b684f",
+            "byName": "Admin",
+            "at": "2026-09-17T23:21:44.978Z",
+            "comment": "Completed by Adam"
+          }
+        ]
+      },
+      {
+        "id": "a47273a3-9fa3-4909-9893-7e1f17ade8e7",
+        "title": "Cabaret Audition reminder",
+        "description": "",
+        "assignedToId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "assignedToName": "Sadie Frame",
+        "assignedToRole": "secretary",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-16",
+        "priority": "medium",
+        "status": "done",
+        "createdAt": "2026-09-13T23:34:02.903Z",
+        "updatedAt": "2026-09-14T10:55:04.748Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-13T23:34:02.903Z"
+          },
+          {
+            "event": "completed",
+            "byId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+            "byName": "Sadie Frame",
+            "at": "2026-09-14T10:55:04.469Z",
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "id": "ff887430-7df4-4544-a35d-3f333adc4cfe",
+        "title": "Add Fundraisers to Website/Proflink",
+        "description": "",
+        "assignedToId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "assignedToName": "Jessenia Zavala",
+        "assignedToRole": "event_coordinator",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-09-20",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-09-16T01:23:34.544Z",
+        "updatedAt": "2026-09-16T01:23:34.544Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-16T01:23:34.544Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-19T08:00:37.865Z"
           }
         ]
       }
