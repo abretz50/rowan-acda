@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T00:00:43.560Z",
+  "generatedAt": "2026-10-04T00:00:38.863Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -203,6 +203,18 @@
             "to": "Adam Bretz",
             "paidAt": null
           }
+        },
+        {
+          "id": "d877c148-62d2-4c33-9cc0-344984f496f4",
+          "account": "fundraising",
+          "type": "expense",
+          "categoryId": "554e9247-8b45-4c38-a128-ae22eeda4522",
+          "description": "Bought it!",
+          "amount": 1934.87,
+          "date": "2026-10-02",
+          "addedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+          "addedByName": "Adam Bretz",
+          "createdAt": "2026-10-02T16:03:13.083Z"
         }
       ],
       "_fundraisingBalanceSeeded": true,
@@ -3706,6 +3718,17 @@
         "hash": "fc9c2d8feba9a5d7ad0428b0244f6c2130030a2e275bceca7f1513690a35fa7451a37f8d7f52d53f26d217d92cc50ffcaff419fe8c4cc2e5aaa2a700204f7da6",
         "active": true,
         "joinedAt": "2026-09-18T19:02:36.287Z"
+      },
+      {
+        "id": "8d344fbf-3029-4a09-b472-3892c9d45bf5",
+        "name": "nate falk",
+        "email": "natefalk3@gmail.com",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "a5c2eead97ffb024fd96d5791dfad04b",
+        "hash": "31213d0becadac7873973f042525198648320110df3e3936caba86260b8ed9adadcfbab0746b3309bf4b7cf885e2428ff15ff00d7adfb7981f551ca15c1169c0",
+        "active": true,
+        "joinedAt": "2026-10-02T19:04:08.819Z"
       }
     ],
     "users": [
@@ -5158,6 +5181,345 @@
         "requestedAt": "2026-09-21T01:33:04.866Z",
         "decidedAt": "2026-09-21T01:36:36.144Z",
         "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "20e20f96-704d-4221-bcd0-435e86fa24ba",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Choral Workshop with Rollo Dilworth",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-09-27T19:34:55.613Z",
+        "decidedAt": "2026-09-27T19:36:40.963Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "bddd1e62-7f37-45b0-b614-19e54d1b904a",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Choral Workshop with Rollo Dilworth",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-09-27T19:35:40.916Z",
+        "decidedAt": "2026-09-27T19:36:48.043Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "c2f8757a-37b9-43ff-8981-253a8cfd134a",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Choral Workshop with Rollo Dilworth",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-09-27T19:36:12.269Z",
+        "decidedAt": "2026-09-27T19:36:49.496Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "08c41a4e-8fd0-40d5-a496-882c77a7d9a5",
+        "memberId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "memberName": "Daniel Suliguin",
+        "memberEmail": "dsuliguin30@gmail.com",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Choral Workshop with Rollo Dilworth",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-09-27T19:36:37.454Z",
+        "decidedAt": "2026-09-27T19:36:50.865Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "540b3df1-9044-48d7-8091-ced20dc9f05c",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T18:47:15.638Z",
+        "decidedAt": "2026-10-02T19:08:33.633Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "eec4dec9-f69e-4a1a-b26b-1f24439bbb2d",
+        "memberId": "7bf39160-1500-4b7c-8f3f-e4c1a37e5fe0",
+        "memberName": "Gavin Springer",
+        "memberEmail": "spring11@rowan.edu",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:01:53.597Z",
+        "decidedAt": "2026-10-02T19:08:35.790Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "c11d995f-0464-4c52-8cd1-5bd60a8bf847",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:02:14.799Z",
+        "decidedAt": "2026-10-02T19:08:37.015Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "a125f578-a9b5-4173-9b3e-d1aaad3d0a93",
+        "memberId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "memberName": "Daniel Suliguin",
+        "memberEmail": "dsuliguin30@gmail.com",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:02:41.375Z",
+        "decidedAt": "2026-10-02T19:08:47.303Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "7daf20f9-4546-4207-9d37-021b99bbeb80",
+        "memberId": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "memberName": "Bryan Ruban",
+        "memberEmail": "rubanb22@rowan.edu",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:02:53.500Z",
+        "decidedAt": "2026-10-02T19:08:48.876Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "73beaa0d-0d95-4354-a65b-855ba7c786df",
+        "memberId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "memberName": "Adam Bretz",
+        "memberEmail": "bretza67@students.rowan.edu",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:02:58.085Z",
+        "decidedAt": "2026-10-02T19:08:55.901Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "c7bde9dc-e45e-478f-a95e-37d7cb106546",
+        "memberId": "8d344fbf-3029-4a09-b472-3892c9d45bf5",
+        "memberName": "nate falk",
+        "memberEmail": "natefalk3@gmail.com",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:04:09.144Z",
+        "decidedAt": "2026-10-02T19:08:58.280Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "1776515a-8ef0-4a16-bb03-e763bb04ecb0",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:08:06.833Z",
+        "decidedAt": "2026-10-02T19:08:59.184Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "8b622da3-1d26-4b97-8707-c27df5d39b8d",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "event",
+        "eventId": "073ef6ec-94ca-438a-8730-ecde6b6ea110",
+        "eventTitle": "Rachel Carlson Professional Development",
+        "amount": 300,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-02T19:29:34.146Z",
+        "decidedAt": "2026-10-02T19:41:04.332Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "0bfa4be9-d6dc-422f-a4ff-c9f0005b6079",
+        "memberId": "c8a77ab3-1259-480f-a9e7-c15bb51bf1b6",
+        "memberName": "Sara DeVoe",
+        "memberEmail": "devoes59@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:32:47.960Z",
+        "decidedAt": "2026-10-02T19:41:00.524Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "7a5b232f-faf8-4643-ab05-52beb0bf295d",
+        "memberId": "d94bcb45-940b-4d55-8756-b59c12af99ae",
+        "memberName": "Keira Mei Santiago",
+        "memberEmail": "santia137@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:33:13.708Z",
+        "decidedAt": "2026-10-02T19:40:59.258Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "8c9594ae-2591-4bf9-b9d6-a9c069f35497",
+        "memberId": "6c920d0d-75b3-4da3-b96a-33f1903b08f6",
+        "memberName": "Cameron Hyson",
+        "memberEmail": "ccaammeerroonnhh@gmail.com",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:33:24.346Z",
+        "decidedAt": "2026-10-02T19:40:58.026Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "8dd588db-5a46-4e47-bbbd-df109ea846cd",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "denied",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:33:39.684Z",
+        "decidedAt": "2026-10-02T19:40:25.921Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "d6bec5dd-82b7-4f4c-959d-b5721c19434a",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:35:15.162Z",
+        "decidedAt": "2026-10-02T19:40:56.370Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "8763f78e-bd58-4408-bb1f-6432d64d09db",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:35:35.703Z",
+        "decidedAt": "2026-10-02T19:40:52.867Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "6e252962-c6f7-4e63-96dc-df18db30eb6d",
+        "memberId": "cac338f4-b3bf-436d-b7d1-60f6de9edd99",
+        "memberName": "Hanna Shein",
+        "memberEmail": "sheinh29@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:40:34.884Z",
+        "decidedAt": "2026-10-02T19:40:51.840Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "6f933cec-00ab-4fa7-bf8b-bce07f7a5f20",
+        "memberId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "memberName": "Lizzie Hitchner",
+        "memberEmail": "hitchn55@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 300,
+        "status": "approved",
+        "reason": "Rachel Carlson Professional Development",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-02T19:43:40.026Z",
+        "decidedAt": "2026-10-02T19:43:42.017Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
       }
     ],
     "tasks": [
@@ -5311,9 +5673,9 @@
         "assignedByName": "Adam Bretz",
         "dueDate": "2026-10-09",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-08-29T18:53:04.821Z",
-        "updatedAt": "2026-09-20T22:52:49.624Z",
+        "updatedAt": "2026-09-27T12:03:29.758Z",
         "history": [
           {
             "event": "created",
@@ -5345,6 +5707,13 @@
             "byName": "Adam Bretz",
             "at": "2026-09-20T22:52:49.616Z",
             "comment": "Corrected"
+          },
+          {
+            "event": "completed",
+            "byId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+            "byName": "Makayli Matias",
+            "at": "2026-09-27T12:03:27.680Z",
+            "comment": ""
           }
         ],
         "tags": [
@@ -5635,9 +6004,9 @@
         "assignedByName": "Daniel Suliguin",
         "dueDate": "2026-09-24",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:10:23.096Z",
-        "updatedAt": "2026-09-20T22:50:19.242Z",
+        "updatedAt": "2026-09-29T22:59:08.219Z",
         "history": [
           {
             "event": "created",
@@ -5706,6 +6075,13 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-24T08:00:39.739Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-29T22:59:06.754Z",
+            "comment": "DONE!"
           }
         ],
         "tags": []
@@ -5810,11 +6186,11 @@
         "assignedToRole": "president",
         "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
         "assignedByName": "Admin",
-        "dueDate": "2026-09-21",
+        "dueDate": "2026-09-25",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-09-01T00:22:56.536Z",
-        "updatedAt": "2026-09-13T23:36:35.276Z",
+        "updatedAt": "2026-09-29T22:59:30.505Z",
         "history": [
           {
             "event": "created",
@@ -5858,6 +6234,13 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-21T08:00:43.257Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-29T22:59:30.497Z",
+            "comment": "Complete with Adam this Week"
           }
         ],
         "tags": []
@@ -5911,15 +6294,34 @@
         "tags": [],
         "dueDate": "2026-09-30",
         "priority": "low",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:27:00.204Z",
-        "updatedAt": "2026-09-01T00:27:00.204Z",
+        "updatedAt": "2026-09-30T13:55:33.541Z",
         "history": [
           {
             "event": "created",
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-01T00:27:00.204Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-29T08:00:37.287Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-30T08:00:33.071Z"
+          },
+          {
+            "event": "completed",
+            "byId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+            "byName": "Jessenia Zavala",
+            "at": "2026-09-30T13:55:07.074Z",
+            "comment": ""
           }
         ]
       },
@@ -5944,6 +6346,18 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-09-01T00:28:46.461Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-27T08:00:47.229Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-28T08:00:42.236Z"
           }
         ]
       },
@@ -6166,6 +6580,18 @@
             "byName": "Adam Bretz",
             "at": "2026-09-20T22:50:55.947Z",
             "comment": "Corrected Draft Date"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-29T08:00:37.287Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-09-30T08:00:33.071Z"
           }
         ]
       },
@@ -6416,7 +6842,7 @@
       },
       {
         "id": "f571499d-a11f-4b71-b9b4-ea365b0e865b",
-        "title": "Merch Order",
+        "title": "TB Merch Order",
         "description": "",
         "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedToName": "Adam Bretz",
@@ -6424,11 +6850,11 @@
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
         "tags": [],
-        "dueDate": "2026-09-25",
+        "dueDate": "2026-10-02",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-07T17:22:17.818Z",
-        "updatedAt": "2026-09-18T11:20:29.937Z",
+        "updatedAt": "2026-10-02T16:02:03.485Z",
         "history": [
           {
             "event": "created",
@@ -6492,6 +6918,32 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-25T08:00:35.805Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-29T22:58:55.394Z",
+            "comment": "TB Merch Order"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-01T08:00:33.728Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-02T08:00:29.242Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-02T16:02:02.007Z",
+            "comment": "Done!"
           }
         ]
       },
@@ -6505,11 +6957,11 @@
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
         "tags": [],
-        "dueDate": "2026-09-25",
+        "dueDate": "2026-10-30",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-09-07T17:22:56.603Z",
-        "updatedAt": "2026-09-18T11:20:09.788Z",
+        "updatedAt": "2026-09-27T18:38:38.985Z",
         "history": [
           {
             "event": "created",
@@ -6586,6 +7038,13 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-25T08:00:35.805Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-27T18:38:38.965Z",
+            "comment": "No payment for 1st PD"
           }
         ]
       },
@@ -7053,9 +7512,9 @@
         "tags": [],
         "dueDate": "2026-09-20",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-16T01:23:34.544Z",
-        "updatedAt": "2026-09-16T01:23:34.544Z",
+        "updatedAt": "2026-09-27T10:11:58.898Z",
         "history": [
           {
             "event": "created",
@@ -7074,6 +7533,13 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-20T08:00:41.814Z"
+          },
+          {
+            "event": "completed",
+            "byId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+            "byName": "Jessenia Zavala",
+            "at": "2026-09-27T10:11:40.596Z",
+            "comment": ""
           }
         ]
       },
@@ -7191,11 +7657,11 @@
         "assignedById": "c711afec-0d0e-4445-81e9-2b34f262828d",
         "assignedByName": "Rowan ACDA",
         "tags": [],
-        "dueDate": "2026-09-23",
+        "dueDate": "2026-10-02",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-20T23:08:37.180Z",
-        "updatedAt": "2026-09-20T23:08:37.180Z",
+        "updatedAt": "2026-10-02T14:18:57.732Z",
         "history": [
           {
             "event": "created",
@@ -7214,6 +7680,46 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-23T08:00:33.672Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-29T23:02:09.935Z",
+            "comment": "Confirm the pieces and date with conductors"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-29T23:02:23.487Z",
+            "comment": "Extend"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-09-29T23:02:55.886Z",
+            "comment": "extend"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-01T08:00:33.728Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-02T08:00:29.242Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-02T14:18:56.194Z",
+            "comment": "Not Doing this anymore, Voces will do"
           }
         ]
       }
