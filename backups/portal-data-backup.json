@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T00:00:38.863Z",
+  "generatedAt": "2026-10-11T00:00:44.450Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -1515,7 +1515,7 @@
         "slotMode": "",
         "slotDurationMinutes": null,
         "customSlots": [],
-        "pointsApprovedBySecretary": false
+        "pointsApprovedBySecretary": true
       },
       {
         "id": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
@@ -5520,6 +5520,216 @@
         "requestedAt": "2026-10-02T19:43:40.026Z",
         "decidedAt": "2026-10-02T19:43:42.017Z",
         "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "d499e5e6-77ea-40a2-8358-0d00d8246f54",
+        "memberId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "memberName": "Daniel Suliguin",
+        "memberEmail": "dsuliguin30@gmail.com",
+        "source": "volunteer-full",
+        "eventId": "51a12aa0-7d93-4a3c-a188-327ee1401bf7",
+        "eventTitle": "Tenor Bass Festival",
+        "amount": 300,
+        "reason": "Full-day volunteer signup",
+        "status": "pending",
+        "requestedAt": "2026-10-08T16:10:59.721Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "f61fe476-3887-4148-91ee-de195cc35fa1",
+        "memberId": "6b8f500f-6829-437c-a488-9303d5a0487f",
+        "memberName": "Gracie Broglin",
+        "memberEmail": "brogli10@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T18:47:29.688Z",
+        "decidedAt": "2026-10-09T19:05:05.484Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "1e147d1c-c7a7-41c5-93ab-cac023a25afe",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T18:56:54.130Z",
+        "decidedAt": "2026-10-09T19:05:11.875Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "0f390843-f476-41ac-9f9a-efc9ed7176f3",
+        "memberId": "7bf39160-1500-4b7c-8f3f-e4c1a37e5fe0",
+        "memberName": "Gavin Springer",
+        "memberEmail": "spring11@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T18:59:54.035Z",
+        "decidedAt": "2026-10-09T19:05:13.110Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "5815b171-6098-4133-af51-0738297b3edb",
+        "memberId": "5e5319ad-1b03-42dc-94e5-b7093234ea79",
+        "memberName": "John Anthony Cipolla",
+        "memberEmail": "cipoll92@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T18:59:58.142Z",
+        "decidedAt": "2026-10-09T19:05:35.220Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "d06ed517-9694-4dee-a4b5-f42f0e722d9f",
+        "memberId": "07ac7238-fca1-41bd-b2ce-d3fbf089970a",
+        "memberName": "Bryan Ruban",
+        "memberEmail": "rubanb22@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T19:00:24.638Z",
+        "decidedAt": "2026-10-09T19:05:16.058Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "2c47364b-3fad-4e2e-a125-307a91a9ae10",
+        "memberId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "memberName": "Daniel Suliguin",
+        "memberEmail": "dsuliguin30@gmail.com",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T19:01:20.932Z",
+        "decidedAt": "2026-10-09T19:05:17.614Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "ac436edf-cdcf-460b-b186-2763aa1cd4db",
+        "memberId": "ef87923d-6cf5-4381-ae73-226d87a8d484",
+        "memberName": "Owen Griffith",
+        "memberEmail": "griffi164@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T19:01:56.512Z",
+        "decidedAt": "2026-10-09T19:05:18.780Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "baabb4cc-2f6e-4cb7-8fcf-a3d02581feb5",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T19:02:09.430Z",
+        "decidedAt": "2026-10-09T19:05:21.520Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "0639b9a3-1c5b-4f2c-84cc-fe75144fbecd",
+        "memberId": "d94bcb45-940b-4d55-8756-b59c12af99ae",
+        "memberName": "Keira Mei Santiago",
+        "memberEmail": "santia137@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T19:02:52.350Z",
+        "decidedAt": "2026-10-09T19:05:26.425Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "187f940d-1f12-4b6d-8ebe-6610c6f2e892",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "approved",
+        "reason": "",
+        "requestedAt": "2026-10-09T19:13:05.876Z",
+        "decidedAt": "2026-10-09T19:13:48.414Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "856d4688-6916-4523-8114-db59798ebe34",
+        "memberId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "memberName": "Sadie Frame",
+        "memberEmail": "frames27@rowan.edu",
+        "source": "volunteer-full",
+        "eventId": "51a12aa0-7d93-4a3c-a188-327ee1401bf7",
+        "eventTitle": "Tenor Bass Festival",
+        "amount": 300,
+        "reason": "Full-day volunteer signup",
+        "status": "pending",
+        "requestedAt": "2026-10-09T19:13:20.643Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "e9014308-33f0-4a3a-a8a9-788d8459743f",
+        "memberId": "394f2bbf-6ece-4f08-92a9-52d642474f2f",
+        "memberName": "Lizzie Hitchner",
+        "memberEmail": "hitchn55@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "pending",
+        "reason": "",
+        "requestedAt": "2026-10-09T20:00:27.482Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "a94c1f4c-71ca-4e38-a3a8-47088cdcbe89",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "event",
+        "eventId": "36dc4609-fbbb-4ea6-a727-ce38dfbdf747",
+        "eventTitle": "Sight Singing & Cabaret Rehearsal",
+        "amount": 200,
+        "status": "pending",
+        "reason": "",
+        "requestedAt": "2026-10-09T20:00:48.434Z",
+        "decidedAt": null,
+        "decidedBy": null
       }
     ],
     "tasks": [
@@ -5798,6 +6008,18 @@
             "byName": "Admin",
             "at": "2026-09-20T20:04:36.175Z",
             "comment": "Not Urgent"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-09T08:00:32.892Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-10T08:00:29.513Z"
           }
         ],
         "tags": []
@@ -5847,6 +6069,18 @@
             "byName": "Admin",
             "at": "2026-09-20T20:04:50.255Z",
             "comment": "Not Urgent"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-09T08:00:32.892Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-10T08:00:29.513Z"
           }
         ],
         "tags": []
