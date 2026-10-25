@@ -220,24 +220,94 @@ async function attemptPendingCheckin() {
   history.replaceState(null, '', location.pathname);
 }
 
+// Covers following the emailed link (or "Forgot password?" from the portal)
+// while this page is already open: only the fragment changes, so no reload.
+window.addEventListener('hashchange', () => {
+  const view = readResetFromUrl();
+  if (!view) return;
+  showSignedOut();
+  showAuthForm(view);
+});
+
 async function init() {
+  const authView = readResetFromUrl();
   const { data } = await api(AUTH_URL, { method: 'GET' });
-  if (data.ok) { me = data.user; showSignedIn(); } else { showSignedOut(); }
+  if (authView === 'reset') { showSignedOut(); showAuthForm('reset'); return; }
+  if (data.ok) { me = data.user; showSignedIn(); } else { showSignedOut(); if (authView === 'forgot') showAuthForm('forgot'); }
   await attemptPendingCheckin();
 }
+
+// ── Forgot / reset password ────────────────────────────────
+let resetToken = null;
+
+function showAuthForm(name) {
+  for (const id of ['signin-form', 'signup-form', 'forgot-form', 'reset-form']) {
+    document.getElementById(id).style.display = id === `${name}-form` ? '' : 'none';
+  }
+  const tabs = document.querySelector('#signed-out .view-tabs');
+  if (tabs) tabs.style.display = (name === 'forgot' || name === 'reset') ? 'none' : '';
+}
+
+// The emailed link carries the token in the URL fragment (#reset=...) so it
+// never reaches server logs or referrer headers. Read it once, then strip it.
+function readResetFromUrl() {
+  const m = location.hash.match(/^#reset=(.+)$/);
+  if (m) {
+    try { resetToken = decodeURIComponent(m[1]); } catch { resetToken = m[1]; }
+    history.replaceState(null, '', location.pathname + location.search);
+    return 'reset';
+  }
+  if (location.hash === '#forgot') {
+    history.replaceState(null, '', location.pathname + location.search);
+    return 'forgot';
+  }
+  return null;
+}
+
+document.getElementById('forgot-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('fp-email').value = document.getElementById('si-email').value;
+  showAuthForm('forgot');
+});
+document.getElementById('forgot-back').addEventListener('click', (e) => { e.preventDefault(); showAuthForm('signin'); });
+document.getElementById('reset-back').addEventListener('click', (e) => { e.preventDefault(); resetToken = null; showAuthForm('forgot'); });
+
+document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('forgot-error');
+  const btn = document.getElementById('fp-submit');
+  errEl.style.color = ''; errEl.textContent = '';
+  btn.disabled = true;
+  const { ok, data } = await api(AUTH_URL, { method: 'POST', body: JSON.stringify({ action: 'requestReset', email: document.getElementById('fp-email').value.trim() }) });
+  btn.disabled = false;
+  if (!ok) { errEl.textContent = data.error || 'Could not send the reset email. Try again in a moment.'; return; }
+  errEl.style.color = '#16a34a';
+  errEl.textContent = data.message || 'If an account exists for that email, a reset link is on its way.';
+});
+
+document.getElementById('reset-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('reset-error');
+  errEl.textContent = '';
+  const password = document.getElementById('rp-password').value;
+  if (password !== document.getElementById('rp-confirm').value) { errEl.textContent = 'The two passwords do not match.'; return; }
+  const { ok, data } = await api(AUTH_URL, { method: 'POST', body: JSON.stringify({ action: 'resetPassword', token: resetToken, password }) });
+  if (!ok) { errEl.textContent = data.error || 'Could not reset the password.'; return; }
+  resetToken = null;
+  document.getElementById('reset-form').reset();
+  me = data.user; showSignedIn(); window.refreshAccountNavLink?.();
+});
 
 // ── Sign in / up toggle ────────────────────────────────────
 document.getElementById('tab-signin').addEventListener('click', () => {
   document.getElementById('tab-signin').classList.add('active');
   document.getElementById('tab-signup').classList.remove('active');
-  document.getElementById('signin-form').style.display = '';
-  document.getElementById('signup-form').style.display = 'none';
+  showAuthForm('signin');
 });
 document.getElementById('tab-signup').addEventListener('click', () => {
   document.getElementById('tab-signup').classList.add('active');
   document.getElementById('tab-signin').classList.remove('active');
-  document.getElementById('signup-form').style.display = '';
-  document.getElementById('signin-form').style.display = 'none';
+  showAuthForm('signup');
 });
 
 document.getElementById('signin-form').addEventListener('submit', async (e) => {

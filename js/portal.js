@@ -256,6 +256,7 @@ function setBootstrapMode(on) {
     ? 'No president account exists yet. Create it using the setup secret from whoever deployed the site.'
     : 'E-Board access only.';
   document.getElementById('login-submit').textContent = on ? 'Create president account' : 'Sign in';
+  document.getElementById('login-forgot-link').style.display = on ? 'none' : '';
 }
 
 async function initLogin() {

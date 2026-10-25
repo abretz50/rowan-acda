@@ -1,4 +1,4 @@
-import { scryptSync, randomBytes, timingSafeEqual, createHmac } from 'node:crypto';
+import { scryptSync, randomBytes, timingSafeEqual, createHmac, createHash } from 'node:crypto';
 import { loadMembers, accountMember } from './loadMembers.mjs';
 import { hasPermission } from './permissions.mjs';
 
@@ -51,6 +51,45 @@ export function verifySessionToken(token) {
   } catch {
     return null;
   }
+}
+
+// ── Password reset tokens ─────────────────────────────────
+// Stateless: signed with a key derived from (but different to) the session
+// key, so a reset token can never be used as a session cookie. `fp` is a
+// fingerprint of the account's current password hash, which makes the link
+// single use: the moment the password changes, every outstanding link for
+// that account stops verifying.
+const RESET_TTL_MS = 60 * 60 * 1000;
+
+function resetKey() { return `${secret()}|password-reset`; }
+function resetFingerprint(m) { return createHash('sha256').update(String(m.hash || '')).digest('hex').slice(0, 16); }
+
+export function signResetToken(m) {
+  const payloadB64 = b64url(JSON.stringify({ id: m.id, fp: resetFingerprint(m), exp: Date.now() + RESET_TTL_MS }));
+  const sig = b64url(createHmac('sha256', resetKey()).update(payloadB64).digest());
+  return `${payloadB64}.${sig}`;
+}
+
+// Returns the member id the token was issued for, or null. The caller must
+// still call resetTokenMatches(member, token) with that member's current record.
+export function readResetToken(token) {
+  if (!token || !token.includes('.')) return null;
+  const [payloadB64, sig] = token.split('.');
+  const expectedSig = b64url(createHmac('sha256', resetKey()).update(payloadB64).digest());
+  const a = Buffer.from(sig || '');
+  const b = Buffer.from(expectedSig);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf8'));
+    if (!payload.exp || payload.exp < Date.now() || !payload.id) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+export function resetTokenMatches(m, payload) {
+  return !!payload && payload.id === m.id && payload.fp === resetFingerprint(m);
 }
 
 // ── Cookie plumbing ───────────────────────────────────────

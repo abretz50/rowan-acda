@@ -58,6 +58,24 @@
       <input type="password" id="si-password" placeholder="Password" autocomplete="current-password" required/>
       <button class="btn" type="submit">Sign in</button>
       <div class="lock-error" id="signin-error"></div>
+      <a href="#forgot" class="small" id="forgot-link" style="text-align:center">Forgot your password?</a>
+    </form>
+
+    <form class="lock-form" id="forgot-form" style="display:none">
+      <p class="small muted" style="margin:0">Enter the email on your account and we will send you a link to choose a new password.</p>
+      <input type="email" id="fp-email" placeholder="Email" autocomplete="email" required/>
+      <button class="btn" type="submit" id="fp-submit">Send reset link</button>
+      <div class="lock-error" id="forgot-error"></div>
+      <a href="#" class="small" id="forgot-back" style="text-align:center">Back to sign in</a>
+    </form>
+
+    <form class="lock-form" id="reset-form" style="display:none">
+      <p class="small muted" style="margin:0">Choose a new password for your account. Use at least 8 characters.</p>
+      <input type="password" id="rp-password" placeholder="New password" autocomplete="new-password" minlength="8" required/>
+      <input type="password" id="rp-confirm" placeholder="Confirm new password" autocomplete="new-password" minlength="8" required/>
+      <button class="btn" type="submit">Set new password</button>
+      <div class="lock-error" id="reset-error"></div>
+      <a href="#" class="small" id="reset-back" style="text-align:center">Request a new link</a>
     </form>
 
     <form class="lock-form" id="signup-form" style="display:none">
@@ -177,6 +195,6 @@
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 <script defer src="/js/core.js?v=4"></script>
-<script defer src="/js/account.js?v=12"></script>
+<script defer src="/js/account.js?v=14"></script>
 </body>
 </html>
