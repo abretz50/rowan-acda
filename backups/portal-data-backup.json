@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T00:00:47.382Z",
+  "generatedAt": "2026-10-25T00:00:04.699Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -1162,7 +1162,7 @@
         "id": "36abb82f-a041-4a38-b081-a2799450f6cf",
         "title": "Pumpkin Painting with NAfME & ACDA",
         "description": "Join us for our fall-themed event, Pumpkin Painting with NAfME and ACDA!! \n\nCome paint pumpkins, eat free food, and enjoy the company of our members!!",
-        "location": "Wilson Hall, Room 107",
+        "location": "Boyd Lobby, Upper Level",
         "start": "2026-10-30T18:00:00.000Z",
         "end": "2026-10-30T19:00:00.000Z",
         "allDay": false,
@@ -1175,7 +1175,8 @@
         "checkinOpensAt": "",
         "checkinClosesAt": "",
         "volunteerType": "",
-        "slotCapacity": 3
+        "slotCapacity": 3,
+        "pointsApprovedBySecretary": true
       },
       {
         "id": "60c76ea2-8e0c-4118-ba76-2dcde9f14caa",
@@ -5942,11 +5943,11 @@
         "eventId": "82d0f546-ae7b-4390-b59b-9de84bc50ecd",
         "eventTitle": "Sight Singing & Cabaret Rehearsal #2",
         "amount": 200,
-        "status": "pending",
+        "status": "approved",
         "reason": "",
         "requestedAt": "2026-10-16T19:25:45.420Z",
-        "decidedAt": null,
-        "decidedBy": null
+        "decidedAt": "2026-10-19T15:00:19.529Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
       },
       {
         "id": "88c0a01f-bafa-42ae-af0a-a9a6c8886454",
@@ -5957,9 +5958,86 @@
         "eventId": "82d0f546-ae7b-4390-b59b-9de84bc50ecd",
         "eventTitle": "Sight Singing & Cabaret Rehearsal #2",
         "amount": 200,
-        "status": "pending",
+        "status": "approved",
         "reason": "",
         "requestedAt": "2026-10-16T20:02:38.251Z",
+        "decidedAt": "2026-10-19T15:00:17.888Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "65c45955-d14a-4556-aada-fdda0856ab3b",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "manual",
+        "eventId": null,
+        "eventTitle": null,
+        "amount": 200,
+        "status": "approved",
+        "reason": "Sight Singing Cabaret Rehearsal #2",
+        "addedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "addedByName": "Sadie Frame",
+        "requestedAt": "2026-10-19T15:01:29.831Z",
+        "decidedAt": "2026-10-19T15:01:34.793Z",
+        "decidedBy": "b1abc61f-5a55-4aba-a68c-8ae163940362"
+      },
+      {
+        "id": "1cab84b5-7a58-4213-be48-fc8aa9122405",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "event",
+        "eventId": "decd9ac9-6642-4e4c-b4c5-604caddd0880",
+        "eventTitle": "Cabaret Dress Rehearsal",
+        "amount": 0,
+        "status": "pending",
+        "reason": "",
+        "requestedAt": "2026-10-23T21:19:05.182Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "61771351-a514-4d4c-96e1-0bf6c07ba233",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "event",
+        "eventId": "decd9ac9-6642-4e4c-b4c5-604caddd0880",
+        "eventTitle": "Cabaret Dress Rehearsal",
+        "amount": 0,
+        "status": "pending",
+        "reason": "",
+        "requestedAt": "2026-10-23T21:20:17.344Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "17baad4c-17a0-47a9-9f3b-948cff3f34ac",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "event",
+        "eventId": "7aac1606-539f-47dd-aefb-bc5956da8144",
+        "eventTitle": "ACDA Cabaret",
+        "amount": 0,
+        "status": "pending",
+        "reason": "",
+        "requestedAt": "2026-10-23T23:24:20.914Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "d2cc6aba-7e96-4d5d-abbd-225738de2a40",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "event",
+        "eventId": "7aac1606-539f-47dd-aefb-bc5956da8144",
+        "eventTitle": "ACDA Cabaret",
+        "amount": 0,
+        "status": "pending",
+        "reason": "",
+        "requestedAt": "2026-10-23T23:56:35.166Z",
         "decidedAt": null,
         "decidedBy": null
       }
@@ -6654,9 +6732,9 @@
         "assignedByName": "Admin",
         "dueDate": "2026-09-25",
         "priority": "medium",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-01T00:22:56.536Z",
-        "updatedAt": "2026-09-29T22:59:30.505Z",
+        "updatedAt": "2026-10-21T15:46:50.602Z",
         "history": [
           {
             "event": "created",
@@ -6707,6 +6785,13 @@
             "byName": "Adam Bretz",
             "at": "2026-09-29T22:59:30.497Z",
             "comment": "Complete with Adam this Week"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-21T15:46:49.271Z",
+            "comment": ""
           }
         ],
         "tags": []
@@ -7006,9 +7091,9 @@
         "tags": [],
         "dueDate": "2026-09-30",
         "priority": "high",
-        "status": "open",
+        "status": "done",
         "createdAt": "2026-09-06T00:11:14.042Z",
-        "updatedAt": "2026-09-20T22:50:55.954Z",
+        "updatedAt": "2026-10-21T15:46:58.394Z",
         "history": [
           {
             "event": "created",
@@ -7058,6 +7143,13 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-09-30T08:00:33.071Z"
+          },
+          {
+            "event": "completed",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-21T15:46:57.088Z",
+            "comment": ""
           }
         ]
       },
@@ -8186,6 +8278,104 @@
             "byName": "Adam Bretz",
             "at": "2026-10-02T14:18:56.194Z",
             "comment": "Not Doing this anymore, Voces will do"
+          }
+        ]
+      },
+      {
+        "id": "2abb190f-c3a3-45be-b592-f3efb64a541c",
+        "title": "Change pumpkin painting event location on website and prof link",
+        "description": "",
+        "assignedToId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "assignedToName": "Jessenia Zavala",
+        "assignedToRole": "event_coordinator",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-10-26",
+        "priority": "medium",
+        "status": "done",
+        "createdAt": "2026-10-21T15:46:34.589Z",
+        "updatedAt": "2026-10-22T16:20:32.884Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-21T15:46:34.589Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-21T15:47:22.203Z",
+            "comment": "Fix"
+          },
+          {
+            "event": "completed",
+            "byId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+            "byName": "Jessenia Zavala",
+            "at": "2026-10-22T16:20:24.298Z",
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "id": "70ccebf1-ad72-4b56-92a5-6f57982f9211",
+        "title": "Pumpkin painting location change email",
+        "description": "",
+        "assignedToId": "b1abc61f-5a55-4aba-a68c-8ae163940362",
+        "assignedToName": "Sadie Frame",
+        "assignedToRole": "secretary",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-10-26",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-10-21T15:47:55.790Z",
+        "updatedAt": "2026-10-21T15:47:55.790Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-21T15:47:55.790Z"
+          }
+        ]
+      },
+      {
+        "id": "98be4ee9-f5dd-41e4-a560-50fd3fb007f5",
+        "title": "Buy Table Covers + Pumpkin Painting stuff",
+        "description": "",
+        "assignedToId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedToName": "Adam Bretz",
+        "assignedToRole": "treasurer",
+        "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+        "assignedByName": "Adam Bretz",
+        "tags": [],
+        "dueDate": "2026-10-23",
+        "priority": "medium",
+        "status": "open",
+        "createdAt": "2026-10-21T15:48:31.344Z",
+        "updatedAt": "2026-10-21T15:48:31.344Z",
+        "history": [
+          {
+            "event": "created",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-21T15:48:31.344Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-22T08:00:17.508Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-23T08:00:51.504Z"
           }
         ]
       }
