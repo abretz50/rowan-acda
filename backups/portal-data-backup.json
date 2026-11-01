@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-25T00:00:04.699Z",
+  "generatedAt": "2026-11-01T00:01:10.617Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -3660,8 +3660,8 @@
         "email": "sheinh29@rowan.edu",
         "role": "member",
         "hasAccount": true,
-        "salt": "85bd7871501c6fe7322fe0c00665474f",
-        "hash": "cfa1f67d3994ff2e0a973a6f809851d3a05f60e065cbbc62a628282671bfb37620c3eeb1bad98e4f3b2cf25be54f065e409185eebb6f82cff9de710f5da10038",
+        "salt": "b08b1219038958ec77b09f9ec130d094",
+        "hash": "1d1c17885647fc3a138da5f6be7332f19bd3241039ee7dfe2fae2d7882aabdccf825c7ac6222b2fd9f3eee2c9c618b17744aad6fad4387dc27dfabf056b3df0c",
         "active": true,
         "joinedAt": "2026-09-09T20:13:17.715Z"
       },
@@ -3752,6 +3752,28 @@
         "hash": "6eca3fcb77dc82ef9d58c0dfd4b9d87a59651e677f4456d9323afa903a79827526dbd3de82f10bed94e74a7a10863fe3904e5ae21cae62037b3fca17e7be8c86",
         "active": true,
         "joinedAt": "2026-10-16T19:07:18.708Z"
+      },
+      {
+        "id": "f6c24ef7-6299-4422-a0d3-ced85cc7987a",
+        "name": "Aviana Thompson",
+        "email": "thomps71@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "7ec1df4e4b91bf276f321b93d8c3b803",
+        "hash": "ca9132509f5c787b5eb9d473ca9f7fa6f7b199510ff98fc8fb5330dffed8bb24f304f9ec2a9f8966afdf45097d6e355736f80f410bb9c316e79827c52d0fa4e2",
+        "active": true,
+        "joinedAt": "2026-10-27T03:26:06.225Z"
+      },
+      {
+        "id": "1ed94020-539e-4a90-89b4-7e41ef2be950",
+        "name": "Min Hwang",
+        "email": "hwangm14@rowan.edu",
+        "role": "member",
+        "hasAccount": true,
+        "salt": "9c5a1c4aee7780ca870ca5d0dc1de2a6",
+        "hash": "1ad6e3949e515f8f94e8c516deb7e92bab22fbc088633290435578b12bade5ec21e121409f798c3633dda8e026db41000dceb7e92a7032c7ef2c10edde2e5ccf",
+        "active": true,
+        "joinedAt": "2026-10-27T15:40:33.625Z"
       }
     ],
     "users": [
@@ -6040,6 +6062,199 @@
         "requestedAt": "2026-10-23T23:56:35.166Z",
         "decidedAt": null,
         "decidedBy": null
+      },
+      {
+        "id": "9829ed75-c427-415c-8830-c11057a4a0c7",
+        "memberId": "6e0c6efe-563b-4ba0-ac1c-7b8e838003fd",
+        "memberName": "Vera Caruso",
+        "memberEmail": "caruso83@rowan.edu",
+        "source": "volunteer",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "slotLabels": [
+          "10:00 AM–10:30 AM",
+          "10:30 AM–11:00 AM",
+          "1:00 PM–1:30 PM",
+          "1:30 PM–2:00 PM"
+        ],
+        "status": "pending",
+        "requestedAt": "2026-10-25T22:27:44.123Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "amount": 200,
+        "reason": "Volunteer slots (4): 10:00 AM–11:00 AM, 1:00 PM–2:00 PM"
+      },
+      {
+        "id": "d57b8e30-b4bc-4eaf-bd6f-e0c6b3d5b971",
+        "memberId": "cac338f4-b3bf-436d-b7d1-60f6de9edd99",
+        "memberName": "Hanna Shein",
+        "memberEmail": "sheinh29@rowan.edu",
+        "source": "volunteer",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "slotLabels": [
+          "11:00 AM–11:30 AM",
+          "11:30 AM–12:00 PM",
+          "12:00 PM–12:30 PM",
+          "12:30 PM–1:00 PM",
+          "1:00 PM–1:30 PM",
+          "1:30 PM–2:00 PM"
+        ],
+        "status": "pending",
+        "requestedAt": "2026-10-25T23:37:46.414Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "amount": 300,
+        "reason": "Volunteer slots (6): 11:00 AM–2:00 PM"
+      },
+      {
+        "id": "511ba8af-8242-49ce-9dce-a3091ab795f0",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "volunteer",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "slotLabels": [
+          "9:30 AM–10:00 AM"
+        ],
+        "status": "pending",
+        "requestedAt": "2026-10-26T16:23:24.062Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "amount": 50,
+        "reason": "Volunteer slots (1): 9:30 AM–10:00 AM"
+      },
+      {
+        "id": "df9052ef-a7e2-4b18-9177-71bf644ff957",
+        "memberId": "29daf5de-5e35-41c2-920f-1871b0e40212",
+        "memberName": "Daniel Suliguin",
+        "memberEmail": "dsuliguin30@gmail.com",
+        "source": "volunteer",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "slotLabels": [
+          "11:30 AM–12:00 PM",
+          "12:00 PM–12:30 PM",
+          "1:30 PM–2:00 PM",
+          "2:00 PM–2:30 PM",
+          "2:30 PM–3:00 PM"
+        ],
+        "status": "pending",
+        "requestedAt": "2026-10-27T01:19:29.606Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "amount": 250,
+        "reason": "Volunteer slots (5): 11:30 AM–12:30 PM, 1:30 PM–3:00 PM"
+      },
+      {
+        "id": "6eadd075-5e92-4d0e-b6d3-2b8ffe7d7e5e",
+        "memberId": "a9c68ae6-7289-438a-adc0-295a63430ab4",
+        "memberName": "Makayli Matias",
+        "memberEmail": "matias85@rowan.edu",
+        "source": "volunteer-food",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "itemCount": 2,
+        "items": "Chocolate chip cookies & Double chocolate cookies",
+        "amount": 50,
+        "reason": "Bringing 2 items: Chocolate chip cookies & Double chocolate cookies",
+        "status": "pending",
+        "requestedAt": "2026-10-27T03:14:21.215Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "7a2287c7-cf5d-4885-b8f1-67190dc9b9d1",
+        "memberId": "55347128-6e0d-4c91-ae64-2532ff5ecdc1",
+        "memberName": "Dante DiMaio",
+        "memberEmail": "dimaiod@rowan.edu",
+        "source": "volunteer",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "slotLabels": [
+          "10:30 AM–11:00 AM",
+          "11:00 AM–11:30 AM",
+          "11:30 AM–12:00 PM",
+          "12:00 PM–12:30 PM"
+        ],
+        "status": "pending",
+        "requestedAt": "2026-10-27T15:05:16.208Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "amount": 200,
+        "reason": "Volunteer slots (4): 10:30 AM–12:30 PM"
+      },
+      {
+        "id": "fb50996a-d546-4e2a-8744-a31d53206017",
+        "memberId": "1ed94020-539e-4a90-89b4-7e41ef2be950",
+        "memberName": "Min Hwang",
+        "memberEmail": "hwangm14@rowan.edu",
+        "source": "volunteer",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "slotLabels": [
+          "11:00 AM–11:30 AM",
+          "11:30 AM–12:00 PM",
+          "12:00 PM–12:30 PM"
+        ],
+        "status": "pending",
+        "requestedAt": "2026-10-27T15:41:01.780Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "amount": 150,
+        "reason": "Volunteer slots (3): 11:00 AM–12:30 PM"
+      },
+      {
+        "id": "7bc8e412-3993-4c27-90a5-2cb1b2ab7329",
+        "memberId": "1646ad26-8a70-49cc-b15b-d7f0121bddbc",
+        "memberName": "Jessenia Zavala",
+        "memberEmail": "zavala34@rowan.edu",
+        "source": "volunteer-food",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "itemCount": 1,
+        "items": "Dunkin’ donuts (1 box)",
+        "amount": 25,
+        "reason": "Bringing 1 item: Dunkin’ donuts (1 box)",
+        "status": "pending",
+        "requestedAt": "2026-10-27T15:57:41.232Z",
+        "decidedAt": null,
+        "decidedBy": null
+      },
+      {
+        "id": "cd1e4aa7-c3e9-4d17-ad2d-c75cbeefb3f8",
+        "memberId": "7bf39160-1500-4b7c-8f3f-e4c1a37e5fe0",
+        "memberName": "Gavin Springer",
+        "memberEmail": "spring11@rowan.edu",
+        "source": "volunteer",
+        "eventId": "48f830e2-d706-4fd6-9b9d-5343e478a0b7",
+        "eventTitle": "Spooky Season Bake Sale",
+        "slotLabels": [
+          "2:00 PM–2:30 PM",
+          "2:30 PM–3:00 PM"
+        ],
+        "status": "pending",
+        "requestedAt": "2026-10-27T18:25:52.572Z",
+        "decidedAt": null,
+        "decidedBy": null,
+        "amount": 100,
+        "reason": "Volunteer slots (2): 2:00 PM–3:00 PM"
+      },
+      {
+        "id": "95c96a42-1d01-45d2-ac40-ab6bc5629bdc",
+        "memberId": "7bf39160-1500-4b7c-8f3f-e4c1a37e5fe0",
+        "memberName": "Gavin Springer",
+        "memberEmail": "spring11@rowan.edu",
+        "source": "event",
+        "eventId": "36abb82f-a041-4a38-b081-a2799450f6cf",
+        "eventTitle": "Pumpkin Painting with NAfME & ACDA",
+        "amount": 100,
+        "status": "pending",
+        "reason": "",
+        "requestedAt": "2026-10-30T19:11:13.895Z",
+        "decidedAt": null,
+        "decidedBy": null
       }
     ],
     "tasks": [
@@ -6258,11 +6473,11 @@
         "assignedToRole": "treasurer",
         "assignedById": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
         "assignedByName": "Adam Bretz",
-        "dueDate": "2026-10-10",
+        "dueDate": "2026-10-31",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-08-29T21:21:30.651Z",
-        "updatedAt": "2026-09-20T20:04:36.184Z",
+        "updatedAt": "2026-10-25T17:35:48.099Z",
         "history": [
           {
             "event": "created",
@@ -6330,6 +6545,25 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-10-10T08:00:29.513Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-25T17:35:48.093Z",
+            "comment": "extend"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-30T08:00:53.003Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-31T08:00:52.315Z"
           }
         ],
         "tags": []
@@ -6343,11 +6577,11 @@
         "assignedToRole": "treasurer",
         "assignedById": "6e7b557f-495d-4f45-afdd-1046438b684f",
         "assignedByName": "Admin",
-        "dueDate": "2026-10-10",
+        "dueDate": "2026-10-31",
         "priority": "medium",
         "status": "open",
         "createdAt": "2026-08-29T21:44:23.906Z",
-        "updatedAt": "2026-09-20T20:04:50.263Z",
+        "updatedAt": "2026-10-25T17:36:16.468Z",
         "history": [
           {
             "event": "created",
@@ -6391,6 +6625,32 @@
             "byId": null,
             "byName": "Automated",
             "at": "2026-10-10T08:00:29.513Z"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-25T17:35:59.346Z",
+            "comment": "extend"
+          },
+          {
+            "event": "edited",
+            "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
+            "byName": "Adam Bretz",
+            "at": "2026-10-25T17:36:16.463Z",
+            "comment": "extend"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-30T08:00:53.003Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-31T08:00:52.315Z"
           }
         ],
         "tags": []
@@ -7603,6 +7863,18 @@
             "byName": "Adam Bretz",
             "at": "2026-09-27T18:38:38.965Z",
             "comment": "No payment for 1st PD"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-29T08:00:56.234Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-30T08:00:53.003Z"
           }
         ]
       },
@@ -8340,6 +8612,18 @@
             "byId": "5bc65a7c-d91a-4f40-b522-9e7fce0ec1a8",
             "byName": "Adam Bretz",
             "at": "2026-10-21T15:47:55.790Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-25T08:00:51.269Z"
+          },
+          {
+            "event": "reminded",
+            "byId": null,
+            "byName": "Automated",
+            "at": "2026-10-26T08:00:55.719Z"
           }
         ]
       },
