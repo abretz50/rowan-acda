@@ -32,6 +32,7 @@ export default async function handler(req) {
 
   if (req.method === 'GET') {
     if (new URL(req.url).searchParams.get('leaderboard')) {
+      if (me.role === 'member') return json({ ok: false, error: 'Not authorized.' }, 403);
       const points = await getCollection('points', []);
       return json({ ok: true, ...computeLeaderboard(members, points, me.id) });
     }

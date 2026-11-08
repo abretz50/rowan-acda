@@ -74,7 +74,9 @@ function showSignedIn() {
   document.getElementById('pf-name').value = me.name || '';
   document.getElementById('pf-email').value = me.email || '';
   document.getElementById('pf-secondary-email').value = me.secondaryEmail || '';
-  loadLeaderboard();
+  // Standings are an E-Board view only; regular members never see their rank.
+  document.getElementById('leaderboard-card').style.display = isEboardRole(me.role) ? '' : 'none';
+  if (isEboardRole(me.role)) loadLeaderboard();
   const historyLoaded = loadEventsHistory();
   if (!isEboardRole(me.role)) {
     historyLoaded.then(loadCheckinEvents);
