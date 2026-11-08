@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T00:01:10.617Z",
+  "generatedAt": "2026-11-08T00:01:11.531Z",
   "collections": {
     "budget": {
       "accounts": {
@@ -3682,8 +3682,8 @@
         "email": "alainaccote@gmail.com",
         "role": "member",
         "hasAccount": true,
-        "salt": "e325b473c57bdd77461022deded5cc15",
-        "hash": "794684b5fd2d75c3c2c43cf2da097b9eeb43e8080396c8c00029738742baf7e1cef293e7c958e932da3c47c35024e90686a06d56ebe1fd47b34a1bbbb6513946",
+        "salt": "7be35912c6f572bb58a205225aae446b",
+        "hash": "bf3d3a9ce56d7907ebcfedbc4548637f53da76f2df432ac1074b0fe96eade87ee786a46b8821032056792e25b66561a3f4b6af54e8dbd2999fa8dd075e556c5d",
         "active": true,
         "joinedAt": "2026-09-18T19:00:32.906Z"
       },
