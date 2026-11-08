@@ -74,9 +74,6 @@ function showSignedIn() {
   document.getElementById('pf-name').value = me.name || '';
   document.getElementById('pf-email').value = me.email || '';
   document.getElementById('pf-secondary-email').value = me.secondaryEmail || '';
-  // Standings are an E-Board view only; regular members never see their rank.
-  document.getElementById('leaderboard-card').style.display = isEboardRole(me.role) ? '' : 'none';
-  if (isEboardRole(me.role)) loadLeaderboard();
   const historyLoaded = loadEventsHistory();
   if (!isEboardRole(me.role)) {
     historyLoaded.then(loadCheckinEvents);
@@ -116,31 +113,6 @@ async function loadEventsHistory() {
   myCheckedInEventIds = new Set(data.points.filter(p => p.status !== 'denied').map(p => p.eventId).filter(Boolean));
   myEventsHistory = data.points;
   renderEventsHistory();
-}
-
-// ── Points leaderboard: rank + name/photo only, never point totals ──────
-function leaderboardRowHTML(entry) {
-  const avatar = `<img src="${escHtml(entry.photoUrl || '/assets/icons/default-avatar.svg')}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border)"/>`;
-  return `<div class="admin-row"${entry.isMe ? ' style="background:var(--surface)"' : ''}>
-    <div style="display:flex;align-items:center;gap:.6rem">
-      <span class="name" style="min-width:2rem">#${entry.rank}</span>
-      ${avatar}
-      <span>${escHtml(entry.name)}${entry.isMe ? ' <span class="badge-role eboard">you</span>' : ''}</span>
-    </div>
-  </div>`;
-}
-
-async function loadLeaderboard() {
-  const listEl = document.getElementById('leaderboard-list');
-  const standingEl = document.getElementById('leaderboard-standing');
-  const { ok, data } = await api(`${ME_URL}?leaderboard=1`, { method: 'GET' });
-  if (!ok || !data.entries) {
-    listEl.innerHTML = '<p class="small muted">Could not load leaderboard.</p>';
-    standingEl.textContent = '';
-    return;
-  }
-  standingEl.textContent = data.myRank ? `Current Standing: #${data.myRank}/${data.totalMembers}` : '';
-  listEl.innerHTML = data.entries.map(leaderboardRowHTML).join('') || '<p class="small muted">Not enough data yet.</p>';
 }
 
 // ── Check into an event (no code — just events open right now) ──────────
