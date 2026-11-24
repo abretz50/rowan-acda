@@ -254,17 +254,19 @@ export default async function handler(req) {
     // A member's points history (Members tab's "Points history" button) —
     // open to any signed-in E-Board account, same as Tasks, rather than
     // gated by the 'members' or 'points' tab permission. Viewing a ledger
-    // isn't a management action, so every role should be able to do it
-    // regardless of which tabs they've been granted.
+    // isn't a management action, so every E-Board role should be able to do
+    // it regardless of which tabs they've been granted. A plain member
+    // account can only ask for its own history, and never sees E-Board
+    // comments on it.
     if (url.searchParams.get('memberId') && !url.searchParams.get('status')) {
       const auth = await requireAuth(req);
       if (auth.deny) return auth.deny;
-      const [points, members] = await Promise.all([loadMigratedPoints(), loadMembers()]);
       const memberId = url.searchParams.get('memberId');
+      const isMember = auth.user.role === 'member';
+      if (isMember && memberId !== auth.user.id) return json({ ok: false, error: 'Not authorized.' }, 403);
+      const [points, members] = await Promise.all([loadMigratedPoints(), loadMembers()]);
       const rows = withDeciderNames(points.filter(p => p.memberId === memberId), members);
-      // This path only needs "signed in" (see above), so a plain member can
-      // reach it — comments are E-Board notes and stay off it for them.
-      return json({ ok: true, points: auth.user.role === 'member' ? rows : await withComments(rows, members) });
+      return json({ ok: true, points: isMember ? rows : await withComments(rows, members) });
     }
     const auth = await requireAuth(req, { perm: 'points' });
     if (auth.deny) return auth.deny;
