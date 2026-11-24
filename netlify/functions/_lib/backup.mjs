@@ -4,7 +4,7 @@
 // can't take out both the live data and its backup at once. The file lives
 // at a fixed path, so each run's commit is just an update — the full history
 // of past backups is still recoverable from that one file's git log.
-import { getCollection, setCollection } from './blobs.mjs';
+import { getCollection, setCollection, listKeyed } from './blobs.mjs';
 import { ghFetch, GH_BRANCH } from './github.mjs';
 
 const COLLECTIONS = [
@@ -18,6 +18,9 @@ export async function runBackup() {
   for (const name of COLLECTIONS) {
     collections[name] = await getCollection(name, null);
   }
+  // Stored one blob per record rather than as a collection (see blobs.mjs),
+  // so they'd be missed by the loop above — snapshot them as { entryId: record }.
+  collections.pointComments = await listKeyed('pointComments');
   const payload = JSON.stringify({ generatedAt: new Date().toISOString(), collections }, null, 2);
   const base64 = Buffer.from(payload, 'utf-8').toString('base64');
 

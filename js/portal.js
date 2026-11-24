@@ -1594,7 +1594,7 @@ async function selectMemberPoints(memberId) {
       ? ` · ${p.status === 'approved' ? 'approved' : 'denied'} by ${escHtml(p.decidedByName || 'Unknown')} · ${fmtDashDate(p.decidedAt)}`
       : '';
     return `<div class="admin-row">
-      <div><span class="name">${escHtml(pointsLabel(p) || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div></div>
+      <div><span class="name">${escHtml(pointsLabel(p) || 'Points')}</span><div class="meta">${new Date(p.requestedAt).toLocaleDateString()} · ${p.amount} pt${p.amount !== 1 ? 's' : ''}${decided}</div>${commentLineHTML(p)}</div>
       <div class="actions"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
     </div>`;
   }).join('');
@@ -1766,12 +1766,22 @@ function volunteerReviewReason(p) {
   return null;
 }
 
+// A reviewer's note on an entry, with who left it when we know.
+function commentLineHTML(p) {
+  if (!p.comment) return '';
+  return `<div class="meta">Comment${p.commentByName ? ` (${escHtml(p.commentByName)})` : ''}: ${escHtml(p.comment)}</div>`;
+}
+
 function pendingRowHTML(p) {
   const reviewReason = volunteerReviewReason(p);
   return `<div class="admin-row" style="flex-wrap:nowrap;align-items:flex-start${reviewReason ? ';background:#fef2f2' : ''}" data-points-id="${escHtml(p.id)}">
     <div style="flex:1;min-width:0">
       <span class="name">${escHtml(p.memberName)}</span>${reviewReason ? ` <span class="badge-role badge-priority-high">⚠ Review: ${escHtml(reviewReason)}</span>` : ''}
       <div class="meta">${escHtml(pointsLabel(p))} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
+      <div style="display:flex;gap:.4rem;margin-top:.4rem">
+        <input class="admin-input" type="text" maxlength="500" placeholder="Add a comment (E-Board only)" value="${escHtml(p.comment || '')}" style="flex:1;min-width:0" data-comment-for="${escHtml(p.id)}" aria-label="Comment on ${escHtml(p.memberName)}'s points request"/>
+        <button class="btn-sm outline" data-save-comment="${escHtml(p.id)}">Save</button>
+      </div>
     </div>
     <div class="actions" style="flex-shrink:0">
       <input class="admin-input" type="number" min="0" value="${p.amount}" style="width:70px" data-amount-for="${escHtml(p.id)}"/>
@@ -1788,6 +1798,7 @@ function allEntryRowHTML(p) {
     <div style="flex:1;min-width:0">
       <span class="name">${escHtml(pointsLabel(p) || 'Points')}</span>
       <div class="meta">${p.amount} pt${Math.abs(p.amount) !== 1 ? 's' : ''} requested by ${escHtml(p.memberName)}.${decidedClause}</div>
+      ${commentLineHTML(p)}
     </div>
     <div class="actions" style="flex-shrink:0"><span class="badge-role ${p.status === 'approved' ? 'eboard' : p.status === 'denied' ? 'inactive' : 'admin'}">${p.status}</span></div>
   </div>`;
@@ -1815,7 +1826,7 @@ async function loadPointsAll() {
 // this needs no spreadsheet library — same dependency-free approach as
 // the inline SVG charts elsewhere in this file.
 function exportPointsAllXls() {
-  const headers = ['Member', 'Event / Reason', 'Amount', 'Status', 'Requested', 'Decided By', 'Decided At'];
+  const headers = ['Member', 'Event / Reason', 'Amount', 'Status', 'Requested', 'Decided By', 'Decided At', 'Comment'];
   const cell = (v) => `<td>${escHtml(String(v ?? ''))}</td>`;
   const rowsHtml = lastPointsAllRows.map(p => `<tr>${[
     cell(p.memberName),
@@ -1825,6 +1836,7 @@ function exportPointsAllXls() {
     cell(new Date(p.requestedAt).toLocaleDateString()),
     cell(p.decidedByName || ''),
     cell(p.decidedAt ? fmtDashDate(p.decidedAt) : ''),
+    cell(p.comment || ''),
   ].join('')}</tr>`).join('');
   const html = `<html><head><meta charset="utf-8"></head><body><table border="1"><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr>${rowsHtml}</table></body></html>`;
   const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
@@ -1864,19 +1876,53 @@ async function loadAllMembersForSearch() {
   if (ok) allMembers = data.members;
 }
 
+// Approve/Deny PATCHes run one at a time. The server does a plain
+// read-modify-write on the whole points list, so two overlapping decisions
+// can overwrite each other — clicking through the queue quickly is exactly
+// that. Queuing them here keeps one reviewer's clicks in order. (Comment
+// saves are stored separately on the server and don't need this.)
+let pointsPatchQueue = Promise.resolve();
+function patchPoints(body) {
+  const run = () => api(POINTS_URL, { method: 'PATCH', body: JSON.stringify(body) });
+  const result = pointsPatchQueue.then(run, run);
+  pointsPatchQueue = result.catch(() => {});
+  return result;
+}
+
 function wirePointsPanel() {
   document.getElementById('points-all-export').addEventListener('click', exportPointsAllXls);
 
   document.getElementById('points-pending-list').addEventListener('click', async (e) => {
+    const saveCommentBtn = e.target.closest('[data-save-comment]');
+    if (saveCommentBtn) {
+      const commentId = saveCommentBtn.dataset.saveComment;
+      const commentInput = document.querySelector(`[data-comment-for="${commentId}"]`);
+      const original = saveCommentBtn.textContent;
+      saveCommentBtn.textContent = 'Saving…'; saveCommentBtn.disabled = true;
+      const { ok, data } = await api(POINTS_URL, { method: 'PATCH', body: JSON.stringify({ id: commentId, comment: commentInput.value }) });
+      saveCommentBtn.disabled = false;
+      if (!ok) { alert(data.error || 'Could not save comment.'); saveCommentBtn.textContent = original; return; }
+      // Update just this row rather than re-rendering the list, so a
+      // half-typed comment on another row isn't wiped out.
+      saveCommentBtn.textContent = 'Saved ✓';
+      setTimeout(() => { saveCommentBtn.textContent = original; }, 1500);
+      loadPointsAll();
+      return;
+    }
+
     const approveBtn = e.target.closest('[data-approve]');
     const denyBtn = e.target.closest('[data-deny]');
     const id = approveBtn?.dataset.approve || denyBtn?.dataset.deny;
     if (!id) return;
     const status = approveBtn ? 'approved' : 'denied';
     const amountInput = document.querySelector(`[data-amount-for="${id}"]`);
+    const commentInput = document.querySelector(`[data-comment-for="${id}"]`);
     const body = { id, status };
     if (approveBtn && amountInput) body.amount = Number(amountInput.value);
-    const { ok, data } = await api(POINTS_URL, { method: 'PATCH', body: JSON.stringify(body) });
+    // Carry whatever is in the comment box so a typed-but-unsaved note
+    // isn't lost when the entry is decided.
+    if (commentInput) body.comment = commentInput.value;
+    const { ok, data } = await patchPoints(body);
     if (!ok) { alert(data.error || 'Could not update.'); return; }
     loadPointsPending(); loadPointsAll();
   });

@@ -15,6 +15,34 @@ export async function setCollection(name, data) {
   await store().setJSON(name, data);
 }
 
+// One blob per record under a prefix, instead of one JSON document holding
+// every record. Writes to different keys can never overwrite each other,
+// which the document-style collections here can't promise on v6 (see
+// updateCollection below). Reach for these for data that's written
+// independently of — and concurrently with — the main collection it hangs
+// off of, e.g. reviewer comments on points entries.
+export async function getKeyed(prefix, id) {
+  return store().get(`${prefix}/${id}`, { type: 'json' });
+}
+
+export async function setKeyed(prefix, id, data) {
+  await store().setJSON(`${prefix}/${id}`, data);
+}
+
+export async function deleteKeyed(prefix, id) {
+  await store().delete(`${prefix}/${id}`);
+}
+
+// Every record under the prefix as { id: data }. One list call plus a get
+// per record that actually exists, so cost scales with how many records
+// there are, not with the size of whatever collection they annotate.
+export async function listKeyed(prefix) {
+  const { blobs } = await store().list({ prefix: `${prefix}/` });
+  const pairs = await Promise.all(blobs.map(async ({ key }) =>
+    [key.slice(prefix.length + 1), await store().get(key, { type: 'json' })]));
+  return Object.fromEntries(pairs.filter(([, data]) => data != null));
+}
+
 // Optimistic-retry read-modify-write. True atomicity needs @netlify/blobs'
 // conditional-write support (onlyIfMatch/onlyIfNew), which only exists
 // starting in v10; this project is pinned to v6 because bumping past it

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { getCollection, setCollection, updateCollection } from './_lib/blobs.mjs';
+import { getCollection, setCollection, updateCollection, getKeyed, setKeyed, deleteKeyed, listKeyed } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
@@ -15,6 +15,34 @@ const EDITABLE_DEFAULT_KEYS = [...Object.keys(DEFAULT_EVENT_POINTS), VOLUNTEER_S
 function withDeciderNames(rows, members) {
   const nameById = new Map(members.map(m => [m.id, m.name]));
   return rows.map(p => p.decidedBy ? { ...p, decidedByName: nameById.get(p.decidedBy) || null } : p);
+}
+
+// Reviewer comments on points entries. Each lives in its own blob
+// (pointComments/<entryId>) rather than on the entry in the points
+// collection: saving a comment then never rewrites that collection, so it
+// can't overwrite a concurrent Approve/Deny (or another comment). They're
+// also E-Board notes — callers attach them only on E-Board-facing reads,
+// never to anything a regular member can fetch.
+const COMMENT_PREFIX = 'pointComments';
+const COMMENT_MAX = 500;
+
+async function withComments(rows, members) {
+  const comments = await listKeyed(COMMENT_PREFIX);
+  const nameById = new Map(members.map(m => [m.id, m.name]));
+  return rows.map(p => {
+    const c = comments[p.id];
+    return c ? { ...p, comment: c.text, commentBy: c.by, commentAt: c.at, commentByName: nameById.get(c.by) || null } : p;
+  });
+}
+
+// Empty clears it. Resending the text that's already saved (Approve/Deny
+// carry the comment box along) leaves who/when alone.
+async function saveComment(entryId, raw, user) {
+  const text = String(raw ?? '').trim().slice(0, COMMENT_MAX);
+  const existing = await getKeyed(COMMENT_PREFIX, entryId);
+  if ((existing?.text || '') === text) return;
+  if (!text) { await deleteKeyed(COMMENT_PREFIX, entryId); return; }
+  await setKeyed(COMMENT_PREFIX, entryId, { text, by: user.id, at: new Date().toISOString() });
 }
 
 // Every read of the points collection here self-heals any leftover
@@ -224,7 +252,10 @@ export default async function handler(req) {
       if (auth.deny) return auth.deny;
       const [points, members] = await Promise.all([loadMigratedPoints(), loadMembers()]);
       const memberId = url.searchParams.get('memberId');
-      return json({ ok: true, points: withDeciderNames(points.filter(p => p.memberId === memberId), members) });
+      const rows = withDeciderNames(points.filter(p => p.memberId === memberId), members);
+      // This path only needs "signed in" (see above), so a plain member can
+      // reach it — comments are E-Board notes and stay off it for them.
+      return json({ ok: true, points: auth.user.role === 'member' ? rows : await withComments(rows, members) });
     }
     const auth = await requireAuth(req, { perm: 'points' });
     if (auth.deny) return auth.deny;
@@ -250,7 +281,7 @@ export default async function handler(req) {
         return !start || easternDateOnly(start) <= today;
       });
     }
-    return json({ ok: true, points: withDeciderNames(rows, members) });
+    return json({ ok: true, points: await withComments(withDeciderNames(rows, members), members) });
   }
 
   const auth = await requireAuth(req, { perm: 'points' });
@@ -264,13 +295,20 @@ export default async function handler(req) {
     const points = await getCollection('points', []);
     const target = points.find(p => p.id === body.id);
     if (!target) return json({ ok: false, error: 'Entry not found.' }, 404);
-    if ('amount' in body) target.amount = Number(body.amount);
-    if (body.status && ['approved', 'denied', 'pending'].includes(body.status)) {
-      target.status = body.status;
-      target.decidedAt = body.status === 'pending' ? null : new Date().toISOString();
-      target.decidedBy = body.status === 'pending' ? null : auth.user.id;
+    // Comment first: if it fails, nothing was decided, so the reviewer just
+    // retries; and a comment-only PATCH never touches the points collection
+    // (the write below is skipped), so it can't clobber a concurrent decision.
+    if ('comment' in body) await saveComment(target.id, body.comment, auth.user);
+    const validStatus = body.status && ['approved', 'denied', 'pending'].includes(body.status);
+    if ('amount' in body || validStatus) {
+      if ('amount' in body) target.amount = Number(body.amount);
+      if (validStatus) {
+        target.status = body.status;
+        target.decidedAt = body.status === 'pending' ? null : new Date().toISOString();
+        target.decidedBy = body.status === 'pending' ? null : auth.user.id;
+      }
+      await setCollection('points', points);
     }
-    await setCollection('points', points);
     return json({ ok: true, entry: target });
   }
 
@@ -278,6 +316,9 @@ export default async function handler(req) {
     const points = await getCollection('points', []);
     if (!points.some(p => p.id === body.id)) return json({ ok: false, error: 'Entry not found.' }, 404);
     await setCollection('points', points.filter(p => p.id !== body.id));
+    // Tidy up its comment; a leftover one would be harmless, so don't fail
+    // the delete over it.
+    await deleteKeyed(COMMENT_PREFIX, body.id).catch(() => {});
     return json({ ok: true });
   }
 
