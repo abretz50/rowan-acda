@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { getCollection, setCollection, updateCollection, getKeyed, setKeyed, deleteKeyed, listKeyed } from './_lib/blobs.mjs';
+import { getCollection, setCollection, updateCollection } from './_lib/blobs.mjs';
 import { loadMembers } from './_lib/loadMembers.mjs';
 import { requireAuth, json } from './_lib/auth.mjs';
 import { isCheckinOpen } from './_lib/checkinWindow.mjs';
@@ -17,17 +17,17 @@ function withDeciderNames(rows, members) {
   return rows.map(p => p.decidedBy ? { ...p, decidedByName: nameById.get(p.decidedBy) || null } : p);
 }
 
-// Reviewer comments on points entries. Each lives in its own blob
-// (pointComments/<entryId>) rather than on the entry in the points
-// collection: saving a comment then never rewrites that collection, so it
-// can't overwrite a concurrent Approve/Deny (or another comment). They're
-// also E-Board notes — callers attach them only on E-Board-facing reads,
-// never to anything a regular member can fetch.
-const COMMENT_PREFIX = 'pointComments';
+// Reviewer comments on points entries, kept as { [entryId]: { text, by, at } }
+// in a collection of their own rather than on the entries in 'points':
+// saving a comment then never rewrites the points collection, so it can't
+// overwrite a concurrent Approve/Deny. They're also E-Board notes — callers
+// attach them only on E-Board-facing reads, never to anything a regular
+// member can fetch.
+const COMMENTS = 'pointComments';
 const COMMENT_MAX = 500;
 
 async function withComments(rows, members) {
-  const comments = await listKeyed(COMMENT_PREFIX);
+  const comments = await getCollection(COMMENTS, {});
   const nameById = new Map(members.map(m => [m.id, m.name]));
   return rows.map(p => {
     const c = comments[p.id];
@@ -36,13 +36,22 @@ async function withComments(rows, members) {
 }
 
 // Empty clears it. Resending the text that's already saved (Approve/Deny
-// carry the comment box along) leaves who/when alone.
+// carry the comment box along) is a no-op, so who/when are left alone and
+// nothing gets written.
 async function saveComment(entryId, raw, user) {
   const text = String(raw ?? '').trim().slice(0, COMMENT_MAX);
-  const existing = await getKeyed(COMMENT_PREFIX, entryId);
-  if ((existing?.text || '') === text) return;
-  if (!text) { await deleteKeyed(COMMENT_PREFIX, entryId); return; }
-  await setKeyed(COMMENT_PREFIX, entryId, { text, by: user.id, at: new Date().toISOString() });
+  const current = await getCollection(COMMENTS, {});
+  if ((current[entryId]?.text || '') === text) return;
+  // Builds a new object rather than editing the one it's handed: when the
+  // collection doesn't exist yet, every read returns the same fallback
+  // object, and mutating it in place makes updateCollection's re-read look
+  // like someone else edited it, so the very first comment would never save.
+  await updateCollection(COMMENTS, {}, async (comments) => {
+    const next = { ...comments };
+    if (text) next[entryId] = { text, by: user.id, at: new Date().toISOString() };
+    else delete next[entryId];
+    return next;
+  });
 }
 
 // Every read of the points collection here self-heals any leftover
@@ -318,7 +327,15 @@ export default async function handler(req) {
     await setCollection('points', points.filter(p => p.id !== body.id));
     // Tidy up its comment; a leftover one would be harmless, so don't fail
     // the delete over it.
-    await deleteKeyed(COMMENT_PREFIX, body.id).catch(() => {});
+    try {
+      if (body.id in await getCollection(COMMENTS, {})) {
+        await updateCollection(COMMENTS, {}, async (comments) => {
+          const next = { ...comments };
+          delete next[body.id];
+          return next;
+        });
+      }
+    } catch { /* best-effort */ }
     return json({ ok: true });
   }
 

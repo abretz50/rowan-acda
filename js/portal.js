@@ -1876,11 +1876,13 @@ async function loadAllMembersForSearch() {
   if (ok) allMembers = data.members;
 }
 
-// Approve/Deny PATCHes run one at a time. The server does a plain
-// read-modify-write on the whole points list, so two overlapping decisions
-// can overwrite each other — clicking through the queue quickly is exactly
-// that. Queuing them here keeps one reviewer's clicks in order. (Comment
-// saves are stored separately on the server and don't need this.)
+// Pending-queue PATCHes (Approve, Deny, comment Save) run one at a time. The
+// server does a plain read-modify-write on the points list and on the
+// comments list, so two overlapping requests that touch the same one can
+// overwrite each other — clicking through the queue quickly is exactly
+// that. Queuing them here keeps one reviewer's clicks in order. (A comment
+// and a decision live in separate lists, so those never clobber each other
+// server-side either way.)
 let pointsPatchQueue = Promise.resolve();
 function patchPoints(body) {
   const run = () => api(POINTS_URL, { method: 'PATCH', body: JSON.stringify(body) });
@@ -1899,7 +1901,7 @@ function wirePointsPanel() {
       const commentInput = document.querySelector(`[data-comment-for="${commentId}"]`);
       const original = saveCommentBtn.textContent;
       saveCommentBtn.textContent = 'Saving…'; saveCommentBtn.disabled = true;
-      const { ok, data } = await api(POINTS_URL, { method: 'PATCH', body: JSON.stringify({ id: commentId, comment: commentInput.value }) });
+      const { ok, data } = await patchPoints({ id: commentId, comment: commentInput.value });
       saveCommentBtn.disabled = false;
       if (!ok) { alert(data.error || 'Could not save comment.'); saveCommentBtn.textContent = original; return; }
       // Update just this row rather than re-rendering the list, so a
