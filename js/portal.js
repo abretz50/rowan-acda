@@ -1778,10 +1778,12 @@ function pendingRowHTML(p) {
     <div style="flex:1;min-width:0">
       <span class="name">${escHtml(p.memberName)}</span>${reviewReason ? ` <span class="badge-role badge-priority-high">⚠ Review: ${escHtml(reviewReason)}</span>` : ''}
       <div class="meta">${escHtml(pointsLabel(p))} · requested ${new Date(p.requestedAt).toLocaleDateString()}</div>
+      <div data-comment-shown="${escHtml(p.id)}">${commentLineHTML(p)}</div>
       <div style="display:flex;gap:.4rem;margin-top:.4rem">
         <input class="admin-input" type="text" maxlength="500" placeholder="Add a comment (E-Board only)" value="${escHtml(p.comment || '')}" style="flex:1;min-width:0" data-comment-for="${escHtml(p.id)}" aria-label="Comment on ${escHtml(p.memberName)}'s points request"/>
         <button class="btn-sm outline" data-save-comment="${escHtml(p.id)}">Save</button>
       </div>
+      <div class="admin-status" data-comment-status="${escHtml(p.id)}" role="status"></div>
     </div>
     <div class="actions" style="flex-shrink:0">
       <input class="admin-input" type="number" min="0" value="${p.amount}" style="width:70px" data-amount-for="${escHtml(p.id)}"/>
@@ -1891,26 +1893,52 @@ function patchPoints(body) {
   return result;
 }
 
+// Saves the comment typed under one pending request, then asks the server for
+// the queue again (what a page reload does) and shows the comment as text
+// under the request — so the reviewer sees what the server actually kept, not
+// just what they typed. Updates only this row rather than re-rendering the
+// list, so a half-typed comment on another row isn't wiped out.
+async function savePendingComment(saveBtn) {
+  const id = saveBtn.dataset.saveComment;
+  const input = document.querySelector(`[data-comment-for="${id}"]`);
+  const shownEl = document.querySelector(`[data-comment-shown="${id}"]`);
+  const statusEl = document.querySelector(`[data-comment-status="${id}"]`);
+  const setStatus = (text, kind) => { statusEl.textContent = text; statusEl.className = `admin-status ${kind}`; };
+  const label = saveBtn.textContent;
+  const sent = input.value;
+  saveBtn.textContent = 'Saving…'; saveBtn.disabled = true;
+  setStatus('', '');
+  try {
+    let res;
+    try { res = await patchPoints({ id, comment: sent }); }
+    catch { res = { ok: false, data: { error: 'Could not reach the server — check your connection and try again.' } }; }
+    if (!res.ok) { setStatus(res.data.error || 'Could not save the comment — try again.', 'err'); return; }
+
+    let saved = null, reloaded = false;
+    try {
+      const fresh = await api(`${POINTS_URL}?status=pending`, { method: 'GET' });
+      if (fresh.ok) { reloaded = true; saved = fresh.data.points.find(p => p.id === id) || null; }
+    } catch { /* leave reloaded false */ }
+
+    if (!reloaded) { setStatus('Saved, but could not re-check it with the server. Reload the page to confirm.', 'err'); return; }
+    if (!saved) { setStatus('Saved, but this request is no longer in the pending queue.', 'err'); return; }
+    shownEl.innerHTML = commentLineHTML(saved);
+    // The server trims and caps the text, so compare against that.
+    const expected = sent.trim().slice(0, 500);
+    if ((saved.comment || '') === expected) setStatus(expected ? 'Saved ✓' : 'Comment removed ✓', 'ok');
+    else setStatus('The server accepted this but did not return it when we re-checked. Wait a minute and reload — if it is still missing, tell the site admin.', 'err');
+    loadPointsAll();
+  } finally {
+    saveBtn.disabled = false; saveBtn.textContent = label;
+  }
+}
+
 function wirePointsPanel() {
   document.getElementById('points-all-export').addEventListener('click', exportPointsAllXls);
 
   document.getElementById('points-pending-list').addEventListener('click', async (e) => {
     const saveCommentBtn = e.target.closest('[data-save-comment]');
-    if (saveCommentBtn) {
-      const commentId = saveCommentBtn.dataset.saveComment;
-      const commentInput = document.querySelector(`[data-comment-for="${commentId}"]`);
-      const original = saveCommentBtn.textContent;
-      saveCommentBtn.textContent = 'Saving…'; saveCommentBtn.disabled = true;
-      const { ok, data } = await patchPoints({ id: commentId, comment: commentInput.value });
-      saveCommentBtn.disabled = false;
-      if (!ok) { alert(data.error || 'Could not save comment.'); saveCommentBtn.textContent = original; return; }
-      // Update just this row rather than re-rendering the list, so a
-      // half-typed comment on another row isn't wiped out.
-      saveCommentBtn.textContent = 'Saved ✓';
-      setTimeout(() => { saveCommentBtn.textContent = original; }, 1500);
-      loadPointsAll();
-      return;
-    }
+    if (saveCommentBtn) { await savePendingComment(saveCommentBtn); return; }
 
     const approveBtn = e.target.closest('[data-approve]');
     const denyBtn = e.target.closest('[data-deny]');
